@@ -4,6 +4,8 @@ import authRoutes from "./src/routes/auth";
 import dotenv from "dotenv";
 import rollRoutes from "./src/routes/roll";
 import batchRoutes from "./src/routes/batch";
+import subBatchRoutes from "./src/routes/subBatch";
+import workerRoutes from "./src/routes/worker";
 
 dotenv.config();
 
@@ -20,6 +22,12 @@ app.use("/api/rolls", rollRoutes);
 
 //Batch Routes
 app.use("/api/batches", batchRoutes);
+
+//Sub-Batch Routes
+app.use("/api/subbatch", subBatchRoutes);
+
+// Worker Routes
+app.use("/api/workers", workerRoutes);
 
 
 

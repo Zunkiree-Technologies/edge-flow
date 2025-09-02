@@ -257,11 +257,7 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.WageType = exports.$Enums.WageType = {
-  per_piece: 'per_piece',
-  hourly: 'hourly',
-  monthly: 'monthly'
-};
+
 
 exports.Prisma.ModelName = {
   User: 'User',

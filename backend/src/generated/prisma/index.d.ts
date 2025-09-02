@@ -90,24 +90,6 @@ export type worker_logs = $Result.DefaultSelection<Prisma.$worker_logsPayload>
 export type vendors = $Result.DefaultSelection<Prisma.$vendorsPayload>
 
 /**
- * Enums
- */
-export namespace $Enums {
-  export const WageType: {
-  per_piece: 'per_piece',
-  hourly: 'hourly',
-  monthly: 'monthly'
-};
-
-export type WageType = (typeof WageType)[keyof typeof WageType]
-
-}
-
-export type WageType = $Enums.WageType
-
-export const WageType: typeof $Enums.WageType
-
-/**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
@@ -16324,7 +16306,7 @@ export namespace Prisma {
     pan: string | null
     address: string | null
     department_id: number | null
-    wage_type: $Enums.WageType | null
+    wage_type: string | null
     wage_rate: number | null
   }
 
@@ -16334,7 +16316,7 @@ export namespace Prisma {
     pan: string | null
     address: string | null
     department_id: number | null
-    wage_type: $Enums.WageType | null
+    wage_type: string | null
     wage_rate: number | null
   }
 
@@ -16485,7 +16467,7 @@ export namespace Prisma {
     pan: string
     address: string
     department_id: number | null
-    wage_type: $Enums.WageType
+    wage_type: string
     wage_rate: number
     _count: WorkersCountAggregateOutputType | null
     _avg: WorkersAvgAggregateOutputType | null
@@ -16581,7 +16563,7 @@ export namespace Prisma {
       pan: string
       address: string
       department_id: number | null
-      wage_type: $Enums.WageType
+      wage_type: string
       wage_rate: number
     }, ExtArgs["result"]["workers"]>
     composites: {}
@@ -17014,7 +16996,7 @@ export namespace Prisma {
     readonly pan: FieldRef<"workers", 'String'>
     readonly address: FieldRef<"workers", 'String'>
     readonly department_id: FieldRef<"workers", 'Int'>
-    readonly wage_type: FieldRef<"workers", 'WageType'>
+    readonly wage_type: FieldRef<"workers", 'String'>
     readonly wage_rate: FieldRef<"workers", 'Float'>
   }
     
@@ -20046,20 +20028,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'WageType'
-   */
-  export type EnumWageTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WageType'>
-    
-
-
-  /**
-   * Reference to a field of type 'WageType[]'
-   */
-  export type ListEnumWageTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WageType[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -20826,7 +20794,7 @@ export namespace Prisma {
     pan?: StringFilter<"workers"> | string
     address?: StringFilter<"workers"> | string
     department_id?: IntNullableFilter<"workers"> | number | null
-    wage_type?: EnumWageTypeFilter<"workers"> | $Enums.WageType
+    wage_type?: StringFilter<"workers"> | string
     wage_rate?: FloatFilter<"workers"> | number
     department?: XOR<DepartmentsNullableScalarRelationFilter, departmentsWhereInput> | null
     worker_logs?: Worker_logsListRelationFilter
@@ -20855,7 +20823,7 @@ export namespace Prisma {
     pan?: StringFilter<"workers"> | string
     address?: StringFilter<"workers"> | string
     department_id?: IntNullableFilter<"workers"> | number | null
-    wage_type?: EnumWageTypeFilter<"workers"> | $Enums.WageType
+    wage_type?: StringFilter<"workers"> | string
     wage_rate?: FloatFilter<"workers"> | number
     department?: XOR<DepartmentsNullableScalarRelationFilter, departmentsWhereInput> | null
     worker_logs?: Worker_logsListRelationFilter
@@ -20886,7 +20854,7 @@ export namespace Prisma {
     pan?: StringWithAggregatesFilter<"workers"> | string
     address?: StringWithAggregatesFilter<"workers"> | string
     department_id?: IntNullableWithAggregatesFilter<"workers"> | number | null
-    wage_type?: EnumWageTypeWithAggregatesFilter<"workers"> | $Enums.WageType
+    wage_type?: StringWithAggregatesFilter<"workers"> | string
     wage_rate?: FloatWithAggregatesFilter<"workers"> | number
   }
 
@@ -21700,7 +21668,7 @@ export namespace Prisma {
     name: string
     pan: string
     address: string
-    wage_type: $Enums.WageType
+    wage_type: string
     wage_rate: number
     department?: departmentsCreateNestedOneWithoutWorkersInput
     worker_logs?: worker_logsCreateNestedManyWithoutWorkerInput
@@ -21713,7 +21681,7 @@ export namespace Prisma {
     pan: string
     address: string
     department_id?: number | null
-    wage_type: $Enums.WageType
+    wage_type: string
     wage_rate: number
     worker_logs?: worker_logsUncheckedCreateNestedManyWithoutWorkerInput
     dept_workers?: department_workersUncheckedCreateNestedManyWithoutWorkerInput
@@ -21723,7 +21691,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     pan?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
-    wage_type?: EnumWageTypeFieldUpdateOperationsInput | $Enums.WageType
+    wage_type?: StringFieldUpdateOperationsInput | string
     wage_rate?: FloatFieldUpdateOperationsInput | number
     department?: departmentsUpdateOneWithoutWorkersNestedInput
     worker_logs?: worker_logsUpdateManyWithoutWorkerNestedInput
@@ -21736,7 +21704,7 @@ export namespace Prisma {
     pan?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     department_id?: NullableIntFieldUpdateOperationsInput | number | null
-    wage_type?: EnumWageTypeFieldUpdateOperationsInput | $Enums.WageType
+    wage_type?: StringFieldUpdateOperationsInput | string
     wage_rate?: FloatFieldUpdateOperationsInput | number
     worker_logs?: worker_logsUncheckedUpdateManyWithoutWorkerNestedInput
     dept_workers?: department_workersUncheckedUpdateManyWithoutWorkerNestedInput
@@ -21748,7 +21716,7 @@ export namespace Prisma {
     pan: string
     address: string
     department_id?: number | null
-    wage_type: $Enums.WageType
+    wage_type: string
     wage_rate: number
   }
 
@@ -21756,7 +21724,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     pan?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
-    wage_type?: EnumWageTypeFieldUpdateOperationsInput | $Enums.WageType
+    wage_type?: StringFieldUpdateOperationsInput | string
     wage_rate?: FloatFieldUpdateOperationsInput | number
   }
 
@@ -21766,7 +21734,7 @@ export namespace Prisma {
     pan?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     department_id?: NullableIntFieldUpdateOperationsInput | number | null
-    wage_type?: EnumWageTypeFieldUpdateOperationsInput | $Enums.WageType
+    wage_type?: StringFieldUpdateOperationsInput | string
     wage_rate?: FloatFieldUpdateOperationsInput | number
   }
 
@@ -22601,13 +22569,6 @@ export namespace Prisma {
     id?: SortOrder
   }
 
-  export type EnumWageTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.WageType | EnumWageTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.WageType[] | ListEnumWageTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.WageType[] | ListEnumWageTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumWageTypeFilter<$PrismaModel> | $Enums.WageType
-  }
-
   export type FloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -22659,16 +22620,6 @@ export namespace Prisma {
     id?: SortOrder
     department_id?: SortOrder
     wage_rate?: SortOrder
-  }
-
-  export type EnumWageTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.WageType | EnumWageTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.WageType[] | ListEnumWageTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.WageType[] | ListEnumWageTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumWageTypeWithAggregatesFilter<$PrismaModel> | $Enums.WageType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumWageTypeFilter<$PrismaModel>
-    _max?: NestedEnumWageTypeFilter<$PrismaModel>
   }
 
   export type FloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -23718,10 +23669,6 @@ export namespace Prisma {
     connect?: department_workersWhereUniqueInput | department_workersWhereUniqueInput[]
   }
 
-  export type EnumWageTypeFieldUpdateOperationsInput = {
-    set?: $Enums.WageType
-  }
-
   export type FloatFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -24073,23 +24020,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type NestedEnumWageTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.WageType | EnumWageTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.WageType[] | ListEnumWageTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.WageType[] | ListEnumWageTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumWageTypeFilter<$PrismaModel> | $Enums.WageType
-  }
-
-  export type NestedEnumWageTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.WageType | EnumWageTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.WageType[] | ListEnumWageTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.WageType[] | ListEnumWageTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumWageTypeWithAggregatesFilter<$PrismaModel> | $Enums.WageType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumWageTypeFilter<$PrismaModel>
-    _max?: NestedEnumWageTypeFilter<$PrismaModel>
   }
 
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -25395,7 +25325,7 @@ export namespace Prisma {
     name: string
     pan: string
     address: string
-    wage_type: $Enums.WageType
+    wage_type: string
     wage_rate: number
     worker_logs?: worker_logsCreateNestedManyWithoutWorkerInput
     dept_workers?: department_workersCreateNestedManyWithoutWorkerInput
@@ -25406,7 +25336,7 @@ export namespace Prisma {
     name: string
     pan: string
     address: string
-    wage_type: $Enums.WageType
+    wage_type: string
     wage_rate: number
     worker_logs?: worker_logsUncheckedCreateNestedManyWithoutWorkerInput
     dept_workers?: department_workersUncheckedCreateNestedManyWithoutWorkerInput
@@ -25549,7 +25479,7 @@ export namespace Prisma {
     pan?: StringFilter<"workers"> | string
     address?: StringFilter<"workers"> | string
     department_id?: IntNullableFilter<"workers"> | number | null
-    wage_type?: EnumWageTypeFilter<"workers"> | $Enums.WageType
+    wage_type?: StringFilter<"workers"> | string
     wage_rate?: FloatFilter<"workers"> | number
   }
 
@@ -25659,7 +25589,7 @@ export namespace Prisma {
     name: string
     pan: string
     address: string
-    wage_type: $Enums.WageType
+    wage_type: string
     wage_rate: number
     department?: departmentsCreateNestedOneWithoutWorkersInput
     worker_logs?: worker_logsCreateNestedManyWithoutWorkerInput
@@ -25671,7 +25601,7 @@ export namespace Prisma {
     pan: string
     address: string
     department_id?: number | null
-    wage_type: $Enums.WageType
+    wage_type: string
     wage_rate: number
     worker_logs?: worker_logsUncheckedCreateNestedManyWithoutWorkerInput
   }
@@ -25730,7 +25660,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     pan?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
-    wage_type?: EnumWageTypeFieldUpdateOperationsInput | $Enums.WageType
+    wage_type?: StringFieldUpdateOperationsInput | string
     wage_rate?: FloatFieldUpdateOperationsInput | number
     department?: departmentsUpdateOneWithoutWorkersNestedInput
     worker_logs?: worker_logsUpdateManyWithoutWorkerNestedInput
@@ -25742,7 +25672,7 @@ export namespace Prisma {
     pan?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     department_id?: NullableIntFieldUpdateOperationsInput | number | null
-    wage_type?: EnumWageTypeFieldUpdateOperationsInput | $Enums.WageType
+    wage_type?: StringFieldUpdateOperationsInput | string
     wage_rate?: FloatFieldUpdateOperationsInput | number
     worker_logs?: worker_logsUncheckedUpdateManyWithoutWorkerNestedInput
   }
@@ -26029,7 +25959,7 @@ export namespace Prisma {
     name: string
     pan: string
     address: string
-    wage_type: $Enums.WageType
+    wage_type: string
     wage_rate: number
     department?: departmentsCreateNestedOneWithoutWorkersInput
     dept_workers?: department_workersCreateNestedManyWithoutWorkerInput
@@ -26041,7 +25971,7 @@ export namespace Prisma {
     pan: string
     address: string
     department_id?: number | null
-    wage_type: $Enums.WageType
+    wage_type: string
     wage_rate: number
     dept_workers?: department_workersUncheckedCreateNestedManyWithoutWorkerInput
   }
@@ -26102,7 +26032,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     pan?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
-    wage_type?: EnumWageTypeFieldUpdateOperationsInput | $Enums.WageType
+    wage_type?: StringFieldUpdateOperationsInput | string
     wage_rate?: FloatFieldUpdateOperationsInput | number
     department?: departmentsUpdateOneWithoutWorkersNestedInput
     dept_workers?: department_workersUpdateManyWithoutWorkerNestedInput
@@ -26114,7 +26044,7 @@ export namespace Prisma {
     pan?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     department_id?: NullableIntFieldUpdateOperationsInput | number | null
-    wage_type?: EnumWageTypeFieldUpdateOperationsInput | $Enums.WageType
+    wage_type?: StringFieldUpdateOperationsInput | string
     wage_rate?: FloatFieldUpdateOperationsInput | number
     dept_workers?: department_workersUncheckedUpdateManyWithoutWorkerNestedInput
   }
@@ -26563,7 +26493,7 @@ export namespace Prisma {
     name: string
     pan: string
     address: string
-    wage_type: $Enums.WageType
+    wage_type: string
     wage_rate: number
   }
 
@@ -26637,7 +26567,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     pan?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
-    wage_type?: EnumWageTypeFieldUpdateOperationsInput | $Enums.WageType
+    wage_type?: StringFieldUpdateOperationsInput | string
     wage_rate?: FloatFieldUpdateOperationsInput | number
     worker_logs?: worker_logsUpdateManyWithoutWorkerNestedInput
     dept_workers?: department_workersUpdateManyWithoutWorkerNestedInput
@@ -26648,7 +26578,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     pan?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
-    wage_type?: EnumWageTypeFieldUpdateOperationsInput | $Enums.WageType
+    wage_type?: StringFieldUpdateOperationsInput | string
     wage_rate?: FloatFieldUpdateOperationsInput | number
     worker_logs?: worker_logsUncheckedUpdateManyWithoutWorkerNestedInput
     dept_workers?: department_workersUncheckedUpdateManyWithoutWorkerNestedInput
@@ -26659,7 +26589,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     pan?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
-    wage_type?: EnumWageTypeFieldUpdateOperationsInput | $Enums.WageType
+    wage_type?: StringFieldUpdateOperationsInput | string
     wage_rate?: FloatFieldUpdateOperationsInput | number
   }
 

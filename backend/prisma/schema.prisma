@@ -148,7 +148,7 @@ model workers {
   pan           String
   address       String
   department_id Int?
-  wage_type     WageType
+  wage_type     String
   wage_rate     Float
   department    departments? @relation(fields: [department_id], references: [id])
   worker_logs   worker_logs[]
@@ -176,12 +176,4 @@ model vendors {
   batches batches[]
 }
 
-//////////////////////////////////////////////////
-// Enums
-//////////////////////////////////////////////////
 
-enum WageType {
-  per_piece
-  hourly
-  monthly
-}
