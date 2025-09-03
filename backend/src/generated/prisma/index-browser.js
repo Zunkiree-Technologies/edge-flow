@@ -150,6 +150,7 @@ exports.Prisma.Sub_batchesScalarFieldEnum = {
   id: 'id',
   roll_id: 'roll_id',
   batch_id: 'batch_id',
+  name: 'name',
   estimated_pieces: 'estimated_pieces',
   expected_items: 'expected_items',
   start_date: 'start_date',

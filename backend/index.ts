@@ -25,7 +25,7 @@ app.use("/api/rolls", rollRoutes);
 app.use("/api/batches", batchRoutes);
 
 //Sub-Batch Routes
-app.use("/api/subbatch", subBatchRoutes);
+app.use("/api/sub-batches", subBatchRoutes);
 
 // Worker Routes
 app.use("/api/workers", workerRoutes);

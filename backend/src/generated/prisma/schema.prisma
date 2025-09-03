@@ -48,6 +48,7 @@ model sub_batches {
   id               Int      @id @default(autoincrement())
   roll_id          Int?
   batch_id         Int?
+  name             String
   estimated_pieces Int
   expected_items   Int
   start_date       DateTime

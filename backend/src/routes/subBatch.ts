@@ -1,18 +1,13 @@
-import express from "express";
-import {
-  createSubBatch,
-  getAllSubBatches,
-  getSubBatchById,
-  updateSubBatch,
-  deleteSubBatch,
-} from "../controllers/subBatchController";
+// src/routes/subBatchRoutes.ts
+import { Router } from "express";
+import * as subBatchController from "../controllers/subBatchController";
 
-const router = express.Router();
+const router = Router();
 
-router.post("/", createSubBatch);
-router.get("/", getAllSubBatches);
-router.get("/:id", getSubBatchById);
-router.put("/:id", updateSubBatch);
-router.delete("/:id", deleteSubBatch);
+router.post("/", subBatchController.createSubBatch);
+router.get("/", subBatchController.getAllSubBatches);
+router.get("/:id", subBatchController.getSubBatchById);
+router.put("/:id", subBatchController.updateSubBatch);
+router.delete("/:id", subBatchController.deleteSubBatch);
 
 export default router;

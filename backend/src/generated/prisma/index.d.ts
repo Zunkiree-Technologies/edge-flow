@@ -5878,6 +5878,7 @@ export namespace Prisma {
     id: number | null
     roll_id: number | null
     batch_id: number | null
+    name: string | null
     estimated_pieces: number | null
     expected_items: number | null
     start_date: Date | null
@@ -5889,6 +5890,7 @@ export namespace Prisma {
     id: number | null
     roll_id: number | null
     batch_id: number | null
+    name: string | null
     estimated_pieces: number | null
     expected_items: number | null
     start_date: Date | null
@@ -5900,6 +5902,7 @@ export namespace Prisma {
     id: number
     roll_id: number
     batch_id: number
+    name: number
     estimated_pieces: number
     expected_items: number
     start_date: number
@@ -5931,6 +5934,7 @@ export namespace Prisma {
     id?: true
     roll_id?: true
     batch_id?: true
+    name?: true
     estimated_pieces?: true
     expected_items?: true
     start_date?: true
@@ -5942,6 +5946,7 @@ export namespace Prisma {
     id?: true
     roll_id?: true
     batch_id?: true
+    name?: true
     estimated_pieces?: true
     expected_items?: true
     start_date?: true
@@ -5953,6 +5958,7 @@ export namespace Prisma {
     id?: true
     roll_id?: true
     batch_id?: true
+    name?: true
     estimated_pieces?: true
     expected_items?: true
     start_date?: true
@@ -6051,6 +6057,7 @@ export namespace Prisma {
     id: number
     roll_id: number | null
     batch_id: number | null
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date
@@ -6081,6 +6088,7 @@ export namespace Prisma {
     id?: boolean
     roll_id?: boolean
     batch_id?: boolean
+    name?: boolean
     estimated_pieces?: boolean
     expected_items?: boolean
     start_date?: boolean
@@ -6102,6 +6110,7 @@ export namespace Prisma {
     id?: boolean
     roll_id?: boolean
     batch_id?: boolean
+    name?: boolean
     estimated_pieces?: boolean
     expected_items?: boolean
     start_date?: boolean
@@ -6116,6 +6125,7 @@ export namespace Prisma {
     id?: boolean
     roll_id?: boolean
     batch_id?: boolean
+    name?: boolean
     estimated_pieces?: boolean
     expected_items?: boolean
     start_date?: boolean
@@ -6130,6 +6140,7 @@ export namespace Prisma {
     id?: boolean
     roll_id?: boolean
     batch_id?: boolean
+    name?: boolean
     estimated_pieces?: boolean
     expected_items?: boolean
     start_date?: boolean
@@ -6137,7 +6148,7 @@ export namespace Prisma {
     department_id?: boolean
   }
 
-  export type sub_batchesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "roll_id" | "batch_id" | "estimated_pieces" | "expected_items" | "start_date" | "due_date" | "department_id", ExtArgs["result"]["sub_batches"]>
+  export type sub_batchesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "roll_id" | "batch_id" | "name" | "estimated_pieces" | "expected_items" | "start_date" | "due_date" | "department_id", ExtArgs["result"]["sub_batches"]>
   export type sub_batchesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     roll?: boolean | sub_batches$rollArgs<ExtArgs>
     batch?: boolean | sub_batches$batchArgs<ExtArgs>
@@ -6178,6 +6189,7 @@ export namespace Prisma {
       id: number
       roll_id: number | null
       batch_id: number | null
+      name: string
       estimated_pieces: number
       expected_items: number
       start_date: Date
@@ -6618,6 +6630,7 @@ export namespace Prisma {
     readonly id: FieldRef<"sub_batches", 'Int'>
     readonly roll_id: FieldRef<"sub_batches", 'Int'>
     readonly batch_id: FieldRef<"sub_batches", 'Int'>
+    readonly name: FieldRef<"sub_batches", 'String'>
     readonly estimated_pieces: FieldRef<"sub_batches", 'Int'>
     readonly expected_items: FieldRef<"sub_batches", 'Int'>
     readonly start_date: FieldRef<"sub_batches", 'DateTime'>
@@ -19827,6 +19840,7 @@ export namespace Prisma {
     id: 'id',
     roll_id: 'roll_id',
     batch_id: 'batch_id',
+    name: 'name',
     estimated_pieces: 'estimated_pieces',
     expected_items: 'expected_items',
     start_date: 'start_date',
@@ -20241,6 +20255,7 @@ export namespace Prisma {
     id?: IntFilter<"sub_batches"> | number
     roll_id?: IntNullableFilter<"sub_batches"> | number | null
     batch_id?: IntNullableFilter<"sub_batches"> | number | null
+    name?: StringFilter<"sub_batches"> | string
     estimated_pieces?: IntFilter<"sub_batches"> | number
     expected_items?: IntFilter<"sub_batches"> | number
     start_date?: DateTimeFilter<"sub_batches"> | Date | string
@@ -20261,6 +20276,7 @@ export namespace Prisma {
     id?: SortOrder
     roll_id?: SortOrderInput | SortOrder
     batch_id?: SortOrderInput | SortOrder
+    name?: SortOrder
     estimated_pieces?: SortOrder
     expected_items?: SortOrder
     start_date?: SortOrder
@@ -20284,6 +20300,7 @@ export namespace Prisma {
     NOT?: sub_batchesWhereInput | sub_batchesWhereInput[]
     roll_id?: IntNullableFilter<"sub_batches"> | number | null
     batch_id?: IntNullableFilter<"sub_batches"> | number | null
+    name?: StringFilter<"sub_batches"> | string
     estimated_pieces?: IntFilter<"sub_batches"> | number
     expected_items?: IntFilter<"sub_batches"> | number
     start_date?: DateTimeFilter<"sub_batches"> | Date | string
@@ -20304,6 +20321,7 @@ export namespace Prisma {
     id?: SortOrder
     roll_id?: SortOrderInput | SortOrder
     batch_id?: SortOrderInput | SortOrder
+    name?: SortOrder
     estimated_pieces?: SortOrder
     expected_items?: SortOrder
     start_date?: SortOrder
@@ -20323,6 +20341,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"sub_batches"> | number
     roll_id?: IntNullableWithAggregatesFilter<"sub_batches"> | number | null
     batch_id?: IntNullableWithAggregatesFilter<"sub_batches"> | number | null
+    name?: StringWithAggregatesFilter<"sub_batches"> | string
     estimated_pieces?: IntWithAggregatesFilter<"sub_batches"> | number
     expected_items?: IntWithAggregatesFilter<"sub_batches"> | number
     start_date?: DateTimeWithAggregatesFilter<"sub_batches"> | Date | string
@@ -21166,6 +21185,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesCreateInput = {
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -21185,6 +21205,7 @@ export namespace Prisma {
     id?: number
     roll_id?: number | null
     batch_id?: number | null
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -21199,6 +21220,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesUpdateInput = {
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21218,6 +21240,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     roll_id?: NullableIntFieldUpdateOperationsInput | number | null
     batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21235,6 +21258,7 @@ export namespace Prisma {
     id?: number
     roll_id?: number | null
     batch_id?: number | null
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -21243,6 +21267,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesUpdateManyMutationInput = {
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21253,6 +21278,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     roll_id?: NullableIntFieldUpdateOperationsInput | number | null
     batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22190,6 +22216,7 @@ export namespace Prisma {
     id?: SortOrder
     roll_id?: SortOrder
     batch_id?: SortOrder
+    name?: SortOrder
     estimated_pieces?: SortOrder
     expected_items?: SortOrder
     start_date?: SortOrder
@@ -22210,6 +22237,7 @@ export namespace Prisma {
     id?: SortOrder
     roll_id?: SortOrder
     batch_id?: SortOrder
+    name?: SortOrder
     estimated_pieces?: SortOrder
     expected_items?: SortOrder
     start_date?: SortOrder
@@ -22221,6 +22249,7 @@ export namespace Prisma {
     id?: SortOrder
     roll_id?: SortOrder
     batch_id?: SortOrder
+    name?: SortOrder
     estimated_pieces?: SortOrder
     expected_items?: SortOrder
     start_date?: SortOrder
@@ -24092,6 +24121,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesCreateWithoutRollInput = {
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -24109,6 +24139,7 @@ export namespace Prisma {
   export type sub_batchesUncheckedCreateWithoutRollInput = {
     id?: number
     batch_id?: number | null
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -24214,6 +24245,7 @@ export namespace Prisma {
     id?: IntFilter<"sub_batches"> | number
     roll_id?: IntNullableFilter<"sub_batches"> | number | null
     batch_id?: IntNullableFilter<"sub_batches"> | number | null
+    name?: StringFilter<"sub_batches"> | string
     estimated_pieces?: IntFilter<"sub_batches"> | number
     expected_items?: IntFilter<"sub_batches"> | number
     start_date?: DateTimeFilter<"sub_batches"> | Date | string
@@ -24270,6 +24302,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesCreateWithoutBatchInput = {
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -24287,6 +24320,7 @@ export namespace Prisma {
   export type sub_batchesUncheckedCreateWithoutBatchInput = {
     id?: number
     roll_id?: number | null
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -24845,6 +24879,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesCreateWithoutSize_detailsInput = {
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -24863,6 +24898,7 @@ export namespace Prisma {
     id?: number
     roll_id?: number | null
     batch_id?: number | null
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -24892,6 +24928,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesUpdateWithoutSize_detailsInput = {
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24910,6 +24947,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     roll_id?: NullableIntFieldUpdateOperationsInput | number | null
     batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24923,6 +24961,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesCreateWithoutAttachmentsInput = {
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -24941,6 +24980,7 @@ export namespace Prisma {
     id?: number
     roll_id?: number | null
     batch_id?: number | null
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -24970,6 +25010,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesUpdateWithoutAttachmentsInput = {
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24988,6 +25029,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     roll_id?: NullableIntFieldUpdateOperationsInput | number | null
     batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -25001,6 +25043,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesCreateWithoutRejectedInput = {
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -25019,6 +25062,7 @@ export namespace Prisma {
     id?: number
     roll_id?: number | null
     batch_id?: number | null
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -25076,6 +25120,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesUpdateWithoutRejectedInput = {
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -25094,6 +25139,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     roll_id?: NullableIntFieldUpdateOperationsInput | number | null
     batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -25141,6 +25187,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesCreateWithoutAlteredInput = {
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -25159,6 +25206,7 @@ export namespace Prisma {
     id?: number
     roll_id?: number | null
     batch_id?: number | null
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -25216,6 +25264,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesUpdateWithoutAlteredInput = {
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -25234,6 +25283,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     roll_id?: NullableIntFieldUpdateOperationsInput | number | null
     batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -25281,6 +25331,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesCreateWithoutDepartmentInput = {
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -25299,6 +25350,7 @@ export namespace Prisma {
     id?: number
     roll_id?: number | null
     batch_id?: number | null
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -25706,6 +25758,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesCreateWithoutDept_linksInput = {
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -25724,6 +25777,7 @@ export namespace Prisma {
     id?: number
     roll_id?: number | null
     batch_id?: number | null
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -25787,6 +25841,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesUpdateWithoutDept_linksInput = {
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -25805,6 +25860,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     roll_id?: NullableIntFieldUpdateOperationsInput | number | null
     batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -25982,6 +26038,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesCreateWithoutWorker_logsInput = {
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -26000,6 +26057,7 @@ export namespace Prisma {
     id?: number
     roll_id?: number | null
     batch_id?: number | null
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -26061,6 +26119,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesUpdateWithoutWorker_logsInput = {
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26079,6 +26138,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     roll_id?: NullableIntFieldUpdateOperationsInput | number | null
     batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26205,6 +26265,7 @@ export namespace Prisma {
   export type sub_batchesCreateManyRollInput = {
     id?: number
     batch_id?: number | null
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -26241,6 +26302,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesUpdateWithoutRollInput = {
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26258,6 +26320,7 @@ export namespace Prisma {
   export type sub_batchesUncheckedUpdateWithoutRollInput = {
     id?: IntFieldUpdateOperationsInput | number
     batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26274,6 +26337,7 @@ export namespace Prisma {
   export type sub_batchesUncheckedUpdateManyWithoutRollInput = {
     id?: IntFieldUpdateOperationsInput | number
     batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26284,6 +26348,7 @@ export namespace Prisma {
   export type sub_batchesCreateManyBatchInput = {
     id?: number
     roll_id?: number | null
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -26292,6 +26357,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesUpdateWithoutBatchInput = {
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26309,6 +26375,7 @@ export namespace Prisma {
   export type sub_batchesUncheckedUpdateWithoutBatchInput = {
     id?: IntFieldUpdateOperationsInput | number
     roll_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26325,6 +26392,7 @@ export namespace Prisma {
   export type sub_batchesUncheckedUpdateManyWithoutBatchInput = {
     id?: IntFieldUpdateOperationsInput | number
     roll_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26482,6 +26550,7 @@ export namespace Prisma {
     id?: number
     roll_id?: number | null
     batch_id?: number | null
+    name: string
     estimated_pieces: number
     expected_items: number
     start_date: Date | string
@@ -26523,6 +26592,7 @@ export namespace Prisma {
   }
 
   export type sub_batchesUpdateWithoutDepartmentInput = {
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26541,6 +26611,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     roll_id?: NullableIntFieldUpdateOperationsInput | number | null
     batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26557,6 +26628,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     roll_id?: NullableIntFieldUpdateOperationsInput | number | null
     batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
     expected_items?: IntFieldUpdateOperationsInput | number
     start_date?: DateTimeFieldUpdateOperationsInput | Date | string
