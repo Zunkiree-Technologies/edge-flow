@@ -20370,14 +20370,14 @@ export namespace Prisma {
 
   export type sub_batch_size_detailsWhereUniqueInput = Prisma.AtLeast<{
     id?: number
+    category?: string
     AND?: sub_batch_size_detailsWhereInput | sub_batch_size_detailsWhereInput[]
     OR?: sub_batch_size_detailsWhereInput[]
     NOT?: sub_batch_size_detailsWhereInput | sub_batch_size_detailsWhereInput[]
     sub_batch_id?: IntNullableFilter<"sub_batch_size_details"> | number | null
-    category?: StringFilter<"sub_batch_size_details"> | string
     pieces?: IntFilter<"sub_batch_size_details"> | number
     sub_batch?: XOR<Sub_batchesNullableScalarRelationFilter, sub_batchesWhereInput> | null
-  }, "id">
+  }, "id" | "category">
 
   export type sub_batch_size_detailsOrderByWithAggregationInput = {
     id?: SortOrder
