@@ -1,6 +1,11 @@
 // src/controllers/subBatchController.ts
 import { Request, Response } from "express";
 import * as subBatchService from "../services/subBatchService";
+import { sendToProduction } from "../services/subBatchService";
+import {
+  moveSubBatchStage,
+  advanceSubBatchToNextDepartment,
+} from "../services/subBatchService";
 
 // Create Sub-Batch
 export const createSubBatch = async (req: Request, res: Response) => {
@@ -76,5 +81,37 @@ export const deleteSubBatch = async (req: Request, res: Response) => {
         message: "Error deleting sub-batch",
         details: err.message || err,
       });
+  }
+};
+
+export const sendSubBatchToProduction = async (req: Request, res: Response) => {
+  try {
+    const { subBatchId, workflowTemplateId } = req.body;
+    const workflow = await sendToProduction(subBatchId, workflowTemplateId);
+    res.status(200).json({ success: true, workflow });
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// Move stage within Kanban
+export const moveStage = async (req: Request, res: Response) => {
+  try {
+    const { departmentSubBatchId, toStage } = req.body;
+    const updated = await moveSubBatchStage(departmentSubBatchId, toStage);
+    res.status(200).json({ success: true, updated });
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// Advance to next department
+export const advanceDepartment = async (req: Request, res: Response) => {
+  try {
+    const { subBatchId } = req.body;
+    const nextDept = await advanceSubBatchToNextDepartment(subBatchId);
+    res.status(200).json({ success: true, nextDept });
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message });
   }
 };

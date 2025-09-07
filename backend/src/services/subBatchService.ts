@@ -4,6 +4,7 @@ import {
   SubBatchPayload,
   SubBatchPayloadWithArrays,
 } from "../types/subBatchTypes";
+import { DepartmentStage } from "../config/constants";
 
 // Create Sub-Batch
 export const createSubBatch = async (data: SubBatchPayload) => {
@@ -132,3 +133,128 @@ export const deleteSubBatch = async (id: number) => {
   });
   return { message: "Sub-batch deleted successfully", subBatch: deleted };
 };
+
+
+
+// Send Sub-Batch to Production 
+export async function sendToProduction(
+  subBatchId: number,
+  workflowTemplateId: number
+) {
+  // 1️⃣ Get workflow template steps
+  const templateSteps = await prisma.workflow_steps.findMany({
+    where: { workflow_template_id: workflowTemplateId },
+    orderBy: { step_index: "asc" },
+  });
+
+  if (!templateSteps.length) throw new Error("Workflow template has no steps");
+
+  // 2️⃣ Create sub-batch workflow
+  const workflow = await prisma.sub_batch_workflows.create({
+    data: {
+      sub_batch_id: subBatchId,
+      current_step_index: 0,
+      steps: {
+        create: templateSteps.map((step) => ({
+          step_index: step.step_index,
+          department_id: step.department_id,
+        })),
+      },
+    },
+    include: { steps: true },
+  });
+
+  // 3️⃣ Send to first department in New Arrival
+  const firstDeptId = workflow.steps[0].department_id;
+  await prisma.department_sub_batches.create({
+    data: {
+      sub_batch_id: subBatchId,
+      department_id: firstDeptId,
+      stage: DepartmentStage.NEW_ARRIVAL,
+      is_current: true,
+    },
+  });
+
+  return workflow;
+}
+
+
+export async function moveSubBatchStage(
+  departmentSubBatchId: number,
+  toStage: DepartmentStage
+) {
+  // 1️⃣ Get current record
+  const dsb = await prisma.department_sub_batches.findUnique({
+    where: { id: departmentSubBatchId },
+  });
+
+  if (!dsb) throw new Error("Department sub-batch not found");
+
+  const fromStage = dsb.stage;
+
+  // 2️⃣ Update stage
+  const updatedDSB = await prisma.department_sub_batches.update({
+    where: { id: departmentSubBatchId },
+    data: { stage: toStage },
+  });
+
+  // 3️⃣ Log history
+  await prisma.department_sub_batch_history.create({
+    data: {
+      department_sub_batch_id: departmentSubBatchId,
+      sub_batch_id: dsb.sub_batch_id!,
+      from_stage: fromStage,
+      to_stage: toStage,
+    },
+  });
+
+  return updatedDSB;
+}
+
+
+export async function advanceSubBatchToNextDepartment(subBatchId: number) {
+  // 1️⃣ Get workflow with steps
+  const workflow = await prisma.sub_batch_workflows.findUnique({
+    where: { sub_batch_id: subBatchId },
+    include: { steps: true },
+  });
+
+  if (!workflow) throw new Error("Workflow not found");
+
+  let currentIndex = workflow.current_step_index;
+
+  if (currentIndex + 1 >= workflow.steps.length) {
+    return null; // Already at last department
+  }
+
+  const currentStep = workflow.steps[currentIndex];
+
+  // 2️⃣ Mark current department_sub_batch as inactive
+  await prisma.department_sub_batches.updateMany({
+    where: {
+      sub_batch_id: subBatchId,
+      department_id: currentStep.department_id,
+      is_current: true,
+    },
+    data: { is_current: false },
+  });
+
+  // 3️⃣ Advance workflow
+  currentIndex += 1;
+  await prisma.sub_batch_workflows.update({
+    where: { sub_batch_id: subBatchId },
+    data: { current_step_index: currentIndex },
+  });
+
+  const nextStep = workflow.steps[currentIndex];
+
+  // 4️⃣ Add sub-batch to next department (New Arrival)
+  return await prisma.department_sub_batches.create({
+    data: {
+      sub_batch_id: subBatchId,
+      department_id: nextStep.department_id,
+      stage: DepartmentStage.NEW_ARRIVAL,
+      is_current: true,
+    },
+  });
+}

@@ -93,6 +93,49 @@ export type vendors = $Result.DefaultSelection<Prisma.$vendorsPayload>
  * 
  */
 export type categories = $Result.DefaultSelection<Prisma.$categoriesPayload>
+/**
+ * Model workflow_templates
+ * 
+ */
+export type workflow_templates = $Result.DefaultSelection<Prisma.$workflow_templatesPayload>
+/**
+ * Model workflow_steps
+ * 
+ */
+export type workflow_steps = $Result.DefaultSelection<Prisma.$workflow_stepsPayload>
+/**
+ * Model sub_batch_workflows
+ * 
+ */
+export type sub_batch_workflows = $Result.DefaultSelection<Prisma.$sub_batch_workflowsPayload>
+/**
+ * Model sub_batch_workflow_steps
+ * 
+ */
+export type sub_batch_workflow_steps = $Result.DefaultSelection<Prisma.$sub_batch_workflow_stepsPayload>
+/**
+ * Model department_sub_batch_history
+ * 
+ */
+export type department_sub_batch_history = $Result.DefaultSelection<Prisma.$department_sub_batch_historyPayload>
+
+/**
+ * Enums
+ */
+export namespace $Enums {
+  export const DepartmentStage: {
+  NEW_ARRIVAL: 'NEW_ARRIVAL',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED'
+};
+
+export type DepartmentStage = (typeof DepartmentStage)[keyof typeof DepartmentStage]
+
+}
+
+export type DepartmentStage = $Enums.DepartmentStage
+
+export const DepartmentStage: typeof $Enums.DepartmentStage
 
 /**
  * ##  Prisma Client ʲˢ
@@ -371,6 +414,56 @@ export class PrismaClient<
     * ```
     */
   get categories(): Prisma.categoriesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.workflow_templates`: Exposes CRUD operations for the **workflow_templates** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Workflow_templates
+    * const workflow_templates = await prisma.workflow_templates.findMany()
+    * ```
+    */
+  get workflow_templates(): Prisma.workflow_templatesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.workflow_steps`: Exposes CRUD operations for the **workflow_steps** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Workflow_steps
+    * const workflow_steps = await prisma.workflow_steps.findMany()
+    * ```
+    */
+  get workflow_steps(): Prisma.workflow_stepsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.sub_batch_workflows`: Exposes CRUD operations for the **sub_batch_workflows** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Sub_batch_workflows
+    * const sub_batch_workflows = await prisma.sub_batch_workflows.findMany()
+    * ```
+    */
+  get sub_batch_workflows(): Prisma.sub_batch_workflowsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.sub_batch_workflow_steps`: Exposes CRUD operations for the **sub_batch_workflow_steps** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Sub_batch_workflow_steps
+    * const sub_batch_workflow_steps = await prisma.sub_batch_workflow_steps.findMany()
+    * ```
+    */
+  get sub_batch_workflow_steps(): Prisma.sub_batch_workflow_stepsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.department_sub_batch_history`: Exposes CRUD operations for the **department_sub_batch_history** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Department_sub_batch_histories
+    * const department_sub_batch_histories = await prisma.department_sub_batch_history.findMany()
+    * ```
+    */
+  get department_sub_batch_history(): Prisma.department_sub_batch_historyDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -826,7 +919,12 @@ export namespace Prisma {
     workers: 'workers',
     worker_logs: 'worker_logs',
     vendors: 'vendors',
-    categories: 'categories'
+    categories: 'categories',
+    workflow_templates: 'workflow_templates',
+    workflow_steps: 'workflow_steps',
+    sub_batch_workflows: 'sub_batch_workflows',
+    sub_batch_workflow_steps: 'sub_batch_workflow_steps',
+    department_sub_batch_history: 'department_sub_batch_history'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -845,7 +943,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "rolls" | "batches" | "sub_batches" | "sub_batch_size_details" | "sub_batch_attachments" | "sub_batch_rejected" | "sub_batch_altered" | "departments" | "department_workers" | "department_sub_batches" | "clients" | "workers" | "worker_logs" | "vendors" | "categories"
+      modelProps: "user" | "rolls" | "batches" | "sub_batches" | "sub_batch_size_details" | "sub_batch_attachments" | "sub_batch_rejected" | "sub_batch_altered" | "departments" | "department_workers" | "department_sub_batches" | "clients" | "workers" | "worker_logs" | "vendors" | "categories" | "workflow_templates" | "workflow_steps" | "sub_batch_workflows" | "sub_batch_workflow_steps" | "department_sub_batch_history"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2033,6 +2131,376 @@ export namespace Prisma {
           }
         }
       }
+      workflow_templates: {
+        payload: Prisma.$workflow_templatesPayload<ExtArgs>
+        fields: Prisma.workflow_templatesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.workflow_templatesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_templatesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.workflow_templatesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_templatesPayload>
+          }
+          findFirst: {
+            args: Prisma.workflow_templatesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_templatesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.workflow_templatesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_templatesPayload>
+          }
+          findMany: {
+            args: Prisma.workflow_templatesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_templatesPayload>[]
+          }
+          create: {
+            args: Prisma.workflow_templatesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_templatesPayload>
+          }
+          createMany: {
+            args: Prisma.workflow_templatesCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.workflow_templatesCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_templatesPayload>[]
+          }
+          delete: {
+            args: Prisma.workflow_templatesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_templatesPayload>
+          }
+          update: {
+            args: Prisma.workflow_templatesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_templatesPayload>
+          }
+          deleteMany: {
+            args: Prisma.workflow_templatesDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.workflow_templatesUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.workflow_templatesUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_templatesPayload>[]
+          }
+          upsert: {
+            args: Prisma.workflow_templatesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_templatesPayload>
+          }
+          aggregate: {
+            args: Prisma.Workflow_templatesAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorkflow_templates>
+          }
+          groupBy: {
+            args: Prisma.workflow_templatesGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Workflow_templatesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.workflow_templatesCountArgs<ExtArgs>
+            result: $Utils.Optional<Workflow_templatesCountAggregateOutputType> | number
+          }
+        }
+      }
+      workflow_steps: {
+        payload: Prisma.$workflow_stepsPayload<ExtArgs>
+        fields: Prisma.workflow_stepsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.workflow_stepsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_stepsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.workflow_stepsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_stepsPayload>
+          }
+          findFirst: {
+            args: Prisma.workflow_stepsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_stepsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.workflow_stepsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_stepsPayload>
+          }
+          findMany: {
+            args: Prisma.workflow_stepsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_stepsPayload>[]
+          }
+          create: {
+            args: Prisma.workflow_stepsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_stepsPayload>
+          }
+          createMany: {
+            args: Prisma.workflow_stepsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.workflow_stepsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_stepsPayload>[]
+          }
+          delete: {
+            args: Prisma.workflow_stepsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_stepsPayload>
+          }
+          update: {
+            args: Prisma.workflow_stepsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_stepsPayload>
+          }
+          deleteMany: {
+            args: Prisma.workflow_stepsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.workflow_stepsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.workflow_stepsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_stepsPayload>[]
+          }
+          upsert: {
+            args: Prisma.workflow_stepsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$workflow_stepsPayload>
+          }
+          aggregate: {
+            args: Prisma.Workflow_stepsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorkflow_steps>
+          }
+          groupBy: {
+            args: Prisma.workflow_stepsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Workflow_stepsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.workflow_stepsCountArgs<ExtArgs>
+            result: $Utils.Optional<Workflow_stepsCountAggregateOutputType> | number
+          }
+        }
+      }
+      sub_batch_workflows: {
+        payload: Prisma.$sub_batch_workflowsPayload<ExtArgs>
+        fields: Prisma.sub_batch_workflowsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.sub_batch_workflowsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflowsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.sub_batch_workflowsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflowsPayload>
+          }
+          findFirst: {
+            args: Prisma.sub_batch_workflowsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflowsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.sub_batch_workflowsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflowsPayload>
+          }
+          findMany: {
+            args: Prisma.sub_batch_workflowsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflowsPayload>[]
+          }
+          create: {
+            args: Prisma.sub_batch_workflowsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflowsPayload>
+          }
+          createMany: {
+            args: Prisma.sub_batch_workflowsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.sub_batch_workflowsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflowsPayload>[]
+          }
+          delete: {
+            args: Prisma.sub_batch_workflowsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflowsPayload>
+          }
+          update: {
+            args: Prisma.sub_batch_workflowsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflowsPayload>
+          }
+          deleteMany: {
+            args: Prisma.sub_batch_workflowsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.sub_batch_workflowsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.sub_batch_workflowsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflowsPayload>[]
+          }
+          upsert: {
+            args: Prisma.sub_batch_workflowsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflowsPayload>
+          }
+          aggregate: {
+            args: Prisma.Sub_batch_workflowsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSub_batch_workflows>
+          }
+          groupBy: {
+            args: Prisma.sub_batch_workflowsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Sub_batch_workflowsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.sub_batch_workflowsCountArgs<ExtArgs>
+            result: $Utils.Optional<Sub_batch_workflowsCountAggregateOutputType> | number
+          }
+        }
+      }
+      sub_batch_workflow_steps: {
+        payload: Prisma.$sub_batch_workflow_stepsPayload<ExtArgs>
+        fields: Prisma.sub_batch_workflow_stepsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.sub_batch_workflow_stepsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflow_stepsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.sub_batch_workflow_stepsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflow_stepsPayload>
+          }
+          findFirst: {
+            args: Prisma.sub_batch_workflow_stepsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflow_stepsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.sub_batch_workflow_stepsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflow_stepsPayload>
+          }
+          findMany: {
+            args: Prisma.sub_batch_workflow_stepsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflow_stepsPayload>[]
+          }
+          create: {
+            args: Prisma.sub_batch_workflow_stepsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflow_stepsPayload>
+          }
+          createMany: {
+            args: Prisma.sub_batch_workflow_stepsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.sub_batch_workflow_stepsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflow_stepsPayload>[]
+          }
+          delete: {
+            args: Prisma.sub_batch_workflow_stepsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflow_stepsPayload>
+          }
+          update: {
+            args: Prisma.sub_batch_workflow_stepsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflow_stepsPayload>
+          }
+          deleteMany: {
+            args: Prisma.sub_batch_workflow_stepsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.sub_batch_workflow_stepsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.sub_batch_workflow_stepsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflow_stepsPayload>[]
+          }
+          upsert: {
+            args: Prisma.sub_batch_workflow_stepsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sub_batch_workflow_stepsPayload>
+          }
+          aggregate: {
+            args: Prisma.Sub_batch_workflow_stepsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSub_batch_workflow_steps>
+          }
+          groupBy: {
+            args: Prisma.sub_batch_workflow_stepsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Sub_batch_workflow_stepsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.sub_batch_workflow_stepsCountArgs<ExtArgs>
+            result: $Utils.Optional<Sub_batch_workflow_stepsCountAggregateOutputType> | number
+          }
+        }
+      }
+      department_sub_batch_history: {
+        payload: Prisma.$department_sub_batch_historyPayload<ExtArgs>
+        fields: Prisma.department_sub_batch_historyFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.department_sub_batch_historyFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$department_sub_batch_historyPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.department_sub_batch_historyFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$department_sub_batch_historyPayload>
+          }
+          findFirst: {
+            args: Prisma.department_sub_batch_historyFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$department_sub_batch_historyPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.department_sub_batch_historyFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$department_sub_batch_historyPayload>
+          }
+          findMany: {
+            args: Prisma.department_sub_batch_historyFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$department_sub_batch_historyPayload>[]
+          }
+          create: {
+            args: Prisma.department_sub_batch_historyCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$department_sub_batch_historyPayload>
+          }
+          createMany: {
+            args: Prisma.department_sub_batch_historyCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.department_sub_batch_historyCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$department_sub_batch_historyPayload>[]
+          }
+          delete: {
+            args: Prisma.department_sub_batch_historyDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$department_sub_batch_historyPayload>
+          }
+          update: {
+            args: Prisma.department_sub_batch_historyUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$department_sub_batch_historyPayload>
+          }
+          deleteMany: {
+            args: Prisma.department_sub_batch_historyDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.department_sub_batch_historyUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.department_sub_batch_historyUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$department_sub_batch_historyPayload>[]
+          }
+          upsert: {
+            args: Prisma.department_sub_batch_historyUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$department_sub_batch_historyPayload>
+          }
+          aggregate: {
+            args: Prisma.Department_sub_batch_historyAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDepartment_sub_batch_history>
+          }
+          groupBy: {
+            args: Prisma.department_sub_batch_historyGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Department_sub_batch_historyGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.department_sub_batch_historyCountArgs<ExtArgs>
+            result: $Utils.Optional<Department_sub_batch_historyCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2141,6 +2609,11 @@ export namespace Prisma {
     worker_logs?: worker_logsOmit
     vendors?: vendorsOmit
     categories?: categoriesOmit
+    workflow_templates?: workflow_templatesOmit
+    workflow_steps?: workflow_stepsOmit
+    sub_batch_workflows?: sub_batch_workflowsOmit
+    sub_batch_workflow_steps?: sub_batch_workflow_stepsOmit
+    department_sub_batch_history?: department_sub_batch_historyOmit
   }
 
   /* Types for Logging */
@@ -2298,6 +2771,7 @@ export namespace Prisma {
     altered: number
     dept_links: number
     worker_logs: number
+    workflows: number
   }
 
   export type Sub_batchesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2307,6 +2781,7 @@ export namespace Prisma {
     altered?: boolean | Sub_batchesCountOutputTypeCountAlteredArgs
     dept_links?: boolean | Sub_batchesCountOutputTypeCountDept_linksArgs
     worker_logs?: boolean | Sub_batchesCountOutputTypeCountWorker_logsArgs
+    workflows?: boolean | Sub_batchesCountOutputTypeCountWorkflowsArgs
   }
 
   // Custom InputTypes
@@ -2362,6 +2837,13 @@ export namespace Prisma {
     where?: worker_logsWhereInput
   }
 
+  /**
+   * Sub_batchesCountOutputType without action
+   */
+  export type Sub_batchesCountOutputTypeCountWorkflowsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: sub_batch_workflowsWhereInput
+  }
+
 
   /**
    * Count Type DepartmentsCountOutputType
@@ -2374,6 +2856,8 @@ export namespace Prisma {
     dept_batches: number
     rejected: number
     altered: number
+    workflow_steps: number
+    sub_batch_steps: number
   }
 
   export type DepartmentsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2383,6 +2867,8 @@ export namespace Prisma {
     dept_batches?: boolean | DepartmentsCountOutputTypeCountDept_batchesArgs
     rejected?: boolean | DepartmentsCountOutputTypeCountRejectedArgs
     altered?: boolean | DepartmentsCountOutputTypeCountAlteredArgs
+    workflow_steps?: boolean | DepartmentsCountOutputTypeCountWorkflow_stepsArgs
+    sub_batch_steps?: boolean | DepartmentsCountOutputTypeCountSub_batch_stepsArgs
   }
 
   // Custom InputTypes
@@ -2438,6 +2924,51 @@ export namespace Prisma {
     where?: sub_batch_alteredWhereInput
   }
 
+  /**
+   * DepartmentsCountOutputType without action
+   */
+  export type DepartmentsCountOutputTypeCountWorkflow_stepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: workflow_stepsWhereInput
+  }
+
+  /**
+   * DepartmentsCountOutputType without action
+   */
+  export type DepartmentsCountOutputTypeCountSub_batch_stepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: sub_batch_workflow_stepsWhereInput
+  }
+
+
+  /**
+   * Count Type Department_sub_batchesCountOutputType
+   */
+
+  export type Department_sub_batchesCountOutputType = {
+    history: number
+  }
+
+  export type Department_sub_batchesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    history?: boolean | Department_sub_batchesCountOutputTypeCountHistoryArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * Department_sub_batchesCountOutputType without action
+   */
+  export type Department_sub_batchesCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Department_sub_batchesCountOutputType
+     */
+    select?: Department_sub_batchesCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * Department_sub_batchesCountOutputType without action
+   */
+  export type Department_sub_batchesCountOutputTypeCountHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: department_sub_batch_historyWhereInput
+  }
+
 
   /**
    * Count Type WorkersCountOutputType
@@ -2446,11 +2977,13 @@ export namespace Prisma {
   export type WorkersCountOutputType = {
     worker_logs: number
     dept_workers: number
+    department_assignments: number
   }
 
   export type WorkersCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     worker_logs?: boolean | WorkersCountOutputTypeCountWorker_logsArgs
     dept_workers?: boolean | WorkersCountOutputTypeCountDept_workersArgs
+    department_assignments?: boolean | WorkersCountOutputTypeCountDepartment_assignmentsArgs
   }
 
   // Custom InputTypes
@@ -2476,6 +3009,13 @@ export namespace Prisma {
    */
   export type WorkersCountOutputTypeCountDept_workersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: department_workersWhereInput
+  }
+
+  /**
+   * WorkersCountOutputType without action
+   */
+  export type WorkersCountOutputTypeCountDepartment_assignmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: department_sub_batchesWhereInput
   }
 
 
@@ -2516,6 +3056,68 @@ export namespace Prisma {
    */
   export type VendorsCountOutputTypeCountBatchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: batchesWhereInput
+  }
+
+
+  /**
+   * Count Type Workflow_templatesCountOutputType
+   */
+
+  export type Workflow_templatesCountOutputType = {
+    steps: number
+  }
+
+  export type Workflow_templatesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    steps?: boolean | Workflow_templatesCountOutputTypeCountStepsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * Workflow_templatesCountOutputType without action
+   */
+  export type Workflow_templatesCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Workflow_templatesCountOutputType
+     */
+    select?: Workflow_templatesCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * Workflow_templatesCountOutputType without action
+   */
+  export type Workflow_templatesCountOutputTypeCountStepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: workflow_stepsWhereInput
+  }
+
+
+  /**
+   * Count Type Sub_batch_workflowsCountOutputType
+   */
+
+  export type Sub_batch_workflowsCountOutputType = {
+    steps: number
+  }
+
+  export type Sub_batch_workflowsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    steps?: boolean | Sub_batch_workflowsCountOutputTypeCountStepsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * Sub_batch_workflowsCountOutputType without action
+   */
+  export type Sub_batch_workflowsCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Sub_batch_workflowsCountOutputType
+     */
+    select?: Sub_batch_workflowsCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * Sub_batch_workflowsCountOutputType without action
+   */
+  export type Sub_batch_workflowsCountOutputTypeCountStepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: sub_batch_workflow_stepsWhereInput
   }
 
 
@@ -6194,6 +6796,7 @@ export namespace Prisma {
     altered?: boolean | sub_batches$alteredArgs<ExtArgs>
     dept_links?: boolean | sub_batches$dept_linksArgs<ExtArgs>
     worker_logs?: boolean | sub_batches$worker_logsArgs<ExtArgs>
+    workflows?: boolean | sub_batches$workflowsArgs<ExtArgs>
     _count?: boolean | Sub_batchesCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["sub_batches"]>
 
@@ -6250,6 +6853,7 @@ export namespace Prisma {
     altered?: boolean | sub_batches$alteredArgs<ExtArgs>
     dept_links?: boolean | sub_batches$dept_linksArgs<ExtArgs>
     worker_logs?: boolean | sub_batches$worker_logsArgs<ExtArgs>
+    workflows?: boolean | sub_batches$workflowsArgs<ExtArgs>
     _count?: boolean | Sub_batchesCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type sub_batchesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6275,6 +6879,7 @@ export namespace Prisma {
       altered: Prisma.$sub_batch_alteredPayload<ExtArgs>[]
       dept_links: Prisma.$department_sub_batchesPayload<ExtArgs>[]
       worker_logs: Prisma.$worker_logsPayload<ExtArgs>[]
+      workflows: Prisma.$sub_batch_workflowsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -6689,6 +7294,7 @@ export namespace Prisma {
     altered<T extends sub_batches$alteredArgs<ExtArgs> = {}>(args?: Subset<T, sub_batches$alteredArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sub_batch_alteredPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     dept_links<T extends sub_batches$dept_linksArgs<ExtArgs> = {}>(args?: Subset<T, sub_batches$dept_linksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$department_sub_batchesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     worker_logs<T extends sub_batches$worker_logsArgs<ExtArgs> = {}>(args?: Subset<T, sub_batches$worker_logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$worker_logsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    workflows<T extends sub_batches$workflowsArgs<ExtArgs> = {}>(args?: Subset<T, sub_batches$workflowsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sub_batch_workflowsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7321,6 +7927,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: Worker_logsScalarFieldEnum | Worker_logsScalarFieldEnum[]
+  }
+
+  /**
+   * sub_batches.workflows
+   */
+  export type sub_batches$workflowsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflows
+     */
+    select?: sub_batch_workflowsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflows
+     */
+    omit?: sub_batch_workflowsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflowsInclude<ExtArgs> | null
+    where?: sub_batch_workflowsWhereInput
+    orderBy?: sub_batch_workflowsOrderByWithRelationInput | sub_batch_workflowsOrderByWithRelationInput[]
+    cursor?: sub_batch_workflowsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Sub_batch_workflowsScalarFieldEnum | Sub_batch_workflowsScalarFieldEnum[]
   }
 
   /**
@@ -12050,6 +12680,8 @@ export namespace Prisma {
     dept_batches?: boolean | departments$dept_batchesArgs<ExtArgs>
     rejected?: boolean | departments$rejectedArgs<ExtArgs>
     altered?: boolean | departments$alteredArgs<ExtArgs>
+    workflow_steps?: boolean | departments$workflow_stepsArgs<ExtArgs>
+    sub_batch_steps?: boolean | departments$sub_batch_stepsArgs<ExtArgs>
     _count?: boolean | DepartmentsCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["departments"]>
 
@@ -12082,6 +12714,8 @@ export namespace Prisma {
     dept_batches?: boolean | departments$dept_batchesArgs<ExtArgs>
     rejected?: boolean | departments$rejectedArgs<ExtArgs>
     altered?: boolean | departments$alteredArgs<ExtArgs>
+    workflow_steps?: boolean | departments$workflow_stepsArgs<ExtArgs>
+    sub_batch_steps?: boolean | departments$sub_batch_stepsArgs<ExtArgs>
     _count?: boolean | DepartmentsCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type departmentsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -12096,6 +12730,8 @@ export namespace Prisma {
       dept_batches: Prisma.$department_sub_batchesPayload<ExtArgs>[]
       rejected: Prisma.$sub_batch_rejectedPayload<ExtArgs>[]
       altered: Prisma.$sub_batch_alteredPayload<ExtArgs>[]
+      workflow_steps: Prisma.$workflow_stepsPayload<ExtArgs>[]
+      sub_batch_steps: Prisma.$sub_batch_workflow_stepsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -12502,6 +13138,8 @@ export namespace Prisma {
     dept_batches<T extends departments$dept_batchesArgs<ExtArgs> = {}>(args?: Subset<T, departments$dept_batchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$department_sub_batchesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     rejected<T extends departments$rejectedArgs<ExtArgs> = {}>(args?: Subset<T, departments$rejectedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sub_batch_rejectedPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     altered<T extends departments$alteredArgs<ExtArgs> = {}>(args?: Subset<T, departments$alteredArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sub_batch_alteredPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    workflow_steps<T extends departments$workflow_stepsArgs<ExtArgs> = {}>(args?: Subset<T, departments$workflow_stepsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$workflow_stepsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    sub_batch_steps<T extends departments$sub_batch_stepsArgs<ExtArgs> = {}>(args?: Subset<T, departments$sub_batch_stepsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sub_batch_workflow_stepsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13064,6 +13702,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: Sub_batch_alteredScalarFieldEnum | Sub_batch_alteredScalarFieldEnum[]
+  }
+
+  /**
+   * departments.workflow_steps
+   */
+  export type departments$workflow_stepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_steps
+     */
+    select?: workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_steps
+     */
+    omit?: workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_stepsInclude<ExtArgs> | null
+    where?: workflow_stepsWhereInput
+    orderBy?: workflow_stepsOrderByWithRelationInput | workflow_stepsOrderByWithRelationInput[]
+    cursor?: workflow_stepsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Workflow_stepsScalarFieldEnum | Workflow_stepsScalarFieldEnum[]
+  }
+
+  /**
+   * departments.sub_batch_steps
+   */
+  export type departments$sub_batch_stepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflow_steps
+     */
+    select?: sub_batch_workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflow_steps
+     */
+    omit?: sub_batch_workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflow_stepsInclude<ExtArgs> | null
+    where?: sub_batch_workflow_stepsWhereInput
+    orderBy?: sub_batch_workflow_stepsOrderByWithRelationInput | sub_batch_workflow_stepsOrderByWithRelationInput[]
+    cursor?: sub_batch_workflow_stepsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Sub_batch_workflow_stepsScalarFieldEnum | Sub_batch_workflow_stepsScalarFieldEnum[]
   }
 
   /**
@@ -14234,30 +14920,47 @@ export namespace Prisma {
     id: number | null
     department_id: number | null
     sub_batch_id: number | null
+    assigned_worker_id: number | null
   }
 
   export type Department_sub_batchesSumAggregateOutputType = {
     id: number | null
     department_id: number | null
     sub_batch_id: number | null
+    assigned_worker_id: number | null
   }
 
   export type Department_sub_batchesMinAggregateOutputType = {
     id: number | null
     department_id: number | null
     sub_batch_id: number | null
+    stage: $Enums.DepartmentStage | null
+    is_current: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    assigned_worker_id: number | null
   }
 
   export type Department_sub_batchesMaxAggregateOutputType = {
     id: number | null
     department_id: number | null
     sub_batch_id: number | null
+    stage: $Enums.DepartmentStage | null
+    is_current: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    assigned_worker_id: number | null
   }
 
   export type Department_sub_batchesCountAggregateOutputType = {
     id: number
     department_id: number
     sub_batch_id: number
+    stage: number
+    is_current: number
+    createdAt: number
+    updatedAt: number
+    assigned_worker_id: number
     _all: number
   }
 
@@ -14266,30 +14969,47 @@ export namespace Prisma {
     id?: true
     department_id?: true
     sub_batch_id?: true
+    assigned_worker_id?: true
   }
 
   export type Department_sub_batchesSumAggregateInputType = {
     id?: true
     department_id?: true
     sub_batch_id?: true
+    assigned_worker_id?: true
   }
 
   export type Department_sub_batchesMinAggregateInputType = {
     id?: true
     department_id?: true
     sub_batch_id?: true
+    stage?: true
+    is_current?: true
+    createdAt?: true
+    updatedAt?: true
+    assigned_worker_id?: true
   }
 
   export type Department_sub_batchesMaxAggregateInputType = {
     id?: true
     department_id?: true
     sub_batch_id?: true
+    stage?: true
+    is_current?: true
+    createdAt?: true
+    updatedAt?: true
+    assigned_worker_id?: true
   }
 
   export type Department_sub_batchesCountAggregateInputType = {
     id?: true
     department_id?: true
     sub_batch_id?: true
+    stage?: true
+    is_current?: true
+    createdAt?: true
+    updatedAt?: true
+    assigned_worker_id?: true
     _all?: true
   }
 
@@ -14383,6 +15103,11 @@ export namespace Prisma {
     id: number
     department_id: number | null
     sub_batch_id: number | null
+    stage: $Enums.DepartmentStage
+    is_current: boolean
+    createdAt: Date
+    updatedAt: Date
+    assigned_worker_id: number | null
     _count: Department_sub_batchesCountAggregateOutputType | null
     _avg: Department_sub_batchesAvgAggregateOutputType | null
     _sum: Department_sub_batchesSumAggregateOutputType | null
@@ -14408,14 +15133,28 @@ export namespace Prisma {
     id?: boolean
     department_id?: boolean
     sub_batch_id?: boolean
+    stage?: boolean
+    is_current?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    assigned_worker_id?: boolean
+    assigned_worker?: boolean | department_sub_batches$assigned_workerArgs<ExtArgs>
     department?: boolean | department_sub_batches$departmentArgs<ExtArgs>
     sub_batch?: boolean | department_sub_batches$sub_batchArgs<ExtArgs>
+    history?: boolean | department_sub_batches$historyArgs<ExtArgs>
+    _count?: boolean | Department_sub_batchesCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["department_sub_batches"]>
 
   export type department_sub_batchesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     department_id?: boolean
     sub_batch_id?: boolean
+    stage?: boolean
+    is_current?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    assigned_worker_id?: boolean
+    assigned_worker?: boolean | department_sub_batches$assigned_workerArgs<ExtArgs>
     department?: boolean | department_sub_batches$departmentArgs<ExtArgs>
     sub_batch?: boolean | department_sub_batches$sub_batchArgs<ExtArgs>
   }, ExtArgs["result"]["department_sub_batches"]>
@@ -14424,6 +15163,12 @@ export namespace Prisma {
     id?: boolean
     department_id?: boolean
     sub_batch_id?: boolean
+    stage?: boolean
+    is_current?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    assigned_worker_id?: boolean
+    assigned_worker?: boolean | department_sub_batches$assigned_workerArgs<ExtArgs>
     department?: boolean | department_sub_batches$departmentArgs<ExtArgs>
     sub_batch?: boolean | department_sub_batches$sub_batchArgs<ExtArgs>
   }, ExtArgs["result"]["department_sub_batches"]>
@@ -14432,18 +15177,28 @@ export namespace Prisma {
     id?: boolean
     department_id?: boolean
     sub_batch_id?: boolean
+    stage?: boolean
+    is_current?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    assigned_worker_id?: boolean
   }
 
-  export type department_sub_batchesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "department_id" | "sub_batch_id", ExtArgs["result"]["department_sub_batches"]>
+  export type department_sub_batchesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "department_id" | "sub_batch_id" | "stage" | "is_current" | "createdAt" | "updatedAt" | "assigned_worker_id", ExtArgs["result"]["department_sub_batches"]>
   export type department_sub_batchesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    assigned_worker?: boolean | department_sub_batches$assigned_workerArgs<ExtArgs>
     department?: boolean | department_sub_batches$departmentArgs<ExtArgs>
     sub_batch?: boolean | department_sub_batches$sub_batchArgs<ExtArgs>
+    history?: boolean | department_sub_batches$historyArgs<ExtArgs>
+    _count?: boolean | Department_sub_batchesCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type department_sub_batchesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    assigned_worker?: boolean | department_sub_batches$assigned_workerArgs<ExtArgs>
     department?: boolean | department_sub_batches$departmentArgs<ExtArgs>
     sub_batch?: boolean | department_sub_batches$sub_batchArgs<ExtArgs>
   }
   export type department_sub_batchesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    assigned_worker?: boolean | department_sub_batches$assigned_workerArgs<ExtArgs>
     department?: boolean | department_sub_batches$departmentArgs<ExtArgs>
     sub_batch?: boolean | department_sub_batches$sub_batchArgs<ExtArgs>
   }
@@ -14451,13 +15206,20 @@ export namespace Prisma {
   export type $department_sub_batchesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "department_sub_batches"
     objects: {
+      assigned_worker: Prisma.$workersPayload<ExtArgs> | null
       department: Prisma.$departmentsPayload<ExtArgs> | null
       sub_batch: Prisma.$sub_batchesPayload<ExtArgs> | null
+      history: Prisma.$department_sub_batch_historyPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       department_id: number | null
       sub_batch_id: number | null
+      stage: $Enums.DepartmentStage
+      is_current: boolean
+      createdAt: Date
+      updatedAt: Date
+      assigned_worker_id: number | null
     }, ExtArgs["result"]["department_sub_batches"]>
     composites: {}
   }
@@ -14852,8 +15614,10 @@ export namespace Prisma {
    */
   export interface Prisma__department_sub_batchesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    assigned_worker<T extends department_sub_batches$assigned_workerArgs<ExtArgs> = {}>(args?: Subset<T, department_sub_batches$assigned_workerArgs<ExtArgs>>): Prisma__workersClient<$Result.GetResult<Prisma.$workersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     department<T extends department_sub_batches$departmentArgs<ExtArgs> = {}>(args?: Subset<T, department_sub_batches$departmentArgs<ExtArgs>>): Prisma__departmentsClient<$Result.GetResult<Prisma.$departmentsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     sub_batch<T extends department_sub_batches$sub_batchArgs<ExtArgs> = {}>(args?: Subset<T, department_sub_batches$sub_batchArgs<ExtArgs>>): Prisma__sub_batchesClient<$Result.GetResult<Prisma.$sub_batchesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    history<T extends department_sub_batches$historyArgs<ExtArgs> = {}>(args?: Subset<T, department_sub_batches$historyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$department_sub_batch_historyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -14886,6 +15650,11 @@ export namespace Prisma {
     readonly id: FieldRef<"department_sub_batches", 'Int'>
     readonly department_id: FieldRef<"department_sub_batches", 'Int'>
     readonly sub_batch_id: FieldRef<"department_sub_batches", 'Int'>
+    readonly stage: FieldRef<"department_sub_batches", 'DepartmentStage'>
+    readonly is_current: FieldRef<"department_sub_batches", 'Boolean'>
+    readonly createdAt: FieldRef<"department_sub_batches", 'DateTime'>
+    readonly updatedAt: FieldRef<"department_sub_batches", 'DateTime'>
+    readonly assigned_worker_id: FieldRef<"department_sub_batches", 'Int'>
   }
     
 
@@ -15104,7 +15873,7 @@ export namespace Prisma {
     /**
      * The data needed to create a department_sub_batches.
      */
-    data?: XOR<department_sub_batchesCreateInput, department_sub_batchesUncheckedCreateInput>
+    data: XOR<department_sub_batchesCreateInput, department_sub_batchesUncheckedCreateInput>
   }
 
   /**
@@ -15282,6 +16051,25 @@ export namespace Prisma {
   }
 
   /**
+   * department_sub_batches.assigned_worker
+   */
+  export type department_sub_batches$assigned_workerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workers
+     */
+    select?: workersSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workers
+     */
+    omit?: workersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workersInclude<ExtArgs> | null
+    where?: workersWhereInput
+  }
+
+  /**
    * department_sub_batches.department
    */
   export type department_sub_batches$departmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -15317,6 +16105,30 @@ export namespace Prisma {
      */
     include?: sub_batchesInclude<ExtArgs> | null
     where?: sub_batchesWhereInput
+  }
+
+  /**
+   * department_sub_batches.history
+   */
+  export type department_sub_batches$historyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the department_sub_batch_history
+     */
+    select?: department_sub_batch_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the department_sub_batch_history
+     */
+    omit?: department_sub_batch_historyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: department_sub_batch_historyInclude<ExtArgs> | null
+    where?: department_sub_batch_historyWhereInput
+    orderBy?: department_sub_batch_historyOrderByWithRelationInput | department_sub_batch_historyOrderByWithRelationInput[]
+    cursor?: department_sub_batch_historyWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Department_sub_batch_historyScalarFieldEnum | Department_sub_batch_historyScalarFieldEnum[]
   }
 
   /**
@@ -16605,6 +17417,7 @@ export namespace Prisma {
     department?: boolean | workers$departmentArgs<ExtArgs>
     worker_logs?: boolean | workers$worker_logsArgs<ExtArgs>
     dept_workers?: boolean | workers$dept_workersArgs<ExtArgs>
+    department_assignments?: boolean | workers$department_assignmentsArgs<ExtArgs>
     _count?: boolean | WorkersCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["workers"]>
 
@@ -16645,6 +17458,7 @@ export namespace Prisma {
     department?: boolean | workers$departmentArgs<ExtArgs>
     worker_logs?: boolean | workers$worker_logsArgs<ExtArgs>
     dept_workers?: boolean | workers$dept_workersArgs<ExtArgs>
+    department_assignments?: boolean | workers$department_assignmentsArgs<ExtArgs>
     _count?: boolean | WorkersCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type workersIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -16660,6 +17474,7 @@ export namespace Prisma {
       department: Prisma.$departmentsPayload<ExtArgs> | null
       worker_logs: Prisma.$worker_logsPayload<ExtArgs>[]
       dept_workers: Prisma.$department_workersPayload<ExtArgs>[]
+      department_assignments: Prisma.$department_sub_batchesPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -17066,6 +17881,7 @@ export namespace Prisma {
     department<T extends workers$departmentArgs<ExtArgs> = {}>(args?: Subset<T, workers$departmentArgs<ExtArgs>>): Prisma__departmentsClient<$Result.GetResult<Prisma.$departmentsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     worker_logs<T extends workers$worker_logsArgs<ExtArgs> = {}>(args?: Subset<T, workers$worker_logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$worker_logsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     dept_workers<T extends workers$dept_workersArgs<ExtArgs> = {}>(args?: Subset<T, workers$dept_workersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$department_workersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    department_assignments<T extends workers$department_assignmentsArgs<ExtArgs> = {}>(args?: Subset<T, workers$department_assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$department_sub_batchesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -17562,6 +18378,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: Department_workersScalarFieldEnum | Department_workersScalarFieldEnum[]
+  }
+
+  /**
+   * workers.department_assignments
+   */
+  export type workers$department_assignmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the department_sub_batches
+     */
+    select?: department_sub_batchesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the department_sub_batches
+     */
+    omit?: department_sub_batchesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: department_sub_batchesInclude<ExtArgs> | null
+    where?: department_sub_batchesWhereInput
+    orderBy?: department_sub_batchesOrderByWithRelationInput | department_sub_batchesOrderByWithRelationInput[]
+    cursor?: department_sub_batchesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Department_sub_batchesScalarFieldEnum | Department_sub_batchesScalarFieldEnum[]
   }
 
   /**
@@ -20869,6 +21709,5703 @@ export namespace Prisma {
 
 
   /**
+   * Model workflow_templates
+   */
+
+  export type AggregateWorkflow_templates = {
+    _count: Workflow_templatesCountAggregateOutputType | null
+    _avg: Workflow_templatesAvgAggregateOutputType | null
+    _sum: Workflow_templatesSumAggregateOutputType | null
+    _min: Workflow_templatesMinAggregateOutputType | null
+    _max: Workflow_templatesMaxAggregateOutputType | null
+  }
+
+  export type Workflow_templatesAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type Workflow_templatesSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type Workflow_templatesMinAggregateOutputType = {
+    id: number | null
+    name: string | null
+    description: string | null
+    createdAt: Date | null
+  }
+
+  export type Workflow_templatesMaxAggregateOutputType = {
+    id: number | null
+    name: string | null
+    description: string | null
+    createdAt: Date | null
+  }
+
+  export type Workflow_templatesCountAggregateOutputType = {
+    id: number
+    name: number
+    description: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type Workflow_templatesAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type Workflow_templatesSumAggregateInputType = {
+    id?: true
+  }
+
+  export type Workflow_templatesMinAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    createdAt?: true
+  }
+
+  export type Workflow_templatesMaxAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    createdAt?: true
+  }
+
+  export type Workflow_templatesCountAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type Workflow_templatesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which workflow_templates to aggregate.
+     */
+    where?: workflow_templatesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of workflow_templates to fetch.
+     */
+    orderBy?: workflow_templatesOrderByWithRelationInput | workflow_templatesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: workflow_templatesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` workflow_templates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` workflow_templates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned workflow_templates
+    **/
+    _count?: true | Workflow_templatesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Workflow_templatesAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Workflow_templatesSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Workflow_templatesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Workflow_templatesMaxAggregateInputType
+  }
+
+  export type GetWorkflow_templatesAggregateType<T extends Workflow_templatesAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkflow_templates]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkflow_templates[P]>
+      : GetScalarType<T[P], AggregateWorkflow_templates[P]>
+  }
+
+
+
+
+  export type workflow_templatesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: workflow_templatesWhereInput
+    orderBy?: workflow_templatesOrderByWithAggregationInput | workflow_templatesOrderByWithAggregationInput[]
+    by: Workflow_templatesScalarFieldEnum[] | Workflow_templatesScalarFieldEnum
+    having?: workflow_templatesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Workflow_templatesCountAggregateInputType | true
+    _avg?: Workflow_templatesAvgAggregateInputType
+    _sum?: Workflow_templatesSumAggregateInputType
+    _min?: Workflow_templatesMinAggregateInputType
+    _max?: Workflow_templatesMaxAggregateInputType
+  }
+
+  export type Workflow_templatesGroupByOutputType = {
+    id: number
+    name: string
+    description: string | null
+    createdAt: Date
+    _count: Workflow_templatesCountAggregateOutputType | null
+    _avg: Workflow_templatesAvgAggregateOutputType | null
+    _sum: Workflow_templatesSumAggregateOutputType | null
+    _min: Workflow_templatesMinAggregateOutputType | null
+    _max: Workflow_templatesMaxAggregateOutputType | null
+  }
+
+  type GetWorkflow_templatesGroupByPayload<T extends workflow_templatesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Workflow_templatesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Workflow_templatesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Workflow_templatesGroupByOutputType[P]>
+            : GetScalarType<T[P], Workflow_templatesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type workflow_templatesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    createdAt?: boolean
+    steps?: boolean | workflow_templates$stepsArgs<ExtArgs>
+    _count?: boolean | Workflow_templatesCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workflow_templates"]>
+
+  export type workflow_templatesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["workflow_templates"]>
+
+  export type workflow_templatesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["workflow_templates"]>
+
+  export type workflow_templatesSelectScalar = {
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    createdAt?: boolean
+  }
+
+  export type workflow_templatesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "createdAt", ExtArgs["result"]["workflow_templates"]>
+  export type workflow_templatesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    steps?: boolean | workflow_templates$stepsArgs<ExtArgs>
+    _count?: boolean | Workflow_templatesCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type workflow_templatesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type workflow_templatesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $workflow_templatesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "workflow_templates"
+    objects: {
+      steps: Prisma.$workflow_stepsPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      name: string
+      description: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["workflow_templates"]>
+    composites: {}
+  }
+
+  type workflow_templatesGetPayload<S extends boolean | null | undefined | workflow_templatesDefaultArgs> = $Result.GetResult<Prisma.$workflow_templatesPayload, S>
+
+  type workflow_templatesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<workflow_templatesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Workflow_templatesCountAggregateInputType | true
+    }
+
+  export interface workflow_templatesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['workflow_templates'], meta: { name: 'workflow_templates' } }
+    /**
+     * Find zero or one Workflow_templates that matches the filter.
+     * @param {workflow_templatesFindUniqueArgs} args - Arguments to find a Workflow_templates
+     * @example
+     * // Get one Workflow_templates
+     * const workflow_templates = await prisma.workflow_templates.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends workflow_templatesFindUniqueArgs>(args: SelectSubset<T, workflow_templatesFindUniqueArgs<ExtArgs>>): Prisma__workflow_templatesClient<$Result.GetResult<Prisma.$workflow_templatesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Workflow_templates that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {workflow_templatesFindUniqueOrThrowArgs} args - Arguments to find a Workflow_templates
+     * @example
+     * // Get one Workflow_templates
+     * const workflow_templates = await prisma.workflow_templates.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends workflow_templatesFindUniqueOrThrowArgs>(args: SelectSubset<T, workflow_templatesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__workflow_templatesClient<$Result.GetResult<Prisma.$workflow_templatesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Workflow_templates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {workflow_templatesFindFirstArgs} args - Arguments to find a Workflow_templates
+     * @example
+     * // Get one Workflow_templates
+     * const workflow_templates = await prisma.workflow_templates.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends workflow_templatesFindFirstArgs>(args?: SelectSubset<T, workflow_templatesFindFirstArgs<ExtArgs>>): Prisma__workflow_templatesClient<$Result.GetResult<Prisma.$workflow_templatesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Workflow_templates that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {workflow_templatesFindFirstOrThrowArgs} args - Arguments to find a Workflow_templates
+     * @example
+     * // Get one Workflow_templates
+     * const workflow_templates = await prisma.workflow_templates.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends workflow_templatesFindFirstOrThrowArgs>(args?: SelectSubset<T, workflow_templatesFindFirstOrThrowArgs<ExtArgs>>): Prisma__workflow_templatesClient<$Result.GetResult<Prisma.$workflow_templatesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Workflow_templates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {workflow_templatesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Workflow_templates
+     * const workflow_templates = await prisma.workflow_templates.findMany()
+     * 
+     * // Get first 10 Workflow_templates
+     * const workflow_templates = await prisma.workflow_templates.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workflow_templatesWithIdOnly = await prisma.workflow_templates.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends workflow_templatesFindManyArgs>(args?: SelectSubset<T, workflow_templatesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$workflow_templatesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Workflow_templates.
+     * @param {workflow_templatesCreateArgs} args - Arguments to create a Workflow_templates.
+     * @example
+     * // Create one Workflow_templates
+     * const Workflow_templates = await prisma.workflow_templates.create({
+     *   data: {
+     *     // ... data to create a Workflow_templates
+     *   }
+     * })
+     * 
+     */
+    create<T extends workflow_templatesCreateArgs>(args: SelectSubset<T, workflow_templatesCreateArgs<ExtArgs>>): Prisma__workflow_templatesClient<$Result.GetResult<Prisma.$workflow_templatesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Workflow_templates.
+     * @param {workflow_templatesCreateManyArgs} args - Arguments to create many Workflow_templates.
+     * @example
+     * // Create many Workflow_templates
+     * const workflow_templates = await prisma.workflow_templates.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends workflow_templatesCreateManyArgs>(args?: SelectSubset<T, workflow_templatesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Workflow_templates and returns the data saved in the database.
+     * @param {workflow_templatesCreateManyAndReturnArgs} args - Arguments to create many Workflow_templates.
+     * @example
+     * // Create many Workflow_templates
+     * const workflow_templates = await prisma.workflow_templates.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Workflow_templates and only return the `id`
+     * const workflow_templatesWithIdOnly = await prisma.workflow_templates.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends workflow_templatesCreateManyAndReturnArgs>(args?: SelectSubset<T, workflow_templatesCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$workflow_templatesPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Workflow_templates.
+     * @param {workflow_templatesDeleteArgs} args - Arguments to delete one Workflow_templates.
+     * @example
+     * // Delete one Workflow_templates
+     * const Workflow_templates = await prisma.workflow_templates.delete({
+     *   where: {
+     *     // ... filter to delete one Workflow_templates
+     *   }
+     * })
+     * 
+     */
+    delete<T extends workflow_templatesDeleteArgs>(args: SelectSubset<T, workflow_templatesDeleteArgs<ExtArgs>>): Prisma__workflow_templatesClient<$Result.GetResult<Prisma.$workflow_templatesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Workflow_templates.
+     * @param {workflow_templatesUpdateArgs} args - Arguments to update one Workflow_templates.
+     * @example
+     * // Update one Workflow_templates
+     * const workflow_templates = await prisma.workflow_templates.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends workflow_templatesUpdateArgs>(args: SelectSubset<T, workflow_templatesUpdateArgs<ExtArgs>>): Prisma__workflow_templatesClient<$Result.GetResult<Prisma.$workflow_templatesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Workflow_templates.
+     * @param {workflow_templatesDeleteManyArgs} args - Arguments to filter Workflow_templates to delete.
+     * @example
+     * // Delete a few Workflow_templates
+     * const { count } = await prisma.workflow_templates.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends workflow_templatesDeleteManyArgs>(args?: SelectSubset<T, workflow_templatesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Workflow_templates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {workflow_templatesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Workflow_templates
+     * const workflow_templates = await prisma.workflow_templates.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends workflow_templatesUpdateManyArgs>(args: SelectSubset<T, workflow_templatesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Workflow_templates and returns the data updated in the database.
+     * @param {workflow_templatesUpdateManyAndReturnArgs} args - Arguments to update many Workflow_templates.
+     * @example
+     * // Update many Workflow_templates
+     * const workflow_templates = await prisma.workflow_templates.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Workflow_templates and only return the `id`
+     * const workflow_templatesWithIdOnly = await prisma.workflow_templates.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends workflow_templatesUpdateManyAndReturnArgs>(args: SelectSubset<T, workflow_templatesUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$workflow_templatesPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Workflow_templates.
+     * @param {workflow_templatesUpsertArgs} args - Arguments to update or create a Workflow_templates.
+     * @example
+     * // Update or create a Workflow_templates
+     * const workflow_templates = await prisma.workflow_templates.upsert({
+     *   create: {
+     *     // ... data to create a Workflow_templates
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Workflow_templates we want to update
+     *   }
+     * })
+     */
+    upsert<T extends workflow_templatesUpsertArgs>(args: SelectSubset<T, workflow_templatesUpsertArgs<ExtArgs>>): Prisma__workflow_templatesClient<$Result.GetResult<Prisma.$workflow_templatesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Workflow_templates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {workflow_templatesCountArgs} args - Arguments to filter Workflow_templates to count.
+     * @example
+     * // Count the number of Workflow_templates
+     * const count = await prisma.workflow_templates.count({
+     *   where: {
+     *     // ... the filter for the Workflow_templates we want to count
+     *   }
+     * })
+    **/
+    count<T extends workflow_templatesCountArgs>(
+      args?: Subset<T, workflow_templatesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Workflow_templatesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Workflow_templates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Workflow_templatesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Workflow_templatesAggregateArgs>(args: Subset<T, Workflow_templatesAggregateArgs>): Prisma.PrismaPromise<GetWorkflow_templatesAggregateType<T>>
+
+    /**
+     * Group by Workflow_templates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {workflow_templatesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends workflow_templatesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: workflow_templatesGroupByArgs['orderBy'] }
+        : { orderBy?: workflow_templatesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, workflow_templatesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkflow_templatesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the workflow_templates model
+   */
+  readonly fields: workflow_templatesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for workflow_templates.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__workflow_templatesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    steps<T extends workflow_templates$stepsArgs<ExtArgs> = {}>(args?: Subset<T, workflow_templates$stepsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$workflow_stepsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the workflow_templates model
+   */
+  interface workflow_templatesFieldRefs {
+    readonly id: FieldRef<"workflow_templates", 'Int'>
+    readonly name: FieldRef<"workflow_templates", 'String'>
+    readonly description: FieldRef<"workflow_templates", 'String'>
+    readonly createdAt: FieldRef<"workflow_templates", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * workflow_templates findUnique
+   */
+  export type workflow_templatesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_templates
+     */
+    select?: workflow_templatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_templates
+     */
+    omit?: workflow_templatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_templatesInclude<ExtArgs> | null
+    /**
+     * Filter, which workflow_templates to fetch.
+     */
+    where: workflow_templatesWhereUniqueInput
+  }
+
+  /**
+   * workflow_templates findUniqueOrThrow
+   */
+  export type workflow_templatesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_templates
+     */
+    select?: workflow_templatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_templates
+     */
+    omit?: workflow_templatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_templatesInclude<ExtArgs> | null
+    /**
+     * Filter, which workflow_templates to fetch.
+     */
+    where: workflow_templatesWhereUniqueInput
+  }
+
+  /**
+   * workflow_templates findFirst
+   */
+  export type workflow_templatesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_templates
+     */
+    select?: workflow_templatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_templates
+     */
+    omit?: workflow_templatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_templatesInclude<ExtArgs> | null
+    /**
+     * Filter, which workflow_templates to fetch.
+     */
+    where?: workflow_templatesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of workflow_templates to fetch.
+     */
+    orderBy?: workflow_templatesOrderByWithRelationInput | workflow_templatesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for workflow_templates.
+     */
+    cursor?: workflow_templatesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` workflow_templates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` workflow_templates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of workflow_templates.
+     */
+    distinct?: Workflow_templatesScalarFieldEnum | Workflow_templatesScalarFieldEnum[]
+  }
+
+  /**
+   * workflow_templates findFirstOrThrow
+   */
+  export type workflow_templatesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_templates
+     */
+    select?: workflow_templatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_templates
+     */
+    omit?: workflow_templatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_templatesInclude<ExtArgs> | null
+    /**
+     * Filter, which workflow_templates to fetch.
+     */
+    where?: workflow_templatesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of workflow_templates to fetch.
+     */
+    orderBy?: workflow_templatesOrderByWithRelationInput | workflow_templatesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for workflow_templates.
+     */
+    cursor?: workflow_templatesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` workflow_templates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` workflow_templates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of workflow_templates.
+     */
+    distinct?: Workflow_templatesScalarFieldEnum | Workflow_templatesScalarFieldEnum[]
+  }
+
+  /**
+   * workflow_templates findMany
+   */
+  export type workflow_templatesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_templates
+     */
+    select?: workflow_templatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_templates
+     */
+    omit?: workflow_templatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_templatesInclude<ExtArgs> | null
+    /**
+     * Filter, which workflow_templates to fetch.
+     */
+    where?: workflow_templatesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of workflow_templates to fetch.
+     */
+    orderBy?: workflow_templatesOrderByWithRelationInput | workflow_templatesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing workflow_templates.
+     */
+    cursor?: workflow_templatesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` workflow_templates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` workflow_templates.
+     */
+    skip?: number
+    distinct?: Workflow_templatesScalarFieldEnum | Workflow_templatesScalarFieldEnum[]
+  }
+
+  /**
+   * workflow_templates create
+   */
+  export type workflow_templatesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_templates
+     */
+    select?: workflow_templatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_templates
+     */
+    omit?: workflow_templatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_templatesInclude<ExtArgs> | null
+    /**
+     * The data needed to create a workflow_templates.
+     */
+    data: XOR<workflow_templatesCreateInput, workflow_templatesUncheckedCreateInput>
+  }
+
+  /**
+   * workflow_templates createMany
+   */
+  export type workflow_templatesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many workflow_templates.
+     */
+    data: workflow_templatesCreateManyInput | workflow_templatesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * workflow_templates createManyAndReturn
+   */
+  export type workflow_templatesCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_templates
+     */
+    select?: workflow_templatesSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_templates
+     */
+    omit?: workflow_templatesOmit<ExtArgs> | null
+    /**
+     * The data used to create many workflow_templates.
+     */
+    data: workflow_templatesCreateManyInput | workflow_templatesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * workflow_templates update
+   */
+  export type workflow_templatesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_templates
+     */
+    select?: workflow_templatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_templates
+     */
+    omit?: workflow_templatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_templatesInclude<ExtArgs> | null
+    /**
+     * The data needed to update a workflow_templates.
+     */
+    data: XOR<workflow_templatesUpdateInput, workflow_templatesUncheckedUpdateInput>
+    /**
+     * Choose, which workflow_templates to update.
+     */
+    where: workflow_templatesWhereUniqueInput
+  }
+
+  /**
+   * workflow_templates updateMany
+   */
+  export type workflow_templatesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update workflow_templates.
+     */
+    data: XOR<workflow_templatesUpdateManyMutationInput, workflow_templatesUncheckedUpdateManyInput>
+    /**
+     * Filter which workflow_templates to update
+     */
+    where?: workflow_templatesWhereInput
+    /**
+     * Limit how many workflow_templates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * workflow_templates updateManyAndReturn
+   */
+  export type workflow_templatesUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_templates
+     */
+    select?: workflow_templatesSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_templates
+     */
+    omit?: workflow_templatesOmit<ExtArgs> | null
+    /**
+     * The data used to update workflow_templates.
+     */
+    data: XOR<workflow_templatesUpdateManyMutationInput, workflow_templatesUncheckedUpdateManyInput>
+    /**
+     * Filter which workflow_templates to update
+     */
+    where?: workflow_templatesWhereInput
+    /**
+     * Limit how many workflow_templates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * workflow_templates upsert
+   */
+  export type workflow_templatesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_templates
+     */
+    select?: workflow_templatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_templates
+     */
+    omit?: workflow_templatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_templatesInclude<ExtArgs> | null
+    /**
+     * The filter to search for the workflow_templates to update in case it exists.
+     */
+    where: workflow_templatesWhereUniqueInput
+    /**
+     * In case the workflow_templates found by the `where` argument doesn't exist, create a new workflow_templates with this data.
+     */
+    create: XOR<workflow_templatesCreateInput, workflow_templatesUncheckedCreateInput>
+    /**
+     * In case the workflow_templates was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<workflow_templatesUpdateInput, workflow_templatesUncheckedUpdateInput>
+  }
+
+  /**
+   * workflow_templates delete
+   */
+  export type workflow_templatesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_templates
+     */
+    select?: workflow_templatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_templates
+     */
+    omit?: workflow_templatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_templatesInclude<ExtArgs> | null
+    /**
+     * Filter which workflow_templates to delete.
+     */
+    where: workflow_templatesWhereUniqueInput
+  }
+
+  /**
+   * workflow_templates deleteMany
+   */
+  export type workflow_templatesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which workflow_templates to delete
+     */
+    where?: workflow_templatesWhereInput
+    /**
+     * Limit how many workflow_templates to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * workflow_templates.steps
+   */
+  export type workflow_templates$stepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_steps
+     */
+    select?: workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_steps
+     */
+    omit?: workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_stepsInclude<ExtArgs> | null
+    where?: workflow_stepsWhereInput
+    orderBy?: workflow_stepsOrderByWithRelationInput | workflow_stepsOrderByWithRelationInput[]
+    cursor?: workflow_stepsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Workflow_stepsScalarFieldEnum | Workflow_stepsScalarFieldEnum[]
+  }
+
+  /**
+   * workflow_templates without action
+   */
+  export type workflow_templatesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_templates
+     */
+    select?: workflow_templatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_templates
+     */
+    omit?: workflow_templatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_templatesInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model workflow_steps
+   */
+
+  export type AggregateWorkflow_steps = {
+    _count: Workflow_stepsCountAggregateOutputType | null
+    _avg: Workflow_stepsAvgAggregateOutputType | null
+    _sum: Workflow_stepsSumAggregateOutputType | null
+    _min: Workflow_stepsMinAggregateOutputType | null
+    _max: Workflow_stepsMaxAggregateOutputType | null
+  }
+
+  export type Workflow_stepsAvgAggregateOutputType = {
+    id: number | null
+    workflow_template_id: number | null
+    step_index: number | null
+    department_id: number | null
+  }
+
+  export type Workflow_stepsSumAggregateOutputType = {
+    id: number | null
+    workflow_template_id: number | null
+    step_index: number | null
+    department_id: number | null
+  }
+
+  export type Workflow_stepsMinAggregateOutputType = {
+    id: number | null
+    workflow_template_id: number | null
+    step_index: number | null
+    department_id: number | null
+  }
+
+  export type Workflow_stepsMaxAggregateOutputType = {
+    id: number | null
+    workflow_template_id: number | null
+    step_index: number | null
+    department_id: number | null
+  }
+
+  export type Workflow_stepsCountAggregateOutputType = {
+    id: number
+    workflow_template_id: number
+    step_index: number
+    department_id: number
+    _all: number
+  }
+
+
+  export type Workflow_stepsAvgAggregateInputType = {
+    id?: true
+    workflow_template_id?: true
+    step_index?: true
+    department_id?: true
+  }
+
+  export type Workflow_stepsSumAggregateInputType = {
+    id?: true
+    workflow_template_id?: true
+    step_index?: true
+    department_id?: true
+  }
+
+  export type Workflow_stepsMinAggregateInputType = {
+    id?: true
+    workflow_template_id?: true
+    step_index?: true
+    department_id?: true
+  }
+
+  export type Workflow_stepsMaxAggregateInputType = {
+    id?: true
+    workflow_template_id?: true
+    step_index?: true
+    department_id?: true
+  }
+
+  export type Workflow_stepsCountAggregateInputType = {
+    id?: true
+    workflow_template_id?: true
+    step_index?: true
+    department_id?: true
+    _all?: true
+  }
+
+  export type Workflow_stepsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which workflow_steps to aggregate.
+     */
+    where?: workflow_stepsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of workflow_steps to fetch.
+     */
+    orderBy?: workflow_stepsOrderByWithRelationInput | workflow_stepsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: workflow_stepsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` workflow_steps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` workflow_steps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned workflow_steps
+    **/
+    _count?: true | Workflow_stepsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Workflow_stepsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Workflow_stepsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Workflow_stepsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Workflow_stepsMaxAggregateInputType
+  }
+
+  export type GetWorkflow_stepsAggregateType<T extends Workflow_stepsAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkflow_steps]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkflow_steps[P]>
+      : GetScalarType<T[P], AggregateWorkflow_steps[P]>
+  }
+
+
+
+
+  export type workflow_stepsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: workflow_stepsWhereInput
+    orderBy?: workflow_stepsOrderByWithAggregationInput | workflow_stepsOrderByWithAggregationInput[]
+    by: Workflow_stepsScalarFieldEnum[] | Workflow_stepsScalarFieldEnum
+    having?: workflow_stepsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Workflow_stepsCountAggregateInputType | true
+    _avg?: Workflow_stepsAvgAggregateInputType
+    _sum?: Workflow_stepsSumAggregateInputType
+    _min?: Workflow_stepsMinAggregateInputType
+    _max?: Workflow_stepsMaxAggregateInputType
+  }
+
+  export type Workflow_stepsGroupByOutputType = {
+    id: number
+    workflow_template_id: number | null
+    step_index: number
+    department_id: number
+    _count: Workflow_stepsCountAggregateOutputType | null
+    _avg: Workflow_stepsAvgAggregateOutputType | null
+    _sum: Workflow_stepsSumAggregateOutputType | null
+    _min: Workflow_stepsMinAggregateOutputType | null
+    _max: Workflow_stepsMaxAggregateOutputType | null
+  }
+
+  type GetWorkflow_stepsGroupByPayload<T extends workflow_stepsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Workflow_stepsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Workflow_stepsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Workflow_stepsGroupByOutputType[P]>
+            : GetScalarType<T[P], Workflow_stepsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type workflow_stepsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    workflow_template_id?: boolean
+    step_index?: boolean
+    department_id?: boolean
+    department?: boolean | workflow_steps$departmentArgs<ExtArgs>
+    workflow_template?: boolean | workflow_steps$workflow_templateArgs<ExtArgs>
+  }, ExtArgs["result"]["workflow_steps"]>
+
+  export type workflow_stepsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    workflow_template_id?: boolean
+    step_index?: boolean
+    department_id?: boolean
+    department?: boolean | workflow_steps$departmentArgs<ExtArgs>
+    workflow_template?: boolean | workflow_steps$workflow_templateArgs<ExtArgs>
+  }, ExtArgs["result"]["workflow_steps"]>
+
+  export type workflow_stepsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    workflow_template_id?: boolean
+    step_index?: boolean
+    department_id?: boolean
+    department?: boolean | workflow_steps$departmentArgs<ExtArgs>
+    workflow_template?: boolean | workflow_steps$workflow_templateArgs<ExtArgs>
+  }, ExtArgs["result"]["workflow_steps"]>
+
+  export type workflow_stepsSelectScalar = {
+    id?: boolean
+    workflow_template_id?: boolean
+    step_index?: boolean
+    department_id?: boolean
+  }
+
+  export type workflow_stepsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "workflow_template_id" | "step_index" | "department_id", ExtArgs["result"]["workflow_steps"]>
+  export type workflow_stepsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    department?: boolean | workflow_steps$departmentArgs<ExtArgs>
+    workflow_template?: boolean | workflow_steps$workflow_templateArgs<ExtArgs>
+  }
+  export type workflow_stepsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    department?: boolean | workflow_steps$departmentArgs<ExtArgs>
+    workflow_template?: boolean | workflow_steps$workflow_templateArgs<ExtArgs>
+  }
+  export type workflow_stepsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    department?: boolean | workflow_steps$departmentArgs<ExtArgs>
+    workflow_template?: boolean | workflow_steps$workflow_templateArgs<ExtArgs>
+  }
+
+  export type $workflow_stepsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "workflow_steps"
+    objects: {
+      department: Prisma.$departmentsPayload<ExtArgs> | null
+      workflow_template: Prisma.$workflow_templatesPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      workflow_template_id: number | null
+      step_index: number
+      department_id: number
+    }, ExtArgs["result"]["workflow_steps"]>
+    composites: {}
+  }
+
+  type workflow_stepsGetPayload<S extends boolean | null | undefined | workflow_stepsDefaultArgs> = $Result.GetResult<Prisma.$workflow_stepsPayload, S>
+
+  type workflow_stepsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<workflow_stepsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Workflow_stepsCountAggregateInputType | true
+    }
+
+  export interface workflow_stepsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['workflow_steps'], meta: { name: 'workflow_steps' } }
+    /**
+     * Find zero or one Workflow_steps that matches the filter.
+     * @param {workflow_stepsFindUniqueArgs} args - Arguments to find a Workflow_steps
+     * @example
+     * // Get one Workflow_steps
+     * const workflow_steps = await prisma.workflow_steps.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends workflow_stepsFindUniqueArgs>(args: SelectSubset<T, workflow_stepsFindUniqueArgs<ExtArgs>>): Prisma__workflow_stepsClient<$Result.GetResult<Prisma.$workflow_stepsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Workflow_steps that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {workflow_stepsFindUniqueOrThrowArgs} args - Arguments to find a Workflow_steps
+     * @example
+     * // Get one Workflow_steps
+     * const workflow_steps = await prisma.workflow_steps.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends workflow_stepsFindUniqueOrThrowArgs>(args: SelectSubset<T, workflow_stepsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__workflow_stepsClient<$Result.GetResult<Prisma.$workflow_stepsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Workflow_steps that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {workflow_stepsFindFirstArgs} args - Arguments to find a Workflow_steps
+     * @example
+     * // Get one Workflow_steps
+     * const workflow_steps = await prisma.workflow_steps.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends workflow_stepsFindFirstArgs>(args?: SelectSubset<T, workflow_stepsFindFirstArgs<ExtArgs>>): Prisma__workflow_stepsClient<$Result.GetResult<Prisma.$workflow_stepsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Workflow_steps that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {workflow_stepsFindFirstOrThrowArgs} args - Arguments to find a Workflow_steps
+     * @example
+     * // Get one Workflow_steps
+     * const workflow_steps = await prisma.workflow_steps.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends workflow_stepsFindFirstOrThrowArgs>(args?: SelectSubset<T, workflow_stepsFindFirstOrThrowArgs<ExtArgs>>): Prisma__workflow_stepsClient<$Result.GetResult<Prisma.$workflow_stepsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Workflow_steps that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {workflow_stepsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Workflow_steps
+     * const workflow_steps = await prisma.workflow_steps.findMany()
+     * 
+     * // Get first 10 Workflow_steps
+     * const workflow_steps = await prisma.workflow_steps.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workflow_stepsWithIdOnly = await prisma.workflow_steps.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends workflow_stepsFindManyArgs>(args?: SelectSubset<T, workflow_stepsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$workflow_stepsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Workflow_steps.
+     * @param {workflow_stepsCreateArgs} args - Arguments to create a Workflow_steps.
+     * @example
+     * // Create one Workflow_steps
+     * const Workflow_steps = await prisma.workflow_steps.create({
+     *   data: {
+     *     // ... data to create a Workflow_steps
+     *   }
+     * })
+     * 
+     */
+    create<T extends workflow_stepsCreateArgs>(args: SelectSubset<T, workflow_stepsCreateArgs<ExtArgs>>): Prisma__workflow_stepsClient<$Result.GetResult<Prisma.$workflow_stepsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Workflow_steps.
+     * @param {workflow_stepsCreateManyArgs} args - Arguments to create many Workflow_steps.
+     * @example
+     * // Create many Workflow_steps
+     * const workflow_steps = await prisma.workflow_steps.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends workflow_stepsCreateManyArgs>(args?: SelectSubset<T, workflow_stepsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Workflow_steps and returns the data saved in the database.
+     * @param {workflow_stepsCreateManyAndReturnArgs} args - Arguments to create many Workflow_steps.
+     * @example
+     * // Create many Workflow_steps
+     * const workflow_steps = await prisma.workflow_steps.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Workflow_steps and only return the `id`
+     * const workflow_stepsWithIdOnly = await prisma.workflow_steps.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends workflow_stepsCreateManyAndReturnArgs>(args?: SelectSubset<T, workflow_stepsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$workflow_stepsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Workflow_steps.
+     * @param {workflow_stepsDeleteArgs} args - Arguments to delete one Workflow_steps.
+     * @example
+     * // Delete one Workflow_steps
+     * const Workflow_steps = await prisma.workflow_steps.delete({
+     *   where: {
+     *     // ... filter to delete one Workflow_steps
+     *   }
+     * })
+     * 
+     */
+    delete<T extends workflow_stepsDeleteArgs>(args: SelectSubset<T, workflow_stepsDeleteArgs<ExtArgs>>): Prisma__workflow_stepsClient<$Result.GetResult<Prisma.$workflow_stepsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Workflow_steps.
+     * @param {workflow_stepsUpdateArgs} args - Arguments to update one Workflow_steps.
+     * @example
+     * // Update one Workflow_steps
+     * const workflow_steps = await prisma.workflow_steps.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends workflow_stepsUpdateArgs>(args: SelectSubset<T, workflow_stepsUpdateArgs<ExtArgs>>): Prisma__workflow_stepsClient<$Result.GetResult<Prisma.$workflow_stepsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Workflow_steps.
+     * @param {workflow_stepsDeleteManyArgs} args - Arguments to filter Workflow_steps to delete.
+     * @example
+     * // Delete a few Workflow_steps
+     * const { count } = await prisma.workflow_steps.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends workflow_stepsDeleteManyArgs>(args?: SelectSubset<T, workflow_stepsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Workflow_steps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {workflow_stepsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Workflow_steps
+     * const workflow_steps = await prisma.workflow_steps.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends workflow_stepsUpdateManyArgs>(args: SelectSubset<T, workflow_stepsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Workflow_steps and returns the data updated in the database.
+     * @param {workflow_stepsUpdateManyAndReturnArgs} args - Arguments to update many Workflow_steps.
+     * @example
+     * // Update many Workflow_steps
+     * const workflow_steps = await prisma.workflow_steps.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Workflow_steps and only return the `id`
+     * const workflow_stepsWithIdOnly = await prisma.workflow_steps.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends workflow_stepsUpdateManyAndReturnArgs>(args: SelectSubset<T, workflow_stepsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$workflow_stepsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Workflow_steps.
+     * @param {workflow_stepsUpsertArgs} args - Arguments to update or create a Workflow_steps.
+     * @example
+     * // Update or create a Workflow_steps
+     * const workflow_steps = await prisma.workflow_steps.upsert({
+     *   create: {
+     *     // ... data to create a Workflow_steps
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Workflow_steps we want to update
+     *   }
+     * })
+     */
+    upsert<T extends workflow_stepsUpsertArgs>(args: SelectSubset<T, workflow_stepsUpsertArgs<ExtArgs>>): Prisma__workflow_stepsClient<$Result.GetResult<Prisma.$workflow_stepsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Workflow_steps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {workflow_stepsCountArgs} args - Arguments to filter Workflow_steps to count.
+     * @example
+     * // Count the number of Workflow_steps
+     * const count = await prisma.workflow_steps.count({
+     *   where: {
+     *     // ... the filter for the Workflow_steps we want to count
+     *   }
+     * })
+    **/
+    count<T extends workflow_stepsCountArgs>(
+      args?: Subset<T, workflow_stepsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Workflow_stepsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Workflow_steps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Workflow_stepsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Workflow_stepsAggregateArgs>(args: Subset<T, Workflow_stepsAggregateArgs>): Prisma.PrismaPromise<GetWorkflow_stepsAggregateType<T>>
+
+    /**
+     * Group by Workflow_steps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {workflow_stepsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends workflow_stepsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: workflow_stepsGroupByArgs['orderBy'] }
+        : { orderBy?: workflow_stepsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, workflow_stepsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkflow_stepsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the workflow_steps model
+   */
+  readonly fields: workflow_stepsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for workflow_steps.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__workflow_stepsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    department<T extends workflow_steps$departmentArgs<ExtArgs> = {}>(args?: Subset<T, workflow_steps$departmentArgs<ExtArgs>>): Prisma__departmentsClient<$Result.GetResult<Prisma.$departmentsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    workflow_template<T extends workflow_steps$workflow_templateArgs<ExtArgs> = {}>(args?: Subset<T, workflow_steps$workflow_templateArgs<ExtArgs>>): Prisma__workflow_templatesClient<$Result.GetResult<Prisma.$workflow_templatesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the workflow_steps model
+   */
+  interface workflow_stepsFieldRefs {
+    readonly id: FieldRef<"workflow_steps", 'Int'>
+    readonly workflow_template_id: FieldRef<"workflow_steps", 'Int'>
+    readonly step_index: FieldRef<"workflow_steps", 'Int'>
+    readonly department_id: FieldRef<"workflow_steps", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * workflow_steps findUnique
+   */
+  export type workflow_stepsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_steps
+     */
+    select?: workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_steps
+     */
+    omit?: workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_stepsInclude<ExtArgs> | null
+    /**
+     * Filter, which workflow_steps to fetch.
+     */
+    where: workflow_stepsWhereUniqueInput
+  }
+
+  /**
+   * workflow_steps findUniqueOrThrow
+   */
+  export type workflow_stepsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_steps
+     */
+    select?: workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_steps
+     */
+    omit?: workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_stepsInclude<ExtArgs> | null
+    /**
+     * Filter, which workflow_steps to fetch.
+     */
+    where: workflow_stepsWhereUniqueInput
+  }
+
+  /**
+   * workflow_steps findFirst
+   */
+  export type workflow_stepsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_steps
+     */
+    select?: workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_steps
+     */
+    omit?: workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_stepsInclude<ExtArgs> | null
+    /**
+     * Filter, which workflow_steps to fetch.
+     */
+    where?: workflow_stepsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of workflow_steps to fetch.
+     */
+    orderBy?: workflow_stepsOrderByWithRelationInput | workflow_stepsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for workflow_steps.
+     */
+    cursor?: workflow_stepsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` workflow_steps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` workflow_steps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of workflow_steps.
+     */
+    distinct?: Workflow_stepsScalarFieldEnum | Workflow_stepsScalarFieldEnum[]
+  }
+
+  /**
+   * workflow_steps findFirstOrThrow
+   */
+  export type workflow_stepsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_steps
+     */
+    select?: workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_steps
+     */
+    omit?: workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_stepsInclude<ExtArgs> | null
+    /**
+     * Filter, which workflow_steps to fetch.
+     */
+    where?: workflow_stepsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of workflow_steps to fetch.
+     */
+    orderBy?: workflow_stepsOrderByWithRelationInput | workflow_stepsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for workflow_steps.
+     */
+    cursor?: workflow_stepsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` workflow_steps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` workflow_steps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of workflow_steps.
+     */
+    distinct?: Workflow_stepsScalarFieldEnum | Workflow_stepsScalarFieldEnum[]
+  }
+
+  /**
+   * workflow_steps findMany
+   */
+  export type workflow_stepsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_steps
+     */
+    select?: workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_steps
+     */
+    omit?: workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_stepsInclude<ExtArgs> | null
+    /**
+     * Filter, which workflow_steps to fetch.
+     */
+    where?: workflow_stepsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of workflow_steps to fetch.
+     */
+    orderBy?: workflow_stepsOrderByWithRelationInput | workflow_stepsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing workflow_steps.
+     */
+    cursor?: workflow_stepsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` workflow_steps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` workflow_steps.
+     */
+    skip?: number
+    distinct?: Workflow_stepsScalarFieldEnum | Workflow_stepsScalarFieldEnum[]
+  }
+
+  /**
+   * workflow_steps create
+   */
+  export type workflow_stepsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_steps
+     */
+    select?: workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_steps
+     */
+    omit?: workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_stepsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a workflow_steps.
+     */
+    data: XOR<workflow_stepsCreateInput, workflow_stepsUncheckedCreateInput>
+  }
+
+  /**
+   * workflow_steps createMany
+   */
+  export type workflow_stepsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many workflow_steps.
+     */
+    data: workflow_stepsCreateManyInput | workflow_stepsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * workflow_steps createManyAndReturn
+   */
+  export type workflow_stepsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_steps
+     */
+    select?: workflow_stepsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_steps
+     */
+    omit?: workflow_stepsOmit<ExtArgs> | null
+    /**
+     * The data used to create many workflow_steps.
+     */
+    data: workflow_stepsCreateManyInput | workflow_stepsCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_stepsIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * workflow_steps update
+   */
+  export type workflow_stepsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_steps
+     */
+    select?: workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_steps
+     */
+    omit?: workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_stepsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a workflow_steps.
+     */
+    data: XOR<workflow_stepsUpdateInput, workflow_stepsUncheckedUpdateInput>
+    /**
+     * Choose, which workflow_steps to update.
+     */
+    where: workflow_stepsWhereUniqueInput
+  }
+
+  /**
+   * workflow_steps updateMany
+   */
+  export type workflow_stepsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update workflow_steps.
+     */
+    data: XOR<workflow_stepsUpdateManyMutationInput, workflow_stepsUncheckedUpdateManyInput>
+    /**
+     * Filter which workflow_steps to update
+     */
+    where?: workflow_stepsWhereInput
+    /**
+     * Limit how many workflow_steps to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * workflow_steps updateManyAndReturn
+   */
+  export type workflow_stepsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_steps
+     */
+    select?: workflow_stepsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_steps
+     */
+    omit?: workflow_stepsOmit<ExtArgs> | null
+    /**
+     * The data used to update workflow_steps.
+     */
+    data: XOR<workflow_stepsUpdateManyMutationInput, workflow_stepsUncheckedUpdateManyInput>
+    /**
+     * Filter which workflow_steps to update
+     */
+    where?: workflow_stepsWhereInput
+    /**
+     * Limit how many workflow_steps to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_stepsIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * workflow_steps upsert
+   */
+  export type workflow_stepsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_steps
+     */
+    select?: workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_steps
+     */
+    omit?: workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_stepsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the workflow_steps to update in case it exists.
+     */
+    where: workflow_stepsWhereUniqueInput
+    /**
+     * In case the workflow_steps found by the `where` argument doesn't exist, create a new workflow_steps with this data.
+     */
+    create: XOR<workflow_stepsCreateInput, workflow_stepsUncheckedCreateInput>
+    /**
+     * In case the workflow_steps was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<workflow_stepsUpdateInput, workflow_stepsUncheckedUpdateInput>
+  }
+
+  /**
+   * workflow_steps delete
+   */
+  export type workflow_stepsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_steps
+     */
+    select?: workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_steps
+     */
+    omit?: workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_stepsInclude<ExtArgs> | null
+    /**
+     * Filter which workflow_steps to delete.
+     */
+    where: workflow_stepsWhereUniqueInput
+  }
+
+  /**
+   * workflow_steps deleteMany
+   */
+  export type workflow_stepsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which workflow_steps to delete
+     */
+    where?: workflow_stepsWhereInput
+    /**
+     * Limit how many workflow_steps to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * workflow_steps.department
+   */
+  export type workflow_steps$departmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the departments
+     */
+    select?: departmentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the departments
+     */
+    omit?: departmentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: departmentsInclude<ExtArgs> | null
+    where?: departmentsWhereInput
+  }
+
+  /**
+   * workflow_steps.workflow_template
+   */
+  export type workflow_steps$workflow_templateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_templates
+     */
+    select?: workflow_templatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_templates
+     */
+    omit?: workflow_templatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_templatesInclude<ExtArgs> | null
+    where?: workflow_templatesWhereInput
+  }
+
+  /**
+   * workflow_steps without action
+   */
+  export type workflow_stepsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the workflow_steps
+     */
+    select?: workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the workflow_steps
+     */
+    omit?: workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: workflow_stepsInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model sub_batch_workflows
+   */
+
+  export type AggregateSub_batch_workflows = {
+    _count: Sub_batch_workflowsCountAggregateOutputType | null
+    _avg: Sub_batch_workflowsAvgAggregateOutputType | null
+    _sum: Sub_batch_workflowsSumAggregateOutputType | null
+    _min: Sub_batch_workflowsMinAggregateOutputType | null
+    _max: Sub_batch_workflowsMaxAggregateOutputType | null
+  }
+
+  export type Sub_batch_workflowsAvgAggregateOutputType = {
+    id: number | null
+    sub_batch_id: number | null
+    current_step_index: number | null
+  }
+
+  export type Sub_batch_workflowsSumAggregateOutputType = {
+    id: number | null
+    sub_batch_id: number | null
+    current_step_index: number | null
+  }
+
+  export type Sub_batch_workflowsMinAggregateOutputType = {
+    id: number | null
+    sub_batch_id: number | null
+    current_step_index: number | null
+    createdAt: Date | null
+  }
+
+  export type Sub_batch_workflowsMaxAggregateOutputType = {
+    id: number | null
+    sub_batch_id: number | null
+    current_step_index: number | null
+    createdAt: Date | null
+  }
+
+  export type Sub_batch_workflowsCountAggregateOutputType = {
+    id: number
+    sub_batch_id: number
+    current_step_index: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type Sub_batch_workflowsAvgAggregateInputType = {
+    id?: true
+    sub_batch_id?: true
+    current_step_index?: true
+  }
+
+  export type Sub_batch_workflowsSumAggregateInputType = {
+    id?: true
+    sub_batch_id?: true
+    current_step_index?: true
+  }
+
+  export type Sub_batch_workflowsMinAggregateInputType = {
+    id?: true
+    sub_batch_id?: true
+    current_step_index?: true
+    createdAt?: true
+  }
+
+  export type Sub_batch_workflowsMaxAggregateInputType = {
+    id?: true
+    sub_batch_id?: true
+    current_step_index?: true
+    createdAt?: true
+  }
+
+  export type Sub_batch_workflowsCountAggregateInputType = {
+    id?: true
+    sub_batch_id?: true
+    current_step_index?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type Sub_batch_workflowsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which sub_batch_workflows to aggregate.
+     */
+    where?: sub_batch_workflowsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of sub_batch_workflows to fetch.
+     */
+    orderBy?: sub_batch_workflowsOrderByWithRelationInput | sub_batch_workflowsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: sub_batch_workflowsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` sub_batch_workflows from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` sub_batch_workflows.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned sub_batch_workflows
+    **/
+    _count?: true | Sub_batch_workflowsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Sub_batch_workflowsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Sub_batch_workflowsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Sub_batch_workflowsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Sub_batch_workflowsMaxAggregateInputType
+  }
+
+  export type GetSub_batch_workflowsAggregateType<T extends Sub_batch_workflowsAggregateArgs> = {
+        [P in keyof T & keyof AggregateSub_batch_workflows]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSub_batch_workflows[P]>
+      : GetScalarType<T[P], AggregateSub_batch_workflows[P]>
+  }
+
+
+
+
+  export type sub_batch_workflowsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: sub_batch_workflowsWhereInput
+    orderBy?: sub_batch_workflowsOrderByWithAggregationInput | sub_batch_workflowsOrderByWithAggregationInput[]
+    by: Sub_batch_workflowsScalarFieldEnum[] | Sub_batch_workflowsScalarFieldEnum
+    having?: sub_batch_workflowsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Sub_batch_workflowsCountAggregateInputType | true
+    _avg?: Sub_batch_workflowsAvgAggregateInputType
+    _sum?: Sub_batch_workflowsSumAggregateInputType
+    _min?: Sub_batch_workflowsMinAggregateInputType
+    _max?: Sub_batch_workflowsMaxAggregateInputType
+  }
+
+  export type Sub_batch_workflowsGroupByOutputType = {
+    id: number
+    sub_batch_id: number
+    current_step_index: number
+    createdAt: Date
+    _count: Sub_batch_workflowsCountAggregateOutputType | null
+    _avg: Sub_batch_workflowsAvgAggregateOutputType | null
+    _sum: Sub_batch_workflowsSumAggregateOutputType | null
+    _min: Sub_batch_workflowsMinAggregateOutputType | null
+    _max: Sub_batch_workflowsMaxAggregateOutputType | null
+  }
+
+  type GetSub_batch_workflowsGroupByPayload<T extends sub_batch_workflowsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Sub_batch_workflowsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Sub_batch_workflowsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Sub_batch_workflowsGroupByOutputType[P]>
+            : GetScalarType<T[P], Sub_batch_workflowsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type sub_batch_workflowsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sub_batch_id?: boolean
+    current_step_index?: boolean
+    createdAt?: boolean
+    sub_batch?: boolean | sub_batch_workflows$sub_batchArgs<ExtArgs>
+    steps?: boolean | sub_batch_workflows$stepsArgs<ExtArgs>
+    _count?: boolean | Sub_batch_workflowsCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["sub_batch_workflows"]>
+
+  export type sub_batch_workflowsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sub_batch_id?: boolean
+    current_step_index?: boolean
+    createdAt?: boolean
+    sub_batch?: boolean | sub_batch_workflows$sub_batchArgs<ExtArgs>
+  }, ExtArgs["result"]["sub_batch_workflows"]>
+
+  export type sub_batch_workflowsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sub_batch_id?: boolean
+    current_step_index?: boolean
+    createdAt?: boolean
+    sub_batch?: boolean | sub_batch_workflows$sub_batchArgs<ExtArgs>
+  }, ExtArgs["result"]["sub_batch_workflows"]>
+
+  export type sub_batch_workflowsSelectScalar = {
+    id?: boolean
+    sub_batch_id?: boolean
+    current_step_index?: boolean
+    createdAt?: boolean
+  }
+
+  export type sub_batch_workflowsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sub_batch_id" | "current_step_index" | "createdAt", ExtArgs["result"]["sub_batch_workflows"]>
+  export type sub_batch_workflowsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sub_batch?: boolean | sub_batch_workflows$sub_batchArgs<ExtArgs>
+    steps?: boolean | sub_batch_workflows$stepsArgs<ExtArgs>
+    _count?: boolean | Sub_batch_workflowsCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type sub_batch_workflowsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sub_batch?: boolean | sub_batch_workflows$sub_batchArgs<ExtArgs>
+  }
+  export type sub_batch_workflowsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sub_batch?: boolean | sub_batch_workflows$sub_batchArgs<ExtArgs>
+  }
+
+  export type $sub_batch_workflowsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "sub_batch_workflows"
+    objects: {
+      sub_batch: Prisma.$sub_batchesPayload<ExtArgs> | null
+      steps: Prisma.$sub_batch_workflow_stepsPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      sub_batch_id: number
+      current_step_index: number
+      createdAt: Date
+    }, ExtArgs["result"]["sub_batch_workflows"]>
+    composites: {}
+  }
+
+  type sub_batch_workflowsGetPayload<S extends boolean | null | undefined | sub_batch_workflowsDefaultArgs> = $Result.GetResult<Prisma.$sub_batch_workflowsPayload, S>
+
+  type sub_batch_workflowsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<sub_batch_workflowsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Sub_batch_workflowsCountAggregateInputType | true
+    }
+
+  export interface sub_batch_workflowsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['sub_batch_workflows'], meta: { name: 'sub_batch_workflows' } }
+    /**
+     * Find zero or one Sub_batch_workflows that matches the filter.
+     * @param {sub_batch_workflowsFindUniqueArgs} args - Arguments to find a Sub_batch_workflows
+     * @example
+     * // Get one Sub_batch_workflows
+     * const sub_batch_workflows = await prisma.sub_batch_workflows.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends sub_batch_workflowsFindUniqueArgs>(args: SelectSubset<T, sub_batch_workflowsFindUniqueArgs<ExtArgs>>): Prisma__sub_batch_workflowsClient<$Result.GetResult<Prisma.$sub_batch_workflowsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Sub_batch_workflows that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {sub_batch_workflowsFindUniqueOrThrowArgs} args - Arguments to find a Sub_batch_workflows
+     * @example
+     * // Get one Sub_batch_workflows
+     * const sub_batch_workflows = await prisma.sub_batch_workflows.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends sub_batch_workflowsFindUniqueOrThrowArgs>(args: SelectSubset<T, sub_batch_workflowsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__sub_batch_workflowsClient<$Result.GetResult<Prisma.$sub_batch_workflowsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Sub_batch_workflows that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sub_batch_workflowsFindFirstArgs} args - Arguments to find a Sub_batch_workflows
+     * @example
+     * // Get one Sub_batch_workflows
+     * const sub_batch_workflows = await prisma.sub_batch_workflows.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends sub_batch_workflowsFindFirstArgs>(args?: SelectSubset<T, sub_batch_workflowsFindFirstArgs<ExtArgs>>): Prisma__sub_batch_workflowsClient<$Result.GetResult<Prisma.$sub_batch_workflowsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Sub_batch_workflows that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sub_batch_workflowsFindFirstOrThrowArgs} args - Arguments to find a Sub_batch_workflows
+     * @example
+     * // Get one Sub_batch_workflows
+     * const sub_batch_workflows = await prisma.sub_batch_workflows.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends sub_batch_workflowsFindFirstOrThrowArgs>(args?: SelectSubset<T, sub_batch_workflowsFindFirstOrThrowArgs<ExtArgs>>): Prisma__sub_batch_workflowsClient<$Result.GetResult<Prisma.$sub_batch_workflowsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Sub_batch_workflows that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sub_batch_workflowsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Sub_batch_workflows
+     * const sub_batch_workflows = await prisma.sub_batch_workflows.findMany()
+     * 
+     * // Get first 10 Sub_batch_workflows
+     * const sub_batch_workflows = await prisma.sub_batch_workflows.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const sub_batch_workflowsWithIdOnly = await prisma.sub_batch_workflows.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends sub_batch_workflowsFindManyArgs>(args?: SelectSubset<T, sub_batch_workflowsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sub_batch_workflowsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Sub_batch_workflows.
+     * @param {sub_batch_workflowsCreateArgs} args - Arguments to create a Sub_batch_workflows.
+     * @example
+     * // Create one Sub_batch_workflows
+     * const Sub_batch_workflows = await prisma.sub_batch_workflows.create({
+     *   data: {
+     *     // ... data to create a Sub_batch_workflows
+     *   }
+     * })
+     * 
+     */
+    create<T extends sub_batch_workflowsCreateArgs>(args: SelectSubset<T, sub_batch_workflowsCreateArgs<ExtArgs>>): Prisma__sub_batch_workflowsClient<$Result.GetResult<Prisma.$sub_batch_workflowsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Sub_batch_workflows.
+     * @param {sub_batch_workflowsCreateManyArgs} args - Arguments to create many Sub_batch_workflows.
+     * @example
+     * // Create many Sub_batch_workflows
+     * const sub_batch_workflows = await prisma.sub_batch_workflows.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends sub_batch_workflowsCreateManyArgs>(args?: SelectSubset<T, sub_batch_workflowsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Sub_batch_workflows and returns the data saved in the database.
+     * @param {sub_batch_workflowsCreateManyAndReturnArgs} args - Arguments to create many Sub_batch_workflows.
+     * @example
+     * // Create many Sub_batch_workflows
+     * const sub_batch_workflows = await prisma.sub_batch_workflows.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Sub_batch_workflows and only return the `id`
+     * const sub_batch_workflowsWithIdOnly = await prisma.sub_batch_workflows.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends sub_batch_workflowsCreateManyAndReturnArgs>(args?: SelectSubset<T, sub_batch_workflowsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sub_batch_workflowsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Sub_batch_workflows.
+     * @param {sub_batch_workflowsDeleteArgs} args - Arguments to delete one Sub_batch_workflows.
+     * @example
+     * // Delete one Sub_batch_workflows
+     * const Sub_batch_workflows = await prisma.sub_batch_workflows.delete({
+     *   where: {
+     *     // ... filter to delete one Sub_batch_workflows
+     *   }
+     * })
+     * 
+     */
+    delete<T extends sub_batch_workflowsDeleteArgs>(args: SelectSubset<T, sub_batch_workflowsDeleteArgs<ExtArgs>>): Prisma__sub_batch_workflowsClient<$Result.GetResult<Prisma.$sub_batch_workflowsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Sub_batch_workflows.
+     * @param {sub_batch_workflowsUpdateArgs} args - Arguments to update one Sub_batch_workflows.
+     * @example
+     * // Update one Sub_batch_workflows
+     * const sub_batch_workflows = await prisma.sub_batch_workflows.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends sub_batch_workflowsUpdateArgs>(args: SelectSubset<T, sub_batch_workflowsUpdateArgs<ExtArgs>>): Prisma__sub_batch_workflowsClient<$Result.GetResult<Prisma.$sub_batch_workflowsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Sub_batch_workflows.
+     * @param {sub_batch_workflowsDeleteManyArgs} args - Arguments to filter Sub_batch_workflows to delete.
+     * @example
+     * // Delete a few Sub_batch_workflows
+     * const { count } = await prisma.sub_batch_workflows.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends sub_batch_workflowsDeleteManyArgs>(args?: SelectSubset<T, sub_batch_workflowsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Sub_batch_workflows.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sub_batch_workflowsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Sub_batch_workflows
+     * const sub_batch_workflows = await prisma.sub_batch_workflows.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends sub_batch_workflowsUpdateManyArgs>(args: SelectSubset<T, sub_batch_workflowsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Sub_batch_workflows and returns the data updated in the database.
+     * @param {sub_batch_workflowsUpdateManyAndReturnArgs} args - Arguments to update many Sub_batch_workflows.
+     * @example
+     * // Update many Sub_batch_workflows
+     * const sub_batch_workflows = await prisma.sub_batch_workflows.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Sub_batch_workflows and only return the `id`
+     * const sub_batch_workflowsWithIdOnly = await prisma.sub_batch_workflows.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends sub_batch_workflowsUpdateManyAndReturnArgs>(args: SelectSubset<T, sub_batch_workflowsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sub_batch_workflowsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Sub_batch_workflows.
+     * @param {sub_batch_workflowsUpsertArgs} args - Arguments to update or create a Sub_batch_workflows.
+     * @example
+     * // Update or create a Sub_batch_workflows
+     * const sub_batch_workflows = await prisma.sub_batch_workflows.upsert({
+     *   create: {
+     *     // ... data to create a Sub_batch_workflows
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Sub_batch_workflows we want to update
+     *   }
+     * })
+     */
+    upsert<T extends sub_batch_workflowsUpsertArgs>(args: SelectSubset<T, sub_batch_workflowsUpsertArgs<ExtArgs>>): Prisma__sub_batch_workflowsClient<$Result.GetResult<Prisma.$sub_batch_workflowsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Sub_batch_workflows.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sub_batch_workflowsCountArgs} args - Arguments to filter Sub_batch_workflows to count.
+     * @example
+     * // Count the number of Sub_batch_workflows
+     * const count = await prisma.sub_batch_workflows.count({
+     *   where: {
+     *     // ... the filter for the Sub_batch_workflows we want to count
+     *   }
+     * })
+    **/
+    count<T extends sub_batch_workflowsCountArgs>(
+      args?: Subset<T, sub_batch_workflowsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Sub_batch_workflowsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Sub_batch_workflows.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Sub_batch_workflowsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Sub_batch_workflowsAggregateArgs>(args: Subset<T, Sub_batch_workflowsAggregateArgs>): Prisma.PrismaPromise<GetSub_batch_workflowsAggregateType<T>>
+
+    /**
+     * Group by Sub_batch_workflows.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sub_batch_workflowsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends sub_batch_workflowsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: sub_batch_workflowsGroupByArgs['orderBy'] }
+        : { orderBy?: sub_batch_workflowsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, sub_batch_workflowsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSub_batch_workflowsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the sub_batch_workflows model
+   */
+  readonly fields: sub_batch_workflowsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for sub_batch_workflows.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__sub_batch_workflowsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    sub_batch<T extends sub_batch_workflows$sub_batchArgs<ExtArgs> = {}>(args?: Subset<T, sub_batch_workflows$sub_batchArgs<ExtArgs>>): Prisma__sub_batchesClient<$Result.GetResult<Prisma.$sub_batchesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    steps<T extends sub_batch_workflows$stepsArgs<ExtArgs> = {}>(args?: Subset<T, sub_batch_workflows$stepsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sub_batch_workflow_stepsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the sub_batch_workflows model
+   */
+  interface sub_batch_workflowsFieldRefs {
+    readonly id: FieldRef<"sub_batch_workflows", 'Int'>
+    readonly sub_batch_id: FieldRef<"sub_batch_workflows", 'Int'>
+    readonly current_step_index: FieldRef<"sub_batch_workflows", 'Int'>
+    readonly createdAt: FieldRef<"sub_batch_workflows", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * sub_batch_workflows findUnique
+   */
+  export type sub_batch_workflowsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflows
+     */
+    select?: sub_batch_workflowsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflows
+     */
+    omit?: sub_batch_workflowsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflowsInclude<ExtArgs> | null
+    /**
+     * Filter, which sub_batch_workflows to fetch.
+     */
+    where: sub_batch_workflowsWhereUniqueInput
+  }
+
+  /**
+   * sub_batch_workflows findUniqueOrThrow
+   */
+  export type sub_batch_workflowsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflows
+     */
+    select?: sub_batch_workflowsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflows
+     */
+    omit?: sub_batch_workflowsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflowsInclude<ExtArgs> | null
+    /**
+     * Filter, which sub_batch_workflows to fetch.
+     */
+    where: sub_batch_workflowsWhereUniqueInput
+  }
+
+  /**
+   * sub_batch_workflows findFirst
+   */
+  export type sub_batch_workflowsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflows
+     */
+    select?: sub_batch_workflowsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflows
+     */
+    omit?: sub_batch_workflowsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflowsInclude<ExtArgs> | null
+    /**
+     * Filter, which sub_batch_workflows to fetch.
+     */
+    where?: sub_batch_workflowsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of sub_batch_workflows to fetch.
+     */
+    orderBy?: sub_batch_workflowsOrderByWithRelationInput | sub_batch_workflowsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for sub_batch_workflows.
+     */
+    cursor?: sub_batch_workflowsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` sub_batch_workflows from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` sub_batch_workflows.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of sub_batch_workflows.
+     */
+    distinct?: Sub_batch_workflowsScalarFieldEnum | Sub_batch_workflowsScalarFieldEnum[]
+  }
+
+  /**
+   * sub_batch_workflows findFirstOrThrow
+   */
+  export type sub_batch_workflowsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflows
+     */
+    select?: sub_batch_workflowsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflows
+     */
+    omit?: sub_batch_workflowsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflowsInclude<ExtArgs> | null
+    /**
+     * Filter, which sub_batch_workflows to fetch.
+     */
+    where?: sub_batch_workflowsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of sub_batch_workflows to fetch.
+     */
+    orderBy?: sub_batch_workflowsOrderByWithRelationInput | sub_batch_workflowsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for sub_batch_workflows.
+     */
+    cursor?: sub_batch_workflowsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` sub_batch_workflows from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` sub_batch_workflows.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of sub_batch_workflows.
+     */
+    distinct?: Sub_batch_workflowsScalarFieldEnum | Sub_batch_workflowsScalarFieldEnum[]
+  }
+
+  /**
+   * sub_batch_workflows findMany
+   */
+  export type sub_batch_workflowsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflows
+     */
+    select?: sub_batch_workflowsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflows
+     */
+    omit?: sub_batch_workflowsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflowsInclude<ExtArgs> | null
+    /**
+     * Filter, which sub_batch_workflows to fetch.
+     */
+    where?: sub_batch_workflowsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of sub_batch_workflows to fetch.
+     */
+    orderBy?: sub_batch_workflowsOrderByWithRelationInput | sub_batch_workflowsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing sub_batch_workflows.
+     */
+    cursor?: sub_batch_workflowsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` sub_batch_workflows from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` sub_batch_workflows.
+     */
+    skip?: number
+    distinct?: Sub_batch_workflowsScalarFieldEnum | Sub_batch_workflowsScalarFieldEnum[]
+  }
+
+  /**
+   * sub_batch_workflows create
+   */
+  export type sub_batch_workflowsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflows
+     */
+    select?: sub_batch_workflowsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflows
+     */
+    omit?: sub_batch_workflowsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflowsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a sub_batch_workflows.
+     */
+    data: XOR<sub_batch_workflowsCreateInput, sub_batch_workflowsUncheckedCreateInput>
+  }
+
+  /**
+   * sub_batch_workflows createMany
+   */
+  export type sub_batch_workflowsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many sub_batch_workflows.
+     */
+    data: sub_batch_workflowsCreateManyInput | sub_batch_workflowsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * sub_batch_workflows createManyAndReturn
+   */
+  export type sub_batch_workflowsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflows
+     */
+    select?: sub_batch_workflowsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflows
+     */
+    omit?: sub_batch_workflowsOmit<ExtArgs> | null
+    /**
+     * The data used to create many sub_batch_workflows.
+     */
+    data: sub_batch_workflowsCreateManyInput | sub_batch_workflowsCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflowsIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * sub_batch_workflows update
+   */
+  export type sub_batch_workflowsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflows
+     */
+    select?: sub_batch_workflowsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflows
+     */
+    omit?: sub_batch_workflowsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflowsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a sub_batch_workflows.
+     */
+    data: XOR<sub_batch_workflowsUpdateInput, sub_batch_workflowsUncheckedUpdateInput>
+    /**
+     * Choose, which sub_batch_workflows to update.
+     */
+    where: sub_batch_workflowsWhereUniqueInput
+  }
+
+  /**
+   * sub_batch_workflows updateMany
+   */
+  export type sub_batch_workflowsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update sub_batch_workflows.
+     */
+    data: XOR<sub_batch_workflowsUpdateManyMutationInput, sub_batch_workflowsUncheckedUpdateManyInput>
+    /**
+     * Filter which sub_batch_workflows to update
+     */
+    where?: sub_batch_workflowsWhereInput
+    /**
+     * Limit how many sub_batch_workflows to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * sub_batch_workflows updateManyAndReturn
+   */
+  export type sub_batch_workflowsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflows
+     */
+    select?: sub_batch_workflowsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflows
+     */
+    omit?: sub_batch_workflowsOmit<ExtArgs> | null
+    /**
+     * The data used to update sub_batch_workflows.
+     */
+    data: XOR<sub_batch_workflowsUpdateManyMutationInput, sub_batch_workflowsUncheckedUpdateManyInput>
+    /**
+     * Filter which sub_batch_workflows to update
+     */
+    where?: sub_batch_workflowsWhereInput
+    /**
+     * Limit how many sub_batch_workflows to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflowsIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * sub_batch_workflows upsert
+   */
+  export type sub_batch_workflowsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflows
+     */
+    select?: sub_batch_workflowsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflows
+     */
+    omit?: sub_batch_workflowsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflowsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the sub_batch_workflows to update in case it exists.
+     */
+    where: sub_batch_workflowsWhereUniqueInput
+    /**
+     * In case the sub_batch_workflows found by the `where` argument doesn't exist, create a new sub_batch_workflows with this data.
+     */
+    create: XOR<sub_batch_workflowsCreateInput, sub_batch_workflowsUncheckedCreateInput>
+    /**
+     * In case the sub_batch_workflows was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<sub_batch_workflowsUpdateInput, sub_batch_workflowsUncheckedUpdateInput>
+  }
+
+  /**
+   * sub_batch_workflows delete
+   */
+  export type sub_batch_workflowsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflows
+     */
+    select?: sub_batch_workflowsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflows
+     */
+    omit?: sub_batch_workflowsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflowsInclude<ExtArgs> | null
+    /**
+     * Filter which sub_batch_workflows to delete.
+     */
+    where: sub_batch_workflowsWhereUniqueInput
+  }
+
+  /**
+   * sub_batch_workflows deleteMany
+   */
+  export type sub_batch_workflowsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which sub_batch_workflows to delete
+     */
+    where?: sub_batch_workflowsWhereInput
+    /**
+     * Limit how many sub_batch_workflows to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * sub_batch_workflows.sub_batch
+   */
+  export type sub_batch_workflows$sub_batchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batches
+     */
+    select?: sub_batchesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batches
+     */
+    omit?: sub_batchesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batchesInclude<ExtArgs> | null
+    where?: sub_batchesWhereInput
+  }
+
+  /**
+   * sub_batch_workflows.steps
+   */
+  export type sub_batch_workflows$stepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflow_steps
+     */
+    select?: sub_batch_workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflow_steps
+     */
+    omit?: sub_batch_workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflow_stepsInclude<ExtArgs> | null
+    where?: sub_batch_workflow_stepsWhereInput
+    orderBy?: sub_batch_workflow_stepsOrderByWithRelationInput | sub_batch_workflow_stepsOrderByWithRelationInput[]
+    cursor?: sub_batch_workflow_stepsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Sub_batch_workflow_stepsScalarFieldEnum | Sub_batch_workflow_stepsScalarFieldEnum[]
+  }
+
+  /**
+   * sub_batch_workflows without action
+   */
+  export type sub_batch_workflowsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflows
+     */
+    select?: sub_batch_workflowsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflows
+     */
+    omit?: sub_batch_workflowsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflowsInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model sub_batch_workflow_steps
+   */
+
+  export type AggregateSub_batch_workflow_steps = {
+    _count: Sub_batch_workflow_stepsCountAggregateOutputType | null
+    _avg: Sub_batch_workflow_stepsAvgAggregateOutputType | null
+    _sum: Sub_batch_workflow_stepsSumAggregateOutputType | null
+    _min: Sub_batch_workflow_stepsMinAggregateOutputType | null
+    _max: Sub_batch_workflow_stepsMaxAggregateOutputType | null
+  }
+
+  export type Sub_batch_workflow_stepsAvgAggregateOutputType = {
+    id: number | null
+    sub_batch_workflow_id: number | null
+    step_index: number | null
+    department_id: number | null
+  }
+
+  export type Sub_batch_workflow_stepsSumAggregateOutputType = {
+    id: number | null
+    sub_batch_workflow_id: number | null
+    step_index: number | null
+    department_id: number | null
+  }
+
+  export type Sub_batch_workflow_stepsMinAggregateOutputType = {
+    id: number | null
+    sub_batch_workflow_id: number | null
+    step_index: number | null
+    department_id: number | null
+  }
+
+  export type Sub_batch_workflow_stepsMaxAggregateOutputType = {
+    id: number | null
+    sub_batch_workflow_id: number | null
+    step_index: number | null
+    department_id: number | null
+  }
+
+  export type Sub_batch_workflow_stepsCountAggregateOutputType = {
+    id: number
+    sub_batch_workflow_id: number
+    step_index: number
+    department_id: number
+    _all: number
+  }
+
+
+  export type Sub_batch_workflow_stepsAvgAggregateInputType = {
+    id?: true
+    sub_batch_workflow_id?: true
+    step_index?: true
+    department_id?: true
+  }
+
+  export type Sub_batch_workflow_stepsSumAggregateInputType = {
+    id?: true
+    sub_batch_workflow_id?: true
+    step_index?: true
+    department_id?: true
+  }
+
+  export type Sub_batch_workflow_stepsMinAggregateInputType = {
+    id?: true
+    sub_batch_workflow_id?: true
+    step_index?: true
+    department_id?: true
+  }
+
+  export type Sub_batch_workflow_stepsMaxAggregateInputType = {
+    id?: true
+    sub_batch_workflow_id?: true
+    step_index?: true
+    department_id?: true
+  }
+
+  export type Sub_batch_workflow_stepsCountAggregateInputType = {
+    id?: true
+    sub_batch_workflow_id?: true
+    step_index?: true
+    department_id?: true
+    _all?: true
+  }
+
+  export type Sub_batch_workflow_stepsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which sub_batch_workflow_steps to aggregate.
+     */
+    where?: sub_batch_workflow_stepsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of sub_batch_workflow_steps to fetch.
+     */
+    orderBy?: sub_batch_workflow_stepsOrderByWithRelationInput | sub_batch_workflow_stepsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: sub_batch_workflow_stepsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` sub_batch_workflow_steps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` sub_batch_workflow_steps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned sub_batch_workflow_steps
+    **/
+    _count?: true | Sub_batch_workflow_stepsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Sub_batch_workflow_stepsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Sub_batch_workflow_stepsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Sub_batch_workflow_stepsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Sub_batch_workflow_stepsMaxAggregateInputType
+  }
+
+  export type GetSub_batch_workflow_stepsAggregateType<T extends Sub_batch_workflow_stepsAggregateArgs> = {
+        [P in keyof T & keyof AggregateSub_batch_workflow_steps]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSub_batch_workflow_steps[P]>
+      : GetScalarType<T[P], AggregateSub_batch_workflow_steps[P]>
+  }
+
+
+
+
+  export type sub_batch_workflow_stepsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: sub_batch_workflow_stepsWhereInput
+    orderBy?: sub_batch_workflow_stepsOrderByWithAggregationInput | sub_batch_workflow_stepsOrderByWithAggregationInput[]
+    by: Sub_batch_workflow_stepsScalarFieldEnum[] | Sub_batch_workflow_stepsScalarFieldEnum
+    having?: sub_batch_workflow_stepsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Sub_batch_workflow_stepsCountAggregateInputType | true
+    _avg?: Sub_batch_workflow_stepsAvgAggregateInputType
+    _sum?: Sub_batch_workflow_stepsSumAggregateInputType
+    _min?: Sub_batch_workflow_stepsMinAggregateInputType
+    _max?: Sub_batch_workflow_stepsMaxAggregateInputType
+  }
+
+  export type Sub_batch_workflow_stepsGroupByOutputType = {
+    id: number
+    sub_batch_workflow_id: number | null
+    step_index: number
+    department_id: number
+    _count: Sub_batch_workflow_stepsCountAggregateOutputType | null
+    _avg: Sub_batch_workflow_stepsAvgAggregateOutputType | null
+    _sum: Sub_batch_workflow_stepsSumAggregateOutputType | null
+    _min: Sub_batch_workflow_stepsMinAggregateOutputType | null
+    _max: Sub_batch_workflow_stepsMaxAggregateOutputType | null
+  }
+
+  type GetSub_batch_workflow_stepsGroupByPayload<T extends sub_batch_workflow_stepsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Sub_batch_workflow_stepsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Sub_batch_workflow_stepsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Sub_batch_workflow_stepsGroupByOutputType[P]>
+            : GetScalarType<T[P], Sub_batch_workflow_stepsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type sub_batch_workflow_stepsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sub_batch_workflow_id?: boolean
+    step_index?: boolean
+    department_id?: boolean
+    department?: boolean | sub_batch_workflow_steps$departmentArgs<ExtArgs>
+    sub_batch_workflow?: boolean | sub_batch_workflow_steps$sub_batch_workflowArgs<ExtArgs>
+  }, ExtArgs["result"]["sub_batch_workflow_steps"]>
+
+  export type sub_batch_workflow_stepsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sub_batch_workflow_id?: boolean
+    step_index?: boolean
+    department_id?: boolean
+    department?: boolean | sub_batch_workflow_steps$departmentArgs<ExtArgs>
+    sub_batch_workflow?: boolean | sub_batch_workflow_steps$sub_batch_workflowArgs<ExtArgs>
+  }, ExtArgs["result"]["sub_batch_workflow_steps"]>
+
+  export type sub_batch_workflow_stepsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sub_batch_workflow_id?: boolean
+    step_index?: boolean
+    department_id?: boolean
+    department?: boolean | sub_batch_workflow_steps$departmentArgs<ExtArgs>
+    sub_batch_workflow?: boolean | sub_batch_workflow_steps$sub_batch_workflowArgs<ExtArgs>
+  }, ExtArgs["result"]["sub_batch_workflow_steps"]>
+
+  export type sub_batch_workflow_stepsSelectScalar = {
+    id?: boolean
+    sub_batch_workflow_id?: boolean
+    step_index?: boolean
+    department_id?: boolean
+  }
+
+  export type sub_batch_workflow_stepsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sub_batch_workflow_id" | "step_index" | "department_id", ExtArgs["result"]["sub_batch_workflow_steps"]>
+  export type sub_batch_workflow_stepsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    department?: boolean | sub_batch_workflow_steps$departmentArgs<ExtArgs>
+    sub_batch_workflow?: boolean | sub_batch_workflow_steps$sub_batch_workflowArgs<ExtArgs>
+  }
+  export type sub_batch_workflow_stepsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    department?: boolean | sub_batch_workflow_steps$departmentArgs<ExtArgs>
+    sub_batch_workflow?: boolean | sub_batch_workflow_steps$sub_batch_workflowArgs<ExtArgs>
+  }
+  export type sub_batch_workflow_stepsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    department?: boolean | sub_batch_workflow_steps$departmentArgs<ExtArgs>
+    sub_batch_workflow?: boolean | sub_batch_workflow_steps$sub_batch_workflowArgs<ExtArgs>
+  }
+
+  export type $sub_batch_workflow_stepsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "sub_batch_workflow_steps"
+    objects: {
+      department: Prisma.$departmentsPayload<ExtArgs> | null
+      sub_batch_workflow: Prisma.$sub_batch_workflowsPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      sub_batch_workflow_id: number | null
+      step_index: number
+      department_id: number
+    }, ExtArgs["result"]["sub_batch_workflow_steps"]>
+    composites: {}
+  }
+
+  type sub_batch_workflow_stepsGetPayload<S extends boolean | null | undefined | sub_batch_workflow_stepsDefaultArgs> = $Result.GetResult<Prisma.$sub_batch_workflow_stepsPayload, S>
+
+  type sub_batch_workflow_stepsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<sub_batch_workflow_stepsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Sub_batch_workflow_stepsCountAggregateInputType | true
+    }
+
+  export interface sub_batch_workflow_stepsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['sub_batch_workflow_steps'], meta: { name: 'sub_batch_workflow_steps' } }
+    /**
+     * Find zero or one Sub_batch_workflow_steps that matches the filter.
+     * @param {sub_batch_workflow_stepsFindUniqueArgs} args - Arguments to find a Sub_batch_workflow_steps
+     * @example
+     * // Get one Sub_batch_workflow_steps
+     * const sub_batch_workflow_steps = await prisma.sub_batch_workflow_steps.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends sub_batch_workflow_stepsFindUniqueArgs>(args: SelectSubset<T, sub_batch_workflow_stepsFindUniqueArgs<ExtArgs>>): Prisma__sub_batch_workflow_stepsClient<$Result.GetResult<Prisma.$sub_batch_workflow_stepsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Sub_batch_workflow_steps that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {sub_batch_workflow_stepsFindUniqueOrThrowArgs} args - Arguments to find a Sub_batch_workflow_steps
+     * @example
+     * // Get one Sub_batch_workflow_steps
+     * const sub_batch_workflow_steps = await prisma.sub_batch_workflow_steps.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends sub_batch_workflow_stepsFindUniqueOrThrowArgs>(args: SelectSubset<T, sub_batch_workflow_stepsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__sub_batch_workflow_stepsClient<$Result.GetResult<Prisma.$sub_batch_workflow_stepsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Sub_batch_workflow_steps that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sub_batch_workflow_stepsFindFirstArgs} args - Arguments to find a Sub_batch_workflow_steps
+     * @example
+     * // Get one Sub_batch_workflow_steps
+     * const sub_batch_workflow_steps = await prisma.sub_batch_workflow_steps.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends sub_batch_workflow_stepsFindFirstArgs>(args?: SelectSubset<T, sub_batch_workflow_stepsFindFirstArgs<ExtArgs>>): Prisma__sub_batch_workflow_stepsClient<$Result.GetResult<Prisma.$sub_batch_workflow_stepsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Sub_batch_workflow_steps that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sub_batch_workflow_stepsFindFirstOrThrowArgs} args - Arguments to find a Sub_batch_workflow_steps
+     * @example
+     * // Get one Sub_batch_workflow_steps
+     * const sub_batch_workflow_steps = await prisma.sub_batch_workflow_steps.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends sub_batch_workflow_stepsFindFirstOrThrowArgs>(args?: SelectSubset<T, sub_batch_workflow_stepsFindFirstOrThrowArgs<ExtArgs>>): Prisma__sub_batch_workflow_stepsClient<$Result.GetResult<Prisma.$sub_batch_workflow_stepsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Sub_batch_workflow_steps that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sub_batch_workflow_stepsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Sub_batch_workflow_steps
+     * const sub_batch_workflow_steps = await prisma.sub_batch_workflow_steps.findMany()
+     * 
+     * // Get first 10 Sub_batch_workflow_steps
+     * const sub_batch_workflow_steps = await prisma.sub_batch_workflow_steps.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const sub_batch_workflow_stepsWithIdOnly = await prisma.sub_batch_workflow_steps.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends sub_batch_workflow_stepsFindManyArgs>(args?: SelectSubset<T, sub_batch_workflow_stepsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sub_batch_workflow_stepsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Sub_batch_workflow_steps.
+     * @param {sub_batch_workflow_stepsCreateArgs} args - Arguments to create a Sub_batch_workflow_steps.
+     * @example
+     * // Create one Sub_batch_workflow_steps
+     * const Sub_batch_workflow_steps = await prisma.sub_batch_workflow_steps.create({
+     *   data: {
+     *     // ... data to create a Sub_batch_workflow_steps
+     *   }
+     * })
+     * 
+     */
+    create<T extends sub_batch_workflow_stepsCreateArgs>(args: SelectSubset<T, sub_batch_workflow_stepsCreateArgs<ExtArgs>>): Prisma__sub_batch_workflow_stepsClient<$Result.GetResult<Prisma.$sub_batch_workflow_stepsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Sub_batch_workflow_steps.
+     * @param {sub_batch_workflow_stepsCreateManyArgs} args - Arguments to create many Sub_batch_workflow_steps.
+     * @example
+     * // Create many Sub_batch_workflow_steps
+     * const sub_batch_workflow_steps = await prisma.sub_batch_workflow_steps.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends sub_batch_workflow_stepsCreateManyArgs>(args?: SelectSubset<T, sub_batch_workflow_stepsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Sub_batch_workflow_steps and returns the data saved in the database.
+     * @param {sub_batch_workflow_stepsCreateManyAndReturnArgs} args - Arguments to create many Sub_batch_workflow_steps.
+     * @example
+     * // Create many Sub_batch_workflow_steps
+     * const sub_batch_workflow_steps = await prisma.sub_batch_workflow_steps.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Sub_batch_workflow_steps and only return the `id`
+     * const sub_batch_workflow_stepsWithIdOnly = await prisma.sub_batch_workflow_steps.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends sub_batch_workflow_stepsCreateManyAndReturnArgs>(args?: SelectSubset<T, sub_batch_workflow_stepsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sub_batch_workflow_stepsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Sub_batch_workflow_steps.
+     * @param {sub_batch_workflow_stepsDeleteArgs} args - Arguments to delete one Sub_batch_workflow_steps.
+     * @example
+     * // Delete one Sub_batch_workflow_steps
+     * const Sub_batch_workflow_steps = await prisma.sub_batch_workflow_steps.delete({
+     *   where: {
+     *     // ... filter to delete one Sub_batch_workflow_steps
+     *   }
+     * })
+     * 
+     */
+    delete<T extends sub_batch_workflow_stepsDeleteArgs>(args: SelectSubset<T, sub_batch_workflow_stepsDeleteArgs<ExtArgs>>): Prisma__sub_batch_workflow_stepsClient<$Result.GetResult<Prisma.$sub_batch_workflow_stepsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Sub_batch_workflow_steps.
+     * @param {sub_batch_workflow_stepsUpdateArgs} args - Arguments to update one Sub_batch_workflow_steps.
+     * @example
+     * // Update one Sub_batch_workflow_steps
+     * const sub_batch_workflow_steps = await prisma.sub_batch_workflow_steps.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends sub_batch_workflow_stepsUpdateArgs>(args: SelectSubset<T, sub_batch_workflow_stepsUpdateArgs<ExtArgs>>): Prisma__sub_batch_workflow_stepsClient<$Result.GetResult<Prisma.$sub_batch_workflow_stepsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Sub_batch_workflow_steps.
+     * @param {sub_batch_workflow_stepsDeleteManyArgs} args - Arguments to filter Sub_batch_workflow_steps to delete.
+     * @example
+     * // Delete a few Sub_batch_workflow_steps
+     * const { count } = await prisma.sub_batch_workflow_steps.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends sub_batch_workflow_stepsDeleteManyArgs>(args?: SelectSubset<T, sub_batch_workflow_stepsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Sub_batch_workflow_steps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sub_batch_workflow_stepsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Sub_batch_workflow_steps
+     * const sub_batch_workflow_steps = await prisma.sub_batch_workflow_steps.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends sub_batch_workflow_stepsUpdateManyArgs>(args: SelectSubset<T, sub_batch_workflow_stepsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Sub_batch_workflow_steps and returns the data updated in the database.
+     * @param {sub_batch_workflow_stepsUpdateManyAndReturnArgs} args - Arguments to update many Sub_batch_workflow_steps.
+     * @example
+     * // Update many Sub_batch_workflow_steps
+     * const sub_batch_workflow_steps = await prisma.sub_batch_workflow_steps.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Sub_batch_workflow_steps and only return the `id`
+     * const sub_batch_workflow_stepsWithIdOnly = await prisma.sub_batch_workflow_steps.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends sub_batch_workflow_stepsUpdateManyAndReturnArgs>(args: SelectSubset<T, sub_batch_workflow_stepsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sub_batch_workflow_stepsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Sub_batch_workflow_steps.
+     * @param {sub_batch_workflow_stepsUpsertArgs} args - Arguments to update or create a Sub_batch_workflow_steps.
+     * @example
+     * // Update or create a Sub_batch_workflow_steps
+     * const sub_batch_workflow_steps = await prisma.sub_batch_workflow_steps.upsert({
+     *   create: {
+     *     // ... data to create a Sub_batch_workflow_steps
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Sub_batch_workflow_steps we want to update
+     *   }
+     * })
+     */
+    upsert<T extends sub_batch_workflow_stepsUpsertArgs>(args: SelectSubset<T, sub_batch_workflow_stepsUpsertArgs<ExtArgs>>): Prisma__sub_batch_workflow_stepsClient<$Result.GetResult<Prisma.$sub_batch_workflow_stepsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Sub_batch_workflow_steps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sub_batch_workflow_stepsCountArgs} args - Arguments to filter Sub_batch_workflow_steps to count.
+     * @example
+     * // Count the number of Sub_batch_workflow_steps
+     * const count = await prisma.sub_batch_workflow_steps.count({
+     *   where: {
+     *     // ... the filter for the Sub_batch_workflow_steps we want to count
+     *   }
+     * })
+    **/
+    count<T extends sub_batch_workflow_stepsCountArgs>(
+      args?: Subset<T, sub_batch_workflow_stepsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Sub_batch_workflow_stepsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Sub_batch_workflow_steps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Sub_batch_workflow_stepsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Sub_batch_workflow_stepsAggregateArgs>(args: Subset<T, Sub_batch_workflow_stepsAggregateArgs>): Prisma.PrismaPromise<GetSub_batch_workflow_stepsAggregateType<T>>
+
+    /**
+     * Group by Sub_batch_workflow_steps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sub_batch_workflow_stepsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends sub_batch_workflow_stepsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: sub_batch_workflow_stepsGroupByArgs['orderBy'] }
+        : { orderBy?: sub_batch_workflow_stepsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, sub_batch_workflow_stepsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSub_batch_workflow_stepsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the sub_batch_workflow_steps model
+   */
+  readonly fields: sub_batch_workflow_stepsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for sub_batch_workflow_steps.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__sub_batch_workflow_stepsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    department<T extends sub_batch_workflow_steps$departmentArgs<ExtArgs> = {}>(args?: Subset<T, sub_batch_workflow_steps$departmentArgs<ExtArgs>>): Prisma__departmentsClient<$Result.GetResult<Prisma.$departmentsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    sub_batch_workflow<T extends sub_batch_workflow_steps$sub_batch_workflowArgs<ExtArgs> = {}>(args?: Subset<T, sub_batch_workflow_steps$sub_batch_workflowArgs<ExtArgs>>): Prisma__sub_batch_workflowsClient<$Result.GetResult<Prisma.$sub_batch_workflowsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the sub_batch_workflow_steps model
+   */
+  interface sub_batch_workflow_stepsFieldRefs {
+    readonly id: FieldRef<"sub_batch_workflow_steps", 'Int'>
+    readonly sub_batch_workflow_id: FieldRef<"sub_batch_workflow_steps", 'Int'>
+    readonly step_index: FieldRef<"sub_batch_workflow_steps", 'Int'>
+    readonly department_id: FieldRef<"sub_batch_workflow_steps", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * sub_batch_workflow_steps findUnique
+   */
+  export type sub_batch_workflow_stepsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflow_steps
+     */
+    select?: sub_batch_workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflow_steps
+     */
+    omit?: sub_batch_workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflow_stepsInclude<ExtArgs> | null
+    /**
+     * Filter, which sub_batch_workflow_steps to fetch.
+     */
+    where: sub_batch_workflow_stepsWhereUniqueInput
+  }
+
+  /**
+   * sub_batch_workflow_steps findUniqueOrThrow
+   */
+  export type sub_batch_workflow_stepsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflow_steps
+     */
+    select?: sub_batch_workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflow_steps
+     */
+    omit?: sub_batch_workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflow_stepsInclude<ExtArgs> | null
+    /**
+     * Filter, which sub_batch_workflow_steps to fetch.
+     */
+    where: sub_batch_workflow_stepsWhereUniqueInput
+  }
+
+  /**
+   * sub_batch_workflow_steps findFirst
+   */
+  export type sub_batch_workflow_stepsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflow_steps
+     */
+    select?: sub_batch_workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflow_steps
+     */
+    omit?: sub_batch_workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflow_stepsInclude<ExtArgs> | null
+    /**
+     * Filter, which sub_batch_workflow_steps to fetch.
+     */
+    where?: sub_batch_workflow_stepsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of sub_batch_workflow_steps to fetch.
+     */
+    orderBy?: sub_batch_workflow_stepsOrderByWithRelationInput | sub_batch_workflow_stepsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for sub_batch_workflow_steps.
+     */
+    cursor?: sub_batch_workflow_stepsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` sub_batch_workflow_steps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` sub_batch_workflow_steps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of sub_batch_workflow_steps.
+     */
+    distinct?: Sub_batch_workflow_stepsScalarFieldEnum | Sub_batch_workflow_stepsScalarFieldEnum[]
+  }
+
+  /**
+   * sub_batch_workflow_steps findFirstOrThrow
+   */
+  export type sub_batch_workflow_stepsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflow_steps
+     */
+    select?: sub_batch_workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflow_steps
+     */
+    omit?: sub_batch_workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflow_stepsInclude<ExtArgs> | null
+    /**
+     * Filter, which sub_batch_workflow_steps to fetch.
+     */
+    where?: sub_batch_workflow_stepsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of sub_batch_workflow_steps to fetch.
+     */
+    orderBy?: sub_batch_workflow_stepsOrderByWithRelationInput | sub_batch_workflow_stepsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for sub_batch_workflow_steps.
+     */
+    cursor?: sub_batch_workflow_stepsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` sub_batch_workflow_steps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` sub_batch_workflow_steps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of sub_batch_workflow_steps.
+     */
+    distinct?: Sub_batch_workflow_stepsScalarFieldEnum | Sub_batch_workflow_stepsScalarFieldEnum[]
+  }
+
+  /**
+   * sub_batch_workflow_steps findMany
+   */
+  export type sub_batch_workflow_stepsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflow_steps
+     */
+    select?: sub_batch_workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflow_steps
+     */
+    omit?: sub_batch_workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflow_stepsInclude<ExtArgs> | null
+    /**
+     * Filter, which sub_batch_workflow_steps to fetch.
+     */
+    where?: sub_batch_workflow_stepsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of sub_batch_workflow_steps to fetch.
+     */
+    orderBy?: sub_batch_workflow_stepsOrderByWithRelationInput | sub_batch_workflow_stepsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing sub_batch_workflow_steps.
+     */
+    cursor?: sub_batch_workflow_stepsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` sub_batch_workflow_steps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` sub_batch_workflow_steps.
+     */
+    skip?: number
+    distinct?: Sub_batch_workflow_stepsScalarFieldEnum | Sub_batch_workflow_stepsScalarFieldEnum[]
+  }
+
+  /**
+   * sub_batch_workflow_steps create
+   */
+  export type sub_batch_workflow_stepsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflow_steps
+     */
+    select?: sub_batch_workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflow_steps
+     */
+    omit?: sub_batch_workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflow_stepsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a sub_batch_workflow_steps.
+     */
+    data: XOR<sub_batch_workflow_stepsCreateInput, sub_batch_workflow_stepsUncheckedCreateInput>
+  }
+
+  /**
+   * sub_batch_workflow_steps createMany
+   */
+  export type sub_batch_workflow_stepsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many sub_batch_workflow_steps.
+     */
+    data: sub_batch_workflow_stepsCreateManyInput | sub_batch_workflow_stepsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * sub_batch_workflow_steps createManyAndReturn
+   */
+  export type sub_batch_workflow_stepsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflow_steps
+     */
+    select?: sub_batch_workflow_stepsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflow_steps
+     */
+    omit?: sub_batch_workflow_stepsOmit<ExtArgs> | null
+    /**
+     * The data used to create many sub_batch_workflow_steps.
+     */
+    data: sub_batch_workflow_stepsCreateManyInput | sub_batch_workflow_stepsCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflow_stepsIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * sub_batch_workflow_steps update
+   */
+  export type sub_batch_workflow_stepsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflow_steps
+     */
+    select?: sub_batch_workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflow_steps
+     */
+    omit?: sub_batch_workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflow_stepsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a sub_batch_workflow_steps.
+     */
+    data: XOR<sub_batch_workflow_stepsUpdateInput, sub_batch_workflow_stepsUncheckedUpdateInput>
+    /**
+     * Choose, which sub_batch_workflow_steps to update.
+     */
+    where: sub_batch_workflow_stepsWhereUniqueInput
+  }
+
+  /**
+   * sub_batch_workflow_steps updateMany
+   */
+  export type sub_batch_workflow_stepsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update sub_batch_workflow_steps.
+     */
+    data: XOR<sub_batch_workflow_stepsUpdateManyMutationInput, sub_batch_workflow_stepsUncheckedUpdateManyInput>
+    /**
+     * Filter which sub_batch_workflow_steps to update
+     */
+    where?: sub_batch_workflow_stepsWhereInput
+    /**
+     * Limit how many sub_batch_workflow_steps to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * sub_batch_workflow_steps updateManyAndReturn
+   */
+  export type sub_batch_workflow_stepsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflow_steps
+     */
+    select?: sub_batch_workflow_stepsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflow_steps
+     */
+    omit?: sub_batch_workflow_stepsOmit<ExtArgs> | null
+    /**
+     * The data used to update sub_batch_workflow_steps.
+     */
+    data: XOR<sub_batch_workflow_stepsUpdateManyMutationInput, sub_batch_workflow_stepsUncheckedUpdateManyInput>
+    /**
+     * Filter which sub_batch_workflow_steps to update
+     */
+    where?: sub_batch_workflow_stepsWhereInput
+    /**
+     * Limit how many sub_batch_workflow_steps to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflow_stepsIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * sub_batch_workflow_steps upsert
+   */
+  export type sub_batch_workflow_stepsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflow_steps
+     */
+    select?: sub_batch_workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflow_steps
+     */
+    omit?: sub_batch_workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflow_stepsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the sub_batch_workflow_steps to update in case it exists.
+     */
+    where: sub_batch_workflow_stepsWhereUniqueInput
+    /**
+     * In case the sub_batch_workflow_steps found by the `where` argument doesn't exist, create a new sub_batch_workflow_steps with this data.
+     */
+    create: XOR<sub_batch_workflow_stepsCreateInput, sub_batch_workflow_stepsUncheckedCreateInput>
+    /**
+     * In case the sub_batch_workflow_steps was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<sub_batch_workflow_stepsUpdateInput, sub_batch_workflow_stepsUncheckedUpdateInput>
+  }
+
+  /**
+   * sub_batch_workflow_steps delete
+   */
+  export type sub_batch_workflow_stepsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflow_steps
+     */
+    select?: sub_batch_workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflow_steps
+     */
+    omit?: sub_batch_workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflow_stepsInclude<ExtArgs> | null
+    /**
+     * Filter which sub_batch_workflow_steps to delete.
+     */
+    where: sub_batch_workflow_stepsWhereUniqueInput
+  }
+
+  /**
+   * sub_batch_workflow_steps deleteMany
+   */
+  export type sub_batch_workflow_stepsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which sub_batch_workflow_steps to delete
+     */
+    where?: sub_batch_workflow_stepsWhereInput
+    /**
+     * Limit how many sub_batch_workflow_steps to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * sub_batch_workflow_steps.department
+   */
+  export type sub_batch_workflow_steps$departmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the departments
+     */
+    select?: departmentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the departments
+     */
+    omit?: departmentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: departmentsInclude<ExtArgs> | null
+    where?: departmentsWhereInput
+  }
+
+  /**
+   * sub_batch_workflow_steps.sub_batch_workflow
+   */
+  export type sub_batch_workflow_steps$sub_batch_workflowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflows
+     */
+    select?: sub_batch_workflowsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflows
+     */
+    omit?: sub_batch_workflowsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflowsInclude<ExtArgs> | null
+    where?: sub_batch_workflowsWhereInput
+  }
+
+  /**
+   * sub_batch_workflow_steps without action
+   */
+  export type sub_batch_workflow_stepsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sub_batch_workflow_steps
+     */
+    select?: sub_batch_workflow_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sub_batch_workflow_steps
+     */
+    omit?: sub_batch_workflow_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sub_batch_workflow_stepsInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model department_sub_batch_history
+   */
+
+  export type AggregateDepartment_sub_batch_history = {
+    _count: Department_sub_batch_historyCountAggregateOutputType | null
+    _avg: Department_sub_batch_historyAvgAggregateOutputType | null
+    _sum: Department_sub_batch_historySumAggregateOutputType | null
+    _min: Department_sub_batch_historyMinAggregateOutputType | null
+    _max: Department_sub_batch_historyMaxAggregateOutputType | null
+  }
+
+  export type Department_sub_batch_historyAvgAggregateOutputType = {
+    id: number | null
+    department_sub_batch_id: number | null
+    sub_batch_id: number | null
+    from_department_id: number | null
+    to_department_id: number | null
+    action_by_user_id: number | null
+  }
+
+  export type Department_sub_batch_historySumAggregateOutputType = {
+    id: number | null
+    department_sub_batch_id: number | null
+    sub_batch_id: number | null
+    from_department_id: number | null
+    to_department_id: number | null
+    action_by_user_id: number | null
+  }
+
+  export type Department_sub_batch_historyMinAggregateOutputType = {
+    id: number | null
+    department_sub_batch_id: number | null
+    sub_batch_id: number | null
+    from_stage: $Enums.DepartmentStage | null
+    to_stage: $Enums.DepartmentStage | null
+    from_department_id: number | null
+    to_department_id: number | null
+    action_by_user_id: number | null
+    reason: string | null
+    createdAt: Date | null
+  }
+
+  export type Department_sub_batch_historyMaxAggregateOutputType = {
+    id: number | null
+    department_sub_batch_id: number | null
+    sub_batch_id: number | null
+    from_stage: $Enums.DepartmentStage | null
+    to_stage: $Enums.DepartmentStage | null
+    from_department_id: number | null
+    to_department_id: number | null
+    action_by_user_id: number | null
+    reason: string | null
+    createdAt: Date | null
+  }
+
+  export type Department_sub_batch_historyCountAggregateOutputType = {
+    id: number
+    department_sub_batch_id: number
+    sub_batch_id: number
+    from_stage: number
+    to_stage: number
+    from_department_id: number
+    to_department_id: number
+    action_by_user_id: number
+    reason: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type Department_sub_batch_historyAvgAggregateInputType = {
+    id?: true
+    department_sub_batch_id?: true
+    sub_batch_id?: true
+    from_department_id?: true
+    to_department_id?: true
+    action_by_user_id?: true
+  }
+
+  export type Department_sub_batch_historySumAggregateInputType = {
+    id?: true
+    department_sub_batch_id?: true
+    sub_batch_id?: true
+    from_department_id?: true
+    to_department_id?: true
+    action_by_user_id?: true
+  }
+
+  export type Department_sub_batch_historyMinAggregateInputType = {
+    id?: true
+    department_sub_batch_id?: true
+    sub_batch_id?: true
+    from_stage?: true
+    to_stage?: true
+    from_department_id?: true
+    to_department_id?: true
+    action_by_user_id?: true
+    reason?: true
+    createdAt?: true
+  }
+
+  export type Department_sub_batch_historyMaxAggregateInputType = {
+    id?: true
+    department_sub_batch_id?: true
+    sub_batch_id?: true
+    from_stage?: true
+    to_stage?: true
+    from_department_id?: true
+    to_department_id?: true
+    action_by_user_id?: true
+    reason?: true
+    createdAt?: true
+  }
+
+  export type Department_sub_batch_historyCountAggregateInputType = {
+    id?: true
+    department_sub_batch_id?: true
+    sub_batch_id?: true
+    from_stage?: true
+    to_stage?: true
+    from_department_id?: true
+    to_department_id?: true
+    action_by_user_id?: true
+    reason?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type Department_sub_batch_historyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which department_sub_batch_history to aggregate.
+     */
+    where?: department_sub_batch_historyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of department_sub_batch_histories to fetch.
+     */
+    orderBy?: department_sub_batch_historyOrderByWithRelationInput | department_sub_batch_historyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: department_sub_batch_historyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` department_sub_batch_histories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` department_sub_batch_histories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned department_sub_batch_histories
+    **/
+    _count?: true | Department_sub_batch_historyCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Department_sub_batch_historyAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Department_sub_batch_historySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Department_sub_batch_historyMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Department_sub_batch_historyMaxAggregateInputType
+  }
+
+  export type GetDepartment_sub_batch_historyAggregateType<T extends Department_sub_batch_historyAggregateArgs> = {
+        [P in keyof T & keyof AggregateDepartment_sub_batch_history]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDepartment_sub_batch_history[P]>
+      : GetScalarType<T[P], AggregateDepartment_sub_batch_history[P]>
+  }
+
+
+
+
+  export type department_sub_batch_historyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: department_sub_batch_historyWhereInput
+    orderBy?: department_sub_batch_historyOrderByWithAggregationInput | department_sub_batch_historyOrderByWithAggregationInput[]
+    by: Department_sub_batch_historyScalarFieldEnum[] | Department_sub_batch_historyScalarFieldEnum
+    having?: department_sub_batch_historyScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Department_sub_batch_historyCountAggregateInputType | true
+    _avg?: Department_sub_batch_historyAvgAggregateInputType
+    _sum?: Department_sub_batch_historySumAggregateInputType
+    _min?: Department_sub_batch_historyMinAggregateInputType
+    _max?: Department_sub_batch_historyMaxAggregateInputType
+  }
+
+  export type Department_sub_batch_historyGroupByOutputType = {
+    id: number
+    department_sub_batch_id: number | null
+    sub_batch_id: number | null
+    from_stage: $Enums.DepartmentStage | null
+    to_stage: $Enums.DepartmentStage
+    from_department_id: number | null
+    to_department_id: number | null
+    action_by_user_id: number | null
+    reason: string | null
+    createdAt: Date
+    _count: Department_sub_batch_historyCountAggregateOutputType | null
+    _avg: Department_sub_batch_historyAvgAggregateOutputType | null
+    _sum: Department_sub_batch_historySumAggregateOutputType | null
+    _min: Department_sub_batch_historyMinAggregateOutputType | null
+    _max: Department_sub_batch_historyMaxAggregateOutputType | null
+  }
+
+  type GetDepartment_sub_batch_historyGroupByPayload<T extends department_sub_batch_historyGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Department_sub_batch_historyGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Department_sub_batch_historyGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Department_sub_batch_historyGroupByOutputType[P]>
+            : GetScalarType<T[P], Department_sub_batch_historyGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type department_sub_batch_historySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    department_sub_batch_id?: boolean
+    sub_batch_id?: boolean
+    from_stage?: boolean
+    to_stage?: boolean
+    from_department_id?: boolean
+    to_department_id?: boolean
+    action_by_user_id?: boolean
+    reason?: boolean
+    createdAt?: boolean
+    department_sub_batch?: boolean | department_sub_batch_history$department_sub_batchArgs<ExtArgs>
+  }, ExtArgs["result"]["department_sub_batch_history"]>
+
+  export type department_sub_batch_historySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    department_sub_batch_id?: boolean
+    sub_batch_id?: boolean
+    from_stage?: boolean
+    to_stage?: boolean
+    from_department_id?: boolean
+    to_department_id?: boolean
+    action_by_user_id?: boolean
+    reason?: boolean
+    createdAt?: boolean
+    department_sub_batch?: boolean | department_sub_batch_history$department_sub_batchArgs<ExtArgs>
+  }, ExtArgs["result"]["department_sub_batch_history"]>
+
+  export type department_sub_batch_historySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    department_sub_batch_id?: boolean
+    sub_batch_id?: boolean
+    from_stage?: boolean
+    to_stage?: boolean
+    from_department_id?: boolean
+    to_department_id?: boolean
+    action_by_user_id?: boolean
+    reason?: boolean
+    createdAt?: boolean
+    department_sub_batch?: boolean | department_sub_batch_history$department_sub_batchArgs<ExtArgs>
+  }, ExtArgs["result"]["department_sub_batch_history"]>
+
+  export type department_sub_batch_historySelectScalar = {
+    id?: boolean
+    department_sub_batch_id?: boolean
+    sub_batch_id?: boolean
+    from_stage?: boolean
+    to_stage?: boolean
+    from_department_id?: boolean
+    to_department_id?: boolean
+    action_by_user_id?: boolean
+    reason?: boolean
+    createdAt?: boolean
+  }
+
+  export type department_sub_batch_historyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "department_sub_batch_id" | "sub_batch_id" | "from_stage" | "to_stage" | "from_department_id" | "to_department_id" | "action_by_user_id" | "reason" | "createdAt", ExtArgs["result"]["department_sub_batch_history"]>
+  export type department_sub_batch_historyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    department_sub_batch?: boolean | department_sub_batch_history$department_sub_batchArgs<ExtArgs>
+  }
+  export type department_sub_batch_historyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    department_sub_batch?: boolean | department_sub_batch_history$department_sub_batchArgs<ExtArgs>
+  }
+  export type department_sub_batch_historyIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    department_sub_batch?: boolean | department_sub_batch_history$department_sub_batchArgs<ExtArgs>
+  }
+
+  export type $department_sub_batch_historyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "department_sub_batch_history"
+    objects: {
+      department_sub_batch: Prisma.$department_sub_batchesPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      department_sub_batch_id: number | null
+      sub_batch_id: number | null
+      from_stage: $Enums.DepartmentStage | null
+      to_stage: $Enums.DepartmentStage
+      from_department_id: number | null
+      to_department_id: number | null
+      action_by_user_id: number | null
+      reason: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["department_sub_batch_history"]>
+    composites: {}
+  }
+
+  type department_sub_batch_historyGetPayload<S extends boolean | null | undefined | department_sub_batch_historyDefaultArgs> = $Result.GetResult<Prisma.$department_sub_batch_historyPayload, S>
+
+  type department_sub_batch_historyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<department_sub_batch_historyFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Department_sub_batch_historyCountAggregateInputType | true
+    }
+
+  export interface department_sub_batch_historyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['department_sub_batch_history'], meta: { name: 'department_sub_batch_history' } }
+    /**
+     * Find zero or one Department_sub_batch_history that matches the filter.
+     * @param {department_sub_batch_historyFindUniqueArgs} args - Arguments to find a Department_sub_batch_history
+     * @example
+     * // Get one Department_sub_batch_history
+     * const department_sub_batch_history = await prisma.department_sub_batch_history.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends department_sub_batch_historyFindUniqueArgs>(args: SelectSubset<T, department_sub_batch_historyFindUniqueArgs<ExtArgs>>): Prisma__department_sub_batch_historyClient<$Result.GetResult<Prisma.$department_sub_batch_historyPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Department_sub_batch_history that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {department_sub_batch_historyFindUniqueOrThrowArgs} args - Arguments to find a Department_sub_batch_history
+     * @example
+     * // Get one Department_sub_batch_history
+     * const department_sub_batch_history = await prisma.department_sub_batch_history.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends department_sub_batch_historyFindUniqueOrThrowArgs>(args: SelectSubset<T, department_sub_batch_historyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__department_sub_batch_historyClient<$Result.GetResult<Prisma.$department_sub_batch_historyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Department_sub_batch_history that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {department_sub_batch_historyFindFirstArgs} args - Arguments to find a Department_sub_batch_history
+     * @example
+     * // Get one Department_sub_batch_history
+     * const department_sub_batch_history = await prisma.department_sub_batch_history.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends department_sub_batch_historyFindFirstArgs>(args?: SelectSubset<T, department_sub_batch_historyFindFirstArgs<ExtArgs>>): Prisma__department_sub_batch_historyClient<$Result.GetResult<Prisma.$department_sub_batch_historyPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Department_sub_batch_history that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {department_sub_batch_historyFindFirstOrThrowArgs} args - Arguments to find a Department_sub_batch_history
+     * @example
+     * // Get one Department_sub_batch_history
+     * const department_sub_batch_history = await prisma.department_sub_batch_history.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends department_sub_batch_historyFindFirstOrThrowArgs>(args?: SelectSubset<T, department_sub_batch_historyFindFirstOrThrowArgs<ExtArgs>>): Prisma__department_sub_batch_historyClient<$Result.GetResult<Prisma.$department_sub_batch_historyPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Department_sub_batch_histories that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {department_sub_batch_historyFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Department_sub_batch_histories
+     * const department_sub_batch_histories = await prisma.department_sub_batch_history.findMany()
+     * 
+     * // Get first 10 Department_sub_batch_histories
+     * const department_sub_batch_histories = await prisma.department_sub_batch_history.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const department_sub_batch_historyWithIdOnly = await prisma.department_sub_batch_history.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends department_sub_batch_historyFindManyArgs>(args?: SelectSubset<T, department_sub_batch_historyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$department_sub_batch_historyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Department_sub_batch_history.
+     * @param {department_sub_batch_historyCreateArgs} args - Arguments to create a Department_sub_batch_history.
+     * @example
+     * // Create one Department_sub_batch_history
+     * const Department_sub_batch_history = await prisma.department_sub_batch_history.create({
+     *   data: {
+     *     // ... data to create a Department_sub_batch_history
+     *   }
+     * })
+     * 
+     */
+    create<T extends department_sub_batch_historyCreateArgs>(args: SelectSubset<T, department_sub_batch_historyCreateArgs<ExtArgs>>): Prisma__department_sub_batch_historyClient<$Result.GetResult<Prisma.$department_sub_batch_historyPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Department_sub_batch_histories.
+     * @param {department_sub_batch_historyCreateManyArgs} args - Arguments to create many Department_sub_batch_histories.
+     * @example
+     * // Create many Department_sub_batch_histories
+     * const department_sub_batch_history = await prisma.department_sub_batch_history.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends department_sub_batch_historyCreateManyArgs>(args?: SelectSubset<T, department_sub_batch_historyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Department_sub_batch_histories and returns the data saved in the database.
+     * @param {department_sub_batch_historyCreateManyAndReturnArgs} args - Arguments to create many Department_sub_batch_histories.
+     * @example
+     * // Create many Department_sub_batch_histories
+     * const department_sub_batch_history = await prisma.department_sub_batch_history.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Department_sub_batch_histories and only return the `id`
+     * const department_sub_batch_historyWithIdOnly = await prisma.department_sub_batch_history.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends department_sub_batch_historyCreateManyAndReturnArgs>(args?: SelectSubset<T, department_sub_batch_historyCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$department_sub_batch_historyPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Department_sub_batch_history.
+     * @param {department_sub_batch_historyDeleteArgs} args - Arguments to delete one Department_sub_batch_history.
+     * @example
+     * // Delete one Department_sub_batch_history
+     * const Department_sub_batch_history = await prisma.department_sub_batch_history.delete({
+     *   where: {
+     *     // ... filter to delete one Department_sub_batch_history
+     *   }
+     * })
+     * 
+     */
+    delete<T extends department_sub_batch_historyDeleteArgs>(args: SelectSubset<T, department_sub_batch_historyDeleteArgs<ExtArgs>>): Prisma__department_sub_batch_historyClient<$Result.GetResult<Prisma.$department_sub_batch_historyPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Department_sub_batch_history.
+     * @param {department_sub_batch_historyUpdateArgs} args - Arguments to update one Department_sub_batch_history.
+     * @example
+     * // Update one Department_sub_batch_history
+     * const department_sub_batch_history = await prisma.department_sub_batch_history.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends department_sub_batch_historyUpdateArgs>(args: SelectSubset<T, department_sub_batch_historyUpdateArgs<ExtArgs>>): Prisma__department_sub_batch_historyClient<$Result.GetResult<Prisma.$department_sub_batch_historyPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Department_sub_batch_histories.
+     * @param {department_sub_batch_historyDeleteManyArgs} args - Arguments to filter Department_sub_batch_histories to delete.
+     * @example
+     * // Delete a few Department_sub_batch_histories
+     * const { count } = await prisma.department_sub_batch_history.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends department_sub_batch_historyDeleteManyArgs>(args?: SelectSubset<T, department_sub_batch_historyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Department_sub_batch_histories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {department_sub_batch_historyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Department_sub_batch_histories
+     * const department_sub_batch_history = await prisma.department_sub_batch_history.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends department_sub_batch_historyUpdateManyArgs>(args: SelectSubset<T, department_sub_batch_historyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Department_sub_batch_histories and returns the data updated in the database.
+     * @param {department_sub_batch_historyUpdateManyAndReturnArgs} args - Arguments to update many Department_sub_batch_histories.
+     * @example
+     * // Update many Department_sub_batch_histories
+     * const department_sub_batch_history = await prisma.department_sub_batch_history.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Department_sub_batch_histories and only return the `id`
+     * const department_sub_batch_historyWithIdOnly = await prisma.department_sub_batch_history.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends department_sub_batch_historyUpdateManyAndReturnArgs>(args: SelectSubset<T, department_sub_batch_historyUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$department_sub_batch_historyPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Department_sub_batch_history.
+     * @param {department_sub_batch_historyUpsertArgs} args - Arguments to update or create a Department_sub_batch_history.
+     * @example
+     * // Update or create a Department_sub_batch_history
+     * const department_sub_batch_history = await prisma.department_sub_batch_history.upsert({
+     *   create: {
+     *     // ... data to create a Department_sub_batch_history
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Department_sub_batch_history we want to update
+     *   }
+     * })
+     */
+    upsert<T extends department_sub_batch_historyUpsertArgs>(args: SelectSubset<T, department_sub_batch_historyUpsertArgs<ExtArgs>>): Prisma__department_sub_batch_historyClient<$Result.GetResult<Prisma.$department_sub_batch_historyPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Department_sub_batch_histories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {department_sub_batch_historyCountArgs} args - Arguments to filter Department_sub_batch_histories to count.
+     * @example
+     * // Count the number of Department_sub_batch_histories
+     * const count = await prisma.department_sub_batch_history.count({
+     *   where: {
+     *     // ... the filter for the Department_sub_batch_histories we want to count
+     *   }
+     * })
+    **/
+    count<T extends department_sub_batch_historyCountArgs>(
+      args?: Subset<T, department_sub_batch_historyCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Department_sub_batch_historyCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Department_sub_batch_history.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Department_sub_batch_historyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Department_sub_batch_historyAggregateArgs>(args: Subset<T, Department_sub_batch_historyAggregateArgs>): Prisma.PrismaPromise<GetDepartment_sub_batch_historyAggregateType<T>>
+
+    /**
+     * Group by Department_sub_batch_history.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {department_sub_batch_historyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends department_sub_batch_historyGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: department_sub_batch_historyGroupByArgs['orderBy'] }
+        : { orderBy?: department_sub_batch_historyGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, department_sub_batch_historyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDepartment_sub_batch_historyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the department_sub_batch_history model
+   */
+  readonly fields: department_sub_batch_historyFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for department_sub_batch_history.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__department_sub_batch_historyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    department_sub_batch<T extends department_sub_batch_history$department_sub_batchArgs<ExtArgs> = {}>(args?: Subset<T, department_sub_batch_history$department_sub_batchArgs<ExtArgs>>): Prisma__department_sub_batchesClient<$Result.GetResult<Prisma.$department_sub_batchesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the department_sub_batch_history model
+   */
+  interface department_sub_batch_historyFieldRefs {
+    readonly id: FieldRef<"department_sub_batch_history", 'Int'>
+    readonly department_sub_batch_id: FieldRef<"department_sub_batch_history", 'Int'>
+    readonly sub_batch_id: FieldRef<"department_sub_batch_history", 'Int'>
+    readonly from_stage: FieldRef<"department_sub_batch_history", 'DepartmentStage'>
+    readonly to_stage: FieldRef<"department_sub_batch_history", 'DepartmentStage'>
+    readonly from_department_id: FieldRef<"department_sub_batch_history", 'Int'>
+    readonly to_department_id: FieldRef<"department_sub_batch_history", 'Int'>
+    readonly action_by_user_id: FieldRef<"department_sub_batch_history", 'Int'>
+    readonly reason: FieldRef<"department_sub_batch_history", 'String'>
+    readonly createdAt: FieldRef<"department_sub_batch_history", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * department_sub_batch_history findUnique
+   */
+  export type department_sub_batch_historyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the department_sub_batch_history
+     */
+    select?: department_sub_batch_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the department_sub_batch_history
+     */
+    omit?: department_sub_batch_historyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: department_sub_batch_historyInclude<ExtArgs> | null
+    /**
+     * Filter, which department_sub_batch_history to fetch.
+     */
+    where: department_sub_batch_historyWhereUniqueInput
+  }
+
+  /**
+   * department_sub_batch_history findUniqueOrThrow
+   */
+  export type department_sub_batch_historyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the department_sub_batch_history
+     */
+    select?: department_sub_batch_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the department_sub_batch_history
+     */
+    omit?: department_sub_batch_historyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: department_sub_batch_historyInclude<ExtArgs> | null
+    /**
+     * Filter, which department_sub_batch_history to fetch.
+     */
+    where: department_sub_batch_historyWhereUniqueInput
+  }
+
+  /**
+   * department_sub_batch_history findFirst
+   */
+  export type department_sub_batch_historyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the department_sub_batch_history
+     */
+    select?: department_sub_batch_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the department_sub_batch_history
+     */
+    omit?: department_sub_batch_historyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: department_sub_batch_historyInclude<ExtArgs> | null
+    /**
+     * Filter, which department_sub_batch_history to fetch.
+     */
+    where?: department_sub_batch_historyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of department_sub_batch_histories to fetch.
+     */
+    orderBy?: department_sub_batch_historyOrderByWithRelationInput | department_sub_batch_historyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for department_sub_batch_histories.
+     */
+    cursor?: department_sub_batch_historyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` department_sub_batch_histories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` department_sub_batch_histories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of department_sub_batch_histories.
+     */
+    distinct?: Department_sub_batch_historyScalarFieldEnum | Department_sub_batch_historyScalarFieldEnum[]
+  }
+
+  /**
+   * department_sub_batch_history findFirstOrThrow
+   */
+  export type department_sub_batch_historyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the department_sub_batch_history
+     */
+    select?: department_sub_batch_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the department_sub_batch_history
+     */
+    omit?: department_sub_batch_historyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: department_sub_batch_historyInclude<ExtArgs> | null
+    /**
+     * Filter, which department_sub_batch_history to fetch.
+     */
+    where?: department_sub_batch_historyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of department_sub_batch_histories to fetch.
+     */
+    orderBy?: department_sub_batch_historyOrderByWithRelationInput | department_sub_batch_historyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for department_sub_batch_histories.
+     */
+    cursor?: department_sub_batch_historyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` department_sub_batch_histories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` department_sub_batch_histories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of department_sub_batch_histories.
+     */
+    distinct?: Department_sub_batch_historyScalarFieldEnum | Department_sub_batch_historyScalarFieldEnum[]
+  }
+
+  /**
+   * department_sub_batch_history findMany
+   */
+  export type department_sub_batch_historyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the department_sub_batch_history
+     */
+    select?: department_sub_batch_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the department_sub_batch_history
+     */
+    omit?: department_sub_batch_historyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: department_sub_batch_historyInclude<ExtArgs> | null
+    /**
+     * Filter, which department_sub_batch_histories to fetch.
+     */
+    where?: department_sub_batch_historyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of department_sub_batch_histories to fetch.
+     */
+    orderBy?: department_sub_batch_historyOrderByWithRelationInput | department_sub_batch_historyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing department_sub_batch_histories.
+     */
+    cursor?: department_sub_batch_historyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` department_sub_batch_histories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` department_sub_batch_histories.
+     */
+    skip?: number
+    distinct?: Department_sub_batch_historyScalarFieldEnum | Department_sub_batch_historyScalarFieldEnum[]
+  }
+
+  /**
+   * department_sub_batch_history create
+   */
+  export type department_sub_batch_historyCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the department_sub_batch_history
+     */
+    select?: department_sub_batch_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the department_sub_batch_history
+     */
+    omit?: department_sub_batch_historyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: department_sub_batch_historyInclude<ExtArgs> | null
+    /**
+     * The data needed to create a department_sub_batch_history.
+     */
+    data: XOR<department_sub_batch_historyCreateInput, department_sub_batch_historyUncheckedCreateInput>
+  }
+
+  /**
+   * department_sub_batch_history createMany
+   */
+  export type department_sub_batch_historyCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many department_sub_batch_histories.
+     */
+    data: department_sub_batch_historyCreateManyInput | department_sub_batch_historyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * department_sub_batch_history createManyAndReturn
+   */
+  export type department_sub_batch_historyCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the department_sub_batch_history
+     */
+    select?: department_sub_batch_historySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the department_sub_batch_history
+     */
+    omit?: department_sub_batch_historyOmit<ExtArgs> | null
+    /**
+     * The data used to create many department_sub_batch_histories.
+     */
+    data: department_sub_batch_historyCreateManyInput | department_sub_batch_historyCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: department_sub_batch_historyIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * department_sub_batch_history update
+   */
+  export type department_sub_batch_historyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the department_sub_batch_history
+     */
+    select?: department_sub_batch_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the department_sub_batch_history
+     */
+    omit?: department_sub_batch_historyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: department_sub_batch_historyInclude<ExtArgs> | null
+    /**
+     * The data needed to update a department_sub_batch_history.
+     */
+    data: XOR<department_sub_batch_historyUpdateInput, department_sub_batch_historyUncheckedUpdateInput>
+    /**
+     * Choose, which department_sub_batch_history to update.
+     */
+    where: department_sub_batch_historyWhereUniqueInput
+  }
+
+  /**
+   * department_sub_batch_history updateMany
+   */
+  export type department_sub_batch_historyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update department_sub_batch_histories.
+     */
+    data: XOR<department_sub_batch_historyUpdateManyMutationInput, department_sub_batch_historyUncheckedUpdateManyInput>
+    /**
+     * Filter which department_sub_batch_histories to update
+     */
+    where?: department_sub_batch_historyWhereInput
+    /**
+     * Limit how many department_sub_batch_histories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * department_sub_batch_history updateManyAndReturn
+   */
+  export type department_sub_batch_historyUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the department_sub_batch_history
+     */
+    select?: department_sub_batch_historySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the department_sub_batch_history
+     */
+    omit?: department_sub_batch_historyOmit<ExtArgs> | null
+    /**
+     * The data used to update department_sub_batch_histories.
+     */
+    data: XOR<department_sub_batch_historyUpdateManyMutationInput, department_sub_batch_historyUncheckedUpdateManyInput>
+    /**
+     * Filter which department_sub_batch_histories to update
+     */
+    where?: department_sub_batch_historyWhereInput
+    /**
+     * Limit how many department_sub_batch_histories to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: department_sub_batch_historyIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * department_sub_batch_history upsert
+   */
+  export type department_sub_batch_historyUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the department_sub_batch_history
+     */
+    select?: department_sub_batch_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the department_sub_batch_history
+     */
+    omit?: department_sub_batch_historyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: department_sub_batch_historyInclude<ExtArgs> | null
+    /**
+     * The filter to search for the department_sub_batch_history to update in case it exists.
+     */
+    where: department_sub_batch_historyWhereUniqueInput
+    /**
+     * In case the department_sub_batch_history found by the `where` argument doesn't exist, create a new department_sub_batch_history with this data.
+     */
+    create: XOR<department_sub_batch_historyCreateInput, department_sub_batch_historyUncheckedCreateInput>
+    /**
+     * In case the department_sub_batch_history was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<department_sub_batch_historyUpdateInput, department_sub_batch_historyUncheckedUpdateInput>
+  }
+
+  /**
+   * department_sub_batch_history delete
+   */
+  export type department_sub_batch_historyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the department_sub_batch_history
+     */
+    select?: department_sub_batch_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the department_sub_batch_history
+     */
+    omit?: department_sub_batch_historyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: department_sub_batch_historyInclude<ExtArgs> | null
+    /**
+     * Filter which department_sub_batch_history to delete.
+     */
+    where: department_sub_batch_historyWhereUniqueInput
+  }
+
+  /**
+   * department_sub_batch_history deleteMany
+   */
+  export type department_sub_batch_historyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which department_sub_batch_histories to delete
+     */
+    where?: department_sub_batch_historyWhereInput
+    /**
+     * Limit how many department_sub_batch_histories to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * department_sub_batch_history.department_sub_batch
+   */
+  export type department_sub_batch_history$department_sub_batchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the department_sub_batches
+     */
+    select?: department_sub_batchesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the department_sub_batches
+     */
+    omit?: department_sub_batchesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: department_sub_batchesInclude<ExtArgs> | null
+    where?: department_sub_batchesWhereInput
+  }
+
+  /**
+   * department_sub_batch_history without action
+   */
+  export type department_sub_batch_historyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the department_sub_batch_history
+     */
+    select?: department_sub_batch_historySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the department_sub_batch_history
+     */
+    omit?: department_sub_batch_historyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: department_sub_batch_historyInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -20997,7 +27534,12 @@ export namespace Prisma {
   export const Department_sub_batchesScalarFieldEnum: {
     id: 'id',
     department_id: 'department_id',
-    sub_batch_id: 'sub_batch_id'
+    sub_batch_id: 'sub_batch_id',
+    stage: 'stage',
+    is_current: 'is_current',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    assigned_worker_id: 'assigned_worker_id'
   };
 
   export type Department_sub_batchesScalarFieldEnum = (typeof Department_sub_batchesScalarFieldEnum)[keyof typeof Department_sub_batchesScalarFieldEnum]
@@ -21057,6 +27599,62 @@ export namespace Prisma {
   };
 
   export type CategoriesScalarFieldEnum = (typeof CategoriesScalarFieldEnum)[keyof typeof CategoriesScalarFieldEnum]
+
+
+  export const Workflow_templatesScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    description: 'description',
+    createdAt: 'createdAt'
+  };
+
+  export type Workflow_templatesScalarFieldEnum = (typeof Workflow_templatesScalarFieldEnum)[keyof typeof Workflow_templatesScalarFieldEnum]
+
+
+  export const Workflow_stepsScalarFieldEnum: {
+    id: 'id',
+    workflow_template_id: 'workflow_template_id',
+    step_index: 'step_index',
+    department_id: 'department_id'
+  };
+
+  export type Workflow_stepsScalarFieldEnum = (typeof Workflow_stepsScalarFieldEnum)[keyof typeof Workflow_stepsScalarFieldEnum]
+
+
+  export const Sub_batch_workflowsScalarFieldEnum: {
+    id: 'id',
+    sub_batch_id: 'sub_batch_id',
+    current_step_index: 'current_step_index',
+    createdAt: 'createdAt'
+  };
+
+  export type Sub_batch_workflowsScalarFieldEnum = (typeof Sub_batch_workflowsScalarFieldEnum)[keyof typeof Sub_batch_workflowsScalarFieldEnum]
+
+
+  export const Sub_batch_workflow_stepsScalarFieldEnum: {
+    id: 'id',
+    sub_batch_workflow_id: 'sub_batch_workflow_id',
+    step_index: 'step_index',
+    department_id: 'department_id'
+  };
+
+  export type Sub_batch_workflow_stepsScalarFieldEnum = (typeof Sub_batch_workflow_stepsScalarFieldEnum)[keyof typeof Sub_batch_workflow_stepsScalarFieldEnum]
+
+
+  export const Department_sub_batch_historyScalarFieldEnum: {
+    id: 'id',
+    department_sub_batch_id: 'department_sub_batch_id',
+    sub_batch_id: 'sub_batch_id',
+    from_stage: 'from_stage',
+    to_stage: 'to_stage',
+    from_department_id: 'from_department_id',
+    to_department_id: 'to_department_id',
+    action_by_user_id: 'action_by_user_id',
+    reason: 'reason',
+    createdAt: 'createdAt'
+  };
+
+  export type Department_sub_batch_historyScalarFieldEnum = (typeof Department_sub_batch_historyScalarFieldEnum)[keyof typeof Department_sub_batch_historyScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -21127,6 +27725,27 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'DepartmentStage'
+   */
+  export type EnumDepartmentStageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DepartmentStage'>
+    
+
+
+  /**
+   * Reference to a field of type 'DepartmentStage[]'
+   */
+  export type ListEnumDepartmentStageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DepartmentStage[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -21359,6 +27978,7 @@ export namespace Prisma {
     altered?: Sub_batch_alteredListRelationFilter
     dept_links?: Department_sub_batchesListRelationFilter
     worker_logs?: Worker_logsListRelationFilter
+    workflows?: Sub_batch_workflowsListRelationFilter
   }
 
   export type sub_batchesOrderByWithRelationInput = {
@@ -21380,6 +28000,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredOrderByRelationAggregateInput
     dept_links?: department_sub_batchesOrderByRelationAggregateInput
     worker_logs?: worker_logsOrderByRelationAggregateInput
+    workflows?: sub_batch_workflowsOrderByRelationAggregateInput
   }
 
   export type sub_batchesWhereUniqueInput = Prisma.AtLeast<{
@@ -21404,6 +28025,7 @@ export namespace Prisma {
     altered?: Sub_batch_alteredListRelationFilter
     dept_links?: Department_sub_batchesListRelationFilter
     worker_logs?: Worker_logsListRelationFilter
+    workflows?: Sub_batch_workflowsListRelationFilter
   }, "id">
 
   export type sub_batchesOrderByWithAggregationInput = {
@@ -21459,14 +28081,14 @@ export namespace Prisma {
 
   export type sub_batch_size_detailsWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    category?: string
     AND?: sub_batch_size_detailsWhereInput | sub_batch_size_detailsWhereInput[]
     OR?: sub_batch_size_detailsWhereInput[]
     NOT?: sub_batch_size_detailsWhereInput | sub_batch_size_detailsWhereInput[]
     sub_batch_id?: IntNullableFilter<"sub_batch_size_details"> | number | null
+    category?: StringFilter<"sub_batch_size_details"> | string
     pieces?: IntFilter<"sub_batch_size_details"> | number
     sub_batch?: XOR<Sub_batchesNullableScalarRelationFilter, sub_batchesWhereInput> | null
-  }, "id" | "category">
+  }, "id">
 
   export type sub_batch_size_detailsOrderByWithAggregationInput = {
     id?: SortOrder
@@ -21676,6 +28298,8 @@ export namespace Prisma {
     dept_batches?: Department_sub_batchesListRelationFilter
     rejected?: Sub_batch_rejectedListRelationFilter
     altered?: Sub_batch_alteredListRelationFilter
+    workflow_steps?: Workflow_stepsListRelationFilter
+    sub_batch_steps?: Sub_batch_workflow_stepsListRelationFilter
   }
 
   export type departmentsOrderByWithRelationInput = {
@@ -21689,6 +28313,8 @@ export namespace Prisma {
     dept_batches?: department_sub_batchesOrderByRelationAggregateInput
     rejected?: sub_batch_rejectedOrderByRelationAggregateInput
     altered?: sub_batch_alteredOrderByRelationAggregateInput
+    workflow_steps?: workflow_stepsOrderByRelationAggregateInput
+    sub_batch_steps?: sub_batch_workflow_stepsOrderByRelationAggregateInput
   }
 
   export type departmentsWhereUniqueInput = Prisma.AtLeast<{
@@ -21705,6 +28331,8 @@ export namespace Prisma {
     dept_batches?: Department_sub_batchesListRelationFilter
     rejected?: Sub_batch_rejectedListRelationFilter
     altered?: Sub_batch_alteredListRelationFilter
+    workflow_steps?: Workflow_stepsListRelationFilter
+    sub_batch_steps?: Sub_batch_workflow_stepsListRelationFilter
   }, "id">
 
   export type departmentsOrderByWithAggregationInput = {
@@ -21791,16 +28419,30 @@ export namespace Prisma {
     id?: IntFilter<"department_sub_batches"> | number
     department_id?: IntNullableFilter<"department_sub_batches"> | number | null
     sub_batch_id?: IntNullableFilter<"department_sub_batches"> | number | null
+    stage?: EnumDepartmentStageFilter<"department_sub_batches"> | $Enums.DepartmentStage
+    is_current?: BoolFilter<"department_sub_batches"> | boolean
+    createdAt?: DateTimeFilter<"department_sub_batches"> | Date | string
+    updatedAt?: DateTimeFilter<"department_sub_batches"> | Date | string
+    assigned_worker_id?: IntNullableFilter<"department_sub_batches"> | number | null
+    assigned_worker?: XOR<WorkersNullableScalarRelationFilter, workersWhereInput> | null
     department?: XOR<DepartmentsNullableScalarRelationFilter, departmentsWhereInput> | null
     sub_batch?: XOR<Sub_batchesNullableScalarRelationFilter, sub_batchesWhereInput> | null
+    history?: Department_sub_batch_historyListRelationFilter
   }
 
   export type department_sub_batchesOrderByWithRelationInput = {
     id?: SortOrder
     department_id?: SortOrderInput | SortOrder
     sub_batch_id?: SortOrderInput | SortOrder
+    stage?: SortOrder
+    is_current?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    assigned_worker_id?: SortOrderInput | SortOrder
+    assigned_worker?: workersOrderByWithRelationInput
     department?: departmentsOrderByWithRelationInput
     sub_batch?: sub_batchesOrderByWithRelationInput
+    history?: department_sub_batch_historyOrderByRelationAggregateInput
   }
 
   export type department_sub_batchesWhereUniqueInput = Prisma.AtLeast<{
@@ -21810,14 +28452,26 @@ export namespace Prisma {
     NOT?: department_sub_batchesWhereInput | department_sub_batchesWhereInput[]
     department_id?: IntNullableFilter<"department_sub_batches"> | number | null
     sub_batch_id?: IntNullableFilter<"department_sub_batches"> | number | null
+    stage?: EnumDepartmentStageFilter<"department_sub_batches"> | $Enums.DepartmentStage
+    is_current?: BoolFilter<"department_sub_batches"> | boolean
+    createdAt?: DateTimeFilter<"department_sub_batches"> | Date | string
+    updatedAt?: DateTimeFilter<"department_sub_batches"> | Date | string
+    assigned_worker_id?: IntNullableFilter<"department_sub_batches"> | number | null
+    assigned_worker?: XOR<WorkersNullableScalarRelationFilter, workersWhereInput> | null
     department?: XOR<DepartmentsNullableScalarRelationFilter, departmentsWhereInput> | null
     sub_batch?: XOR<Sub_batchesNullableScalarRelationFilter, sub_batchesWhereInput> | null
+    history?: Department_sub_batch_historyListRelationFilter
   }, "id">
 
   export type department_sub_batchesOrderByWithAggregationInput = {
     id?: SortOrder
     department_id?: SortOrderInput | SortOrder
     sub_batch_id?: SortOrderInput | SortOrder
+    stage?: SortOrder
+    is_current?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    assigned_worker_id?: SortOrderInput | SortOrder
     _count?: department_sub_batchesCountOrderByAggregateInput
     _avg?: department_sub_batchesAvgOrderByAggregateInput
     _max?: department_sub_batchesMaxOrderByAggregateInput
@@ -21832,6 +28486,11 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"department_sub_batches"> | number
     department_id?: IntNullableWithAggregatesFilter<"department_sub_batches"> | number | null
     sub_batch_id?: IntNullableWithAggregatesFilter<"department_sub_batches"> | number | null
+    stage?: EnumDepartmentStageWithAggregatesFilter<"department_sub_batches"> | $Enums.DepartmentStage
+    is_current?: BoolWithAggregatesFilter<"department_sub_batches"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"department_sub_batches"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"department_sub_batches"> | Date | string
+    assigned_worker_id?: IntNullableWithAggregatesFilter<"department_sub_batches"> | number | null
   }
 
   export type clientsWhereInput = {
@@ -21907,6 +28566,7 @@ export namespace Prisma {
     department?: XOR<DepartmentsNullableScalarRelationFilter, departmentsWhereInput> | null
     worker_logs?: Worker_logsListRelationFilter
     dept_workers?: Department_workersListRelationFilter
+    department_assignments?: Department_sub_batchesListRelationFilter
   }
 
   export type workersOrderByWithRelationInput = {
@@ -21920,6 +28580,7 @@ export namespace Prisma {
     department?: departmentsOrderByWithRelationInput
     worker_logs?: worker_logsOrderByRelationAggregateInput
     dept_workers?: department_workersOrderByRelationAggregateInput
+    department_assignments?: department_sub_batchesOrderByRelationAggregateInput
   }
 
   export type workersWhereUniqueInput = Prisma.AtLeast<{
@@ -21936,6 +28597,7 @@ export namespace Prisma {
     department?: XOR<DepartmentsNullableScalarRelationFilter, departmentsWhereInput> | null
     worker_logs?: Worker_logsListRelationFilter
     dept_workers?: Department_workersListRelationFilter
+    department_assignments?: Department_sub_batchesListRelationFilter
   }, "id">
 
   export type workersOrderByWithAggregationInput = {
@@ -22128,6 +28790,305 @@ export namespace Prisma {
     NOT?: categoriesScalarWhereWithAggregatesInput | categoriesScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"categories"> | number
     category_name?: StringWithAggregatesFilter<"categories"> | string
+  }
+
+  export type workflow_templatesWhereInput = {
+    AND?: workflow_templatesWhereInput | workflow_templatesWhereInput[]
+    OR?: workflow_templatesWhereInput[]
+    NOT?: workflow_templatesWhereInput | workflow_templatesWhereInput[]
+    id?: IntFilter<"workflow_templates"> | number
+    name?: StringFilter<"workflow_templates"> | string
+    description?: StringNullableFilter<"workflow_templates"> | string | null
+    createdAt?: DateTimeFilter<"workflow_templates"> | Date | string
+    steps?: Workflow_stepsListRelationFilter
+  }
+
+  export type workflow_templatesOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    steps?: workflow_stepsOrderByRelationAggregateInput
+  }
+
+  export type workflow_templatesWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: workflow_templatesWhereInput | workflow_templatesWhereInput[]
+    OR?: workflow_templatesWhereInput[]
+    NOT?: workflow_templatesWhereInput | workflow_templatesWhereInput[]
+    name?: StringFilter<"workflow_templates"> | string
+    description?: StringNullableFilter<"workflow_templates"> | string | null
+    createdAt?: DateTimeFilter<"workflow_templates"> | Date | string
+    steps?: Workflow_stepsListRelationFilter
+  }, "id">
+
+  export type workflow_templatesOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: workflow_templatesCountOrderByAggregateInput
+    _avg?: workflow_templatesAvgOrderByAggregateInput
+    _max?: workflow_templatesMaxOrderByAggregateInput
+    _min?: workflow_templatesMinOrderByAggregateInput
+    _sum?: workflow_templatesSumOrderByAggregateInput
+  }
+
+  export type workflow_templatesScalarWhereWithAggregatesInput = {
+    AND?: workflow_templatesScalarWhereWithAggregatesInput | workflow_templatesScalarWhereWithAggregatesInput[]
+    OR?: workflow_templatesScalarWhereWithAggregatesInput[]
+    NOT?: workflow_templatesScalarWhereWithAggregatesInput | workflow_templatesScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"workflow_templates"> | number
+    name?: StringWithAggregatesFilter<"workflow_templates"> | string
+    description?: StringNullableWithAggregatesFilter<"workflow_templates"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"workflow_templates"> | Date | string
+  }
+
+  export type workflow_stepsWhereInput = {
+    AND?: workflow_stepsWhereInput | workflow_stepsWhereInput[]
+    OR?: workflow_stepsWhereInput[]
+    NOT?: workflow_stepsWhereInput | workflow_stepsWhereInput[]
+    id?: IntFilter<"workflow_steps"> | number
+    workflow_template_id?: IntNullableFilter<"workflow_steps"> | number | null
+    step_index?: IntFilter<"workflow_steps"> | number
+    department_id?: IntFilter<"workflow_steps"> | number
+    department?: XOR<DepartmentsNullableScalarRelationFilter, departmentsWhereInput> | null
+    workflow_template?: XOR<Workflow_templatesNullableScalarRelationFilter, workflow_templatesWhereInput> | null
+  }
+
+  export type workflow_stepsOrderByWithRelationInput = {
+    id?: SortOrder
+    workflow_template_id?: SortOrderInput | SortOrder
+    step_index?: SortOrder
+    department_id?: SortOrder
+    department?: departmentsOrderByWithRelationInput
+    workflow_template?: workflow_templatesOrderByWithRelationInput
+  }
+
+  export type workflow_stepsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: workflow_stepsWhereInput | workflow_stepsWhereInput[]
+    OR?: workflow_stepsWhereInput[]
+    NOT?: workflow_stepsWhereInput | workflow_stepsWhereInput[]
+    workflow_template_id?: IntNullableFilter<"workflow_steps"> | number | null
+    step_index?: IntFilter<"workflow_steps"> | number
+    department_id?: IntFilter<"workflow_steps"> | number
+    department?: XOR<DepartmentsNullableScalarRelationFilter, departmentsWhereInput> | null
+    workflow_template?: XOR<Workflow_templatesNullableScalarRelationFilter, workflow_templatesWhereInput> | null
+  }, "id">
+
+  export type workflow_stepsOrderByWithAggregationInput = {
+    id?: SortOrder
+    workflow_template_id?: SortOrderInput | SortOrder
+    step_index?: SortOrder
+    department_id?: SortOrder
+    _count?: workflow_stepsCountOrderByAggregateInput
+    _avg?: workflow_stepsAvgOrderByAggregateInput
+    _max?: workflow_stepsMaxOrderByAggregateInput
+    _min?: workflow_stepsMinOrderByAggregateInput
+    _sum?: workflow_stepsSumOrderByAggregateInput
+  }
+
+  export type workflow_stepsScalarWhereWithAggregatesInput = {
+    AND?: workflow_stepsScalarWhereWithAggregatesInput | workflow_stepsScalarWhereWithAggregatesInput[]
+    OR?: workflow_stepsScalarWhereWithAggregatesInput[]
+    NOT?: workflow_stepsScalarWhereWithAggregatesInput | workflow_stepsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"workflow_steps"> | number
+    workflow_template_id?: IntNullableWithAggregatesFilter<"workflow_steps"> | number | null
+    step_index?: IntWithAggregatesFilter<"workflow_steps"> | number
+    department_id?: IntWithAggregatesFilter<"workflow_steps"> | number
+  }
+
+  export type sub_batch_workflowsWhereInput = {
+    AND?: sub_batch_workflowsWhereInput | sub_batch_workflowsWhereInput[]
+    OR?: sub_batch_workflowsWhereInput[]
+    NOT?: sub_batch_workflowsWhereInput | sub_batch_workflowsWhereInput[]
+    id?: IntFilter<"sub_batch_workflows"> | number
+    sub_batch_id?: IntFilter<"sub_batch_workflows"> | number
+    current_step_index?: IntFilter<"sub_batch_workflows"> | number
+    createdAt?: DateTimeFilter<"sub_batch_workflows"> | Date | string
+    sub_batch?: XOR<Sub_batchesNullableScalarRelationFilter, sub_batchesWhereInput> | null
+    steps?: Sub_batch_workflow_stepsListRelationFilter
+  }
+
+  export type sub_batch_workflowsOrderByWithRelationInput = {
+    id?: SortOrder
+    sub_batch_id?: SortOrder
+    current_step_index?: SortOrder
+    createdAt?: SortOrder
+    sub_batch?: sub_batchesOrderByWithRelationInput
+    steps?: sub_batch_workflow_stepsOrderByRelationAggregateInput
+  }
+
+  export type sub_batch_workflowsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    sub_batch_id?: number
+    AND?: sub_batch_workflowsWhereInput | sub_batch_workflowsWhereInput[]
+    OR?: sub_batch_workflowsWhereInput[]
+    NOT?: sub_batch_workflowsWhereInput | sub_batch_workflowsWhereInput[]
+    current_step_index?: IntFilter<"sub_batch_workflows"> | number
+    createdAt?: DateTimeFilter<"sub_batch_workflows"> | Date | string
+    sub_batch?: XOR<Sub_batchesNullableScalarRelationFilter, sub_batchesWhereInput> | null
+    steps?: Sub_batch_workflow_stepsListRelationFilter
+  }, "id" | "sub_batch_id">
+
+  export type sub_batch_workflowsOrderByWithAggregationInput = {
+    id?: SortOrder
+    sub_batch_id?: SortOrder
+    current_step_index?: SortOrder
+    createdAt?: SortOrder
+    _count?: sub_batch_workflowsCountOrderByAggregateInput
+    _avg?: sub_batch_workflowsAvgOrderByAggregateInput
+    _max?: sub_batch_workflowsMaxOrderByAggregateInput
+    _min?: sub_batch_workflowsMinOrderByAggregateInput
+    _sum?: sub_batch_workflowsSumOrderByAggregateInput
+  }
+
+  export type sub_batch_workflowsScalarWhereWithAggregatesInput = {
+    AND?: sub_batch_workflowsScalarWhereWithAggregatesInput | sub_batch_workflowsScalarWhereWithAggregatesInput[]
+    OR?: sub_batch_workflowsScalarWhereWithAggregatesInput[]
+    NOT?: sub_batch_workflowsScalarWhereWithAggregatesInput | sub_batch_workflowsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"sub_batch_workflows"> | number
+    sub_batch_id?: IntWithAggregatesFilter<"sub_batch_workflows"> | number
+    current_step_index?: IntWithAggregatesFilter<"sub_batch_workflows"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"sub_batch_workflows"> | Date | string
+  }
+
+  export type sub_batch_workflow_stepsWhereInput = {
+    AND?: sub_batch_workflow_stepsWhereInput | sub_batch_workflow_stepsWhereInput[]
+    OR?: sub_batch_workflow_stepsWhereInput[]
+    NOT?: sub_batch_workflow_stepsWhereInput | sub_batch_workflow_stepsWhereInput[]
+    id?: IntFilter<"sub_batch_workflow_steps"> | number
+    sub_batch_workflow_id?: IntNullableFilter<"sub_batch_workflow_steps"> | number | null
+    step_index?: IntFilter<"sub_batch_workflow_steps"> | number
+    department_id?: IntFilter<"sub_batch_workflow_steps"> | number
+    department?: XOR<DepartmentsNullableScalarRelationFilter, departmentsWhereInput> | null
+    sub_batch_workflow?: XOR<Sub_batch_workflowsNullableScalarRelationFilter, sub_batch_workflowsWhereInput> | null
+  }
+
+  export type sub_batch_workflow_stepsOrderByWithRelationInput = {
+    id?: SortOrder
+    sub_batch_workflow_id?: SortOrderInput | SortOrder
+    step_index?: SortOrder
+    department_id?: SortOrder
+    department?: departmentsOrderByWithRelationInput
+    sub_batch_workflow?: sub_batch_workflowsOrderByWithRelationInput
+  }
+
+  export type sub_batch_workflow_stepsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: sub_batch_workflow_stepsWhereInput | sub_batch_workflow_stepsWhereInput[]
+    OR?: sub_batch_workflow_stepsWhereInput[]
+    NOT?: sub_batch_workflow_stepsWhereInput | sub_batch_workflow_stepsWhereInput[]
+    sub_batch_workflow_id?: IntNullableFilter<"sub_batch_workflow_steps"> | number | null
+    step_index?: IntFilter<"sub_batch_workflow_steps"> | number
+    department_id?: IntFilter<"sub_batch_workflow_steps"> | number
+    department?: XOR<DepartmentsNullableScalarRelationFilter, departmentsWhereInput> | null
+    sub_batch_workflow?: XOR<Sub_batch_workflowsNullableScalarRelationFilter, sub_batch_workflowsWhereInput> | null
+  }, "id">
+
+  export type sub_batch_workflow_stepsOrderByWithAggregationInput = {
+    id?: SortOrder
+    sub_batch_workflow_id?: SortOrderInput | SortOrder
+    step_index?: SortOrder
+    department_id?: SortOrder
+    _count?: sub_batch_workflow_stepsCountOrderByAggregateInput
+    _avg?: sub_batch_workflow_stepsAvgOrderByAggregateInput
+    _max?: sub_batch_workflow_stepsMaxOrderByAggregateInput
+    _min?: sub_batch_workflow_stepsMinOrderByAggregateInput
+    _sum?: sub_batch_workflow_stepsSumOrderByAggregateInput
+  }
+
+  export type sub_batch_workflow_stepsScalarWhereWithAggregatesInput = {
+    AND?: sub_batch_workflow_stepsScalarWhereWithAggregatesInput | sub_batch_workflow_stepsScalarWhereWithAggregatesInput[]
+    OR?: sub_batch_workflow_stepsScalarWhereWithAggregatesInput[]
+    NOT?: sub_batch_workflow_stepsScalarWhereWithAggregatesInput | sub_batch_workflow_stepsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"sub_batch_workflow_steps"> | number
+    sub_batch_workflow_id?: IntNullableWithAggregatesFilter<"sub_batch_workflow_steps"> | number | null
+    step_index?: IntWithAggregatesFilter<"sub_batch_workflow_steps"> | number
+    department_id?: IntWithAggregatesFilter<"sub_batch_workflow_steps"> | number
+  }
+
+  export type department_sub_batch_historyWhereInput = {
+    AND?: department_sub_batch_historyWhereInput | department_sub_batch_historyWhereInput[]
+    OR?: department_sub_batch_historyWhereInput[]
+    NOT?: department_sub_batch_historyWhereInput | department_sub_batch_historyWhereInput[]
+    id?: IntFilter<"department_sub_batch_history"> | number
+    department_sub_batch_id?: IntNullableFilter<"department_sub_batch_history"> | number | null
+    sub_batch_id?: IntNullableFilter<"department_sub_batch_history"> | number | null
+    from_stage?: EnumDepartmentStageNullableFilter<"department_sub_batch_history"> | $Enums.DepartmentStage | null
+    to_stage?: EnumDepartmentStageFilter<"department_sub_batch_history"> | $Enums.DepartmentStage
+    from_department_id?: IntNullableFilter<"department_sub_batch_history"> | number | null
+    to_department_id?: IntNullableFilter<"department_sub_batch_history"> | number | null
+    action_by_user_id?: IntNullableFilter<"department_sub_batch_history"> | number | null
+    reason?: StringNullableFilter<"department_sub_batch_history"> | string | null
+    createdAt?: DateTimeFilter<"department_sub_batch_history"> | Date | string
+    department_sub_batch?: XOR<Department_sub_batchesNullableScalarRelationFilter, department_sub_batchesWhereInput> | null
+  }
+
+  export type department_sub_batch_historyOrderByWithRelationInput = {
+    id?: SortOrder
+    department_sub_batch_id?: SortOrderInput | SortOrder
+    sub_batch_id?: SortOrderInput | SortOrder
+    from_stage?: SortOrderInput | SortOrder
+    to_stage?: SortOrder
+    from_department_id?: SortOrderInput | SortOrder
+    to_department_id?: SortOrderInput | SortOrder
+    action_by_user_id?: SortOrderInput | SortOrder
+    reason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    department_sub_batch?: department_sub_batchesOrderByWithRelationInput
+  }
+
+  export type department_sub_batch_historyWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: department_sub_batch_historyWhereInput | department_sub_batch_historyWhereInput[]
+    OR?: department_sub_batch_historyWhereInput[]
+    NOT?: department_sub_batch_historyWhereInput | department_sub_batch_historyWhereInput[]
+    department_sub_batch_id?: IntNullableFilter<"department_sub_batch_history"> | number | null
+    sub_batch_id?: IntNullableFilter<"department_sub_batch_history"> | number | null
+    from_stage?: EnumDepartmentStageNullableFilter<"department_sub_batch_history"> | $Enums.DepartmentStage | null
+    to_stage?: EnumDepartmentStageFilter<"department_sub_batch_history"> | $Enums.DepartmentStage
+    from_department_id?: IntNullableFilter<"department_sub_batch_history"> | number | null
+    to_department_id?: IntNullableFilter<"department_sub_batch_history"> | number | null
+    action_by_user_id?: IntNullableFilter<"department_sub_batch_history"> | number | null
+    reason?: StringNullableFilter<"department_sub_batch_history"> | string | null
+    createdAt?: DateTimeFilter<"department_sub_batch_history"> | Date | string
+    department_sub_batch?: XOR<Department_sub_batchesNullableScalarRelationFilter, department_sub_batchesWhereInput> | null
+  }, "id">
+
+  export type department_sub_batch_historyOrderByWithAggregationInput = {
+    id?: SortOrder
+    department_sub_batch_id?: SortOrderInput | SortOrder
+    sub_batch_id?: SortOrderInput | SortOrder
+    from_stage?: SortOrderInput | SortOrder
+    to_stage?: SortOrder
+    from_department_id?: SortOrderInput | SortOrder
+    to_department_id?: SortOrderInput | SortOrder
+    action_by_user_id?: SortOrderInput | SortOrder
+    reason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: department_sub_batch_historyCountOrderByAggregateInput
+    _avg?: department_sub_batch_historyAvgOrderByAggregateInput
+    _max?: department_sub_batch_historyMaxOrderByAggregateInput
+    _min?: department_sub_batch_historyMinOrderByAggregateInput
+    _sum?: department_sub_batch_historySumOrderByAggregateInput
+  }
+
+  export type department_sub_batch_historyScalarWhereWithAggregatesInput = {
+    AND?: department_sub_batch_historyScalarWhereWithAggregatesInput | department_sub_batch_historyScalarWhereWithAggregatesInput[]
+    OR?: department_sub_batch_historyScalarWhereWithAggregatesInput[]
+    NOT?: department_sub_batch_historyScalarWhereWithAggregatesInput | department_sub_batch_historyScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"department_sub_batch_history"> | number
+    department_sub_batch_id?: IntNullableWithAggregatesFilter<"department_sub_batch_history"> | number | null
+    sub_batch_id?: IntNullableWithAggregatesFilter<"department_sub_batch_history"> | number | null
+    from_stage?: EnumDepartmentStageNullableWithAggregatesFilter<"department_sub_batch_history"> | $Enums.DepartmentStage | null
+    to_stage?: EnumDepartmentStageWithAggregatesFilter<"department_sub_batch_history"> | $Enums.DepartmentStage
+    from_department_id?: IntNullableWithAggregatesFilter<"department_sub_batch_history"> | number | null
+    to_department_id?: IntNullableWithAggregatesFilter<"department_sub_batch_history"> | number | null
+    action_by_user_id?: IntNullableWithAggregatesFilter<"department_sub_batch_history"> | number | null
+    reason?: StringNullableWithAggregatesFilter<"department_sub_batch_history"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"department_sub_batch_history"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -22327,6 +29288,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredCreateNestedManyWithoutSub_batchInput
     dept_links?: department_sub_batchesCreateNestedManyWithoutSub_batchInput
     worker_logs?: worker_logsCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesUncheckedCreateInput = {
@@ -22345,6 +29307,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSub_batchInput
     dept_links?: department_sub_batchesUncheckedCreateNestedManyWithoutSub_batchInput
     worker_logs?: worker_logsUncheckedCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsUncheckedCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesUpdateInput = {
@@ -22362,6 +29325,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUpdateManyWithoutSub_batchNestedInput
     dept_links?: department_sub_batchesUpdateManyWithoutSub_batchNestedInput
     worker_logs?: worker_logsUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUpdateManyWithoutSub_batchNestedInput
   }
 
   export type sub_batchesUncheckedUpdateInput = {
@@ -22380,6 +29344,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSub_batchNestedInput
     dept_links?: department_sub_batchesUncheckedUpdateManyWithoutSub_batchNestedInput
     worker_logs?: worker_logsUncheckedUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUncheckedUpdateManyWithoutSub_batchNestedInput
   }
 
   export type sub_batchesCreateManyInput = {
@@ -22616,6 +29581,8 @@ export namespace Prisma {
     dept_batches?: department_sub_batchesCreateNestedManyWithoutDepartmentInput
     rejected?: sub_batch_rejectedCreateNestedManyWithoutSent_to_departmentInput
     altered?: sub_batch_alteredCreateNestedManyWithoutSent_to_departmentInput
+    workflow_steps?: workflow_stepsCreateNestedManyWithoutDepartmentInput
+    sub_batch_steps?: sub_batch_workflow_stepsCreateNestedManyWithoutDepartmentInput
   }
 
   export type departmentsUncheckedCreateInput = {
@@ -22629,6 +29596,8 @@ export namespace Prisma {
     dept_batches?: department_sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
     rejected?: sub_batch_rejectedUncheckedCreateNestedManyWithoutSent_to_departmentInput
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSent_to_departmentInput
+    workflow_steps?: workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+    sub_batch_steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type departmentsUpdateInput = {
@@ -22641,6 +29610,8 @@ export namespace Prisma {
     dept_batches?: department_sub_batchesUpdateManyWithoutDepartmentNestedInput
     rejected?: sub_batch_rejectedUpdateManyWithoutSent_to_departmentNestedInput
     altered?: sub_batch_alteredUpdateManyWithoutSent_to_departmentNestedInput
+    workflow_steps?: workflow_stepsUpdateManyWithoutDepartmentNestedInput
+    sub_batch_steps?: sub_batch_workflow_stepsUpdateManyWithoutDepartmentNestedInput
   }
 
   export type departmentsUncheckedUpdateInput = {
@@ -22654,6 +29625,8 @@ export namespace Prisma {
     dept_batches?: department_sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
     rejected?: sub_batch_rejectedUncheckedUpdateManyWithoutSent_to_departmentNestedInput
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSent_to_departmentNestedInput
+    workflow_steps?: workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+    sub_batch_steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type departmentsCreateManyInput = {
@@ -22721,41 +29694,78 @@ export namespace Prisma {
   }
 
   export type department_sub_batchesCreateInput = {
+    stage?: $Enums.DepartmentStage
+    is_current?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assigned_worker?: workersCreateNestedOneWithoutDepartment_assignmentsInput
     department?: departmentsCreateNestedOneWithoutDept_batchesInput
     sub_batch?: sub_batchesCreateNestedOneWithoutDept_linksInput
+    history?: department_sub_batch_historyCreateNestedManyWithoutDepartment_sub_batchInput
   }
 
   export type department_sub_batchesUncheckedCreateInput = {
     id?: number
     department_id?: number | null
     sub_batch_id?: number | null
+    stage?: $Enums.DepartmentStage
+    is_current?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assigned_worker_id?: number | null
+    history?: department_sub_batch_historyUncheckedCreateNestedManyWithoutDepartment_sub_batchInput
   }
 
   export type department_sub_batchesUpdateInput = {
+    stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assigned_worker?: workersUpdateOneWithoutDepartment_assignmentsNestedInput
     department?: departmentsUpdateOneWithoutDept_batchesNestedInput
     sub_batch?: sub_batchesUpdateOneWithoutDept_linksNestedInput
+    history?: department_sub_batch_historyUpdateManyWithoutDepartment_sub_batchNestedInput
   }
 
   export type department_sub_batchesUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     department_id?: NullableIntFieldUpdateOperationsInput | number | null
     sub_batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assigned_worker_id?: NullableIntFieldUpdateOperationsInput | number | null
+    history?: department_sub_batch_historyUncheckedUpdateManyWithoutDepartment_sub_batchNestedInput
   }
 
   export type department_sub_batchesCreateManyInput = {
     id?: number
     department_id?: number | null
     sub_batch_id?: number | null
+    stage?: $Enums.DepartmentStage
+    is_current?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assigned_worker_id?: number | null
   }
 
   export type department_sub_batchesUpdateManyMutationInput = {
-
+    stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type department_sub_batchesUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     department_id?: NullableIntFieldUpdateOperationsInput | number | null
     sub_batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assigned_worker_id?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type clientsCreateInput = {
@@ -22827,6 +29837,7 @@ export namespace Prisma {
     department?: departmentsCreateNestedOneWithoutWorkersInput
     worker_logs?: worker_logsCreateNestedManyWithoutWorkerInput
     dept_workers?: department_workersCreateNestedManyWithoutWorkerInput
+    department_assignments?: department_sub_batchesCreateNestedManyWithoutAssigned_workerInput
   }
 
   export type workersUncheckedCreateInput = {
@@ -22839,6 +29850,7 @@ export namespace Prisma {
     wage_rate: number
     worker_logs?: worker_logsUncheckedCreateNestedManyWithoutWorkerInput
     dept_workers?: department_workersUncheckedCreateNestedManyWithoutWorkerInput
+    department_assignments?: department_sub_batchesUncheckedCreateNestedManyWithoutAssigned_workerInput
   }
 
   export type workersUpdateInput = {
@@ -22850,6 +29862,7 @@ export namespace Prisma {
     department?: departmentsUpdateOneWithoutWorkersNestedInput
     worker_logs?: worker_logsUpdateManyWithoutWorkerNestedInput
     dept_workers?: department_workersUpdateManyWithoutWorkerNestedInput
+    department_assignments?: department_sub_batchesUpdateManyWithoutAssigned_workerNestedInput
   }
 
   export type workersUncheckedUpdateInput = {
@@ -22862,6 +29875,7 @@ export namespace Prisma {
     wage_rate?: FloatFieldUpdateOperationsInput | number
     worker_logs?: worker_logsUncheckedUpdateManyWithoutWorkerNestedInput
     dept_workers?: department_workersUncheckedUpdateManyWithoutWorkerNestedInput
+    department_assignments?: department_sub_batchesUncheckedUpdateManyWithoutAssigned_workerNestedInput
   }
 
   export type workersCreateManyInput = {
@@ -23041,6 +30055,280 @@ export namespace Prisma {
   export type categoriesUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     category_name?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type workflow_templatesCreateInput = {
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    steps?: workflow_stepsCreateNestedManyWithoutWorkflow_templateInput
+  }
+
+  export type workflow_templatesUncheckedCreateInput = {
+    id?: number
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    steps?: workflow_stepsUncheckedCreateNestedManyWithoutWorkflow_templateInput
+  }
+
+  export type workflow_templatesUpdateInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    steps?: workflow_stepsUpdateManyWithoutWorkflow_templateNestedInput
+  }
+
+  export type workflow_templatesUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    steps?: workflow_stepsUncheckedUpdateManyWithoutWorkflow_templateNestedInput
+  }
+
+  export type workflow_templatesCreateManyInput = {
+    id?: number
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+  }
+
+  export type workflow_templatesUpdateManyMutationInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type workflow_templatesUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type workflow_stepsCreateInput = {
+    step_index: number
+    department?: departmentsCreateNestedOneWithoutWorkflow_stepsInput
+    workflow_template?: workflow_templatesCreateNestedOneWithoutStepsInput
+  }
+
+  export type workflow_stepsUncheckedCreateInput = {
+    id?: number
+    workflow_template_id?: number | null
+    step_index: number
+    department_id: number
+  }
+
+  export type workflow_stepsUpdateInput = {
+    step_index?: IntFieldUpdateOperationsInput | number
+    department?: departmentsUpdateOneWithoutWorkflow_stepsNestedInput
+    workflow_template?: workflow_templatesUpdateOneWithoutStepsNestedInput
+  }
+
+  export type workflow_stepsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    workflow_template_id?: NullableIntFieldUpdateOperationsInput | number | null
+    step_index?: IntFieldUpdateOperationsInput | number
+    department_id?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type workflow_stepsCreateManyInput = {
+    id?: number
+    workflow_template_id?: number | null
+    step_index: number
+    department_id: number
+  }
+
+  export type workflow_stepsUpdateManyMutationInput = {
+    step_index?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type workflow_stepsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    workflow_template_id?: NullableIntFieldUpdateOperationsInput | number | null
+    step_index?: IntFieldUpdateOperationsInput | number
+    department_id?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type sub_batch_workflowsCreateInput = {
+    current_step_index?: number
+    createdAt?: Date | string
+    sub_batch?: sub_batchesCreateNestedOneWithoutWorkflowsInput
+    steps?: sub_batch_workflow_stepsCreateNestedManyWithoutSub_batch_workflowInput
+  }
+
+  export type sub_batch_workflowsUncheckedCreateInput = {
+    id?: number
+    sub_batch_id: number
+    current_step_index?: number
+    createdAt?: Date | string
+    steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutSub_batch_workflowInput
+  }
+
+  export type sub_batch_workflowsUpdateInput = {
+    current_step_index?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sub_batch?: sub_batchesUpdateOneWithoutWorkflowsNestedInput
+    steps?: sub_batch_workflow_stepsUpdateManyWithoutSub_batch_workflowNestedInput
+  }
+
+  export type sub_batch_workflowsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    sub_batch_id?: IntFieldUpdateOperationsInput | number
+    current_step_index?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutSub_batch_workflowNestedInput
+  }
+
+  export type sub_batch_workflowsCreateManyInput = {
+    id?: number
+    sub_batch_id: number
+    current_step_index?: number
+    createdAt?: Date | string
+  }
+
+  export type sub_batch_workflowsUpdateManyMutationInput = {
+    current_step_index?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type sub_batch_workflowsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    sub_batch_id?: IntFieldUpdateOperationsInput | number
+    current_step_index?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type sub_batch_workflow_stepsCreateInput = {
+    step_index: number
+    department?: departmentsCreateNestedOneWithoutSub_batch_stepsInput
+    sub_batch_workflow?: sub_batch_workflowsCreateNestedOneWithoutStepsInput
+  }
+
+  export type sub_batch_workflow_stepsUncheckedCreateInput = {
+    id?: number
+    sub_batch_workflow_id?: number | null
+    step_index: number
+    department_id: number
+  }
+
+  export type sub_batch_workflow_stepsUpdateInput = {
+    step_index?: IntFieldUpdateOperationsInput | number
+    department?: departmentsUpdateOneWithoutSub_batch_stepsNestedInput
+    sub_batch_workflow?: sub_batch_workflowsUpdateOneWithoutStepsNestedInput
+  }
+
+  export type sub_batch_workflow_stepsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    sub_batch_workflow_id?: NullableIntFieldUpdateOperationsInput | number | null
+    step_index?: IntFieldUpdateOperationsInput | number
+    department_id?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type sub_batch_workflow_stepsCreateManyInput = {
+    id?: number
+    sub_batch_workflow_id?: number | null
+    step_index: number
+    department_id: number
+  }
+
+  export type sub_batch_workflow_stepsUpdateManyMutationInput = {
+    step_index?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type sub_batch_workflow_stepsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    sub_batch_workflow_id?: NullableIntFieldUpdateOperationsInput | number | null
+    step_index?: IntFieldUpdateOperationsInput | number
+    department_id?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type department_sub_batch_historyCreateInput = {
+    sub_batch_id?: number | null
+    from_stage?: $Enums.DepartmentStage | null
+    to_stage: $Enums.DepartmentStage
+    from_department_id?: number | null
+    to_department_id?: number | null
+    action_by_user_id?: number | null
+    reason?: string | null
+    createdAt?: Date | string
+    department_sub_batch?: department_sub_batchesCreateNestedOneWithoutHistoryInput
+  }
+
+  export type department_sub_batch_historyUncheckedCreateInput = {
+    id?: number
+    department_sub_batch_id?: number | null
+    sub_batch_id?: number | null
+    from_stage?: $Enums.DepartmentStage | null
+    to_stage: $Enums.DepartmentStage
+    from_department_id?: number | null
+    to_department_id?: number | null
+    action_by_user_id?: number | null
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type department_sub_batch_historyUpdateInput = {
+    sub_batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    from_stage?: NullableEnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage | null
+    to_stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    from_department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    to_department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    action_by_user_id?: NullableIntFieldUpdateOperationsInput | number | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    department_sub_batch?: department_sub_batchesUpdateOneWithoutHistoryNestedInput
+  }
+
+  export type department_sub_batch_historyUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    department_sub_batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    sub_batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    from_stage?: NullableEnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage | null
+    to_stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    from_department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    to_department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    action_by_user_id?: NullableIntFieldUpdateOperationsInput | number | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type department_sub_batch_historyCreateManyInput = {
+    id?: number
+    department_sub_batch_id?: number | null
+    sub_batch_id?: number | null
+    from_stage?: $Enums.DepartmentStage | null
+    to_stage: $Enums.DepartmentStage
+    from_department_id?: number | null
+    to_department_id?: number | null
+    action_by_user_id?: number | null
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type department_sub_batch_historyUpdateManyMutationInput = {
+    sub_batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    from_stage?: NullableEnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage | null
+    to_stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    from_department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    to_department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    action_by_user_id?: NullableIntFieldUpdateOperationsInput | number | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type department_sub_batch_historyUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    department_sub_batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    sub_batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    from_stage?: NullableEnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage | null
+    to_stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    from_department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    to_department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    action_by_user_id?: NullableIntFieldUpdateOperationsInput | number | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -23348,6 +30636,12 @@ export namespace Prisma {
     none?: worker_logsWhereInput
   }
 
+  export type Sub_batch_workflowsListRelationFilter = {
+    every?: sub_batch_workflowsWhereInput
+    some?: sub_batch_workflowsWhereInput
+    none?: sub_batch_workflowsWhereInput
+  }
+
   export type sub_batch_size_detailsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -23369,6 +30663,10 @@ export namespace Prisma {
   }
 
   export type worker_logsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type sub_batch_workflowsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -23600,11 +30898,31 @@ export namespace Prisma {
     none?: department_workersWhereInput
   }
 
+  export type Workflow_stepsListRelationFilter = {
+    every?: workflow_stepsWhereInput
+    some?: workflow_stepsWhereInput
+    none?: workflow_stepsWhereInput
+  }
+
+  export type Sub_batch_workflow_stepsListRelationFilter = {
+    every?: sub_batch_workflow_stepsWhereInput
+    some?: sub_batch_workflow_stepsWhereInput
+    none?: sub_batch_workflow_stepsWhereInput
+  }
+
   export type workersOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type department_workersOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type workflow_stepsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type sub_batch_workflow_stepsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -23693,34 +31011,91 @@ export namespace Prisma {
     worker_id?: SortOrder
   }
 
+  export type EnumDepartmentStageFilter<$PrismaModel = never> = {
+    equals?: $Enums.DepartmentStage | EnumDepartmentStageFieldRefInput<$PrismaModel>
+    in?: $Enums.DepartmentStage[] | ListEnumDepartmentStageFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DepartmentStage[] | ListEnumDepartmentStageFieldRefInput<$PrismaModel>
+    not?: NestedEnumDepartmentStageFilter<$PrismaModel> | $Enums.DepartmentStage
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type Department_sub_batch_historyListRelationFilter = {
+    every?: department_sub_batch_historyWhereInput
+    some?: department_sub_batch_historyWhereInput
+    none?: department_sub_batch_historyWhereInput
+  }
+
+  export type department_sub_batch_historyOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type department_sub_batchesCountOrderByAggregateInput = {
     id?: SortOrder
     department_id?: SortOrder
     sub_batch_id?: SortOrder
+    stage?: SortOrder
+    is_current?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    assigned_worker_id?: SortOrder
   }
 
   export type department_sub_batchesAvgOrderByAggregateInput = {
     id?: SortOrder
     department_id?: SortOrder
     sub_batch_id?: SortOrder
+    assigned_worker_id?: SortOrder
   }
 
   export type department_sub_batchesMaxOrderByAggregateInput = {
     id?: SortOrder
     department_id?: SortOrder
     sub_batch_id?: SortOrder
+    stage?: SortOrder
+    is_current?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    assigned_worker_id?: SortOrder
   }
 
   export type department_sub_batchesMinOrderByAggregateInput = {
     id?: SortOrder
     department_id?: SortOrder
     sub_batch_id?: SortOrder
+    stage?: SortOrder
+    is_current?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    assigned_worker_id?: SortOrder
   }
 
   export type department_sub_batchesSumOrderByAggregateInput = {
     id?: SortOrder
     department_id?: SortOrder
     sub_batch_id?: SortOrder
+    assigned_worker_id?: SortOrder
+  }
+
+  export type EnumDepartmentStageWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DepartmentStage | EnumDepartmentStageFieldRefInput<$PrismaModel>
+    in?: $Enums.DepartmentStage[] | ListEnumDepartmentStageFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DepartmentStage[] | ListEnumDepartmentStageFieldRefInput<$PrismaModel>
+    not?: NestedEnumDepartmentStageWithAggregatesFilter<$PrismaModel> | $Enums.DepartmentStage
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDepartmentStageFilter<$PrismaModel>
+    _max?: NestedEnumDepartmentStageFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type clientsCountOrderByAggregateInput = {
@@ -23931,6 +31306,227 @@ export namespace Prisma {
 
   export type categoriesSumOrderByAggregateInput = {
     id?: SortOrder
+  }
+
+  export type workflow_templatesCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type workflow_templatesAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type workflow_templatesMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type workflow_templatesMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type workflow_templatesSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type Workflow_templatesNullableScalarRelationFilter = {
+    is?: workflow_templatesWhereInput | null
+    isNot?: workflow_templatesWhereInput | null
+  }
+
+  export type workflow_stepsCountOrderByAggregateInput = {
+    id?: SortOrder
+    workflow_template_id?: SortOrder
+    step_index?: SortOrder
+    department_id?: SortOrder
+  }
+
+  export type workflow_stepsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    workflow_template_id?: SortOrder
+    step_index?: SortOrder
+    department_id?: SortOrder
+  }
+
+  export type workflow_stepsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    workflow_template_id?: SortOrder
+    step_index?: SortOrder
+    department_id?: SortOrder
+  }
+
+  export type workflow_stepsMinOrderByAggregateInput = {
+    id?: SortOrder
+    workflow_template_id?: SortOrder
+    step_index?: SortOrder
+    department_id?: SortOrder
+  }
+
+  export type workflow_stepsSumOrderByAggregateInput = {
+    id?: SortOrder
+    workflow_template_id?: SortOrder
+    step_index?: SortOrder
+    department_id?: SortOrder
+  }
+
+  export type sub_batch_workflowsCountOrderByAggregateInput = {
+    id?: SortOrder
+    sub_batch_id?: SortOrder
+    current_step_index?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type sub_batch_workflowsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    sub_batch_id?: SortOrder
+    current_step_index?: SortOrder
+  }
+
+  export type sub_batch_workflowsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    sub_batch_id?: SortOrder
+    current_step_index?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type sub_batch_workflowsMinOrderByAggregateInput = {
+    id?: SortOrder
+    sub_batch_id?: SortOrder
+    current_step_index?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type sub_batch_workflowsSumOrderByAggregateInput = {
+    id?: SortOrder
+    sub_batch_id?: SortOrder
+    current_step_index?: SortOrder
+  }
+
+  export type Sub_batch_workflowsNullableScalarRelationFilter = {
+    is?: sub_batch_workflowsWhereInput | null
+    isNot?: sub_batch_workflowsWhereInput | null
+  }
+
+  export type sub_batch_workflow_stepsCountOrderByAggregateInput = {
+    id?: SortOrder
+    sub_batch_workflow_id?: SortOrder
+    step_index?: SortOrder
+    department_id?: SortOrder
+  }
+
+  export type sub_batch_workflow_stepsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    sub_batch_workflow_id?: SortOrder
+    step_index?: SortOrder
+    department_id?: SortOrder
+  }
+
+  export type sub_batch_workflow_stepsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    sub_batch_workflow_id?: SortOrder
+    step_index?: SortOrder
+    department_id?: SortOrder
+  }
+
+  export type sub_batch_workflow_stepsMinOrderByAggregateInput = {
+    id?: SortOrder
+    sub_batch_workflow_id?: SortOrder
+    step_index?: SortOrder
+    department_id?: SortOrder
+  }
+
+  export type sub_batch_workflow_stepsSumOrderByAggregateInput = {
+    id?: SortOrder
+    sub_batch_workflow_id?: SortOrder
+    step_index?: SortOrder
+    department_id?: SortOrder
+  }
+
+  export type EnumDepartmentStageNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.DepartmentStage | EnumDepartmentStageFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DepartmentStage[] | ListEnumDepartmentStageFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DepartmentStage[] | ListEnumDepartmentStageFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDepartmentStageNullableFilter<$PrismaModel> | $Enums.DepartmentStage | null
+  }
+
+  export type Department_sub_batchesNullableScalarRelationFilter = {
+    is?: department_sub_batchesWhereInput | null
+    isNot?: department_sub_batchesWhereInput | null
+  }
+
+  export type department_sub_batch_historyCountOrderByAggregateInput = {
+    id?: SortOrder
+    department_sub_batch_id?: SortOrder
+    sub_batch_id?: SortOrder
+    from_stage?: SortOrder
+    to_stage?: SortOrder
+    from_department_id?: SortOrder
+    to_department_id?: SortOrder
+    action_by_user_id?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type department_sub_batch_historyAvgOrderByAggregateInput = {
+    id?: SortOrder
+    department_sub_batch_id?: SortOrder
+    sub_batch_id?: SortOrder
+    from_department_id?: SortOrder
+    to_department_id?: SortOrder
+    action_by_user_id?: SortOrder
+  }
+
+  export type department_sub_batch_historyMaxOrderByAggregateInput = {
+    id?: SortOrder
+    department_sub_batch_id?: SortOrder
+    sub_batch_id?: SortOrder
+    from_stage?: SortOrder
+    to_stage?: SortOrder
+    from_department_id?: SortOrder
+    to_department_id?: SortOrder
+    action_by_user_id?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type department_sub_batch_historyMinOrderByAggregateInput = {
+    id?: SortOrder
+    department_sub_batch_id?: SortOrder
+    sub_batch_id?: SortOrder
+    from_stage?: SortOrder
+    to_stage?: SortOrder
+    from_department_id?: SortOrder
+    to_department_id?: SortOrder
+    action_by_user_id?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type department_sub_batch_historySumOrderByAggregateInput = {
+    id?: SortOrder
+    department_sub_batch_id?: SortOrder
+    sub_batch_id?: SortOrder
+    from_department_id?: SortOrder
+    to_department_id?: SortOrder
+    action_by_user_id?: SortOrder
+  }
+
+  export type EnumDepartmentStageNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DepartmentStage | EnumDepartmentStageFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DepartmentStage[] | ListEnumDepartmentStageFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DepartmentStage[] | ListEnumDepartmentStageFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDepartmentStageNullableWithAggregatesFilter<$PrismaModel> | $Enums.DepartmentStage | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumDepartmentStageNullableFilter<$PrismaModel>
+    _max?: NestedEnumDepartmentStageNullableFilter<$PrismaModel>
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -24191,6 +31787,13 @@ export namespace Prisma {
     connect?: worker_logsWhereUniqueInput | worker_logsWhereUniqueInput[]
   }
 
+  export type sub_batch_workflowsCreateNestedManyWithoutSub_batchInput = {
+    create?: XOR<sub_batch_workflowsCreateWithoutSub_batchInput, sub_batch_workflowsUncheckedCreateWithoutSub_batchInput> | sub_batch_workflowsCreateWithoutSub_batchInput[] | sub_batch_workflowsUncheckedCreateWithoutSub_batchInput[]
+    connectOrCreate?: sub_batch_workflowsCreateOrConnectWithoutSub_batchInput | sub_batch_workflowsCreateOrConnectWithoutSub_batchInput[]
+    createMany?: sub_batch_workflowsCreateManySub_batchInputEnvelope
+    connect?: sub_batch_workflowsWhereUniqueInput | sub_batch_workflowsWhereUniqueInput[]
+  }
+
   export type sub_batch_size_detailsUncheckedCreateNestedManyWithoutSub_batchInput = {
     create?: XOR<sub_batch_size_detailsCreateWithoutSub_batchInput, sub_batch_size_detailsUncheckedCreateWithoutSub_batchInput> | sub_batch_size_detailsCreateWithoutSub_batchInput[] | sub_batch_size_detailsUncheckedCreateWithoutSub_batchInput[]
     connectOrCreate?: sub_batch_size_detailsCreateOrConnectWithoutSub_batchInput | sub_batch_size_detailsCreateOrConnectWithoutSub_batchInput[]
@@ -24231,6 +31834,13 @@ export namespace Prisma {
     connectOrCreate?: worker_logsCreateOrConnectWithoutSub_batchInput | worker_logsCreateOrConnectWithoutSub_batchInput[]
     createMany?: worker_logsCreateManySub_batchInputEnvelope
     connect?: worker_logsWhereUniqueInput | worker_logsWhereUniqueInput[]
+  }
+
+  export type sub_batch_workflowsUncheckedCreateNestedManyWithoutSub_batchInput = {
+    create?: XOR<sub_batch_workflowsCreateWithoutSub_batchInput, sub_batch_workflowsUncheckedCreateWithoutSub_batchInput> | sub_batch_workflowsCreateWithoutSub_batchInput[] | sub_batch_workflowsUncheckedCreateWithoutSub_batchInput[]
+    connectOrCreate?: sub_batch_workflowsCreateOrConnectWithoutSub_batchInput | sub_batch_workflowsCreateOrConnectWithoutSub_batchInput[]
+    createMany?: sub_batch_workflowsCreateManySub_batchInputEnvelope
+    connect?: sub_batch_workflowsWhereUniqueInput | sub_batch_workflowsWhereUniqueInput[]
   }
 
   export type rollsUpdateOneWithoutSub_batchesNestedInput = {
@@ -24347,6 +31957,20 @@ export namespace Prisma {
     deleteMany?: worker_logsScalarWhereInput | worker_logsScalarWhereInput[]
   }
 
+  export type sub_batch_workflowsUpdateManyWithoutSub_batchNestedInput = {
+    create?: XOR<sub_batch_workflowsCreateWithoutSub_batchInput, sub_batch_workflowsUncheckedCreateWithoutSub_batchInput> | sub_batch_workflowsCreateWithoutSub_batchInput[] | sub_batch_workflowsUncheckedCreateWithoutSub_batchInput[]
+    connectOrCreate?: sub_batch_workflowsCreateOrConnectWithoutSub_batchInput | sub_batch_workflowsCreateOrConnectWithoutSub_batchInput[]
+    upsert?: sub_batch_workflowsUpsertWithWhereUniqueWithoutSub_batchInput | sub_batch_workflowsUpsertWithWhereUniqueWithoutSub_batchInput[]
+    createMany?: sub_batch_workflowsCreateManySub_batchInputEnvelope
+    set?: sub_batch_workflowsWhereUniqueInput | sub_batch_workflowsWhereUniqueInput[]
+    disconnect?: sub_batch_workflowsWhereUniqueInput | sub_batch_workflowsWhereUniqueInput[]
+    delete?: sub_batch_workflowsWhereUniqueInput | sub_batch_workflowsWhereUniqueInput[]
+    connect?: sub_batch_workflowsWhereUniqueInput | sub_batch_workflowsWhereUniqueInput[]
+    update?: sub_batch_workflowsUpdateWithWhereUniqueWithoutSub_batchInput | sub_batch_workflowsUpdateWithWhereUniqueWithoutSub_batchInput[]
+    updateMany?: sub_batch_workflowsUpdateManyWithWhereWithoutSub_batchInput | sub_batch_workflowsUpdateManyWithWhereWithoutSub_batchInput[]
+    deleteMany?: sub_batch_workflowsScalarWhereInput | sub_batch_workflowsScalarWhereInput[]
+  }
+
   export type sub_batch_size_detailsUncheckedUpdateManyWithoutSub_batchNestedInput = {
     create?: XOR<sub_batch_size_detailsCreateWithoutSub_batchInput, sub_batch_size_detailsUncheckedCreateWithoutSub_batchInput> | sub_batch_size_detailsCreateWithoutSub_batchInput[] | sub_batch_size_detailsUncheckedCreateWithoutSub_batchInput[]
     connectOrCreate?: sub_batch_size_detailsCreateOrConnectWithoutSub_batchInput | sub_batch_size_detailsCreateOrConnectWithoutSub_batchInput[]
@@ -24429,6 +32053,20 @@ export namespace Prisma {
     update?: worker_logsUpdateWithWhereUniqueWithoutSub_batchInput | worker_logsUpdateWithWhereUniqueWithoutSub_batchInput[]
     updateMany?: worker_logsUpdateManyWithWhereWithoutSub_batchInput | worker_logsUpdateManyWithWhereWithoutSub_batchInput[]
     deleteMany?: worker_logsScalarWhereInput | worker_logsScalarWhereInput[]
+  }
+
+  export type sub_batch_workflowsUncheckedUpdateManyWithoutSub_batchNestedInput = {
+    create?: XOR<sub_batch_workflowsCreateWithoutSub_batchInput, sub_batch_workflowsUncheckedCreateWithoutSub_batchInput> | sub_batch_workflowsCreateWithoutSub_batchInput[] | sub_batch_workflowsUncheckedCreateWithoutSub_batchInput[]
+    connectOrCreate?: sub_batch_workflowsCreateOrConnectWithoutSub_batchInput | sub_batch_workflowsCreateOrConnectWithoutSub_batchInput[]
+    upsert?: sub_batch_workflowsUpsertWithWhereUniqueWithoutSub_batchInput | sub_batch_workflowsUpsertWithWhereUniqueWithoutSub_batchInput[]
+    createMany?: sub_batch_workflowsCreateManySub_batchInputEnvelope
+    set?: sub_batch_workflowsWhereUniqueInput | sub_batch_workflowsWhereUniqueInput[]
+    disconnect?: sub_batch_workflowsWhereUniqueInput | sub_batch_workflowsWhereUniqueInput[]
+    delete?: sub_batch_workflowsWhereUniqueInput | sub_batch_workflowsWhereUniqueInput[]
+    connect?: sub_batch_workflowsWhereUniqueInput | sub_batch_workflowsWhereUniqueInput[]
+    update?: sub_batch_workflowsUpdateWithWhereUniqueWithoutSub_batchInput | sub_batch_workflowsUpdateWithWhereUniqueWithoutSub_batchInput[]
+    updateMany?: sub_batch_workflowsUpdateManyWithWhereWithoutSub_batchInput | sub_batch_workflowsUpdateManyWithWhereWithoutSub_batchInput[]
+    deleteMany?: sub_batch_workflowsScalarWhereInput | sub_batch_workflowsScalarWhereInput[]
   }
 
   export type sub_batchesCreateNestedOneWithoutSize_detailsInput = {
@@ -24569,6 +32207,20 @@ export namespace Prisma {
     connect?: sub_batch_alteredWhereUniqueInput | sub_batch_alteredWhereUniqueInput[]
   }
 
+  export type workflow_stepsCreateNestedManyWithoutDepartmentInput = {
+    create?: XOR<workflow_stepsCreateWithoutDepartmentInput, workflow_stepsUncheckedCreateWithoutDepartmentInput> | workflow_stepsCreateWithoutDepartmentInput[] | workflow_stepsUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: workflow_stepsCreateOrConnectWithoutDepartmentInput | workflow_stepsCreateOrConnectWithoutDepartmentInput[]
+    createMany?: workflow_stepsCreateManyDepartmentInputEnvelope
+    connect?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+  }
+
+  export type sub_batch_workflow_stepsCreateNestedManyWithoutDepartmentInput = {
+    create?: XOR<sub_batch_workflow_stepsCreateWithoutDepartmentInput, sub_batch_workflow_stepsUncheckedCreateWithoutDepartmentInput> | sub_batch_workflow_stepsCreateWithoutDepartmentInput[] | sub_batch_workflow_stepsUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: sub_batch_workflow_stepsCreateOrConnectWithoutDepartmentInput | sub_batch_workflow_stepsCreateOrConnectWithoutDepartmentInput[]
+    createMany?: sub_batch_workflow_stepsCreateManyDepartmentInputEnvelope
+    connect?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+  }
+
   export type sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput = {
     create?: XOR<sub_batchesCreateWithoutDepartmentInput, sub_batchesUncheckedCreateWithoutDepartmentInput> | sub_batchesCreateWithoutDepartmentInput[] | sub_batchesUncheckedCreateWithoutDepartmentInput[]
     connectOrCreate?: sub_batchesCreateOrConnectWithoutDepartmentInput | sub_batchesCreateOrConnectWithoutDepartmentInput[]
@@ -24609,6 +32261,20 @@ export namespace Prisma {
     connectOrCreate?: sub_batch_alteredCreateOrConnectWithoutSent_to_departmentInput | sub_batch_alteredCreateOrConnectWithoutSent_to_departmentInput[]
     createMany?: sub_batch_alteredCreateManySent_to_departmentInputEnvelope
     connect?: sub_batch_alteredWhereUniqueInput | sub_batch_alteredWhereUniqueInput[]
+  }
+
+  export type workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput = {
+    create?: XOR<workflow_stepsCreateWithoutDepartmentInput, workflow_stepsUncheckedCreateWithoutDepartmentInput> | workflow_stepsCreateWithoutDepartmentInput[] | workflow_stepsUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: workflow_stepsCreateOrConnectWithoutDepartmentInput | workflow_stepsCreateOrConnectWithoutDepartmentInput[]
+    createMany?: workflow_stepsCreateManyDepartmentInputEnvelope
+    connect?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+  }
+
+  export type sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput = {
+    create?: XOR<sub_batch_workflow_stepsCreateWithoutDepartmentInput, sub_batch_workflow_stepsUncheckedCreateWithoutDepartmentInput> | sub_batch_workflow_stepsCreateWithoutDepartmentInput[] | sub_batch_workflow_stepsUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: sub_batch_workflow_stepsCreateOrConnectWithoutDepartmentInput | sub_batch_workflow_stepsCreateOrConnectWithoutDepartmentInput[]
+    createMany?: sub_batch_workflow_stepsCreateManyDepartmentInputEnvelope
+    connect?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -24699,6 +32365,34 @@ export namespace Prisma {
     deleteMany?: sub_batch_alteredScalarWhereInput | sub_batch_alteredScalarWhereInput[]
   }
 
+  export type workflow_stepsUpdateManyWithoutDepartmentNestedInput = {
+    create?: XOR<workflow_stepsCreateWithoutDepartmentInput, workflow_stepsUncheckedCreateWithoutDepartmentInput> | workflow_stepsCreateWithoutDepartmentInput[] | workflow_stepsUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: workflow_stepsCreateOrConnectWithoutDepartmentInput | workflow_stepsCreateOrConnectWithoutDepartmentInput[]
+    upsert?: workflow_stepsUpsertWithWhereUniqueWithoutDepartmentInput | workflow_stepsUpsertWithWhereUniqueWithoutDepartmentInput[]
+    createMany?: workflow_stepsCreateManyDepartmentInputEnvelope
+    set?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+    disconnect?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+    delete?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+    connect?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+    update?: workflow_stepsUpdateWithWhereUniqueWithoutDepartmentInput | workflow_stepsUpdateWithWhereUniqueWithoutDepartmentInput[]
+    updateMany?: workflow_stepsUpdateManyWithWhereWithoutDepartmentInput | workflow_stepsUpdateManyWithWhereWithoutDepartmentInput[]
+    deleteMany?: workflow_stepsScalarWhereInput | workflow_stepsScalarWhereInput[]
+  }
+
+  export type sub_batch_workflow_stepsUpdateManyWithoutDepartmentNestedInput = {
+    create?: XOR<sub_batch_workflow_stepsCreateWithoutDepartmentInput, sub_batch_workflow_stepsUncheckedCreateWithoutDepartmentInput> | sub_batch_workflow_stepsCreateWithoutDepartmentInput[] | sub_batch_workflow_stepsUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: sub_batch_workflow_stepsCreateOrConnectWithoutDepartmentInput | sub_batch_workflow_stepsCreateOrConnectWithoutDepartmentInput[]
+    upsert?: sub_batch_workflow_stepsUpsertWithWhereUniqueWithoutDepartmentInput | sub_batch_workflow_stepsUpsertWithWhereUniqueWithoutDepartmentInput[]
+    createMany?: sub_batch_workflow_stepsCreateManyDepartmentInputEnvelope
+    set?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+    disconnect?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+    delete?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+    connect?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+    update?: sub_batch_workflow_stepsUpdateWithWhereUniqueWithoutDepartmentInput | sub_batch_workflow_stepsUpdateWithWhereUniqueWithoutDepartmentInput[]
+    updateMany?: sub_batch_workflow_stepsUpdateManyWithWhereWithoutDepartmentInput | sub_batch_workflow_stepsUpdateManyWithWhereWithoutDepartmentInput[]
+    deleteMany?: sub_batch_workflow_stepsScalarWhereInput | sub_batch_workflow_stepsScalarWhereInput[]
+  }
+
   export type sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput = {
     create?: XOR<sub_batchesCreateWithoutDepartmentInput, sub_batchesUncheckedCreateWithoutDepartmentInput> | sub_batchesCreateWithoutDepartmentInput[] | sub_batchesUncheckedCreateWithoutDepartmentInput[]
     connectOrCreate?: sub_batchesCreateOrConnectWithoutDepartmentInput | sub_batchesCreateOrConnectWithoutDepartmentInput[]
@@ -24783,6 +32477,34 @@ export namespace Prisma {
     deleteMany?: sub_batch_alteredScalarWhereInput | sub_batch_alteredScalarWhereInput[]
   }
 
+  export type workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput = {
+    create?: XOR<workflow_stepsCreateWithoutDepartmentInput, workflow_stepsUncheckedCreateWithoutDepartmentInput> | workflow_stepsCreateWithoutDepartmentInput[] | workflow_stepsUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: workflow_stepsCreateOrConnectWithoutDepartmentInput | workflow_stepsCreateOrConnectWithoutDepartmentInput[]
+    upsert?: workflow_stepsUpsertWithWhereUniqueWithoutDepartmentInput | workflow_stepsUpsertWithWhereUniqueWithoutDepartmentInput[]
+    createMany?: workflow_stepsCreateManyDepartmentInputEnvelope
+    set?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+    disconnect?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+    delete?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+    connect?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+    update?: workflow_stepsUpdateWithWhereUniqueWithoutDepartmentInput | workflow_stepsUpdateWithWhereUniqueWithoutDepartmentInput[]
+    updateMany?: workflow_stepsUpdateManyWithWhereWithoutDepartmentInput | workflow_stepsUpdateManyWithWhereWithoutDepartmentInput[]
+    deleteMany?: workflow_stepsScalarWhereInput | workflow_stepsScalarWhereInput[]
+  }
+
+  export type sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput = {
+    create?: XOR<sub_batch_workflow_stepsCreateWithoutDepartmentInput, sub_batch_workflow_stepsUncheckedCreateWithoutDepartmentInput> | sub_batch_workflow_stepsCreateWithoutDepartmentInput[] | sub_batch_workflow_stepsUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: sub_batch_workflow_stepsCreateOrConnectWithoutDepartmentInput | sub_batch_workflow_stepsCreateOrConnectWithoutDepartmentInput[]
+    upsert?: sub_batch_workflow_stepsUpsertWithWhereUniqueWithoutDepartmentInput | sub_batch_workflow_stepsUpsertWithWhereUniqueWithoutDepartmentInput[]
+    createMany?: sub_batch_workflow_stepsCreateManyDepartmentInputEnvelope
+    set?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+    disconnect?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+    delete?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+    connect?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+    update?: sub_batch_workflow_stepsUpdateWithWhereUniqueWithoutDepartmentInput | sub_batch_workflow_stepsUpdateWithWhereUniqueWithoutDepartmentInput[]
+    updateMany?: sub_batch_workflow_stepsUpdateManyWithWhereWithoutDepartmentInput | sub_batch_workflow_stepsUpdateManyWithWhereWithoutDepartmentInput[]
+    deleteMany?: sub_batch_workflow_stepsScalarWhereInput | sub_batch_workflow_stepsScalarWhereInput[]
+  }
+
   export type departmentsCreateNestedOneWithoutDept_workersInput = {
     create?: XOR<departmentsCreateWithoutDept_workersInput, departmentsUncheckedCreateWithoutDept_workersInput>
     connectOrCreate?: departmentsCreateOrConnectWithoutDept_workersInput
@@ -24815,6 +32537,12 @@ export namespace Prisma {
     update?: XOR<XOR<workersUpdateToOneWithWhereWithoutDept_workersInput, workersUpdateWithoutDept_workersInput>, workersUncheckedUpdateWithoutDept_workersInput>
   }
 
+  export type workersCreateNestedOneWithoutDepartment_assignmentsInput = {
+    create?: XOR<workersCreateWithoutDepartment_assignmentsInput, workersUncheckedCreateWithoutDepartment_assignmentsInput>
+    connectOrCreate?: workersCreateOrConnectWithoutDepartment_assignmentsInput
+    connect?: workersWhereUniqueInput
+  }
+
   export type departmentsCreateNestedOneWithoutDept_batchesInput = {
     create?: XOR<departmentsCreateWithoutDept_batchesInput, departmentsUncheckedCreateWithoutDept_batchesInput>
     connectOrCreate?: departmentsCreateOrConnectWithoutDept_batchesInput
@@ -24825,6 +32553,38 @@ export namespace Prisma {
     create?: XOR<sub_batchesCreateWithoutDept_linksInput, sub_batchesUncheckedCreateWithoutDept_linksInput>
     connectOrCreate?: sub_batchesCreateOrConnectWithoutDept_linksInput
     connect?: sub_batchesWhereUniqueInput
+  }
+
+  export type department_sub_batch_historyCreateNestedManyWithoutDepartment_sub_batchInput = {
+    create?: XOR<department_sub_batch_historyCreateWithoutDepartment_sub_batchInput, department_sub_batch_historyUncheckedCreateWithoutDepartment_sub_batchInput> | department_sub_batch_historyCreateWithoutDepartment_sub_batchInput[] | department_sub_batch_historyUncheckedCreateWithoutDepartment_sub_batchInput[]
+    connectOrCreate?: department_sub_batch_historyCreateOrConnectWithoutDepartment_sub_batchInput | department_sub_batch_historyCreateOrConnectWithoutDepartment_sub_batchInput[]
+    createMany?: department_sub_batch_historyCreateManyDepartment_sub_batchInputEnvelope
+    connect?: department_sub_batch_historyWhereUniqueInput | department_sub_batch_historyWhereUniqueInput[]
+  }
+
+  export type department_sub_batch_historyUncheckedCreateNestedManyWithoutDepartment_sub_batchInput = {
+    create?: XOR<department_sub_batch_historyCreateWithoutDepartment_sub_batchInput, department_sub_batch_historyUncheckedCreateWithoutDepartment_sub_batchInput> | department_sub_batch_historyCreateWithoutDepartment_sub_batchInput[] | department_sub_batch_historyUncheckedCreateWithoutDepartment_sub_batchInput[]
+    connectOrCreate?: department_sub_batch_historyCreateOrConnectWithoutDepartment_sub_batchInput | department_sub_batch_historyCreateOrConnectWithoutDepartment_sub_batchInput[]
+    createMany?: department_sub_batch_historyCreateManyDepartment_sub_batchInputEnvelope
+    connect?: department_sub_batch_historyWhereUniqueInput | department_sub_batch_historyWhereUniqueInput[]
+  }
+
+  export type EnumDepartmentStageFieldUpdateOperationsInput = {
+    set?: $Enums.DepartmentStage
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type workersUpdateOneWithoutDepartment_assignmentsNestedInput = {
+    create?: XOR<workersCreateWithoutDepartment_assignmentsInput, workersUncheckedCreateWithoutDepartment_assignmentsInput>
+    connectOrCreate?: workersCreateOrConnectWithoutDepartment_assignmentsInput
+    upsert?: workersUpsertWithoutDepartment_assignmentsInput
+    disconnect?: workersWhereInput | boolean
+    delete?: workersWhereInput | boolean
+    connect?: workersWhereUniqueInput
+    update?: XOR<XOR<workersUpdateToOneWithWhereWithoutDepartment_assignmentsInput, workersUpdateWithoutDepartment_assignmentsInput>, workersUncheckedUpdateWithoutDepartment_assignmentsInput>
   }
 
   export type departmentsUpdateOneWithoutDept_batchesNestedInput = {
@@ -24847,6 +32607,34 @@ export namespace Prisma {
     update?: XOR<XOR<sub_batchesUpdateToOneWithWhereWithoutDept_linksInput, sub_batchesUpdateWithoutDept_linksInput>, sub_batchesUncheckedUpdateWithoutDept_linksInput>
   }
 
+  export type department_sub_batch_historyUpdateManyWithoutDepartment_sub_batchNestedInput = {
+    create?: XOR<department_sub_batch_historyCreateWithoutDepartment_sub_batchInput, department_sub_batch_historyUncheckedCreateWithoutDepartment_sub_batchInput> | department_sub_batch_historyCreateWithoutDepartment_sub_batchInput[] | department_sub_batch_historyUncheckedCreateWithoutDepartment_sub_batchInput[]
+    connectOrCreate?: department_sub_batch_historyCreateOrConnectWithoutDepartment_sub_batchInput | department_sub_batch_historyCreateOrConnectWithoutDepartment_sub_batchInput[]
+    upsert?: department_sub_batch_historyUpsertWithWhereUniqueWithoutDepartment_sub_batchInput | department_sub_batch_historyUpsertWithWhereUniqueWithoutDepartment_sub_batchInput[]
+    createMany?: department_sub_batch_historyCreateManyDepartment_sub_batchInputEnvelope
+    set?: department_sub_batch_historyWhereUniqueInput | department_sub_batch_historyWhereUniqueInput[]
+    disconnect?: department_sub_batch_historyWhereUniqueInput | department_sub_batch_historyWhereUniqueInput[]
+    delete?: department_sub_batch_historyWhereUniqueInput | department_sub_batch_historyWhereUniqueInput[]
+    connect?: department_sub_batch_historyWhereUniqueInput | department_sub_batch_historyWhereUniqueInput[]
+    update?: department_sub_batch_historyUpdateWithWhereUniqueWithoutDepartment_sub_batchInput | department_sub_batch_historyUpdateWithWhereUniqueWithoutDepartment_sub_batchInput[]
+    updateMany?: department_sub_batch_historyUpdateManyWithWhereWithoutDepartment_sub_batchInput | department_sub_batch_historyUpdateManyWithWhereWithoutDepartment_sub_batchInput[]
+    deleteMany?: department_sub_batch_historyScalarWhereInput | department_sub_batch_historyScalarWhereInput[]
+  }
+
+  export type department_sub_batch_historyUncheckedUpdateManyWithoutDepartment_sub_batchNestedInput = {
+    create?: XOR<department_sub_batch_historyCreateWithoutDepartment_sub_batchInput, department_sub_batch_historyUncheckedCreateWithoutDepartment_sub_batchInput> | department_sub_batch_historyCreateWithoutDepartment_sub_batchInput[] | department_sub_batch_historyUncheckedCreateWithoutDepartment_sub_batchInput[]
+    connectOrCreate?: department_sub_batch_historyCreateOrConnectWithoutDepartment_sub_batchInput | department_sub_batch_historyCreateOrConnectWithoutDepartment_sub_batchInput[]
+    upsert?: department_sub_batch_historyUpsertWithWhereUniqueWithoutDepartment_sub_batchInput | department_sub_batch_historyUpsertWithWhereUniqueWithoutDepartment_sub_batchInput[]
+    createMany?: department_sub_batch_historyCreateManyDepartment_sub_batchInputEnvelope
+    set?: department_sub_batch_historyWhereUniqueInput | department_sub_batch_historyWhereUniqueInput[]
+    disconnect?: department_sub_batch_historyWhereUniqueInput | department_sub_batch_historyWhereUniqueInput[]
+    delete?: department_sub_batch_historyWhereUniqueInput | department_sub_batch_historyWhereUniqueInput[]
+    connect?: department_sub_batch_historyWhereUniqueInput | department_sub_batch_historyWhereUniqueInput[]
+    update?: department_sub_batch_historyUpdateWithWhereUniqueWithoutDepartment_sub_batchInput | department_sub_batch_historyUpdateWithWhereUniqueWithoutDepartment_sub_batchInput[]
+    updateMany?: department_sub_batch_historyUpdateManyWithWhereWithoutDepartment_sub_batchInput | department_sub_batch_historyUpdateManyWithWhereWithoutDepartment_sub_batchInput[]
+    deleteMany?: department_sub_batch_historyScalarWhereInput | department_sub_batch_historyScalarWhereInput[]
+  }
+
   export type departmentsCreateNestedOneWithoutWorkersInput = {
     create?: XOR<departmentsCreateWithoutWorkersInput, departmentsUncheckedCreateWithoutWorkersInput>
     connectOrCreate?: departmentsCreateOrConnectWithoutWorkersInput
@@ -24867,6 +32655,13 @@ export namespace Prisma {
     connect?: department_workersWhereUniqueInput | department_workersWhereUniqueInput[]
   }
 
+  export type department_sub_batchesCreateNestedManyWithoutAssigned_workerInput = {
+    create?: XOR<department_sub_batchesCreateWithoutAssigned_workerInput, department_sub_batchesUncheckedCreateWithoutAssigned_workerInput> | department_sub_batchesCreateWithoutAssigned_workerInput[] | department_sub_batchesUncheckedCreateWithoutAssigned_workerInput[]
+    connectOrCreate?: department_sub_batchesCreateOrConnectWithoutAssigned_workerInput | department_sub_batchesCreateOrConnectWithoutAssigned_workerInput[]
+    createMany?: department_sub_batchesCreateManyAssigned_workerInputEnvelope
+    connect?: department_sub_batchesWhereUniqueInput | department_sub_batchesWhereUniqueInput[]
+  }
+
   export type worker_logsUncheckedCreateNestedManyWithoutWorkerInput = {
     create?: XOR<worker_logsCreateWithoutWorkerInput, worker_logsUncheckedCreateWithoutWorkerInput> | worker_logsCreateWithoutWorkerInput[] | worker_logsUncheckedCreateWithoutWorkerInput[]
     connectOrCreate?: worker_logsCreateOrConnectWithoutWorkerInput | worker_logsCreateOrConnectWithoutWorkerInput[]
@@ -24879,6 +32674,13 @@ export namespace Prisma {
     connectOrCreate?: department_workersCreateOrConnectWithoutWorkerInput | department_workersCreateOrConnectWithoutWorkerInput[]
     createMany?: department_workersCreateManyWorkerInputEnvelope
     connect?: department_workersWhereUniqueInput | department_workersWhereUniqueInput[]
+  }
+
+  export type department_sub_batchesUncheckedCreateNestedManyWithoutAssigned_workerInput = {
+    create?: XOR<department_sub_batchesCreateWithoutAssigned_workerInput, department_sub_batchesUncheckedCreateWithoutAssigned_workerInput> | department_sub_batchesCreateWithoutAssigned_workerInput[] | department_sub_batchesUncheckedCreateWithoutAssigned_workerInput[]
+    connectOrCreate?: department_sub_batchesCreateOrConnectWithoutAssigned_workerInput | department_sub_batchesCreateOrConnectWithoutAssigned_workerInput[]
+    createMany?: department_sub_batchesCreateManyAssigned_workerInputEnvelope
+    connect?: department_sub_batchesWhereUniqueInput | department_sub_batchesWhereUniqueInput[]
   }
 
   export type FloatFieldUpdateOperationsInput = {
@@ -24927,6 +32729,20 @@ export namespace Prisma {
     deleteMany?: department_workersScalarWhereInput | department_workersScalarWhereInput[]
   }
 
+  export type department_sub_batchesUpdateManyWithoutAssigned_workerNestedInput = {
+    create?: XOR<department_sub_batchesCreateWithoutAssigned_workerInput, department_sub_batchesUncheckedCreateWithoutAssigned_workerInput> | department_sub_batchesCreateWithoutAssigned_workerInput[] | department_sub_batchesUncheckedCreateWithoutAssigned_workerInput[]
+    connectOrCreate?: department_sub_batchesCreateOrConnectWithoutAssigned_workerInput | department_sub_batchesCreateOrConnectWithoutAssigned_workerInput[]
+    upsert?: department_sub_batchesUpsertWithWhereUniqueWithoutAssigned_workerInput | department_sub_batchesUpsertWithWhereUniqueWithoutAssigned_workerInput[]
+    createMany?: department_sub_batchesCreateManyAssigned_workerInputEnvelope
+    set?: department_sub_batchesWhereUniqueInput | department_sub_batchesWhereUniqueInput[]
+    disconnect?: department_sub_batchesWhereUniqueInput | department_sub_batchesWhereUniqueInput[]
+    delete?: department_sub_batchesWhereUniqueInput | department_sub_batchesWhereUniqueInput[]
+    connect?: department_sub_batchesWhereUniqueInput | department_sub_batchesWhereUniqueInput[]
+    update?: department_sub_batchesUpdateWithWhereUniqueWithoutAssigned_workerInput | department_sub_batchesUpdateWithWhereUniqueWithoutAssigned_workerInput[]
+    updateMany?: department_sub_batchesUpdateManyWithWhereWithoutAssigned_workerInput | department_sub_batchesUpdateManyWithWhereWithoutAssigned_workerInput[]
+    deleteMany?: department_sub_batchesScalarWhereInput | department_sub_batchesScalarWhereInput[]
+  }
+
   export type worker_logsUncheckedUpdateManyWithoutWorkerNestedInput = {
     create?: XOR<worker_logsCreateWithoutWorkerInput, worker_logsUncheckedCreateWithoutWorkerInput> | worker_logsCreateWithoutWorkerInput[] | worker_logsUncheckedCreateWithoutWorkerInput[]
     connectOrCreate?: worker_logsCreateOrConnectWithoutWorkerInput | worker_logsCreateOrConnectWithoutWorkerInput[]
@@ -24953,6 +32769,20 @@ export namespace Prisma {
     update?: department_workersUpdateWithWhereUniqueWithoutWorkerInput | department_workersUpdateWithWhereUniqueWithoutWorkerInput[]
     updateMany?: department_workersUpdateManyWithWhereWithoutWorkerInput | department_workersUpdateManyWithWhereWithoutWorkerInput[]
     deleteMany?: department_workersScalarWhereInput | department_workersScalarWhereInput[]
+  }
+
+  export type department_sub_batchesUncheckedUpdateManyWithoutAssigned_workerNestedInput = {
+    create?: XOR<department_sub_batchesCreateWithoutAssigned_workerInput, department_sub_batchesUncheckedCreateWithoutAssigned_workerInput> | department_sub_batchesCreateWithoutAssigned_workerInput[] | department_sub_batchesUncheckedCreateWithoutAssigned_workerInput[]
+    connectOrCreate?: department_sub_batchesCreateOrConnectWithoutAssigned_workerInput | department_sub_batchesCreateOrConnectWithoutAssigned_workerInput[]
+    upsert?: department_sub_batchesUpsertWithWhereUniqueWithoutAssigned_workerInput | department_sub_batchesUpsertWithWhereUniqueWithoutAssigned_workerInput[]
+    createMany?: department_sub_batchesCreateManyAssigned_workerInputEnvelope
+    set?: department_sub_batchesWhereUniqueInput | department_sub_batchesWhereUniqueInput[]
+    disconnect?: department_sub_batchesWhereUniqueInput | department_sub_batchesWhereUniqueInput[]
+    delete?: department_sub_batchesWhereUniqueInput | department_sub_batchesWhereUniqueInput[]
+    connect?: department_sub_batchesWhereUniqueInput | department_sub_batchesWhereUniqueInput[]
+    update?: department_sub_batchesUpdateWithWhereUniqueWithoutAssigned_workerInput | department_sub_batchesUpdateWithWhereUniqueWithoutAssigned_workerInput[]
+    updateMany?: department_sub_batchesUpdateManyWithWhereWithoutAssigned_workerInput | department_sub_batchesUpdateManyWithWhereWithoutAssigned_workerInput[]
+    deleteMany?: department_sub_batchesScalarWhereInput | department_sub_batchesScalarWhereInput[]
   }
 
   export type workersCreateNestedOneWithoutWorker_logsInput = {
@@ -25069,6 +32899,190 @@ export namespace Prisma {
     update?: batchesUpdateWithWhereUniqueWithoutVendorInput | batchesUpdateWithWhereUniqueWithoutVendorInput[]
     updateMany?: batchesUpdateManyWithWhereWithoutVendorInput | batchesUpdateManyWithWhereWithoutVendorInput[]
     deleteMany?: batchesScalarWhereInput | batchesScalarWhereInput[]
+  }
+
+  export type workflow_stepsCreateNestedManyWithoutWorkflow_templateInput = {
+    create?: XOR<workflow_stepsCreateWithoutWorkflow_templateInput, workflow_stepsUncheckedCreateWithoutWorkflow_templateInput> | workflow_stepsCreateWithoutWorkflow_templateInput[] | workflow_stepsUncheckedCreateWithoutWorkflow_templateInput[]
+    connectOrCreate?: workflow_stepsCreateOrConnectWithoutWorkflow_templateInput | workflow_stepsCreateOrConnectWithoutWorkflow_templateInput[]
+    createMany?: workflow_stepsCreateManyWorkflow_templateInputEnvelope
+    connect?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+  }
+
+  export type workflow_stepsUncheckedCreateNestedManyWithoutWorkflow_templateInput = {
+    create?: XOR<workflow_stepsCreateWithoutWorkflow_templateInput, workflow_stepsUncheckedCreateWithoutWorkflow_templateInput> | workflow_stepsCreateWithoutWorkflow_templateInput[] | workflow_stepsUncheckedCreateWithoutWorkflow_templateInput[]
+    connectOrCreate?: workflow_stepsCreateOrConnectWithoutWorkflow_templateInput | workflow_stepsCreateOrConnectWithoutWorkflow_templateInput[]
+    createMany?: workflow_stepsCreateManyWorkflow_templateInputEnvelope
+    connect?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+  }
+
+  export type workflow_stepsUpdateManyWithoutWorkflow_templateNestedInput = {
+    create?: XOR<workflow_stepsCreateWithoutWorkflow_templateInput, workflow_stepsUncheckedCreateWithoutWorkflow_templateInput> | workflow_stepsCreateWithoutWorkflow_templateInput[] | workflow_stepsUncheckedCreateWithoutWorkflow_templateInput[]
+    connectOrCreate?: workflow_stepsCreateOrConnectWithoutWorkflow_templateInput | workflow_stepsCreateOrConnectWithoutWorkflow_templateInput[]
+    upsert?: workflow_stepsUpsertWithWhereUniqueWithoutWorkflow_templateInput | workflow_stepsUpsertWithWhereUniqueWithoutWorkflow_templateInput[]
+    createMany?: workflow_stepsCreateManyWorkflow_templateInputEnvelope
+    set?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+    disconnect?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+    delete?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+    connect?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+    update?: workflow_stepsUpdateWithWhereUniqueWithoutWorkflow_templateInput | workflow_stepsUpdateWithWhereUniqueWithoutWorkflow_templateInput[]
+    updateMany?: workflow_stepsUpdateManyWithWhereWithoutWorkflow_templateInput | workflow_stepsUpdateManyWithWhereWithoutWorkflow_templateInput[]
+    deleteMany?: workflow_stepsScalarWhereInput | workflow_stepsScalarWhereInput[]
+  }
+
+  export type workflow_stepsUncheckedUpdateManyWithoutWorkflow_templateNestedInput = {
+    create?: XOR<workflow_stepsCreateWithoutWorkflow_templateInput, workflow_stepsUncheckedCreateWithoutWorkflow_templateInput> | workflow_stepsCreateWithoutWorkflow_templateInput[] | workflow_stepsUncheckedCreateWithoutWorkflow_templateInput[]
+    connectOrCreate?: workflow_stepsCreateOrConnectWithoutWorkflow_templateInput | workflow_stepsCreateOrConnectWithoutWorkflow_templateInput[]
+    upsert?: workflow_stepsUpsertWithWhereUniqueWithoutWorkflow_templateInput | workflow_stepsUpsertWithWhereUniqueWithoutWorkflow_templateInput[]
+    createMany?: workflow_stepsCreateManyWorkflow_templateInputEnvelope
+    set?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+    disconnect?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+    delete?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+    connect?: workflow_stepsWhereUniqueInput | workflow_stepsWhereUniqueInput[]
+    update?: workflow_stepsUpdateWithWhereUniqueWithoutWorkflow_templateInput | workflow_stepsUpdateWithWhereUniqueWithoutWorkflow_templateInput[]
+    updateMany?: workflow_stepsUpdateManyWithWhereWithoutWorkflow_templateInput | workflow_stepsUpdateManyWithWhereWithoutWorkflow_templateInput[]
+    deleteMany?: workflow_stepsScalarWhereInput | workflow_stepsScalarWhereInput[]
+  }
+
+  export type departmentsCreateNestedOneWithoutWorkflow_stepsInput = {
+    create?: XOR<departmentsCreateWithoutWorkflow_stepsInput, departmentsUncheckedCreateWithoutWorkflow_stepsInput>
+    connectOrCreate?: departmentsCreateOrConnectWithoutWorkflow_stepsInput
+    connect?: departmentsWhereUniqueInput
+  }
+
+  export type workflow_templatesCreateNestedOneWithoutStepsInput = {
+    create?: XOR<workflow_templatesCreateWithoutStepsInput, workflow_templatesUncheckedCreateWithoutStepsInput>
+    connectOrCreate?: workflow_templatesCreateOrConnectWithoutStepsInput
+    connect?: workflow_templatesWhereUniqueInput
+  }
+
+  export type departmentsUpdateOneWithoutWorkflow_stepsNestedInput = {
+    create?: XOR<departmentsCreateWithoutWorkflow_stepsInput, departmentsUncheckedCreateWithoutWorkflow_stepsInput>
+    connectOrCreate?: departmentsCreateOrConnectWithoutWorkflow_stepsInput
+    upsert?: departmentsUpsertWithoutWorkflow_stepsInput
+    disconnect?: departmentsWhereInput | boolean
+    delete?: departmentsWhereInput | boolean
+    connect?: departmentsWhereUniqueInput
+    update?: XOR<XOR<departmentsUpdateToOneWithWhereWithoutWorkflow_stepsInput, departmentsUpdateWithoutWorkflow_stepsInput>, departmentsUncheckedUpdateWithoutWorkflow_stepsInput>
+  }
+
+  export type workflow_templatesUpdateOneWithoutStepsNestedInput = {
+    create?: XOR<workflow_templatesCreateWithoutStepsInput, workflow_templatesUncheckedCreateWithoutStepsInput>
+    connectOrCreate?: workflow_templatesCreateOrConnectWithoutStepsInput
+    upsert?: workflow_templatesUpsertWithoutStepsInput
+    disconnect?: workflow_templatesWhereInput | boolean
+    delete?: workflow_templatesWhereInput | boolean
+    connect?: workflow_templatesWhereUniqueInput
+    update?: XOR<XOR<workflow_templatesUpdateToOneWithWhereWithoutStepsInput, workflow_templatesUpdateWithoutStepsInput>, workflow_templatesUncheckedUpdateWithoutStepsInput>
+  }
+
+  export type sub_batchesCreateNestedOneWithoutWorkflowsInput = {
+    create?: XOR<sub_batchesCreateWithoutWorkflowsInput, sub_batchesUncheckedCreateWithoutWorkflowsInput>
+    connectOrCreate?: sub_batchesCreateOrConnectWithoutWorkflowsInput
+    connect?: sub_batchesWhereUniqueInput
+  }
+
+  export type sub_batch_workflow_stepsCreateNestedManyWithoutSub_batch_workflowInput = {
+    create?: XOR<sub_batch_workflow_stepsCreateWithoutSub_batch_workflowInput, sub_batch_workflow_stepsUncheckedCreateWithoutSub_batch_workflowInput> | sub_batch_workflow_stepsCreateWithoutSub_batch_workflowInput[] | sub_batch_workflow_stepsUncheckedCreateWithoutSub_batch_workflowInput[]
+    connectOrCreate?: sub_batch_workflow_stepsCreateOrConnectWithoutSub_batch_workflowInput | sub_batch_workflow_stepsCreateOrConnectWithoutSub_batch_workflowInput[]
+    createMany?: sub_batch_workflow_stepsCreateManySub_batch_workflowInputEnvelope
+    connect?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+  }
+
+  export type sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutSub_batch_workflowInput = {
+    create?: XOR<sub_batch_workflow_stepsCreateWithoutSub_batch_workflowInput, sub_batch_workflow_stepsUncheckedCreateWithoutSub_batch_workflowInput> | sub_batch_workflow_stepsCreateWithoutSub_batch_workflowInput[] | sub_batch_workflow_stepsUncheckedCreateWithoutSub_batch_workflowInput[]
+    connectOrCreate?: sub_batch_workflow_stepsCreateOrConnectWithoutSub_batch_workflowInput | sub_batch_workflow_stepsCreateOrConnectWithoutSub_batch_workflowInput[]
+    createMany?: sub_batch_workflow_stepsCreateManySub_batch_workflowInputEnvelope
+    connect?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+  }
+
+  export type sub_batchesUpdateOneWithoutWorkflowsNestedInput = {
+    create?: XOR<sub_batchesCreateWithoutWorkflowsInput, sub_batchesUncheckedCreateWithoutWorkflowsInput>
+    connectOrCreate?: sub_batchesCreateOrConnectWithoutWorkflowsInput
+    upsert?: sub_batchesUpsertWithoutWorkflowsInput
+    disconnect?: sub_batchesWhereInput | boolean
+    delete?: sub_batchesWhereInput | boolean
+    connect?: sub_batchesWhereUniqueInput
+    update?: XOR<XOR<sub_batchesUpdateToOneWithWhereWithoutWorkflowsInput, sub_batchesUpdateWithoutWorkflowsInput>, sub_batchesUncheckedUpdateWithoutWorkflowsInput>
+  }
+
+  export type sub_batch_workflow_stepsUpdateManyWithoutSub_batch_workflowNestedInput = {
+    create?: XOR<sub_batch_workflow_stepsCreateWithoutSub_batch_workflowInput, sub_batch_workflow_stepsUncheckedCreateWithoutSub_batch_workflowInput> | sub_batch_workflow_stepsCreateWithoutSub_batch_workflowInput[] | sub_batch_workflow_stepsUncheckedCreateWithoutSub_batch_workflowInput[]
+    connectOrCreate?: sub_batch_workflow_stepsCreateOrConnectWithoutSub_batch_workflowInput | sub_batch_workflow_stepsCreateOrConnectWithoutSub_batch_workflowInput[]
+    upsert?: sub_batch_workflow_stepsUpsertWithWhereUniqueWithoutSub_batch_workflowInput | sub_batch_workflow_stepsUpsertWithWhereUniqueWithoutSub_batch_workflowInput[]
+    createMany?: sub_batch_workflow_stepsCreateManySub_batch_workflowInputEnvelope
+    set?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+    disconnect?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+    delete?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+    connect?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+    update?: sub_batch_workflow_stepsUpdateWithWhereUniqueWithoutSub_batch_workflowInput | sub_batch_workflow_stepsUpdateWithWhereUniqueWithoutSub_batch_workflowInput[]
+    updateMany?: sub_batch_workflow_stepsUpdateManyWithWhereWithoutSub_batch_workflowInput | sub_batch_workflow_stepsUpdateManyWithWhereWithoutSub_batch_workflowInput[]
+    deleteMany?: sub_batch_workflow_stepsScalarWhereInput | sub_batch_workflow_stepsScalarWhereInput[]
+  }
+
+  export type sub_batch_workflow_stepsUncheckedUpdateManyWithoutSub_batch_workflowNestedInput = {
+    create?: XOR<sub_batch_workflow_stepsCreateWithoutSub_batch_workflowInput, sub_batch_workflow_stepsUncheckedCreateWithoutSub_batch_workflowInput> | sub_batch_workflow_stepsCreateWithoutSub_batch_workflowInput[] | sub_batch_workflow_stepsUncheckedCreateWithoutSub_batch_workflowInput[]
+    connectOrCreate?: sub_batch_workflow_stepsCreateOrConnectWithoutSub_batch_workflowInput | sub_batch_workflow_stepsCreateOrConnectWithoutSub_batch_workflowInput[]
+    upsert?: sub_batch_workflow_stepsUpsertWithWhereUniqueWithoutSub_batch_workflowInput | sub_batch_workflow_stepsUpsertWithWhereUniqueWithoutSub_batch_workflowInput[]
+    createMany?: sub_batch_workflow_stepsCreateManySub_batch_workflowInputEnvelope
+    set?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+    disconnect?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+    delete?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+    connect?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+    update?: sub_batch_workflow_stepsUpdateWithWhereUniqueWithoutSub_batch_workflowInput | sub_batch_workflow_stepsUpdateWithWhereUniqueWithoutSub_batch_workflowInput[]
+    updateMany?: sub_batch_workflow_stepsUpdateManyWithWhereWithoutSub_batch_workflowInput | sub_batch_workflow_stepsUpdateManyWithWhereWithoutSub_batch_workflowInput[]
+    deleteMany?: sub_batch_workflow_stepsScalarWhereInput | sub_batch_workflow_stepsScalarWhereInput[]
+  }
+
+  export type departmentsCreateNestedOneWithoutSub_batch_stepsInput = {
+    create?: XOR<departmentsCreateWithoutSub_batch_stepsInput, departmentsUncheckedCreateWithoutSub_batch_stepsInput>
+    connectOrCreate?: departmentsCreateOrConnectWithoutSub_batch_stepsInput
+    connect?: departmentsWhereUniqueInput
+  }
+
+  export type sub_batch_workflowsCreateNestedOneWithoutStepsInput = {
+    create?: XOR<sub_batch_workflowsCreateWithoutStepsInput, sub_batch_workflowsUncheckedCreateWithoutStepsInput>
+    connectOrCreate?: sub_batch_workflowsCreateOrConnectWithoutStepsInput
+    connect?: sub_batch_workflowsWhereUniqueInput
+  }
+
+  export type departmentsUpdateOneWithoutSub_batch_stepsNestedInput = {
+    create?: XOR<departmentsCreateWithoutSub_batch_stepsInput, departmentsUncheckedCreateWithoutSub_batch_stepsInput>
+    connectOrCreate?: departmentsCreateOrConnectWithoutSub_batch_stepsInput
+    upsert?: departmentsUpsertWithoutSub_batch_stepsInput
+    disconnect?: departmentsWhereInput | boolean
+    delete?: departmentsWhereInput | boolean
+    connect?: departmentsWhereUniqueInput
+    update?: XOR<XOR<departmentsUpdateToOneWithWhereWithoutSub_batch_stepsInput, departmentsUpdateWithoutSub_batch_stepsInput>, departmentsUncheckedUpdateWithoutSub_batch_stepsInput>
+  }
+
+  export type sub_batch_workflowsUpdateOneWithoutStepsNestedInput = {
+    create?: XOR<sub_batch_workflowsCreateWithoutStepsInput, sub_batch_workflowsUncheckedCreateWithoutStepsInput>
+    connectOrCreate?: sub_batch_workflowsCreateOrConnectWithoutStepsInput
+    upsert?: sub_batch_workflowsUpsertWithoutStepsInput
+    disconnect?: sub_batch_workflowsWhereInput | boolean
+    delete?: sub_batch_workflowsWhereInput | boolean
+    connect?: sub_batch_workflowsWhereUniqueInput
+    update?: XOR<XOR<sub_batch_workflowsUpdateToOneWithWhereWithoutStepsInput, sub_batch_workflowsUpdateWithoutStepsInput>, sub_batch_workflowsUncheckedUpdateWithoutStepsInput>
+  }
+
+  export type department_sub_batchesCreateNestedOneWithoutHistoryInput = {
+    create?: XOR<department_sub_batchesCreateWithoutHistoryInput, department_sub_batchesUncheckedCreateWithoutHistoryInput>
+    connectOrCreate?: department_sub_batchesCreateOrConnectWithoutHistoryInput
+    connect?: department_sub_batchesWhereUniqueInput
+  }
+
+  export type NullableEnumDepartmentStageFieldUpdateOperationsInput = {
+    set?: $Enums.DepartmentStage | null
+  }
+
+  export type department_sub_batchesUpdateOneWithoutHistoryNestedInput = {
+    create?: XOR<department_sub_batchesCreateWithoutHistoryInput, department_sub_batchesUncheckedCreateWithoutHistoryInput>
+    connectOrCreate?: department_sub_batchesCreateOrConnectWithoutHistoryInput
+    upsert?: department_sub_batchesUpsertWithoutHistoryInput
+    disconnect?: department_sub_batchesWhereInput | boolean
+    delete?: department_sub_batchesWhereInput | boolean
+    connect?: department_sub_batchesWhereUniqueInput
+    update?: XOR<XOR<department_sub_batchesUpdateToOneWithWhereWithoutHistoryInput, department_sub_batchesUpdateWithoutHistoryInput>, department_sub_batchesUncheckedUpdateWithoutHistoryInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -25234,6 +33248,36 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumDepartmentStageFilter<$PrismaModel = never> = {
+    equals?: $Enums.DepartmentStage | EnumDepartmentStageFieldRefInput<$PrismaModel>
+    in?: $Enums.DepartmentStage[] | ListEnumDepartmentStageFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DepartmentStage[] | ListEnumDepartmentStageFieldRefInput<$PrismaModel>
+    not?: NestedEnumDepartmentStageFilter<$PrismaModel> | $Enums.DepartmentStage
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedEnumDepartmentStageWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DepartmentStage | EnumDepartmentStageFieldRefInput<$PrismaModel>
+    in?: $Enums.DepartmentStage[] | ListEnumDepartmentStageFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DepartmentStage[] | ListEnumDepartmentStageFieldRefInput<$PrismaModel>
+    not?: NestedEnumDepartmentStageWithAggregatesFilter<$PrismaModel> | $Enums.DepartmentStage
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDepartmentStageFilter<$PrismaModel>
+    _max?: NestedEnumDepartmentStageFilter<$PrismaModel>
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -25248,6 +33292,23 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type NestedEnumDepartmentStageNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.DepartmentStage | EnumDepartmentStageFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DepartmentStage[] | ListEnumDepartmentStageFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DepartmentStage[] | ListEnumDepartmentStageFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDepartmentStageNullableFilter<$PrismaModel> | $Enums.DepartmentStage | null
+  }
+
+  export type NestedEnumDepartmentStageNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DepartmentStage | EnumDepartmentStageFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DepartmentStage[] | ListEnumDepartmentStageFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DepartmentStage[] | ListEnumDepartmentStageFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDepartmentStageNullableWithAggregatesFilter<$PrismaModel> | $Enums.DepartmentStage | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumDepartmentStageNullableFilter<$PrismaModel>
+    _max?: NestedEnumDepartmentStageNullableFilter<$PrismaModel>
   }
 
   export type vendorsCreateWithoutRollsInput = {
@@ -25317,6 +33378,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredCreateNestedManyWithoutSub_batchInput
     dept_links?: department_sub_batchesCreateNestedManyWithoutSub_batchInput
     worker_logs?: worker_logsCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesUncheckedCreateWithoutRollInput = {
@@ -25334,6 +33396,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSub_batchInput
     dept_links?: department_sub_batchesUncheckedCreateNestedManyWithoutSub_batchInput
     worker_logs?: worker_logsUncheckedCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsUncheckedCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesCreateOrConnectWithoutRollInput = {
@@ -25498,6 +33561,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredCreateNestedManyWithoutSub_batchInput
     dept_links?: department_sub_batchesCreateNestedManyWithoutSub_batchInput
     worker_logs?: worker_logsCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesUncheckedCreateWithoutBatchInput = {
@@ -25515,6 +33579,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSub_batchInput
     dept_links?: department_sub_batchesUncheckedCreateNestedManyWithoutSub_batchInput
     worker_logs?: worker_logsUncheckedCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsUncheckedCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesCreateOrConnectWithoutBatchInput = {
@@ -25660,6 +33725,8 @@ export namespace Prisma {
     dept_batches?: department_sub_batchesCreateNestedManyWithoutDepartmentInput
     rejected?: sub_batch_rejectedCreateNestedManyWithoutSent_to_departmentInput
     altered?: sub_batch_alteredCreateNestedManyWithoutSent_to_departmentInput
+    workflow_steps?: workflow_stepsCreateNestedManyWithoutDepartmentInput
+    sub_batch_steps?: sub_batch_workflow_stepsCreateNestedManyWithoutDepartmentInput
   }
 
   export type departmentsUncheckedCreateWithoutSub_batchesInput = {
@@ -25672,6 +33739,8 @@ export namespace Prisma {
     dept_batches?: department_sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
     rejected?: sub_batch_rejectedUncheckedCreateNestedManyWithoutSent_to_departmentInput
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSent_to_departmentInput
+    workflow_steps?: workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+    sub_batch_steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type departmentsCreateOrConnectWithoutSub_batchesInput = {
@@ -25768,12 +33837,24 @@ export namespace Prisma {
   }
 
   export type department_sub_batchesCreateWithoutSub_batchInput = {
+    stage?: $Enums.DepartmentStage
+    is_current?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assigned_worker?: workersCreateNestedOneWithoutDepartment_assignmentsInput
     department?: departmentsCreateNestedOneWithoutDept_batchesInput
+    history?: department_sub_batch_historyCreateNestedManyWithoutDepartment_sub_batchInput
   }
 
   export type department_sub_batchesUncheckedCreateWithoutSub_batchInput = {
     id?: number
     department_id?: number | null
+    stage?: $Enums.DepartmentStage
+    is_current?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assigned_worker_id?: number | null
+    history?: department_sub_batch_historyUncheckedCreateNestedManyWithoutDepartment_sub_batchInput
   }
 
   export type department_sub_batchesCreateOrConnectWithoutSub_batchInput = {
@@ -25806,6 +33887,29 @@ export namespace Prisma {
 
   export type worker_logsCreateManySub_batchInputEnvelope = {
     data: worker_logsCreateManySub_batchInput | worker_logsCreateManySub_batchInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type sub_batch_workflowsCreateWithoutSub_batchInput = {
+    current_step_index?: number
+    createdAt?: Date | string
+    steps?: sub_batch_workflow_stepsCreateNestedManyWithoutSub_batch_workflowInput
+  }
+
+  export type sub_batch_workflowsUncheckedCreateWithoutSub_batchInput = {
+    id?: number
+    current_step_index?: number
+    createdAt?: Date | string
+    steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutSub_batch_workflowInput
+  }
+
+  export type sub_batch_workflowsCreateOrConnectWithoutSub_batchInput = {
+    where: sub_batch_workflowsWhereUniqueInput
+    create: XOR<sub_batch_workflowsCreateWithoutSub_batchInput, sub_batch_workflowsUncheckedCreateWithoutSub_batchInput>
+  }
+
+  export type sub_batch_workflowsCreateManySub_batchInputEnvelope = {
+    data: sub_batch_workflowsCreateManySub_batchInput | sub_batch_workflowsCreateManySub_batchInput[]
     skipDuplicates?: boolean
   }
 
@@ -25889,6 +33993,8 @@ export namespace Prisma {
     dept_batches?: department_sub_batchesUpdateManyWithoutDepartmentNestedInput
     rejected?: sub_batch_rejectedUpdateManyWithoutSent_to_departmentNestedInput
     altered?: sub_batch_alteredUpdateManyWithoutSent_to_departmentNestedInput
+    workflow_steps?: workflow_stepsUpdateManyWithoutDepartmentNestedInput
+    sub_batch_steps?: sub_batch_workflow_stepsUpdateManyWithoutDepartmentNestedInput
   }
 
   export type departmentsUncheckedUpdateWithoutSub_batchesInput = {
@@ -25901,6 +34007,8 @@ export namespace Prisma {
     dept_batches?: department_sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
     rejected?: sub_batch_rejectedUncheckedUpdateManyWithoutSent_to_departmentNestedInput
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSent_to_departmentNestedInput
+    workflow_steps?: workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+    sub_batch_steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type sub_batch_size_detailsUpsertWithWhereUniqueWithoutSub_batchInput = {
@@ -26032,6 +34140,11 @@ export namespace Prisma {
     id?: IntFilter<"department_sub_batches"> | number
     department_id?: IntNullableFilter<"department_sub_batches"> | number | null
     sub_batch_id?: IntNullableFilter<"department_sub_batches"> | number | null
+    stage?: EnumDepartmentStageFilter<"department_sub_batches"> | $Enums.DepartmentStage
+    is_current?: BoolFilter<"department_sub_batches"> | boolean
+    createdAt?: DateTimeFilter<"department_sub_batches"> | Date | string
+    updatedAt?: DateTimeFilter<"department_sub_batches"> | Date | string
+    assigned_worker_id?: IntNullableFilter<"department_sub_batches"> | number | null
   }
 
   export type worker_logsUpsertWithWhereUniqueWithoutSub_batchInput = {
@@ -26061,6 +34174,32 @@ export namespace Prisma {
     date?: DateTimeFilter<"worker_logs"> | Date | string
   }
 
+  export type sub_batch_workflowsUpsertWithWhereUniqueWithoutSub_batchInput = {
+    where: sub_batch_workflowsWhereUniqueInput
+    update: XOR<sub_batch_workflowsUpdateWithoutSub_batchInput, sub_batch_workflowsUncheckedUpdateWithoutSub_batchInput>
+    create: XOR<sub_batch_workflowsCreateWithoutSub_batchInput, sub_batch_workflowsUncheckedCreateWithoutSub_batchInput>
+  }
+
+  export type sub_batch_workflowsUpdateWithWhereUniqueWithoutSub_batchInput = {
+    where: sub_batch_workflowsWhereUniqueInput
+    data: XOR<sub_batch_workflowsUpdateWithoutSub_batchInput, sub_batch_workflowsUncheckedUpdateWithoutSub_batchInput>
+  }
+
+  export type sub_batch_workflowsUpdateManyWithWhereWithoutSub_batchInput = {
+    where: sub_batch_workflowsScalarWhereInput
+    data: XOR<sub_batch_workflowsUpdateManyMutationInput, sub_batch_workflowsUncheckedUpdateManyWithoutSub_batchInput>
+  }
+
+  export type sub_batch_workflowsScalarWhereInput = {
+    AND?: sub_batch_workflowsScalarWhereInput | sub_batch_workflowsScalarWhereInput[]
+    OR?: sub_batch_workflowsScalarWhereInput[]
+    NOT?: sub_batch_workflowsScalarWhereInput | sub_batch_workflowsScalarWhereInput[]
+    id?: IntFilter<"sub_batch_workflows"> | number
+    sub_batch_id?: IntFilter<"sub_batch_workflows"> | number
+    current_step_index?: IntFilter<"sub_batch_workflows"> | number
+    createdAt?: DateTimeFilter<"sub_batch_workflows"> | Date | string
+  }
+
   export type sub_batchesCreateWithoutSize_detailsInput = {
     name: string
     estimated_pieces: number
@@ -26075,6 +34214,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredCreateNestedManyWithoutSub_batchInput
     dept_links?: department_sub_batchesCreateNestedManyWithoutSub_batchInput
     worker_logs?: worker_logsCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesUncheckedCreateWithoutSize_detailsInput = {
@@ -26092,6 +34232,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSub_batchInput
     dept_links?: department_sub_batchesUncheckedCreateNestedManyWithoutSub_batchInput
     worker_logs?: worker_logsUncheckedCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsUncheckedCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesCreateOrConnectWithoutSize_detailsInput = {
@@ -26124,6 +34265,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUpdateManyWithoutSub_batchNestedInput
     dept_links?: department_sub_batchesUpdateManyWithoutSub_batchNestedInput
     worker_logs?: worker_logsUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUpdateManyWithoutSub_batchNestedInput
   }
 
   export type sub_batchesUncheckedUpdateWithoutSize_detailsInput = {
@@ -26141,6 +34283,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSub_batchNestedInput
     dept_links?: department_sub_batchesUncheckedUpdateManyWithoutSub_batchNestedInput
     worker_logs?: worker_logsUncheckedUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUncheckedUpdateManyWithoutSub_batchNestedInput
   }
 
   export type sub_batchesCreateWithoutAttachmentsInput = {
@@ -26157,6 +34300,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredCreateNestedManyWithoutSub_batchInput
     dept_links?: department_sub_batchesCreateNestedManyWithoutSub_batchInput
     worker_logs?: worker_logsCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesUncheckedCreateWithoutAttachmentsInput = {
@@ -26174,6 +34318,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSub_batchInput
     dept_links?: department_sub_batchesUncheckedCreateNestedManyWithoutSub_batchInput
     worker_logs?: worker_logsUncheckedCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsUncheckedCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesCreateOrConnectWithoutAttachmentsInput = {
@@ -26206,6 +34351,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUpdateManyWithoutSub_batchNestedInput
     dept_links?: department_sub_batchesUpdateManyWithoutSub_batchNestedInput
     worker_logs?: worker_logsUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUpdateManyWithoutSub_batchNestedInput
   }
 
   export type sub_batchesUncheckedUpdateWithoutAttachmentsInput = {
@@ -26223,6 +34369,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSub_batchNestedInput
     dept_links?: department_sub_batchesUncheckedUpdateManyWithoutSub_batchNestedInput
     worker_logs?: worker_logsUncheckedUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUncheckedUpdateManyWithoutSub_batchNestedInput
   }
 
   export type sub_batchesCreateWithoutRejectedInput = {
@@ -26239,6 +34386,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredCreateNestedManyWithoutSub_batchInput
     dept_links?: department_sub_batchesCreateNestedManyWithoutSub_batchInput
     worker_logs?: worker_logsCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesUncheckedCreateWithoutRejectedInput = {
@@ -26256,6 +34404,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSub_batchInput
     dept_links?: department_sub_batchesUncheckedCreateNestedManyWithoutSub_batchInput
     worker_logs?: worker_logsUncheckedCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsUncheckedCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesCreateOrConnectWithoutRejectedInput = {
@@ -26272,6 +34421,8 @@ export namespace Prisma {
     dept_workers?: department_workersCreateNestedManyWithoutDepartmentInput
     dept_batches?: department_sub_batchesCreateNestedManyWithoutDepartmentInput
     altered?: sub_batch_alteredCreateNestedManyWithoutSent_to_departmentInput
+    workflow_steps?: workflow_stepsCreateNestedManyWithoutDepartmentInput
+    sub_batch_steps?: sub_batch_workflow_stepsCreateNestedManyWithoutDepartmentInput
   }
 
   export type departmentsUncheckedCreateWithoutRejectedInput = {
@@ -26284,6 +34435,8 @@ export namespace Prisma {
     dept_workers?: department_workersUncheckedCreateNestedManyWithoutDepartmentInput
     dept_batches?: department_sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSent_to_departmentInput
+    workflow_steps?: workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+    sub_batch_steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type departmentsCreateOrConnectWithoutRejectedInput = {
@@ -26316,6 +34469,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUpdateManyWithoutSub_batchNestedInput
     dept_links?: department_sub_batchesUpdateManyWithoutSub_batchNestedInput
     worker_logs?: worker_logsUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUpdateManyWithoutSub_batchNestedInput
   }
 
   export type sub_batchesUncheckedUpdateWithoutRejectedInput = {
@@ -26333,6 +34487,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSub_batchNestedInput
     dept_links?: department_sub_batchesUncheckedUpdateManyWithoutSub_batchNestedInput
     worker_logs?: worker_logsUncheckedUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUncheckedUpdateManyWithoutSub_batchNestedInput
   }
 
   export type departmentsUpsertWithoutRejectedInput = {
@@ -26355,6 +34510,8 @@ export namespace Prisma {
     dept_workers?: department_workersUpdateManyWithoutDepartmentNestedInput
     dept_batches?: department_sub_batchesUpdateManyWithoutDepartmentNestedInput
     altered?: sub_batch_alteredUpdateManyWithoutSent_to_departmentNestedInput
+    workflow_steps?: workflow_stepsUpdateManyWithoutDepartmentNestedInput
+    sub_batch_steps?: sub_batch_workflow_stepsUpdateManyWithoutDepartmentNestedInput
   }
 
   export type departmentsUncheckedUpdateWithoutRejectedInput = {
@@ -26367,6 +34524,8 @@ export namespace Prisma {
     dept_workers?: department_workersUncheckedUpdateManyWithoutDepartmentNestedInput
     dept_batches?: department_sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSent_to_departmentNestedInput
+    workflow_steps?: workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+    sub_batch_steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type sub_batchesCreateWithoutAlteredInput = {
@@ -26383,6 +34542,7 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedCreateNestedManyWithoutSub_batchInput
     dept_links?: department_sub_batchesCreateNestedManyWithoutSub_batchInput
     worker_logs?: worker_logsCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesUncheckedCreateWithoutAlteredInput = {
@@ -26400,6 +34560,7 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedUncheckedCreateNestedManyWithoutSub_batchInput
     dept_links?: department_sub_batchesUncheckedCreateNestedManyWithoutSub_batchInput
     worker_logs?: worker_logsUncheckedCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsUncheckedCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesCreateOrConnectWithoutAlteredInput = {
@@ -26416,6 +34577,8 @@ export namespace Prisma {
     dept_workers?: department_workersCreateNestedManyWithoutDepartmentInput
     dept_batches?: department_sub_batchesCreateNestedManyWithoutDepartmentInput
     rejected?: sub_batch_rejectedCreateNestedManyWithoutSent_to_departmentInput
+    workflow_steps?: workflow_stepsCreateNestedManyWithoutDepartmentInput
+    sub_batch_steps?: sub_batch_workflow_stepsCreateNestedManyWithoutDepartmentInput
   }
 
   export type departmentsUncheckedCreateWithoutAlteredInput = {
@@ -26428,6 +34591,8 @@ export namespace Prisma {
     dept_workers?: department_workersUncheckedCreateNestedManyWithoutDepartmentInput
     dept_batches?: department_sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
     rejected?: sub_batch_rejectedUncheckedCreateNestedManyWithoutSent_to_departmentInput
+    workflow_steps?: workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+    sub_batch_steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type departmentsCreateOrConnectWithoutAlteredInput = {
@@ -26460,6 +34625,7 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedUpdateManyWithoutSub_batchNestedInput
     dept_links?: department_sub_batchesUpdateManyWithoutSub_batchNestedInput
     worker_logs?: worker_logsUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUpdateManyWithoutSub_batchNestedInput
   }
 
   export type sub_batchesUncheckedUpdateWithoutAlteredInput = {
@@ -26477,6 +34643,7 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedUncheckedUpdateManyWithoutSub_batchNestedInput
     dept_links?: department_sub_batchesUncheckedUpdateManyWithoutSub_batchNestedInput
     worker_logs?: worker_logsUncheckedUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUncheckedUpdateManyWithoutSub_batchNestedInput
   }
 
   export type departmentsUpsertWithoutAlteredInput = {
@@ -26499,6 +34666,8 @@ export namespace Prisma {
     dept_workers?: department_workersUpdateManyWithoutDepartmentNestedInput
     dept_batches?: department_sub_batchesUpdateManyWithoutDepartmentNestedInput
     rejected?: sub_batch_rejectedUpdateManyWithoutSent_to_departmentNestedInput
+    workflow_steps?: workflow_stepsUpdateManyWithoutDepartmentNestedInput
+    sub_batch_steps?: sub_batch_workflow_stepsUpdateManyWithoutDepartmentNestedInput
   }
 
   export type departmentsUncheckedUpdateWithoutAlteredInput = {
@@ -26511,6 +34680,8 @@ export namespace Prisma {
     dept_workers?: department_workersUncheckedUpdateManyWithoutDepartmentNestedInput
     dept_batches?: department_sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
     rejected?: sub_batch_rejectedUncheckedUpdateManyWithoutSent_to_departmentNestedInput
+    workflow_steps?: workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+    sub_batch_steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type sub_batchesCreateWithoutDepartmentInput = {
@@ -26527,6 +34698,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredCreateNestedManyWithoutSub_batchInput
     dept_links?: department_sub_batchesCreateNestedManyWithoutSub_batchInput
     worker_logs?: worker_logsCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesUncheckedCreateWithoutDepartmentInput = {
@@ -26544,6 +34716,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSub_batchInput
     dept_links?: department_sub_batchesUncheckedCreateNestedManyWithoutSub_batchInput
     worker_logs?: worker_logsUncheckedCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsUncheckedCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesCreateOrConnectWithoutDepartmentInput = {
@@ -26564,6 +34737,7 @@ export namespace Prisma {
     wage_rate: number
     worker_logs?: worker_logsCreateNestedManyWithoutWorkerInput
     dept_workers?: department_workersCreateNestedManyWithoutWorkerInput
+    department_assignments?: department_sub_batchesCreateNestedManyWithoutAssigned_workerInput
   }
 
   export type workersUncheckedCreateWithoutDepartmentInput = {
@@ -26575,6 +34749,7 @@ export namespace Prisma {
     wage_rate: number
     worker_logs?: worker_logsUncheckedCreateNestedManyWithoutWorkerInput
     dept_workers?: department_workersUncheckedCreateNestedManyWithoutWorkerInput
+    department_assignments?: department_sub_batchesUncheckedCreateNestedManyWithoutAssigned_workerInput
   }
 
   export type workersCreateOrConnectWithoutDepartmentInput = {
@@ -26609,12 +34784,24 @@ export namespace Prisma {
   }
 
   export type department_sub_batchesCreateWithoutDepartmentInput = {
+    stage?: $Enums.DepartmentStage
+    is_current?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assigned_worker?: workersCreateNestedOneWithoutDepartment_assignmentsInput
     sub_batch?: sub_batchesCreateNestedOneWithoutDept_linksInput
+    history?: department_sub_batch_historyCreateNestedManyWithoutDepartment_sub_batchInput
   }
 
   export type department_sub_batchesUncheckedCreateWithoutDepartmentInput = {
     id?: number
     sub_batch_id?: number | null
+    stage?: $Enums.DepartmentStage
+    is_current?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assigned_worker_id?: number | null
+    history?: department_sub_batch_historyUncheckedCreateNestedManyWithoutDepartment_sub_batchInput
   }
 
   export type department_sub_batchesCreateOrConnectWithoutDepartmentInput = {
@@ -26670,6 +34857,48 @@ export namespace Prisma {
 
   export type sub_batch_alteredCreateManySent_to_departmentInputEnvelope = {
     data: sub_batch_alteredCreateManySent_to_departmentInput | sub_batch_alteredCreateManySent_to_departmentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type workflow_stepsCreateWithoutDepartmentInput = {
+    step_index: number
+    workflow_template?: workflow_templatesCreateNestedOneWithoutStepsInput
+  }
+
+  export type workflow_stepsUncheckedCreateWithoutDepartmentInput = {
+    id?: number
+    workflow_template_id?: number | null
+    step_index: number
+  }
+
+  export type workflow_stepsCreateOrConnectWithoutDepartmentInput = {
+    where: workflow_stepsWhereUniqueInput
+    create: XOR<workflow_stepsCreateWithoutDepartmentInput, workflow_stepsUncheckedCreateWithoutDepartmentInput>
+  }
+
+  export type workflow_stepsCreateManyDepartmentInputEnvelope = {
+    data: workflow_stepsCreateManyDepartmentInput | workflow_stepsCreateManyDepartmentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type sub_batch_workflow_stepsCreateWithoutDepartmentInput = {
+    step_index: number
+    sub_batch_workflow?: sub_batch_workflowsCreateNestedOneWithoutStepsInput
+  }
+
+  export type sub_batch_workflow_stepsUncheckedCreateWithoutDepartmentInput = {
+    id?: number
+    sub_batch_workflow_id?: number | null
+    step_index: number
+  }
+
+  export type sub_batch_workflow_stepsCreateOrConnectWithoutDepartmentInput = {
+    where: sub_batch_workflow_stepsWhereUniqueInput
+    create: XOR<sub_batch_workflow_stepsCreateWithoutDepartmentInput, sub_batch_workflow_stepsUncheckedCreateWithoutDepartmentInput>
+  }
+
+  export type sub_batch_workflow_stepsCreateManyDepartmentInputEnvelope = {
+    data: sub_batch_workflow_stepsCreateManyDepartmentInput | sub_batch_workflow_stepsCreateManyDepartmentInput[]
     skipDuplicates?: boolean
   }
 
@@ -26792,6 +35021,58 @@ export namespace Prisma {
     data: XOR<sub_batch_alteredUpdateManyMutationInput, sub_batch_alteredUncheckedUpdateManyWithoutSent_to_departmentInput>
   }
 
+  export type workflow_stepsUpsertWithWhereUniqueWithoutDepartmentInput = {
+    where: workflow_stepsWhereUniqueInput
+    update: XOR<workflow_stepsUpdateWithoutDepartmentInput, workflow_stepsUncheckedUpdateWithoutDepartmentInput>
+    create: XOR<workflow_stepsCreateWithoutDepartmentInput, workflow_stepsUncheckedCreateWithoutDepartmentInput>
+  }
+
+  export type workflow_stepsUpdateWithWhereUniqueWithoutDepartmentInput = {
+    where: workflow_stepsWhereUniqueInput
+    data: XOR<workflow_stepsUpdateWithoutDepartmentInput, workflow_stepsUncheckedUpdateWithoutDepartmentInput>
+  }
+
+  export type workflow_stepsUpdateManyWithWhereWithoutDepartmentInput = {
+    where: workflow_stepsScalarWhereInput
+    data: XOR<workflow_stepsUpdateManyMutationInput, workflow_stepsUncheckedUpdateManyWithoutDepartmentInput>
+  }
+
+  export type workflow_stepsScalarWhereInput = {
+    AND?: workflow_stepsScalarWhereInput | workflow_stepsScalarWhereInput[]
+    OR?: workflow_stepsScalarWhereInput[]
+    NOT?: workflow_stepsScalarWhereInput | workflow_stepsScalarWhereInput[]
+    id?: IntFilter<"workflow_steps"> | number
+    workflow_template_id?: IntNullableFilter<"workflow_steps"> | number | null
+    step_index?: IntFilter<"workflow_steps"> | number
+    department_id?: IntFilter<"workflow_steps"> | number
+  }
+
+  export type sub_batch_workflow_stepsUpsertWithWhereUniqueWithoutDepartmentInput = {
+    where: sub_batch_workflow_stepsWhereUniqueInput
+    update: XOR<sub_batch_workflow_stepsUpdateWithoutDepartmentInput, sub_batch_workflow_stepsUncheckedUpdateWithoutDepartmentInput>
+    create: XOR<sub_batch_workflow_stepsCreateWithoutDepartmentInput, sub_batch_workflow_stepsUncheckedCreateWithoutDepartmentInput>
+  }
+
+  export type sub_batch_workflow_stepsUpdateWithWhereUniqueWithoutDepartmentInput = {
+    where: sub_batch_workflow_stepsWhereUniqueInput
+    data: XOR<sub_batch_workflow_stepsUpdateWithoutDepartmentInput, sub_batch_workflow_stepsUncheckedUpdateWithoutDepartmentInput>
+  }
+
+  export type sub_batch_workflow_stepsUpdateManyWithWhereWithoutDepartmentInput = {
+    where: sub_batch_workflow_stepsScalarWhereInput
+    data: XOR<sub_batch_workflow_stepsUpdateManyMutationInput, sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentInput>
+  }
+
+  export type sub_batch_workflow_stepsScalarWhereInput = {
+    AND?: sub_batch_workflow_stepsScalarWhereInput | sub_batch_workflow_stepsScalarWhereInput[]
+    OR?: sub_batch_workflow_stepsScalarWhereInput[]
+    NOT?: sub_batch_workflow_stepsScalarWhereInput | sub_batch_workflow_stepsScalarWhereInput[]
+    id?: IntFilter<"sub_batch_workflow_steps"> | number
+    sub_batch_workflow_id?: IntNullableFilter<"sub_batch_workflow_steps"> | number | null
+    step_index?: IntFilter<"sub_batch_workflow_steps"> | number
+    department_id?: IntFilter<"sub_batch_workflow_steps"> | number
+  }
+
   export type departmentsCreateWithoutDept_workersInput = {
     name: string
     supervisor: string
@@ -26801,6 +35082,8 @@ export namespace Prisma {
     dept_batches?: department_sub_batchesCreateNestedManyWithoutDepartmentInput
     rejected?: sub_batch_rejectedCreateNestedManyWithoutSent_to_departmentInput
     altered?: sub_batch_alteredCreateNestedManyWithoutSent_to_departmentInput
+    workflow_steps?: workflow_stepsCreateNestedManyWithoutDepartmentInput
+    sub_batch_steps?: sub_batch_workflow_stepsCreateNestedManyWithoutDepartmentInput
   }
 
   export type departmentsUncheckedCreateWithoutDept_workersInput = {
@@ -26813,6 +35096,8 @@ export namespace Prisma {
     dept_batches?: department_sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
     rejected?: sub_batch_rejectedUncheckedCreateNestedManyWithoutSent_to_departmentInput
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSent_to_departmentInput
+    workflow_steps?: workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+    sub_batch_steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type departmentsCreateOrConnectWithoutDept_workersInput = {
@@ -26828,6 +35113,7 @@ export namespace Prisma {
     wage_rate: number
     department?: departmentsCreateNestedOneWithoutWorkersInput
     worker_logs?: worker_logsCreateNestedManyWithoutWorkerInput
+    department_assignments?: department_sub_batchesCreateNestedManyWithoutAssigned_workerInput
   }
 
   export type workersUncheckedCreateWithoutDept_workersInput = {
@@ -26839,6 +35125,7 @@ export namespace Prisma {
     wage_type: string
     wage_rate: number
     worker_logs?: worker_logsUncheckedCreateNestedManyWithoutWorkerInput
+    department_assignments?: department_sub_batchesUncheckedCreateNestedManyWithoutAssigned_workerInput
   }
 
   export type workersCreateOrConnectWithoutDept_workersInput = {
@@ -26866,6 +35153,8 @@ export namespace Prisma {
     dept_batches?: department_sub_batchesUpdateManyWithoutDepartmentNestedInput
     rejected?: sub_batch_rejectedUpdateManyWithoutSent_to_departmentNestedInput
     altered?: sub_batch_alteredUpdateManyWithoutSent_to_departmentNestedInput
+    workflow_steps?: workflow_stepsUpdateManyWithoutDepartmentNestedInput
+    sub_batch_steps?: sub_batch_workflow_stepsUpdateManyWithoutDepartmentNestedInput
   }
 
   export type departmentsUncheckedUpdateWithoutDept_workersInput = {
@@ -26878,6 +35167,8 @@ export namespace Prisma {
     dept_batches?: department_sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
     rejected?: sub_batch_rejectedUncheckedUpdateManyWithoutSent_to_departmentNestedInput
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSent_to_departmentNestedInput
+    workflow_steps?: workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+    sub_batch_steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type workersUpsertWithoutDept_workersInput = {
@@ -26899,6 +35190,7 @@ export namespace Prisma {
     wage_rate?: FloatFieldUpdateOperationsInput | number
     department?: departmentsUpdateOneWithoutWorkersNestedInput
     worker_logs?: worker_logsUpdateManyWithoutWorkerNestedInput
+    department_assignments?: department_sub_batchesUpdateManyWithoutAssigned_workerNestedInput
   }
 
   export type workersUncheckedUpdateWithoutDept_workersInput = {
@@ -26910,6 +35202,35 @@ export namespace Prisma {
     wage_type?: StringFieldUpdateOperationsInput | string
     wage_rate?: FloatFieldUpdateOperationsInput | number
     worker_logs?: worker_logsUncheckedUpdateManyWithoutWorkerNestedInput
+    department_assignments?: department_sub_batchesUncheckedUpdateManyWithoutAssigned_workerNestedInput
+  }
+
+  export type workersCreateWithoutDepartment_assignmentsInput = {
+    name: string
+    pan: string
+    address: string
+    wage_type: string
+    wage_rate: number
+    department?: departmentsCreateNestedOneWithoutWorkersInput
+    worker_logs?: worker_logsCreateNestedManyWithoutWorkerInput
+    dept_workers?: department_workersCreateNestedManyWithoutWorkerInput
+  }
+
+  export type workersUncheckedCreateWithoutDepartment_assignmentsInput = {
+    id?: number
+    name: string
+    pan: string
+    address: string
+    department_id?: number | null
+    wage_type: string
+    wage_rate: number
+    worker_logs?: worker_logsUncheckedCreateNestedManyWithoutWorkerInput
+    dept_workers?: department_workersUncheckedCreateNestedManyWithoutWorkerInput
+  }
+
+  export type workersCreateOrConnectWithoutDepartment_assignmentsInput = {
+    where: workersWhereUniqueInput
+    create: XOR<workersCreateWithoutDepartment_assignmentsInput, workersUncheckedCreateWithoutDepartment_assignmentsInput>
   }
 
   export type departmentsCreateWithoutDept_batchesInput = {
@@ -26921,6 +35242,8 @@ export namespace Prisma {
     dept_workers?: department_workersCreateNestedManyWithoutDepartmentInput
     rejected?: sub_batch_rejectedCreateNestedManyWithoutSent_to_departmentInput
     altered?: sub_batch_alteredCreateNestedManyWithoutSent_to_departmentInput
+    workflow_steps?: workflow_stepsCreateNestedManyWithoutDepartmentInput
+    sub_batch_steps?: sub_batch_workflow_stepsCreateNestedManyWithoutDepartmentInput
   }
 
   export type departmentsUncheckedCreateWithoutDept_batchesInput = {
@@ -26933,6 +35256,8 @@ export namespace Prisma {
     dept_workers?: department_workersUncheckedCreateNestedManyWithoutDepartmentInput
     rejected?: sub_batch_rejectedUncheckedCreateNestedManyWithoutSent_to_departmentInput
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSent_to_departmentInput
+    workflow_steps?: workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+    sub_batch_steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type departmentsCreateOrConnectWithoutDept_batchesInput = {
@@ -26954,6 +35279,7 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedCreateNestedManyWithoutSub_batchInput
     altered?: sub_batch_alteredCreateNestedManyWithoutSub_batchInput
     worker_logs?: worker_logsCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesUncheckedCreateWithoutDept_linksInput = {
@@ -26971,11 +35297,79 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedUncheckedCreateNestedManyWithoutSub_batchInput
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSub_batchInput
     worker_logs?: worker_logsUncheckedCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsUncheckedCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesCreateOrConnectWithoutDept_linksInput = {
     where: sub_batchesWhereUniqueInput
     create: XOR<sub_batchesCreateWithoutDept_linksInput, sub_batchesUncheckedCreateWithoutDept_linksInput>
+  }
+
+  export type department_sub_batch_historyCreateWithoutDepartment_sub_batchInput = {
+    sub_batch_id?: number | null
+    from_stage?: $Enums.DepartmentStage | null
+    to_stage: $Enums.DepartmentStage
+    from_department_id?: number | null
+    to_department_id?: number | null
+    action_by_user_id?: number | null
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type department_sub_batch_historyUncheckedCreateWithoutDepartment_sub_batchInput = {
+    id?: number
+    sub_batch_id?: number | null
+    from_stage?: $Enums.DepartmentStage | null
+    to_stage: $Enums.DepartmentStage
+    from_department_id?: number | null
+    to_department_id?: number | null
+    action_by_user_id?: number | null
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type department_sub_batch_historyCreateOrConnectWithoutDepartment_sub_batchInput = {
+    where: department_sub_batch_historyWhereUniqueInput
+    create: XOR<department_sub_batch_historyCreateWithoutDepartment_sub_batchInput, department_sub_batch_historyUncheckedCreateWithoutDepartment_sub_batchInput>
+  }
+
+  export type department_sub_batch_historyCreateManyDepartment_sub_batchInputEnvelope = {
+    data: department_sub_batch_historyCreateManyDepartment_sub_batchInput | department_sub_batch_historyCreateManyDepartment_sub_batchInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type workersUpsertWithoutDepartment_assignmentsInput = {
+    update: XOR<workersUpdateWithoutDepartment_assignmentsInput, workersUncheckedUpdateWithoutDepartment_assignmentsInput>
+    create: XOR<workersCreateWithoutDepartment_assignmentsInput, workersUncheckedCreateWithoutDepartment_assignmentsInput>
+    where?: workersWhereInput
+  }
+
+  export type workersUpdateToOneWithWhereWithoutDepartment_assignmentsInput = {
+    where?: workersWhereInput
+    data: XOR<workersUpdateWithoutDepartment_assignmentsInput, workersUncheckedUpdateWithoutDepartment_assignmentsInput>
+  }
+
+  export type workersUpdateWithoutDepartment_assignmentsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    pan?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    wage_type?: StringFieldUpdateOperationsInput | string
+    wage_rate?: FloatFieldUpdateOperationsInput | number
+    department?: departmentsUpdateOneWithoutWorkersNestedInput
+    worker_logs?: worker_logsUpdateManyWithoutWorkerNestedInput
+    dept_workers?: department_workersUpdateManyWithoutWorkerNestedInput
+  }
+
+  export type workersUncheckedUpdateWithoutDepartment_assignmentsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    pan?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    wage_type?: StringFieldUpdateOperationsInput | string
+    wage_rate?: FloatFieldUpdateOperationsInput | number
+    worker_logs?: worker_logsUncheckedUpdateManyWithoutWorkerNestedInput
+    dept_workers?: department_workersUncheckedUpdateManyWithoutWorkerNestedInput
   }
 
   export type departmentsUpsertWithoutDept_batchesInput = {
@@ -26998,6 +35392,8 @@ export namespace Prisma {
     dept_workers?: department_workersUpdateManyWithoutDepartmentNestedInput
     rejected?: sub_batch_rejectedUpdateManyWithoutSent_to_departmentNestedInput
     altered?: sub_batch_alteredUpdateManyWithoutSent_to_departmentNestedInput
+    workflow_steps?: workflow_stepsUpdateManyWithoutDepartmentNestedInput
+    sub_batch_steps?: sub_batch_workflow_stepsUpdateManyWithoutDepartmentNestedInput
   }
 
   export type departmentsUncheckedUpdateWithoutDept_batchesInput = {
@@ -27010,6 +35406,8 @@ export namespace Prisma {
     dept_workers?: department_workersUncheckedUpdateManyWithoutDepartmentNestedInput
     rejected?: sub_batch_rejectedUncheckedUpdateManyWithoutSent_to_departmentNestedInput
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSent_to_departmentNestedInput
+    workflow_steps?: workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+    sub_batch_steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type sub_batchesUpsertWithoutDept_linksInput = {
@@ -27037,6 +35435,7 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedUpdateManyWithoutSub_batchNestedInput
     altered?: sub_batch_alteredUpdateManyWithoutSub_batchNestedInput
     worker_logs?: worker_logsUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUpdateManyWithoutSub_batchNestedInput
   }
 
   export type sub_batchesUncheckedUpdateWithoutDept_linksInput = {
@@ -27054,6 +35453,39 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedUncheckedUpdateManyWithoutSub_batchNestedInput
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSub_batchNestedInput
     worker_logs?: worker_logsUncheckedUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUncheckedUpdateManyWithoutSub_batchNestedInput
+  }
+
+  export type department_sub_batch_historyUpsertWithWhereUniqueWithoutDepartment_sub_batchInput = {
+    where: department_sub_batch_historyWhereUniqueInput
+    update: XOR<department_sub_batch_historyUpdateWithoutDepartment_sub_batchInput, department_sub_batch_historyUncheckedUpdateWithoutDepartment_sub_batchInput>
+    create: XOR<department_sub_batch_historyCreateWithoutDepartment_sub_batchInput, department_sub_batch_historyUncheckedCreateWithoutDepartment_sub_batchInput>
+  }
+
+  export type department_sub_batch_historyUpdateWithWhereUniqueWithoutDepartment_sub_batchInput = {
+    where: department_sub_batch_historyWhereUniqueInput
+    data: XOR<department_sub_batch_historyUpdateWithoutDepartment_sub_batchInput, department_sub_batch_historyUncheckedUpdateWithoutDepartment_sub_batchInput>
+  }
+
+  export type department_sub_batch_historyUpdateManyWithWhereWithoutDepartment_sub_batchInput = {
+    where: department_sub_batch_historyScalarWhereInput
+    data: XOR<department_sub_batch_historyUpdateManyMutationInput, department_sub_batch_historyUncheckedUpdateManyWithoutDepartment_sub_batchInput>
+  }
+
+  export type department_sub_batch_historyScalarWhereInput = {
+    AND?: department_sub_batch_historyScalarWhereInput | department_sub_batch_historyScalarWhereInput[]
+    OR?: department_sub_batch_historyScalarWhereInput[]
+    NOT?: department_sub_batch_historyScalarWhereInput | department_sub_batch_historyScalarWhereInput[]
+    id?: IntFilter<"department_sub_batch_history"> | number
+    department_sub_batch_id?: IntNullableFilter<"department_sub_batch_history"> | number | null
+    sub_batch_id?: IntNullableFilter<"department_sub_batch_history"> | number | null
+    from_stage?: EnumDepartmentStageNullableFilter<"department_sub_batch_history"> | $Enums.DepartmentStage | null
+    to_stage?: EnumDepartmentStageFilter<"department_sub_batch_history"> | $Enums.DepartmentStage
+    from_department_id?: IntNullableFilter<"department_sub_batch_history"> | number | null
+    to_department_id?: IntNullableFilter<"department_sub_batch_history"> | number | null
+    action_by_user_id?: IntNullableFilter<"department_sub_batch_history"> | number | null
+    reason?: StringNullableFilter<"department_sub_batch_history"> | string | null
+    createdAt?: DateTimeFilter<"department_sub_batch_history"> | Date | string
   }
 
   export type departmentsCreateWithoutWorkersInput = {
@@ -27065,6 +35497,8 @@ export namespace Prisma {
     dept_batches?: department_sub_batchesCreateNestedManyWithoutDepartmentInput
     rejected?: sub_batch_rejectedCreateNestedManyWithoutSent_to_departmentInput
     altered?: sub_batch_alteredCreateNestedManyWithoutSent_to_departmentInput
+    workflow_steps?: workflow_stepsCreateNestedManyWithoutDepartmentInput
+    sub_batch_steps?: sub_batch_workflow_stepsCreateNestedManyWithoutDepartmentInput
   }
 
   export type departmentsUncheckedCreateWithoutWorkersInput = {
@@ -27077,6 +35511,8 @@ export namespace Prisma {
     dept_batches?: department_sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
     rejected?: sub_batch_rejectedUncheckedCreateNestedManyWithoutSent_to_departmentInput
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSent_to_departmentInput
+    workflow_steps?: workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+    sub_batch_steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type departmentsCreateOrConnectWithoutWorkersInput = {
@@ -27128,6 +35564,37 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type department_sub_batchesCreateWithoutAssigned_workerInput = {
+    stage?: $Enums.DepartmentStage
+    is_current?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    department?: departmentsCreateNestedOneWithoutDept_batchesInput
+    sub_batch?: sub_batchesCreateNestedOneWithoutDept_linksInput
+    history?: department_sub_batch_historyCreateNestedManyWithoutDepartment_sub_batchInput
+  }
+
+  export type department_sub_batchesUncheckedCreateWithoutAssigned_workerInput = {
+    id?: number
+    department_id?: number | null
+    sub_batch_id?: number | null
+    stage?: $Enums.DepartmentStage
+    is_current?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    history?: department_sub_batch_historyUncheckedCreateNestedManyWithoutDepartment_sub_batchInput
+  }
+
+  export type department_sub_batchesCreateOrConnectWithoutAssigned_workerInput = {
+    where: department_sub_batchesWhereUniqueInput
+    create: XOR<department_sub_batchesCreateWithoutAssigned_workerInput, department_sub_batchesUncheckedCreateWithoutAssigned_workerInput>
+  }
+
+  export type department_sub_batchesCreateManyAssigned_workerInputEnvelope = {
+    data: department_sub_batchesCreateManyAssigned_workerInput | department_sub_batchesCreateManyAssigned_workerInput[]
+    skipDuplicates?: boolean
+  }
+
   export type departmentsUpsertWithoutWorkersInput = {
     update: XOR<departmentsUpdateWithoutWorkersInput, departmentsUncheckedUpdateWithoutWorkersInput>
     create: XOR<departmentsCreateWithoutWorkersInput, departmentsUncheckedCreateWithoutWorkersInput>
@@ -27148,6 +35615,8 @@ export namespace Prisma {
     dept_batches?: department_sub_batchesUpdateManyWithoutDepartmentNestedInput
     rejected?: sub_batch_rejectedUpdateManyWithoutSent_to_departmentNestedInput
     altered?: sub_batch_alteredUpdateManyWithoutSent_to_departmentNestedInput
+    workflow_steps?: workflow_stepsUpdateManyWithoutDepartmentNestedInput
+    sub_batch_steps?: sub_batch_workflow_stepsUpdateManyWithoutDepartmentNestedInput
   }
 
   export type departmentsUncheckedUpdateWithoutWorkersInput = {
@@ -27160,6 +35629,8 @@ export namespace Prisma {
     dept_batches?: department_sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
     rejected?: sub_batch_rejectedUncheckedUpdateManyWithoutSent_to_departmentNestedInput
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSent_to_departmentNestedInput
+    workflow_steps?: workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+    sub_batch_steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type worker_logsUpsertWithWhereUniqueWithoutWorkerInput = {
@@ -27194,6 +35665,22 @@ export namespace Prisma {
     data: XOR<department_workersUpdateManyMutationInput, department_workersUncheckedUpdateManyWithoutWorkerInput>
   }
 
+  export type department_sub_batchesUpsertWithWhereUniqueWithoutAssigned_workerInput = {
+    where: department_sub_batchesWhereUniqueInput
+    update: XOR<department_sub_batchesUpdateWithoutAssigned_workerInput, department_sub_batchesUncheckedUpdateWithoutAssigned_workerInput>
+    create: XOR<department_sub_batchesCreateWithoutAssigned_workerInput, department_sub_batchesUncheckedCreateWithoutAssigned_workerInput>
+  }
+
+  export type department_sub_batchesUpdateWithWhereUniqueWithoutAssigned_workerInput = {
+    where: department_sub_batchesWhereUniqueInput
+    data: XOR<department_sub_batchesUpdateWithoutAssigned_workerInput, department_sub_batchesUncheckedUpdateWithoutAssigned_workerInput>
+  }
+
+  export type department_sub_batchesUpdateManyWithWhereWithoutAssigned_workerInput = {
+    where: department_sub_batchesScalarWhereInput
+    data: XOR<department_sub_batchesUpdateManyMutationInput, department_sub_batchesUncheckedUpdateManyWithoutAssigned_workerInput>
+  }
+
   export type workersCreateWithoutWorker_logsInput = {
     name: string
     pan: string
@@ -27202,6 +35689,7 @@ export namespace Prisma {
     wage_rate: number
     department?: departmentsCreateNestedOneWithoutWorkersInput
     dept_workers?: department_workersCreateNestedManyWithoutWorkerInput
+    department_assignments?: department_sub_batchesCreateNestedManyWithoutAssigned_workerInput
   }
 
   export type workersUncheckedCreateWithoutWorker_logsInput = {
@@ -27213,6 +35701,7 @@ export namespace Prisma {
     wage_type: string
     wage_rate: number
     dept_workers?: department_workersUncheckedCreateNestedManyWithoutWorkerInput
+    department_assignments?: department_sub_batchesUncheckedCreateNestedManyWithoutAssigned_workerInput
   }
 
   export type workersCreateOrConnectWithoutWorker_logsInput = {
@@ -27234,6 +35723,7 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedCreateNestedManyWithoutSub_batchInput
     altered?: sub_batch_alteredCreateNestedManyWithoutSub_batchInput
     dept_links?: department_sub_batchesCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesUncheckedCreateWithoutWorker_logsInput = {
@@ -27251,6 +35741,7 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedUncheckedCreateNestedManyWithoutSub_batchInput
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSub_batchInput
     dept_links?: department_sub_batchesUncheckedCreateNestedManyWithoutSub_batchInput
+    workflows?: sub_batch_workflowsUncheckedCreateNestedManyWithoutSub_batchInput
   }
 
   export type sub_batchesCreateOrConnectWithoutWorker_logsInput = {
@@ -27277,6 +35768,7 @@ export namespace Prisma {
     wage_rate?: FloatFieldUpdateOperationsInput | number
     department?: departmentsUpdateOneWithoutWorkersNestedInput
     dept_workers?: department_workersUpdateManyWithoutWorkerNestedInput
+    department_assignments?: department_sub_batchesUpdateManyWithoutAssigned_workerNestedInput
   }
 
   export type workersUncheckedUpdateWithoutWorker_logsInput = {
@@ -27288,6 +35780,7 @@ export namespace Prisma {
     wage_type?: StringFieldUpdateOperationsInput | string
     wage_rate?: FloatFieldUpdateOperationsInput | number
     dept_workers?: department_workersUncheckedUpdateManyWithoutWorkerNestedInput
+    department_assignments?: department_sub_batchesUncheckedUpdateManyWithoutAssigned_workerNestedInput
   }
 
   export type sub_batchesUpsertWithoutWorker_logsInput = {
@@ -27315,6 +35808,7 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedUpdateManyWithoutSub_batchNestedInput
     altered?: sub_batch_alteredUpdateManyWithoutSub_batchNestedInput
     dept_links?: department_sub_batchesUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUpdateManyWithoutSub_batchNestedInput
   }
 
   export type sub_batchesUncheckedUpdateWithoutWorker_logsInput = {
@@ -27332,6 +35826,7 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedUncheckedUpdateManyWithoutSub_batchNestedInput
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSub_batchNestedInput
     dept_links?: department_sub_batchesUncheckedUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUncheckedUpdateManyWithoutSub_batchNestedInput
   }
 
   export type rollsCreateWithoutVendorInput = {
@@ -27436,6 +35931,448 @@ export namespace Prisma {
     data: XOR<batchesUpdateManyMutationInput, batchesUncheckedUpdateManyWithoutVendorInput>
   }
 
+  export type workflow_stepsCreateWithoutWorkflow_templateInput = {
+    step_index: number
+    department?: departmentsCreateNestedOneWithoutWorkflow_stepsInput
+  }
+
+  export type workflow_stepsUncheckedCreateWithoutWorkflow_templateInput = {
+    id?: number
+    step_index: number
+    department_id: number
+  }
+
+  export type workflow_stepsCreateOrConnectWithoutWorkflow_templateInput = {
+    where: workflow_stepsWhereUniqueInput
+    create: XOR<workflow_stepsCreateWithoutWorkflow_templateInput, workflow_stepsUncheckedCreateWithoutWorkflow_templateInput>
+  }
+
+  export type workflow_stepsCreateManyWorkflow_templateInputEnvelope = {
+    data: workflow_stepsCreateManyWorkflow_templateInput | workflow_stepsCreateManyWorkflow_templateInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type workflow_stepsUpsertWithWhereUniqueWithoutWorkflow_templateInput = {
+    where: workflow_stepsWhereUniqueInput
+    update: XOR<workflow_stepsUpdateWithoutWorkflow_templateInput, workflow_stepsUncheckedUpdateWithoutWorkflow_templateInput>
+    create: XOR<workflow_stepsCreateWithoutWorkflow_templateInput, workflow_stepsUncheckedCreateWithoutWorkflow_templateInput>
+  }
+
+  export type workflow_stepsUpdateWithWhereUniqueWithoutWorkflow_templateInput = {
+    where: workflow_stepsWhereUniqueInput
+    data: XOR<workflow_stepsUpdateWithoutWorkflow_templateInput, workflow_stepsUncheckedUpdateWithoutWorkflow_templateInput>
+  }
+
+  export type workflow_stepsUpdateManyWithWhereWithoutWorkflow_templateInput = {
+    where: workflow_stepsScalarWhereInput
+    data: XOR<workflow_stepsUpdateManyMutationInput, workflow_stepsUncheckedUpdateManyWithoutWorkflow_templateInput>
+  }
+
+  export type departmentsCreateWithoutWorkflow_stepsInput = {
+    name: string
+    supervisor: string
+    remarks?: string | null
+    sub_batches?: sub_batchesCreateNestedManyWithoutDepartmentInput
+    workers?: workersCreateNestedManyWithoutDepartmentInput
+    dept_workers?: department_workersCreateNestedManyWithoutDepartmentInput
+    dept_batches?: department_sub_batchesCreateNestedManyWithoutDepartmentInput
+    rejected?: sub_batch_rejectedCreateNestedManyWithoutSent_to_departmentInput
+    altered?: sub_batch_alteredCreateNestedManyWithoutSent_to_departmentInput
+    sub_batch_steps?: sub_batch_workflow_stepsCreateNestedManyWithoutDepartmentInput
+  }
+
+  export type departmentsUncheckedCreateWithoutWorkflow_stepsInput = {
+    id?: number
+    name: string
+    supervisor: string
+    remarks?: string | null
+    sub_batches?: sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
+    workers?: workersUncheckedCreateNestedManyWithoutDepartmentInput
+    dept_workers?: department_workersUncheckedCreateNestedManyWithoutDepartmentInput
+    dept_batches?: department_sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
+    rejected?: sub_batch_rejectedUncheckedCreateNestedManyWithoutSent_to_departmentInput
+    altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSent_to_departmentInput
+    sub_batch_steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+  }
+
+  export type departmentsCreateOrConnectWithoutWorkflow_stepsInput = {
+    where: departmentsWhereUniqueInput
+    create: XOR<departmentsCreateWithoutWorkflow_stepsInput, departmentsUncheckedCreateWithoutWorkflow_stepsInput>
+  }
+
+  export type workflow_templatesCreateWithoutStepsInput = {
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+  }
+
+  export type workflow_templatesUncheckedCreateWithoutStepsInput = {
+    id?: number
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+  }
+
+  export type workflow_templatesCreateOrConnectWithoutStepsInput = {
+    where: workflow_templatesWhereUniqueInput
+    create: XOR<workflow_templatesCreateWithoutStepsInput, workflow_templatesUncheckedCreateWithoutStepsInput>
+  }
+
+  export type departmentsUpsertWithoutWorkflow_stepsInput = {
+    update: XOR<departmentsUpdateWithoutWorkflow_stepsInput, departmentsUncheckedUpdateWithoutWorkflow_stepsInput>
+    create: XOR<departmentsCreateWithoutWorkflow_stepsInput, departmentsUncheckedCreateWithoutWorkflow_stepsInput>
+    where?: departmentsWhereInput
+  }
+
+  export type departmentsUpdateToOneWithWhereWithoutWorkflow_stepsInput = {
+    where?: departmentsWhereInput
+    data: XOR<departmentsUpdateWithoutWorkflow_stepsInput, departmentsUncheckedUpdateWithoutWorkflow_stepsInput>
+  }
+
+  export type departmentsUpdateWithoutWorkflow_stepsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    supervisor?: StringFieldUpdateOperationsInput | string
+    remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    sub_batches?: sub_batchesUpdateManyWithoutDepartmentNestedInput
+    workers?: workersUpdateManyWithoutDepartmentNestedInput
+    dept_workers?: department_workersUpdateManyWithoutDepartmentNestedInput
+    dept_batches?: department_sub_batchesUpdateManyWithoutDepartmentNestedInput
+    rejected?: sub_batch_rejectedUpdateManyWithoutSent_to_departmentNestedInput
+    altered?: sub_batch_alteredUpdateManyWithoutSent_to_departmentNestedInput
+    sub_batch_steps?: sub_batch_workflow_stepsUpdateManyWithoutDepartmentNestedInput
+  }
+
+  export type departmentsUncheckedUpdateWithoutWorkflow_stepsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    supervisor?: StringFieldUpdateOperationsInput | string
+    remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    sub_batches?: sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
+    workers?: workersUncheckedUpdateManyWithoutDepartmentNestedInput
+    dept_workers?: department_workersUncheckedUpdateManyWithoutDepartmentNestedInput
+    dept_batches?: department_sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
+    rejected?: sub_batch_rejectedUncheckedUpdateManyWithoutSent_to_departmentNestedInput
+    altered?: sub_batch_alteredUncheckedUpdateManyWithoutSent_to_departmentNestedInput
+    sub_batch_steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+  }
+
+  export type workflow_templatesUpsertWithoutStepsInput = {
+    update: XOR<workflow_templatesUpdateWithoutStepsInput, workflow_templatesUncheckedUpdateWithoutStepsInput>
+    create: XOR<workflow_templatesCreateWithoutStepsInput, workflow_templatesUncheckedCreateWithoutStepsInput>
+    where?: workflow_templatesWhereInput
+  }
+
+  export type workflow_templatesUpdateToOneWithWhereWithoutStepsInput = {
+    where?: workflow_templatesWhereInput
+    data: XOR<workflow_templatesUpdateWithoutStepsInput, workflow_templatesUncheckedUpdateWithoutStepsInput>
+  }
+
+  export type workflow_templatesUpdateWithoutStepsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type workflow_templatesUncheckedUpdateWithoutStepsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type sub_batchesCreateWithoutWorkflowsInput = {
+    name: string
+    estimated_pieces: number
+    expected_items: number
+    start_date: Date | string
+    due_date: Date | string
+    roll?: rollsCreateNestedOneWithoutSub_batchesInput
+    batch?: batchesCreateNestedOneWithoutSub_batchesInput
+    department?: departmentsCreateNestedOneWithoutSub_batchesInput
+    size_details?: sub_batch_size_detailsCreateNestedManyWithoutSub_batchInput
+    attachments?: sub_batch_attachmentsCreateNestedManyWithoutSub_batchInput
+    rejected?: sub_batch_rejectedCreateNestedManyWithoutSub_batchInput
+    altered?: sub_batch_alteredCreateNestedManyWithoutSub_batchInput
+    dept_links?: department_sub_batchesCreateNestedManyWithoutSub_batchInput
+    worker_logs?: worker_logsCreateNestedManyWithoutSub_batchInput
+  }
+
+  export type sub_batchesUncheckedCreateWithoutWorkflowsInput = {
+    id?: number
+    roll_id?: number | null
+    batch_id?: number | null
+    name: string
+    estimated_pieces: number
+    expected_items: number
+    start_date: Date | string
+    due_date: Date | string
+    department_id?: number | null
+    size_details?: sub_batch_size_detailsUncheckedCreateNestedManyWithoutSub_batchInput
+    attachments?: sub_batch_attachmentsUncheckedCreateNestedManyWithoutSub_batchInput
+    rejected?: sub_batch_rejectedUncheckedCreateNestedManyWithoutSub_batchInput
+    altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSub_batchInput
+    dept_links?: department_sub_batchesUncheckedCreateNestedManyWithoutSub_batchInput
+    worker_logs?: worker_logsUncheckedCreateNestedManyWithoutSub_batchInput
+  }
+
+  export type sub_batchesCreateOrConnectWithoutWorkflowsInput = {
+    where: sub_batchesWhereUniqueInput
+    create: XOR<sub_batchesCreateWithoutWorkflowsInput, sub_batchesUncheckedCreateWithoutWorkflowsInput>
+  }
+
+  export type sub_batch_workflow_stepsCreateWithoutSub_batch_workflowInput = {
+    step_index: number
+    department?: departmentsCreateNestedOneWithoutSub_batch_stepsInput
+  }
+
+  export type sub_batch_workflow_stepsUncheckedCreateWithoutSub_batch_workflowInput = {
+    id?: number
+    step_index: number
+    department_id: number
+  }
+
+  export type sub_batch_workflow_stepsCreateOrConnectWithoutSub_batch_workflowInput = {
+    where: sub_batch_workflow_stepsWhereUniqueInput
+    create: XOR<sub_batch_workflow_stepsCreateWithoutSub_batch_workflowInput, sub_batch_workflow_stepsUncheckedCreateWithoutSub_batch_workflowInput>
+  }
+
+  export type sub_batch_workflow_stepsCreateManySub_batch_workflowInputEnvelope = {
+    data: sub_batch_workflow_stepsCreateManySub_batch_workflowInput | sub_batch_workflow_stepsCreateManySub_batch_workflowInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type sub_batchesUpsertWithoutWorkflowsInput = {
+    update: XOR<sub_batchesUpdateWithoutWorkflowsInput, sub_batchesUncheckedUpdateWithoutWorkflowsInput>
+    create: XOR<sub_batchesCreateWithoutWorkflowsInput, sub_batchesUncheckedCreateWithoutWorkflowsInput>
+    where?: sub_batchesWhereInput
+  }
+
+  export type sub_batchesUpdateToOneWithWhereWithoutWorkflowsInput = {
+    where?: sub_batchesWhereInput
+    data: XOR<sub_batchesUpdateWithoutWorkflowsInput, sub_batchesUncheckedUpdateWithoutWorkflowsInput>
+  }
+
+  export type sub_batchesUpdateWithoutWorkflowsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    estimated_pieces?: IntFieldUpdateOperationsInput | number
+    expected_items?: IntFieldUpdateOperationsInput | number
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    due_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    roll?: rollsUpdateOneWithoutSub_batchesNestedInput
+    batch?: batchesUpdateOneWithoutSub_batchesNestedInput
+    department?: departmentsUpdateOneWithoutSub_batchesNestedInput
+    size_details?: sub_batch_size_detailsUpdateManyWithoutSub_batchNestedInput
+    attachments?: sub_batch_attachmentsUpdateManyWithoutSub_batchNestedInput
+    rejected?: sub_batch_rejectedUpdateManyWithoutSub_batchNestedInput
+    altered?: sub_batch_alteredUpdateManyWithoutSub_batchNestedInput
+    dept_links?: department_sub_batchesUpdateManyWithoutSub_batchNestedInput
+    worker_logs?: worker_logsUpdateManyWithoutSub_batchNestedInput
+  }
+
+  export type sub_batchesUncheckedUpdateWithoutWorkflowsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    roll_id?: NullableIntFieldUpdateOperationsInput | number | null
+    batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    estimated_pieces?: IntFieldUpdateOperationsInput | number
+    expected_items?: IntFieldUpdateOperationsInput | number
+    start_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    due_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    size_details?: sub_batch_size_detailsUncheckedUpdateManyWithoutSub_batchNestedInput
+    attachments?: sub_batch_attachmentsUncheckedUpdateManyWithoutSub_batchNestedInput
+    rejected?: sub_batch_rejectedUncheckedUpdateManyWithoutSub_batchNestedInput
+    altered?: sub_batch_alteredUncheckedUpdateManyWithoutSub_batchNestedInput
+    dept_links?: department_sub_batchesUncheckedUpdateManyWithoutSub_batchNestedInput
+    worker_logs?: worker_logsUncheckedUpdateManyWithoutSub_batchNestedInput
+  }
+
+  export type sub_batch_workflow_stepsUpsertWithWhereUniqueWithoutSub_batch_workflowInput = {
+    where: sub_batch_workflow_stepsWhereUniqueInput
+    update: XOR<sub_batch_workflow_stepsUpdateWithoutSub_batch_workflowInput, sub_batch_workflow_stepsUncheckedUpdateWithoutSub_batch_workflowInput>
+    create: XOR<sub_batch_workflow_stepsCreateWithoutSub_batch_workflowInput, sub_batch_workflow_stepsUncheckedCreateWithoutSub_batch_workflowInput>
+  }
+
+  export type sub_batch_workflow_stepsUpdateWithWhereUniqueWithoutSub_batch_workflowInput = {
+    where: sub_batch_workflow_stepsWhereUniqueInput
+    data: XOR<sub_batch_workflow_stepsUpdateWithoutSub_batch_workflowInput, sub_batch_workflow_stepsUncheckedUpdateWithoutSub_batch_workflowInput>
+  }
+
+  export type sub_batch_workflow_stepsUpdateManyWithWhereWithoutSub_batch_workflowInput = {
+    where: sub_batch_workflow_stepsScalarWhereInput
+    data: XOR<sub_batch_workflow_stepsUpdateManyMutationInput, sub_batch_workflow_stepsUncheckedUpdateManyWithoutSub_batch_workflowInput>
+  }
+
+  export type departmentsCreateWithoutSub_batch_stepsInput = {
+    name: string
+    supervisor: string
+    remarks?: string | null
+    sub_batches?: sub_batchesCreateNestedManyWithoutDepartmentInput
+    workers?: workersCreateNestedManyWithoutDepartmentInput
+    dept_workers?: department_workersCreateNestedManyWithoutDepartmentInput
+    dept_batches?: department_sub_batchesCreateNestedManyWithoutDepartmentInput
+    rejected?: sub_batch_rejectedCreateNestedManyWithoutSent_to_departmentInput
+    altered?: sub_batch_alteredCreateNestedManyWithoutSent_to_departmentInput
+    workflow_steps?: workflow_stepsCreateNestedManyWithoutDepartmentInput
+  }
+
+  export type departmentsUncheckedCreateWithoutSub_batch_stepsInput = {
+    id?: number
+    name: string
+    supervisor: string
+    remarks?: string | null
+    sub_batches?: sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
+    workers?: workersUncheckedCreateNestedManyWithoutDepartmentInput
+    dept_workers?: department_workersUncheckedCreateNestedManyWithoutDepartmentInput
+    dept_batches?: department_sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
+    rejected?: sub_batch_rejectedUncheckedCreateNestedManyWithoutSent_to_departmentInput
+    altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSent_to_departmentInput
+    workflow_steps?: workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+  }
+
+  export type departmentsCreateOrConnectWithoutSub_batch_stepsInput = {
+    where: departmentsWhereUniqueInput
+    create: XOR<departmentsCreateWithoutSub_batch_stepsInput, departmentsUncheckedCreateWithoutSub_batch_stepsInput>
+  }
+
+  export type sub_batch_workflowsCreateWithoutStepsInput = {
+    current_step_index?: number
+    createdAt?: Date | string
+    sub_batch?: sub_batchesCreateNestedOneWithoutWorkflowsInput
+  }
+
+  export type sub_batch_workflowsUncheckedCreateWithoutStepsInput = {
+    id?: number
+    sub_batch_id: number
+    current_step_index?: number
+    createdAt?: Date | string
+  }
+
+  export type sub_batch_workflowsCreateOrConnectWithoutStepsInput = {
+    where: sub_batch_workflowsWhereUniqueInput
+    create: XOR<sub_batch_workflowsCreateWithoutStepsInput, sub_batch_workflowsUncheckedCreateWithoutStepsInput>
+  }
+
+  export type departmentsUpsertWithoutSub_batch_stepsInput = {
+    update: XOR<departmentsUpdateWithoutSub_batch_stepsInput, departmentsUncheckedUpdateWithoutSub_batch_stepsInput>
+    create: XOR<departmentsCreateWithoutSub_batch_stepsInput, departmentsUncheckedCreateWithoutSub_batch_stepsInput>
+    where?: departmentsWhereInput
+  }
+
+  export type departmentsUpdateToOneWithWhereWithoutSub_batch_stepsInput = {
+    where?: departmentsWhereInput
+    data: XOR<departmentsUpdateWithoutSub_batch_stepsInput, departmentsUncheckedUpdateWithoutSub_batch_stepsInput>
+  }
+
+  export type departmentsUpdateWithoutSub_batch_stepsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    supervisor?: StringFieldUpdateOperationsInput | string
+    remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    sub_batches?: sub_batchesUpdateManyWithoutDepartmentNestedInput
+    workers?: workersUpdateManyWithoutDepartmentNestedInput
+    dept_workers?: department_workersUpdateManyWithoutDepartmentNestedInput
+    dept_batches?: department_sub_batchesUpdateManyWithoutDepartmentNestedInput
+    rejected?: sub_batch_rejectedUpdateManyWithoutSent_to_departmentNestedInput
+    altered?: sub_batch_alteredUpdateManyWithoutSent_to_departmentNestedInput
+    workflow_steps?: workflow_stepsUpdateManyWithoutDepartmentNestedInput
+  }
+
+  export type departmentsUncheckedUpdateWithoutSub_batch_stepsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    supervisor?: StringFieldUpdateOperationsInput | string
+    remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    sub_batches?: sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
+    workers?: workersUncheckedUpdateManyWithoutDepartmentNestedInput
+    dept_workers?: department_workersUncheckedUpdateManyWithoutDepartmentNestedInput
+    dept_batches?: department_sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
+    rejected?: sub_batch_rejectedUncheckedUpdateManyWithoutSent_to_departmentNestedInput
+    altered?: sub_batch_alteredUncheckedUpdateManyWithoutSent_to_departmentNestedInput
+    workflow_steps?: workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+  }
+
+  export type sub_batch_workflowsUpsertWithoutStepsInput = {
+    update: XOR<sub_batch_workflowsUpdateWithoutStepsInput, sub_batch_workflowsUncheckedUpdateWithoutStepsInput>
+    create: XOR<sub_batch_workflowsCreateWithoutStepsInput, sub_batch_workflowsUncheckedCreateWithoutStepsInput>
+    where?: sub_batch_workflowsWhereInput
+  }
+
+  export type sub_batch_workflowsUpdateToOneWithWhereWithoutStepsInput = {
+    where?: sub_batch_workflowsWhereInput
+    data: XOR<sub_batch_workflowsUpdateWithoutStepsInput, sub_batch_workflowsUncheckedUpdateWithoutStepsInput>
+  }
+
+  export type sub_batch_workflowsUpdateWithoutStepsInput = {
+    current_step_index?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sub_batch?: sub_batchesUpdateOneWithoutWorkflowsNestedInput
+  }
+
+  export type sub_batch_workflowsUncheckedUpdateWithoutStepsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    sub_batch_id?: IntFieldUpdateOperationsInput | number
+    current_step_index?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type department_sub_batchesCreateWithoutHistoryInput = {
+    stage?: $Enums.DepartmentStage
+    is_current?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assigned_worker?: workersCreateNestedOneWithoutDepartment_assignmentsInput
+    department?: departmentsCreateNestedOneWithoutDept_batchesInput
+    sub_batch?: sub_batchesCreateNestedOneWithoutDept_linksInput
+  }
+
+  export type department_sub_batchesUncheckedCreateWithoutHistoryInput = {
+    id?: number
+    department_id?: number | null
+    sub_batch_id?: number | null
+    stage?: $Enums.DepartmentStage
+    is_current?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assigned_worker_id?: number | null
+  }
+
+  export type department_sub_batchesCreateOrConnectWithoutHistoryInput = {
+    where: department_sub_batchesWhereUniqueInput
+    create: XOR<department_sub_batchesCreateWithoutHistoryInput, department_sub_batchesUncheckedCreateWithoutHistoryInput>
+  }
+
+  export type department_sub_batchesUpsertWithoutHistoryInput = {
+    update: XOR<department_sub_batchesUpdateWithoutHistoryInput, department_sub_batchesUncheckedUpdateWithoutHistoryInput>
+    create: XOR<department_sub_batchesCreateWithoutHistoryInput, department_sub_batchesUncheckedCreateWithoutHistoryInput>
+    where?: department_sub_batchesWhereInput
+  }
+
+  export type department_sub_batchesUpdateToOneWithWhereWithoutHistoryInput = {
+    where?: department_sub_batchesWhereInput
+    data: XOR<department_sub_batchesUpdateWithoutHistoryInput, department_sub_batchesUncheckedUpdateWithoutHistoryInput>
+  }
+
+  export type department_sub_batchesUpdateWithoutHistoryInput = {
+    stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assigned_worker?: workersUpdateOneWithoutDepartment_assignmentsNestedInput
+    department?: departmentsUpdateOneWithoutDept_batchesNestedInput
+    sub_batch?: sub_batchesUpdateOneWithoutDept_linksNestedInput
+  }
+
+  export type department_sub_batchesUncheckedUpdateWithoutHistoryInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    sub_batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assigned_worker_id?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
   export type batchesCreateManyRollInput = {
     id?: number
     name: string
@@ -27498,6 +36435,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUpdateManyWithoutSub_batchNestedInput
     dept_links?: department_sub_batchesUpdateManyWithoutSub_batchNestedInput
     worker_logs?: worker_logsUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUpdateManyWithoutSub_batchNestedInput
   }
 
   export type sub_batchesUncheckedUpdateWithoutRollInput = {
@@ -27515,6 +36453,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSub_batchNestedInput
     dept_links?: department_sub_batchesUncheckedUpdateManyWithoutSub_batchNestedInput
     worker_logs?: worker_logsUncheckedUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUncheckedUpdateManyWithoutSub_batchNestedInput
   }
 
   export type sub_batchesUncheckedUpdateManyWithoutRollInput = {
@@ -27553,6 +36492,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUpdateManyWithoutSub_batchNestedInput
     dept_links?: department_sub_batchesUpdateManyWithoutSub_batchNestedInput
     worker_logs?: worker_logsUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUpdateManyWithoutSub_batchNestedInput
   }
 
   export type sub_batchesUncheckedUpdateWithoutBatchInput = {
@@ -27570,6 +36510,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSub_batchNestedInput
     dept_links?: department_sub_batchesUncheckedUpdateManyWithoutSub_batchNestedInput
     worker_logs?: worker_logsUncheckedUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUncheckedUpdateManyWithoutSub_batchNestedInput
   }
 
   export type sub_batchesUncheckedUpdateManyWithoutBatchInput = {
@@ -27612,6 +36553,11 @@ export namespace Prisma {
   export type department_sub_batchesCreateManySub_batchInput = {
     id?: number
     department_id?: number | null
+    stage?: $Enums.DepartmentStage
+    is_current?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assigned_worker_id?: number | null
   }
 
   export type worker_logsCreateManySub_batchInput = {
@@ -27619,6 +36565,12 @@ export namespace Prisma {
     worker_id?: number | null
     quantity: number
     date: Date | string
+  }
+
+  export type sub_batch_workflowsCreateManySub_batchInput = {
+    id?: number
+    current_step_index?: number
+    createdAt?: Date | string
   }
 
   export type sub_batch_size_detailsUpdateWithoutSub_batchInput = {
@@ -27696,17 +36648,34 @@ export namespace Prisma {
   }
 
   export type department_sub_batchesUpdateWithoutSub_batchInput = {
+    stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assigned_worker?: workersUpdateOneWithoutDepartment_assignmentsNestedInput
     department?: departmentsUpdateOneWithoutDept_batchesNestedInput
+    history?: department_sub_batch_historyUpdateManyWithoutDepartment_sub_batchNestedInput
   }
 
   export type department_sub_batchesUncheckedUpdateWithoutSub_batchInput = {
     id?: IntFieldUpdateOperationsInput | number
     department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assigned_worker_id?: NullableIntFieldUpdateOperationsInput | number | null
+    history?: department_sub_batch_historyUncheckedUpdateManyWithoutDepartment_sub_batchNestedInput
   }
 
   export type department_sub_batchesUncheckedUpdateManyWithoutSub_batchInput = {
     id?: IntFieldUpdateOperationsInput | number
     department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assigned_worker_id?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type worker_logsUpdateWithoutSub_batchInput = {
@@ -27727,6 +36696,25 @@ export namespace Prisma {
     worker_id?: NullableIntFieldUpdateOperationsInput | number | null
     quantity?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type sub_batch_workflowsUpdateWithoutSub_batchInput = {
+    current_step_index?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    steps?: sub_batch_workflow_stepsUpdateManyWithoutSub_batch_workflowNestedInput
+  }
+
+  export type sub_batch_workflowsUncheckedUpdateWithoutSub_batchInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    current_step_index?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutSub_batch_workflowNestedInput
+  }
+
+  export type sub_batch_workflowsUncheckedUpdateManyWithoutSub_batchInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    current_step_index?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type sub_batchesCreateManyDepartmentInput = {
@@ -27758,6 +36746,11 @@ export namespace Prisma {
   export type department_sub_batchesCreateManyDepartmentInput = {
     id?: number
     sub_batch_id?: number | null
+    stage?: $Enums.DepartmentStage
+    is_current?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assigned_worker_id?: number | null
   }
 
   export type sub_batch_rejectedCreateManySent_to_departmentInput = {
@@ -27774,6 +36767,18 @@ export namespace Prisma {
     reason: string
   }
 
+  export type workflow_stepsCreateManyDepartmentInput = {
+    id?: number
+    workflow_template_id?: number | null
+    step_index: number
+  }
+
+  export type sub_batch_workflow_stepsCreateManyDepartmentInput = {
+    id?: number
+    sub_batch_workflow_id?: number | null
+    step_index: number
+  }
+
   export type sub_batchesUpdateWithoutDepartmentInput = {
     name?: StringFieldUpdateOperationsInput | string
     estimated_pieces?: IntFieldUpdateOperationsInput | number
@@ -27788,6 +36793,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUpdateManyWithoutSub_batchNestedInput
     dept_links?: department_sub_batchesUpdateManyWithoutSub_batchNestedInput
     worker_logs?: worker_logsUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUpdateManyWithoutSub_batchNestedInput
   }
 
   export type sub_batchesUncheckedUpdateWithoutDepartmentInput = {
@@ -27805,6 +36811,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSub_batchNestedInput
     dept_links?: department_sub_batchesUncheckedUpdateManyWithoutSub_batchNestedInput
     worker_logs?: worker_logsUncheckedUpdateManyWithoutSub_batchNestedInput
+    workflows?: sub_batch_workflowsUncheckedUpdateManyWithoutSub_batchNestedInput
   }
 
   export type sub_batchesUncheckedUpdateManyWithoutDepartmentInput = {
@@ -27826,6 +36833,7 @@ export namespace Prisma {
     wage_rate?: FloatFieldUpdateOperationsInput | number
     worker_logs?: worker_logsUpdateManyWithoutWorkerNestedInput
     dept_workers?: department_workersUpdateManyWithoutWorkerNestedInput
+    department_assignments?: department_sub_batchesUpdateManyWithoutAssigned_workerNestedInput
   }
 
   export type workersUncheckedUpdateWithoutDepartmentInput = {
@@ -27837,6 +36845,7 @@ export namespace Prisma {
     wage_rate?: FloatFieldUpdateOperationsInput | number
     worker_logs?: worker_logsUncheckedUpdateManyWithoutWorkerNestedInput
     dept_workers?: department_workersUncheckedUpdateManyWithoutWorkerNestedInput
+    department_assignments?: department_sub_batchesUncheckedUpdateManyWithoutAssigned_workerNestedInput
   }
 
   export type workersUncheckedUpdateManyWithoutDepartmentInput = {
@@ -27866,17 +36875,34 @@ export namespace Prisma {
   }
 
   export type department_sub_batchesUpdateWithoutDepartmentInput = {
+    stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assigned_worker?: workersUpdateOneWithoutDepartment_assignmentsNestedInput
     sub_batch?: sub_batchesUpdateOneWithoutDept_linksNestedInput
+    history?: department_sub_batch_historyUpdateManyWithoutDepartment_sub_batchNestedInput
   }
 
   export type department_sub_batchesUncheckedUpdateWithoutDepartmentInput = {
     id?: IntFieldUpdateOperationsInput | number
     sub_batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assigned_worker_id?: NullableIntFieldUpdateOperationsInput | number | null
+    history?: department_sub_batch_historyUncheckedUpdateManyWithoutDepartment_sub_batchNestedInput
   }
 
   export type department_sub_batchesUncheckedUpdateManyWithoutDepartmentInput = {
     id?: IntFieldUpdateOperationsInput | number
     sub_batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assigned_worker_id?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type sub_batch_rejectedUpdateWithoutSent_to_departmentInput = {
@@ -27919,6 +36945,87 @@ export namespace Prisma {
     reason?: StringFieldUpdateOperationsInput | string
   }
 
+  export type workflow_stepsUpdateWithoutDepartmentInput = {
+    step_index?: IntFieldUpdateOperationsInput | number
+    workflow_template?: workflow_templatesUpdateOneWithoutStepsNestedInput
+  }
+
+  export type workflow_stepsUncheckedUpdateWithoutDepartmentInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    workflow_template_id?: NullableIntFieldUpdateOperationsInput | number | null
+    step_index?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type workflow_stepsUncheckedUpdateManyWithoutDepartmentInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    workflow_template_id?: NullableIntFieldUpdateOperationsInput | number | null
+    step_index?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type sub_batch_workflow_stepsUpdateWithoutDepartmentInput = {
+    step_index?: IntFieldUpdateOperationsInput | number
+    sub_batch_workflow?: sub_batch_workflowsUpdateOneWithoutStepsNestedInput
+  }
+
+  export type sub_batch_workflow_stepsUncheckedUpdateWithoutDepartmentInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    sub_batch_workflow_id?: NullableIntFieldUpdateOperationsInput | number | null
+    step_index?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    sub_batch_workflow_id?: NullableIntFieldUpdateOperationsInput | number | null
+    step_index?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type department_sub_batch_historyCreateManyDepartment_sub_batchInput = {
+    id?: number
+    sub_batch_id?: number | null
+    from_stage?: $Enums.DepartmentStage | null
+    to_stage: $Enums.DepartmentStage
+    from_department_id?: number | null
+    to_department_id?: number | null
+    action_by_user_id?: number | null
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type department_sub_batch_historyUpdateWithoutDepartment_sub_batchInput = {
+    sub_batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    from_stage?: NullableEnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage | null
+    to_stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    from_department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    to_department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    action_by_user_id?: NullableIntFieldUpdateOperationsInput | number | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type department_sub_batch_historyUncheckedUpdateWithoutDepartment_sub_batchInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    sub_batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    from_stage?: NullableEnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage | null
+    to_stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    from_department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    to_department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    action_by_user_id?: NullableIntFieldUpdateOperationsInput | number | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type department_sub_batch_historyUncheckedUpdateManyWithoutDepartment_sub_batchInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    sub_batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    from_stage?: NullableEnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage | null
+    to_stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    from_department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    to_department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    action_by_user_id?: NullableIntFieldUpdateOperationsInput | number | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type worker_logsCreateManyWorkerInput = {
     id?: number
     sub_batch_id?: number | null
@@ -27930,6 +37037,16 @@ export namespace Prisma {
     id?: number
     department_id?: number | null
     assigned_date: Date | string
+  }
+
+  export type department_sub_batchesCreateManyAssigned_workerInput = {
+    id?: number
+    department_id?: number | null
+    sub_batch_id?: number | null
+    stage?: $Enums.DepartmentStage
+    is_current?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type worker_logsUpdateWithoutWorkerInput = {
@@ -27967,6 +37084,37 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     department_id?: NullableIntFieldUpdateOperationsInput | number | null
     assigned_date?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type department_sub_batchesUpdateWithoutAssigned_workerInput = {
+    stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    department?: departmentsUpdateOneWithoutDept_batchesNestedInput
+    sub_batch?: sub_batchesUpdateOneWithoutDept_linksNestedInput
+    history?: department_sub_batch_historyUpdateManyWithoutDepartment_sub_batchNestedInput
+  }
+
+  export type department_sub_batchesUncheckedUpdateWithoutAssigned_workerInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    sub_batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    history?: department_sub_batch_historyUncheckedUpdateManyWithoutDepartment_sub_batchNestedInput
+  }
+
+  export type department_sub_batchesUncheckedUpdateManyWithoutAssigned_workerInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    department_id?: NullableIntFieldUpdateOperationsInput | number | null
+    sub_batch_id?: NullableIntFieldUpdateOperationsInput | number | null
+    stage?: EnumDepartmentStageFieldUpdateOperationsInput | $Enums.DepartmentStage
+    is_current?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type rollsCreateManyVendorInput = {
@@ -28039,6 +37187,52 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     unit?: StringFieldUpdateOperationsInput | string
     color?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type workflow_stepsCreateManyWorkflow_templateInput = {
+    id?: number
+    step_index: number
+    department_id: number
+  }
+
+  export type workflow_stepsUpdateWithoutWorkflow_templateInput = {
+    step_index?: IntFieldUpdateOperationsInput | number
+    department?: departmentsUpdateOneWithoutWorkflow_stepsNestedInput
+  }
+
+  export type workflow_stepsUncheckedUpdateWithoutWorkflow_templateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    step_index?: IntFieldUpdateOperationsInput | number
+    department_id?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type workflow_stepsUncheckedUpdateManyWithoutWorkflow_templateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    step_index?: IntFieldUpdateOperationsInput | number
+    department_id?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type sub_batch_workflow_stepsCreateManySub_batch_workflowInput = {
+    id?: number
+    step_index: number
+    department_id: number
+  }
+
+  export type sub_batch_workflow_stepsUpdateWithoutSub_batch_workflowInput = {
+    step_index?: IntFieldUpdateOperationsInput | number
+    department?: departmentsUpdateOneWithoutSub_batch_stepsNestedInput
+  }
+
+  export type sub_batch_workflow_stepsUncheckedUpdateWithoutSub_batch_workflowInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    step_index?: IntFieldUpdateOperationsInput | number
+    department_id?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type sub_batch_workflow_stepsUncheckedUpdateManyWithoutSub_batch_workflowInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    step_index?: IntFieldUpdateOperationsInput | number
+    department_id?: IntFieldUpdateOperationsInput | number
   }
 
 

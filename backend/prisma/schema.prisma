@@ -65,12 +65,13 @@ model sub_batches {
   altered        sub_batch_altered[]
   dept_links     department_sub_batches[]
   worker_logs    worker_logs[]
+  workflows      sub_batch_workflows[]
 }
 
 model sub_batch_size_details {
   id           Int          @id @default(autoincrement())
   sub_batch_id Int?
-  category     String  @unique @db.Citext
+  category     String  
   pieces       Int
   sub_batch    sub_batches? @relation(fields: [sub_batch_id], references: [id])
 }
@@ -115,6 +116,8 @@ model departments {
   dept_batches department_sub_batches[]
   rejected    sub_batch_rejected[] @relation("RejectedDept")
   altered     sub_batch_altered[]  @relation("AlteredDept")
+   workflow_steps  workflow_steps[]
+    sub_batch_steps    sub_batch_workflow_steps[]
 }
 
 model department_workers {
@@ -126,13 +129,29 @@ model department_workers {
   worker        workers?     @relation(fields: [worker_id], references: [id])
 }
 
-model department_sub_batches {
-  id            Int          @id @default(autoincrement())
-  department_id Int?
-  sub_batch_id  Int?
-  department    departments? @relation(fields: [department_id], references: [id])
-  sub_batch     sub_batches? @relation(fields: [sub_batch_id], references: [id])
+enum DepartmentStage {
+  NEW_ARRIVAL
+  IN_PROGRESS
+  COMPLETED
 }
+
+model department_sub_batches {
+  id               Int             @id @default(autoincrement())
+  department_id    Int?
+  sub_batch_id     Int?
+  stage            DepartmentStage @default(NEW_ARRIVAL) // Kanban column
+  is_current       Boolean         @default(false)       // only true for active dept
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  assigned_worker_id Int?
+  assigned_worker  workers?        @relation(fields: [assigned_worker_id], references: [id])
+
+  department       departments?    @relation(fields: [department_id], references: [id])
+  sub_batch        sub_batches?    @relation(fields: [sub_batch_id], references: [id])
+  history            department_sub_batch_history[] 
+}
+
 
 model clients {
   id      Int     @id @default(autoincrement())
@@ -154,6 +173,7 @@ model workers {
   department    departments? @relation(fields: [department_id], references: [id])
   worker_logs   worker_logs[]
   dept_workers  department_workers[]
+  department_assignments   department_sub_batches[]
 }
 
 model worker_logs {
@@ -184,3 +204,53 @@ model categories {
 
 
 
+model workflow_templates {
+  id          Int              @id @default(autoincrement())
+  name        String
+  description String?
+  steps       workflow_steps[]
+  createdAt   DateTime         @default(now())
+}
+
+model workflow_steps {
+  id                  Int              @id @default(autoincrement())
+  workflow_template_id Int?
+  step_index          Int              // order: 0,1,2
+  department_id       Int
+  department          departments?     @relation(fields: [department_id], references: [id])
+  workflow_template   workflow_templates? @relation(fields: [workflow_template_id], references: [id])
+}
+
+model sub_batch_workflows {
+  id               Int       @id @default(autoincrement())
+  sub_batch_id     Int       @unique
+  current_step_index Int     @default(0) // where it is in flow
+  createdAt        DateTime  @default(now())
+
+  sub_batch        sub_batches?              @relation(fields: [sub_batch_id], references: [id])
+  steps            sub_batch_workflow_steps[]
+}
+
+model sub_batch_workflow_steps {
+  id                   Int                @id @default(autoincrement())
+  sub_batch_workflow_id Int?
+  step_index           Int
+  department_id        Int
+  department           departments?       @relation(fields: [department_id], references: [id])
+  sub_batch_workflow   sub_batch_workflows? @relation(fields: [sub_batch_workflow_id], references: [id])
+}
+
+model department_sub_batch_history {
+  id                     Int              @id @default(autoincrement())
+  department_sub_batch_id Int?
+  sub_batch_id           Int?
+  from_stage             DepartmentStage?
+  to_stage               DepartmentStage
+  from_department_id     Int?
+  to_department_id       Int?
+  action_by_user_id      Int?            // optional: who moved it
+  reason                 String?
+  createdAt              DateTime        @default(now())
+
+  department_sub_batch   department_sub_batches? @relation(fields: [department_sub_batch_id], references: [id])
+}

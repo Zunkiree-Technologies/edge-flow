@@ -205,7 +205,12 @@ exports.Prisma.Department_workersScalarFieldEnum = {
 exports.Prisma.Department_sub_batchesScalarFieldEnum = {
   id: 'id',
   department_id: 'department_id',
-  sub_batch_id: 'sub_batch_id'
+  sub_batch_id: 'sub_batch_id',
+  stage: 'stage',
+  is_current: 'is_current',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  assigned_worker_id: 'assigned_worker_id'
 };
 
 exports.Prisma.ClientsScalarFieldEnum = {
@@ -249,6 +254,47 @@ exports.Prisma.CategoriesScalarFieldEnum = {
   category_name: 'category_name'
 };
 
+exports.Prisma.Workflow_templatesScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.Workflow_stepsScalarFieldEnum = {
+  id: 'id',
+  workflow_template_id: 'workflow_template_id',
+  step_index: 'step_index',
+  department_id: 'department_id'
+};
+
+exports.Prisma.Sub_batch_workflowsScalarFieldEnum = {
+  id: 'id',
+  sub_batch_id: 'sub_batch_id',
+  current_step_index: 'current_step_index',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.Sub_batch_workflow_stepsScalarFieldEnum = {
+  id: 'id',
+  sub_batch_workflow_id: 'sub_batch_workflow_id',
+  step_index: 'step_index',
+  department_id: 'department_id'
+};
+
+exports.Prisma.Department_sub_batch_historyScalarFieldEnum = {
+  id: 'id',
+  department_sub_batch_id: 'department_sub_batch_id',
+  sub_batch_id: 'sub_batch_id',
+  from_stage: 'from_stage',
+  to_stage: 'to_stage',
+  from_department_id: 'from_department_id',
+  to_department_id: 'to_department_id',
+  action_by_user_id: 'action_by_user_id',
+  reason: 'reason',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -263,7 +309,11 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.DepartmentStage = exports.$Enums.DepartmentStage = {
+  NEW_ARRIVAL: 'NEW_ARRIVAL',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
@@ -281,7 +331,12 @@ exports.Prisma.ModelName = {
   workers: 'workers',
   worker_logs: 'worker_logs',
   vendors: 'vendors',
-  categories: 'categories'
+  categories: 'categories',
+  workflow_templates: 'workflow_templates',
+  workflow_steps: 'workflow_steps',
+  sub_batch_workflows: 'sub_batch_workflows',
+  sub_batch_workflow_steps: 'sub_batch_workflow_steps',
+  department_sub_batch_history: 'department_sub_batch_history'
 };
 
 /**
