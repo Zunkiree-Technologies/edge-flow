@@ -84,10 +84,18 @@ export const deleteSubBatch = async (req: Request, res: Response) => {
   }
 };
 
+// Send Sub-Batch to Production (template or manual)
 export const sendSubBatchToProduction = async (req: Request, res: Response) => {
   try {
-    const { subBatchId, workflowTemplateId } = req.body;
-    const workflow = await sendToProduction(subBatchId, workflowTemplateId);
+    const { subBatchId, workflowTemplateId, manualDepartments } = req.body;
+
+    // Pass both to service
+    const workflow = await sendToProduction(
+      subBatchId,
+      workflowTemplateId,
+      manualDepartments
+    );
+
     res.status(200).json({ success: true, workflow });
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });

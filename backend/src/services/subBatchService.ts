@@ -148,18 +148,38 @@ export const deleteSubBatch = async (id: number) => {
 
 
 
-// Send Sub-Batch to Production 
+
+// Send Sub-Batch to Production (template or manual)
 export async function sendToProduction(
   subBatchId: number,
-  workflowTemplateId: number
+  workflowTemplateId?: number,    // optional
+  manualDepartments?: number[]    // array of department IDs in order
 ) {
-  // 1️⃣ Get workflow template steps
-  const templateSteps = await prisma.workflow_steps.findMany({
-    where: { workflow_template_id: workflowTemplateId },
-    orderBy: { step_index: "asc" },
-  });
+  let steps;
 
-  if (!templateSteps.length) throw new Error("Workflow template has no steps");
+  // 1️⃣ Determine steps
+  if (workflowTemplateId) {
+    // Use template workflow
+    const templateSteps = await prisma.workflow_steps.findMany({
+      where: { workflow_template_id: workflowTemplateId },
+      orderBy: { step_index: "asc" },
+    });
+
+    if (!templateSteps.length) throw new Error("Workflow template has no steps");
+
+    steps = templateSteps.map((step) => ({
+      step_index: step.step_index,
+      department_id: step.department_id,
+    }));
+  } else if (manualDepartments && manualDepartments.length > 0) {
+    // Use manual workflow provided by user
+    steps = manualDepartments.map((deptId, index) => ({
+      step_index: index,
+      department_id: deptId,
+    }));
+  } else {
+    throw new Error("Workflow must be provided either by template or manual departments");
+  }
 
   // 2️⃣ Create sub-batch workflow
   const workflow = await prisma.sub_batch_workflows.create({
@@ -167,16 +187,13 @@ export async function sendToProduction(
       sub_batch_id: subBatchId,
       current_step_index: 0,
       steps: {
-        create: templateSteps.map((step) => ({
-          step_index: step.step_index,
-          department_id: step.department_id,
-        })),
+        create: steps,
       },
     },
     include: { steps: true },
   });
 
-  // 3️⃣ Send to first department in New Arrival
+  // 3️⃣ Send sub-batch to first department (New Arrival)
   const firstDeptId = workflow.steps[0].department_id;
   await prisma.department_sub_batches.create({
     data: {
@@ -190,7 +207,7 @@ export async function sendToProduction(
   return workflow;
 }
 
-
+// Move stage within Kanban
 export async function moveSubBatchStage(
   departmentSubBatchId: number,
   toStage: DepartmentStage
