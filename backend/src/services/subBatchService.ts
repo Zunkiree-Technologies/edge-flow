@@ -6,7 +6,6 @@ import {
 } from "../types/subBatchTypes";
 import { DepartmentStage } from "../config/constants";
 
-// Create Sub-Batch (only sub_batches table)
 export const createSubBatch = async (data: SubBatchPayload) => {
   // Validation
   if (!data.name.trim()) throw { message: "Name is required" };
@@ -15,37 +14,46 @@ export const createSubBatch = async (data: SubBatchPayload) => {
   if (new Date(data.startDate) > new Date(data.dueDate))
     throw { message: "Start date cannot be after due date" };
 
-  // Prepare data only for sub_batches table
-  const createData: any = {
-    name: data.name,
-    estimated_pieces: data.estimatedPieces,
-    expected_items: data.expectedItems,
-    start_date: new Date(data.startDate),
-    due_date: new Date(data.dueDate),
-    roll_id: data.rollId,
-    batch_id: data.batchId,
-    department_id: data.departmentId,
-    // No size_details included
-    ...(data.attachments?.length
-      ? {
-          attachments: {
-            create: data.attachments.map((a) => ({
-              attachment_name: a.attachmentName,
-              quantity: a.quantity,
-            })),
-          },
-        }
-      : {}),
-  };
-
+  // Create main sub_batch row
   const subBatch = await prisma.sub_batches.create({
-    data: createData,
-    include: { attachments: true }, // only include attachments if needed
+    data: {
+      name: data.name,
+      estimated_pieces: data.estimatedPieces,
+      expected_items: data.expectedItems,
+      start_date: new Date(data.startDate),
+      due_date: new Date(data.dueDate),
+      roll_id: data.rollId,
+      batch_id: data.batchId,
+      department_id: data.departmentId,
+      // Optional: attachments nested
+      ...(data.attachments?.length
+        ? {
+            attachments: {
+              create: data.attachments.map((a) => ({
+                attachment_name: a.attachmentName,
+                quantity: a.quantity,
+              })),
+            },
+          }
+        : {}),
+    },
   });
+
+  // Insert size details separately
+  if (data.sizeDetails?.length) {
+    for (const sd of data.sizeDetails) {
+      await prisma.sub_batch_size_details.create({
+        data: {
+          sub_batch_id: subBatch.id,
+          category: sd.category,
+          pieces: sd.pieces,
+        },
+      });
+    }
+  }
 
   return { message: "Sub-batch created successfully", subBatch };
 };
-
 
 // Get all Sub-Batches
 export const getAllSubBatches = async () => {
@@ -64,14 +72,10 @@ export const getSubBatchById = async (id: number) => {
   return subBatch;
 };
 
-
-
- // Update Sub-Batch (only sub_batches table)
 export const updateSubBatch = async (
   id: number,
   data: Partial<SubBatchPayloadWithArrays>
 ) => {
-  // Prepare update data for sub_batches table
   const updateData: any = {};
 
   if (data.name !== undefined) updateData.name = data.name;
@@ -81,37 +85,58 @@ export const updateSubBatch = async (
     updateData.expected_items = data.expectedItems;
   if (data.startDate !== undefined)
     updateData.start_date = new Date(data.startDate);
-  if (data.dueDate !== undefined)
-    updateData.due_date = new Date(data.dueDate);
+  if (data.dueDate !== undefined) updateData.due_date = new Date(data.dueDate);
   if (data.rollId !== undefined) updateData.roll_id = data.rollId;
   if (data.batchId !== undefined) updateData.batch_id = data.batchId;
   if (data.departmentId !== undefined)
     updateData.department_id = data.departmentId;
 
-  // Only handle attachments if provided
-  const childOps: any = {};
-  if (data.attachments !== undefined) {
-    childOps.attachments = data.attachments.length
-      ? {
-          deleteMany: {},
-          create: data.attachments.map((a) => ({
-            attachment_name: a.attachmentName,
-            quantity: a.quantity,
-          })),
-        }
-      : { deleteMany: {} };
-  }
-
+  // Update main sub_batch row
   const subBatch = await prisma.sub_batches.update({
     where: { id },
-    data: { ...updateData, ...childOps },
-    include: { attachments: true }, // only include attachments
+    data: updateData,
+    include: { attachments: true }, // optional: include attachments
   });
+
+  // Update size details separately
+  if (data.sizeDetails !== undefined) {
+    // Optionally: delete old size details
+    await prisma.sub_batch_size_details.deleteMany({
+      where: { sub_batch_id: id },
+    });
+
+    for (const sd of data.sizeDetails) {
+      await prisma.sub_batch_size_details.create({
+        data: {
+          sub_batch_id: id,
+          category: sd.category,
+          pieces: sd.pieces,
+        },
+      });
+    }
+  }
+
+  // Optional: update attachments if needed
+  if (data.attachments !== undefined) {
+    await prisma.sub_batch_attachments.deleteMany({
+      where: { sub_batch_id: id },
+    });
+
+    if (data.attachments.length) {
+      for (const a of data.attachments) {
+        await prisma.sub_batch_attachments.create({
+          data: {
+            sub_batch_id: id,
+            attachment_name: a.attachmentName,
+            quantity: a.quantity,
+          },
+        });
+      }
+    }
+  }
 
   return { message: "Sub-batch updated successfully", subBatch };
 };
-
-
 // Delete Sub-Batch
 export const deleteSubBatch = async (id: number) => {
   const deleted = await prisma.sub_batches.delete({
