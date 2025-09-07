@@ -6,14 +6,16 @@ import {
 } from "../types/subBatchTypes";
 import { DepartmentStage } from "../config/constants";
 
-// Create Sub-Batch
+// Create Sub-Batch (only sub_batches table)
 export const createSubBatch = async (data: SubBatchPayload) => {
+  // Validation
   if (!data.name.trim()) throw { message: "Name is required" };
   if (data.estimatedPieces <= 0 || data.expectedItems <= 0)
     throw { message: "Estimated and expected items must be positive" };
   if (new Date(data.startDate) > new Date(data.dueDate))
     throw { message: "Start date cannot be after due date" };
 
+  // Prepare data only for sub_batches table
   const createData: any = {
     name: data.name,
     estimated_pieces: data.estimatedPieces,
@@ -23,16 +25,7 @@ export const createSubBatch = async (data: SubBatchPayload) => {
     roll_id: data.rollId,
     batch_id: data.batchId,
     department_id: data.departmentId,
-    ...(data.sizeDetails?.length
-      ? {
-          size_details: {
-            create: data.sizeDetails.map((sd) => ({
-              category: sd.category,
-              pieces: sd.pieces,
-            })),
-          },
-        }
-      : {}),
+    // No size_details included
     ...(data.attachments?.length
       ? {
           attachments: {
@@ -47,11 +40,12 @@ export const createSubBatch = async (data: SubBatchPayload) => {
 
   const subBatch = await prisma.sub_batches.create({
     data: createData,
-    include: { size_details: true, attachments: true },
+    include: { attachments: true }, // only include attachments if needed
   });
 
   return { message: "Sub-batch created successfully", subBatch };
 };
+
 
 // Get all Sub-Batches
 export const getAllSubBatches = async () => {
@@ -70,11 +64,14 @@ export const getSubBatchById = async (id: number) => {
   return subBatch;
 };
 
-// Update Sub-Batch
+
+
+ // Update Sub-Batch (only sub_batches table)
 export const updateSubBatch = async (
   id: number,
   data: Partial<SubBatchPayloadWithArrays>
 ) => {
+  // Prepare update data for sub_batches table
   const updateData: any = {};
 
   if (data.name !== undefined) updateData.name = data.name;
@@ -84,26 +81,15 @@ export const updateSubBatch = async (
     updateData.expected_items = data.expectedItems;
   if (data.startDate !== undefined)
     updateData.start_date = new Date(data.startDate);
-  if (data.dueDate !== undefined) updateData.due_date = new Date(data.dueDate);
+  if (data.dueDate !== undefined)
+    updateData.due_date = new Date(data.dueDate);
   if (data.rollId !== undefined) updateData.roll_id = data.rollId;
   if (data.batchId !== undefined) updateData.batch_id = data.batchId;
   if (data.departmentId !== undefined)
     updateData.department_id = data.departmentId;
 
+  // Only handle attachments if provided
   const childOps: any = {};
-
-  if (data.sizeDetails !== undefined) {
-    childOps.size_details = data.sizeDetails.length
-      ? {
-          deleteMany: {},
-          create: data.sizeDetails.map((sd) => ({
-            category: sd.category,
-            pieces: sd.pieces,
-          })),
-        }
-      : { deleteMany: {} };
-  }
-
   if (data.attachments !== undefined) {
     childOps.attachments = data.attachments.length
       ? {
@@ -119,11 +105,12 @@ export const updateSubBatch = async (
   const subBatch = await prisma.sub_batches.update({
     where: { id },
     data: { ...updateData, ...childOps },
-    include: { size_details: true, attachments: true },
+    include: { attachments: true }, // only include attachments
   });
 
   return { message: "Sub-batch updated successfully", subBatch };
 };
+
 
 // Delete Sub-Batch
 export const deleteSubBatch = async (id: number) => {
