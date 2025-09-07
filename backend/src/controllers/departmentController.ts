@@ -54,3 +54,16 @@ export const deleteDepartment = async (req: Request, res: Response) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+
+export const getDepartmentSubBatches = async (req: Request, res: Response) => {
+  try {
+    const departmentId = Number(req.params.id);
+    const result = await departmentService.getSubBatchesByDepartment(
+      departmentId
+    );
+    res.status(200).json({ success: true, data: result });
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};

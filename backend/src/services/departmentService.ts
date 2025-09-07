@@ -103,3 +103,23 @@ export const deleteDepartment = async (id: number) => {
     include: departmentInclude,
   });
 };
+
+
+export async function getSubBatchesByDepartment(departmentId: number) {
+  const subs = await prisma.department_sub_batches.findMany({
+    where: {
+      department_id: departmentId,
+      is_current: true, // only the current department
+    },
+    include: {
+      sub_batch: true, // get sub-batch details
+    },
+  });
+
+  // Group into Kanban columns
+  return {
+    newArrival: subs.filter((s) => s.stage === "NEW_ARRIVAL"),
+    inProgress: subs.filter((s) => s.stage === "IN_PROGRESS"),
+    completed: subs.filter((s) => s.stage === "COMPLETED"),
+  };
+}
