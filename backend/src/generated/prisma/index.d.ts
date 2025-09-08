@@ -27718,7 +27718,7 @@ export namespace Prisma {
     email: string
     password: string
     role: $Enums.Role
-    departmentId: number
+    departmentId: number | null
     createdAt: Date
     _count: SupervisorCountAggregateOutputType | null
     _avg: SupervisorAvgAggregateOutputType | null
@@ -27749,7 +27749,7 @@ export namespace Prisma {
     role?: boolean
     departmentId?: boolean
     createdAt?: boolean
-    department?: boolean | departmentsDefaultArgs<ExtArgs>
+    department?: boolean | Supervisor$departmentArgs<ExtArgs>
   }, ExtArgs["result"]["supervisor"]>
 
   export type SupervisorSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -27760,7 +27760,7 @@ export namespace Prisma {
     role?: boolean
     departmentId?: boolean
     createdAt?: boolean
-    department?: boolean | departmentsDefaultArgs<ExtArgs>
+    department?: boolean | Supervisor$departmentArgs<ExtArgs>
   }, ExtArgs["result"]["supervisor"]>
 
   export type SupervisorSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -27771,7 +27771,7 @@ export namespace Prisma {
     role?: boolean
     departmentId?: boolean
     createdAt?: boolean
-    department?: boolean | departmentsDefaultArgs<ExtArgs>
+    department?: boolean | Supervisor$departmentArgs<ExtArgs>
   }, ExtArgs["result"]["supervisor"]>
 
   export type SupervisorSelectScalar = {
@@ -27786,19 +27786,19 @@ export namespace Prisma {
 
   export type SupervisorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "role" | "departmentId" | "createdAt", ExtArgs["result"]["supervisor"]>
   export type SupervisorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    department?: boolean | departmentsDefaultArgs<ExtArgs>
+    department?: boolean | Supervisor$departmentArgs<ExtArgs>
   }
   export type SupervisorIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    department?: boolean | departmentsDefaultArgs<ExtArgs>
+    department?: boolean | Supervisor$departmentArgs<ExtArgs>
   }
   export type SupervisorIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    department?: boolean | departmentsDefaultArgs<ExtArgs>
+    department?: boolean | Supervisor$departmentArgs<ExtArgs>
   }
 
   export type $SupervisorPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Supervisor"
     objects: {
-      department: Prisma.$departmentsPayload<ExtArgs>
+      department: Prisma.$departmentsPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -27806,7 +27806,7 @@ export namespace Prisma {
       email: string
       password: string
       role: $Enums.Role
-      departmentId: number
+      departmentId: number | null
       createdAt: Date
     }, ExtArgs["result"]["supervisor"]>
     composites: {}
@@ -28202,7 +28202,7 @@ export namespace Prisma {
    */
   export interface Prisma__SupervisorClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    department<T extends departmentsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, departmentsDefaultArgs<ExtArgs>>): Prisma__departmentsClient<$Result.GetResult<Prisma.$departmentsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    department<T extends Supervisor$departmentArgs<ExtArgs> = {}>(args?: Subset<T, Supervisor$departmentArgs<ExtArgs>>): Prisma__departmentsClient<$Result.GetResult<Prisma.$departmentsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -28632,6 +28632,25 @@ export namespace Prisma {
      * Limit how many Supervisors to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Supervisor.department
+   */
+  export type Supervisor$departmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the departments
+     */
+    select?: departmentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the departments
+     */
+    omit?: departmentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: departmentsInclude<ExtArgs> | null
+    where?: departmentsWhereInput
   }
 
   /**
@@ -30378,9 +30397,9 @@ export namespace Prisma {
     email?: StringFilter<"Supervisor"> | string
     password?: StringFilter<"Supervisor"> | string
     role?: EnumRoleFilter<"Supervisor"> | $Enums.Role
-    departmentId?: IntFilter<"Supervisor"> | number
+    departmentId?: IntNullableFilter<"Supervisor"> | number | null
     createdAt?: DateTimeFilter<"Supervisor"> | Date | string
-    department?: XOR<DepartmentsScalarRelationFilter, departmentsWhereInput>
+    department?: XOR<DepartmentsNullableScalarRelationFilter, departmentsWhereInput> | null
   }
 
   export type SupervisorOrderByWithRelationInput = {
@@ -30389,7 +30408,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     role?: SortOrder
-    departmentId?: SortOrder
+    departmentId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     department?: departmentsOrderByWithRelationInput
   }
@@ -30405,7 +30424,7 @@ export namespace Prisma {
     password?: StringFilter<"Supervisor"> | string
     role?: EnumRoleFilter<"Supervisor"> | $Enums.Role
     createdAt?: DateTimeFilter<"Supervisor"> | Date | string
-    department?: XOR<DepartmentsScalarRelationFilter, departmentsWhereInput>
+    department?: XOR<DepartmentsNullableScalarRelationFilter, departmentsWhereInput> | null
   }, "id" | "email" | "departmentId">
 
   export type SupervisorOrderByWithAggregationInput = {
@@ -30414,7 +30433,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     role?: SortOrder
-    departmentId?: SortOrder
+    departmentId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: SupervisorCountOrderByAggregateInput
     _avg?: SupervisorAvgOrderByAggregateInput
@@ -30432,7 +30451,7 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"Supervisor"> | string
     password?: StringWithAggregatesFilter<"Supervisor"> | string
     role?: EnumRoleWithAggregatesFilter<"Supervisor"> | $Enums.Role
-    departmentId?: IntWithAggregatesFilter<"Supervisor"> | number
+    departmentId?: IntNullableWithAggregatesFilter<"Supervisor"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"Supervisor"> | Date | string
   }
 
@@ -31686,7 +31705,7 @@ export namespace Prisma {
     password: string
     role?: $Enums.Role
     createdAt?: Date | string
-    department: departmentsCreateNestedOneWithoutSupervisorInput
+    department?: departmentsCreateNestedOneWithoutSupervisorInput
   }
 
   export type SupervisorUncheckedCreateInput = {
@@ -31695,7 +31714,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: $Enums.Role
-    departmentId: number
+    departmentId?: number | null
     createdAt?: Date | string
   }
 
@@ -31705,7 +31724,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    department?: departmentsUpdateOneRequiredWithoutSupervisorNestedInput
+    department?: departmentsUpdateOneWithoutSupervisorNestedInput
   }
 
   export type SupervisorUncheckedUpdateInput = {
@@ -31714,7 +31733,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    departmentId?: IntFieldUpdateOperationsInput | number
+    departmentId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -31724,7 +31743,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: $Enums.Role
-    departmentId: number
+    departmentId?: number | null
     createdAt?: Date | string
   }
 
@@ -31742,7 +31761,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    departmentId?: IntFieldUpdateOperationsInput | number
+    departmentId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -32964,11 +32983,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumDepartmentStageNullableFilter<$PrismaModel>
     _max?: NestedEnumDepartmentStageNullableFilter<$PrismaModel>
-  }
-
-  export type DepartmentsScalarRelationFilter = {
-    is?: departmentsWhereInput
-    isNot?: departmentsWhereInput
   }
 
   export type SupervisorCountOrderByAggregateInput = {
@@ -34609,10 +34623,12 @@ export namespace Prisma {
     connect?: departmentsWhereUniqueInput
   }
 
-  export type departmentsUpdateOneRequiredWithoutSupervisorNestedInput = {
+  export type departmentsUpdateOneWithoutSupervisorNestedInput = {
     create?: XOR<departmentsCreateWithoutSupervisorInput, departmentsUncheckedCreateWithoutSupervisorInput>
     connectOrCreate?: departmentsCreateOrConnectWithoutSupervisorInput
     upsert?: departmentsUpsertWithoutSupervisorInput
+    disconnect?: departmentsWhereInput | boolean
+    delete?: departmentsWhereInput | boolean
     connect?: departmentsWhereUniqueInput
     update?: XOR<XOR<departmentsUpdateToOneWithWhereWithoutSupervisorInput, departmentsUpdateWithoutSupervisorInput>, departmentsUncheckedUpdateWithoutSupervisorInput>
   }

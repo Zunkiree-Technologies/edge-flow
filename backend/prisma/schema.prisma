@@ -263,8 +263,8 @@ model Supervisor {
   email        String @unique
   password     String
   role         Role   @default(SUPERVISOR)
-  department   departments @relation(fields: [departmentId], references: [id])
-  departmentId Int @unique   // ensures only one supervisor per department
+  department   departments? @relation(fields: [departmentId], references: [id])
+  departmentId Int? @unique   // ensures only one supervisor per department
   createdAt    DateTime @default(now())
 }
 

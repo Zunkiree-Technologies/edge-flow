@@ -46,7 +46,7 @@ export const loginSupervisor = async (email: string, password: string) => {
   const token = generateToken(
     supervisor.id,
     "SUPERVISOR",
-    supervisor.departmentId
+    supervisor.departmentId ?? undefined
   );
 
   return { supervisor: { ...supervisor, role: "SUPERVISOR" }, token };
