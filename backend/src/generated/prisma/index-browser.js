@@ -124,6 +124,7 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   password: 'password',
+  role: 'role',
   createdAt: 'createdAt'
 };
 
@@ -191,7 +192,6 @@ exports.Prisma.Sub_batch_alteredScalarFieldEnum = {
 exports.Prisma.DepartmentsScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  supervisor: 'supervisor',
   remarks: 'remarks'
 };
 
@@ -295,6 +295,16 @@ exports.Prisma.Department_sub_batch_historyScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.SupervisorScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  password: 'password',
+  role: 'role',
+  departmentId: 'departmentId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -309,6 +319,11 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.Role = exports.$Enums.Role = {
+  ADMIN: 'ADMIN',
+  SUPERVISOR: 'SUPERVISOR'
+};
+
 exports.DepartmentStage = exports.$Enums.DepartmentStage = {
   NEW_ARRIVAL: 'NEW_ARRIVAL',
   IN_PROGRESS: 'IN_PROGRESS',
@@ -336,7 +351,8 @@ exports.Prisma.ModelName = {
   workflow_steps: 'workflow_steps',
   sub_batch_workflows: 'sub_batch_workflows',
   sub_batch_workflow_steps: 'sub_batch_workflow_steps',
-  department_sub_batch_history: 'department_sub_batch_history'
+  department_sub_batch_history: 'department_sub_batch_history',
+  Supervisor: 'Supervisor'
 };
 
 /**

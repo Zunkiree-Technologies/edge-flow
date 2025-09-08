@@ -9,6 +9,7 @@ import workerRoutes from "./src/routes/worker";
 import vendorRoutes from "./src/routes/vendor";
 import categoryRoutes from "./src/routes/category";
 import departmentRoutes from "./src/routes/department";
+import supervisorRoutes from "./src/routes/supervisor";
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use(express.json());
 
 // Auth routes
 app.use("/api/auth", authRoutes);
+app.use("/api/supervisors", supervisorRoutes);
 
 // Roll routes
 app.use("/api/rolls", rollRoutes);

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import * as departmentService from "../services/departmentService";
+import { AuthRequest } from "../middleware/authMiddleware";
 
 export const createDepartment = async (req: Request, res: Response) => {
   try {
@@ -56,9 +57,18 @@ export const deleteDepartment = async (req: Request, res: Response) => {
 };
 
 
-export const getDepartmentSubBatches = async (req: Request, res: Response) => {
+export const getDepartmentSubBatches = async (
+  req: AuthRequest,
+  res: Response
+) => {
   try {
-    const departmentId = Number(req.params.id);
+    let departmentId = Number(req.params.id);
+
+    // If supervisor, override departmentId with their assigned department
+    if (req.user?.role === "SUPERVISOR") {
+      departmentId = req.user.departmentId!;
+    }
+
     const result = await departmentService.getSubBatchesByDepartment(
       departmentId
     );

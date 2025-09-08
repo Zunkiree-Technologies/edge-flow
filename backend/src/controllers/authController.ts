@@ -1,55 +1,35 @@
 import { Request, Response } from "express";
 import * as authService from "../services/authService";
 
-// Signup controller
+// Admin Signup
 export const signup = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Email and password are required" });
-    }
-
-    const data = await authService.signupUser(email, password);
-
-    res.status(201).json({
-      user: {
-        id: data.user.id,
-        email: data.user.email,
-        createdAt: data.user.createdAt,
-      },
-      token: data.token,
-    });
-  } catch (error: any) {
-    res.status(400).json({ message: error.message });
+    const result = await authService.signupUser(email, password);
+    res.json({ success: true, ...result });
+  } catch (err: any) {
+    res.status(400).json({ success: false, message: err.message });
   }
 };
 
-
-// Login controller
+// Admin Login
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
+    const result = await authService.loginUser(email, password);
+    res.json({ success: true, ...result });
+  } catch (err: any) {
+    res.status(401).json({ success: false, message: err.message });
+  }
+};
 
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Email and password are required" });
-    }
-
-    const data = await authService.loginUser(email, password);
-
-    res.status(200).json({
-      user: {
-        id: data.user.id,
-        email: data.user.email,
-        createdAt: data.user.createdAt,
-      },
-      token: data.token,
-    });
-  } catch (error: any) {
-    res.status(400).json({ message: error.message });
+// Supervisor Login
+export const loginSupervisor = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    const result = await authService.loginSupervisor(email, password);
+    res.json({ success: true, ...result });
+  } catch (err: any) {
+    res.status(401).json({ success: false, message: err.message });
   }
 };

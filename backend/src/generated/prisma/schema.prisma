@@ -16,6 +16,7 @@ model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   password  String
+  role      Role
   createdAt DateTime @default(now())
 }
 
@@ -105,10 +106,10 @@ model sub_batch_altered {
 }
 
 model departments {
-  id         Int     @id @default(autoincrement())
-  name       String
-  supervisor String
-  remarks    String?
+  id   Int    @id @default(autoincrement())
+  name String
+
+  remarks String?
 
   sub_batches     sub_batches[]
   workers         workers[]
@@ -118,6 +119,7 @@ model departments {
   altered         sub_batch_altered[]        @relation("AlteredDept")
   workflow_steps  workflow_steps[]
   sub_batch_steps sub_batch_workflow_steps[]
+  supervisor      Supervisor?
 }
 
 model department_workers {
@@ -250,4 +252,20 @@ model department_sub_batch_history {
   createdAt               DateTime         @default(now())
 
   department_sub_batch department_sub_batches? @relation(fields: [department_sub_batch_id], references: [id])
+}
+
+model Supervisor {
+  id           Int         @id @default(autoincrement())
+  name         String
+  email        String      @unique
+  password     String
+  role         Role        @default(SUPERVISOR)
+  department   departments @relation(fields: [departmentId], references: [id])
+  departmentId Int         @unique // ensures only one supervisor per department
+  createdAt    DateTime    @default(now())
+}
+
+enum Role {
+  ADMIN
+  SUPERVISOR
 }

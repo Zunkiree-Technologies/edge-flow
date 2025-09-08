@@ -118,6 +118,11 @@ export type sub_batch_workflow_steps = $Result.DefaultSelection<Prisma.$sub_batc
  * 
  */
 export type department_sub_batch_history = $Result.DefaultSelection<Prisma.$department_sub_batch_historyPayload>
+/**
+ * Model Supervisor
+ * 
+ */
+export type Supervisor = $Result.DefaultSelection<Prisma.$SupervisorPayload>
 
 /**
  * Enums
@@ -131,11 +136,23 @@ export namespace $Enums {
 
 export type DepartmentStage = (typeof DepartmentStage)[keyof typeof DepartmentStage]
 
+
+export const Role: {
+  ADMIN: 'ADMIN',
+  SUPERVISOR: 'SUPERVISOR'
+};
+
+export type Role = (typeof Role)[keyof typeof Role]
+
 }
 
 export type DepartmentStage = $Enums.DepartmentStage
 
 export const DepartmentStage: typeof $Enums.DepartmentStage
+
+export type Role = $Enums.Role
+
+export const Role: typeof $Enums.Role
 
 /**
  * ##  Prisma Client ʲˢ
@@ -464,6 +481,16 @@ export class PrismaClient<
     * ```
     */
   get department_sub_batch_history(): Prisma.department_sub_batch_historyDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.supervisor`: Exposes CRUD operations for the **Supervisor** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Supervisors
+    * const supervisors = await prisma.supervisor.findMany()
+    * ```
+    */
+  get supervisor(): Prisma.SupervisorDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -924,7 +951,8 @@ export namespace Prisma {
     workflow_steps: 'workflow_steps',
     sub_batch_workflows: 'sub_batch_workflows',
     sub_batch_workflow_steps: 'sub_batch_workflow_steps',
-    department_sub_batch_history: 'department_sub_batch_history'
+    department_sub_batch_history: 'department_sub_batch_history',
+    Supervisor: 'Supervisor'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -943,7 +971,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "rolls" | "batches" | "sub_batches" | "sub_batch_size_details" | "sub_batch_attachments" | "sub_batch_rejected" | "sub_batch_altered" | "departments" | "department_workers" | "department_sub_batches" | "clients" | "workers" | "worker_logs" | "vendors" | "categories" | "workflow_templates" | "workflow_steps" | "sub_batch_workflows" | "sub_batch_workflow_steps" | "department_sub_batch_history"
+      modelProps: "user" | "rolls" | "batches" | "sub_batches" | "sub_batch_size_details" | "sub_batch_attachments" | "sub_batch_rejected" | "sub_batch_altered" | "departments" | "department_workers" | "department_sub_batches" | "clients" | "workers" | "worker_logs" | "vendors" | "categories" | "workflow_templates" | "workflow_steps" | "sub_batch_workflows" | "sub_batch_workflow_steps" | "department_sub_batch_history" | "supervisor"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2501,6 +2529,80 @@ export namespace Prisma {
           }
         }
       }
+      Supervisor: {
+        payload: Prisma.$SupervisorPayload<ExtArgs>
+        fields: Prisma.SupervisorFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SupervisorFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupervisorPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SupervisorFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupervisorPayload>
+          }
+          findFirst: {
+            args: Prisma.SupervisorFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupervisorPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SupervisorFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupervisorPayload>
+          }
+          findMany: {
+            args: Prisma.SupervisorFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupervisorPayload>[]
+          }
+          create: {
+            args: Prisma.SupervisorCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupervisorPayload>
+          }
+          createMany: {
+            args: Prisma.SupervisorCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SupervisorCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupervisorPayload>[]
+          }
+          delete: {
+            args: Prisma.SupervisorDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupervisorPayload>
+          }
+          update: {
+            args: Prisma.SupervisorUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupervisorPayload>
+          }
+          deleteMany: {
+            args: Prisma.SupervisorDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SupervisorUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SupervisorUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupervisorPayload>[]
+          }
+          upsert: {
+            args: Prisma.SupervisorUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupervisorPayload>
+          }
+          aggregate: {
+            args: Prisma.SupervisorAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSupervisor>
+          }
+          groupBy: {
+            args: Prisma.SupervisorGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SupervisorGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SupervisorCountArgs<ExtArgs>
+            result: $Utils.Optional<SupervisorCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2614,6 +2716,7 @@ export namespace Prisma {
     sub_batch_workflows?: sub_batch_workflowsOmit
     sub_batch_workflow_steps?: sub_batch_workflow_stepsOmit
     department_sub_batch_history?: department_sub_batch_historyOmit
+    supervisor?: SupervisorOmit
   }
 
   /* Types for Logging */
@@ -3149,6 +3252,7 @@ export namespace Prisma {
     id: number | null
     email: string | null
     password: string | null
+    role: $Enums.Role | null
     createdAt: Date | null
   }
 
@@ -3156,6 +3260,7 @@ export namespace Prisma {
     id: number | null
     email: string | null
     password: string | null
+    role: $Enums.Role | null
     createdAt: Date | null
   }
 
@@ -3163,6 +3268,7 @@ export namespace Prisma {
     id: number
     email: number
     password: number
+    role: number
     createdAt: number
     _all: number
   }
@@ -3180,6 +3286,7 @@ export namespace Prisma {
     id?: true
     email?: true
     password?: true
+    role?: true
     createdAt?: true
   }
 
@@ -3187,6 +3294,7 @@ export namespace Prisma {
     id?: true
     email?: true
     password?: true
+    role?: true
     createdAt?: true
   }
 
@@ -3194,6 +3302,7 @@ export namespace Prisma {
     id?: true
     email?: true
     password?: true
+    role?: true
     createdAt?: true
     _all?: true
   }
@@ -3288,6 +3397,7 @@ export namespace Prisma {
     id: number
     email: string
     password: string
+    role: $Enums.Role
     createdAt: Date
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
@@ -3314,6 +3424,7 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     password?: boolean
+    role?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["user"]>
 
@@ -3321,6 +3432,7 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     password?: boolean
+    role?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["user"]>
 
@@ -3328,6 +3440,7 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     password?: boolean
+    role?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["user"]>
 
@@ -3335,10 +3448,11 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     password?: boolean
+    role?: boolean
     createdAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "createdAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "role" | "createdAt", ExtArgs["result"]["user"]>
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
@@ -3347,6 +3461,7 @@ export namespace Prisma {
       id: number
       email: string
       password: string
+      role: $Enums.Role
       createdAt: Date
     }, ExtArgs["result"]["user"]>
     composites: {}
@@ -3774,6 +3889,7 @@ export namespace Prisma {
     readonly id: FieldRef<"User", 'Int'>
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
+    readonly role: FieldRef<"User", 'Role'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
   }
     
@@ -12507,21 +12623,18 @@ export namespace Prisma {
   export type DepartmentsMinAggregateOutputType = {
     id: number | null
     name: string | null
-    supervisor: string | null
     remarks: string | null
   }
 
   export type DepartmentsMaxAggregateOutputType = {
     id: number | null
     name: string | null
-    supervisor: string | null
     remarks: string | null
   }
 
   export type DepartmentsCountAggregateOutputType = {
     id: number
     name: number
-    supervisor: number
     remarks: number
     _all: number
   }
@@ -12538,21 +12651,18 @@ export namespace Prisma {
   export type DepartmentsMinAggregateInputType = {
     id?: true
     name?: true
-    supervisor?: true
     remarks?: true
   }
 
   export type DepartmentsMaxAggregateInputType = {
     id?: true
     name?: true
-    supervisor?: true
     remarks?: true
   }
 
   export type DepartmentsCountAggregateInputType = {
     id?: true
     name?: true
-    supervisor?: true
     remarks?: true
     _all?: true
   }
@@ -12646,7 +12756,6 @@ export namespace Prisma {
   export type DepartmentsGroupByOutputType = {
     id: number
     name: string
-    supervisor: string
     remarks: string | null
     _count: DepartmentsCountAggregateOutputType | null
     _avg: DepartmentsAvgAggregateOutputType | null
@@ -12672,7 +12781,6 @@ export namespace Prisma {
   export type departmentsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    supervisor?: boolean
     remarks?: boolean
     sub_batches?: boolean | departments$sub_batchesArgs<ExtArgs>
     workers?: boolean | departments$workersArgs<ExtArgs>
@@ -12682,31 +12790,29 @@ export namespace Prisma {
     altered?: boolean | departments$alteredArgs<ExtArgs>
     workflow_steps?: boolean | departments$workflow_stepsArgs<ExtArgs>
     sub_batch_steps?: boolean | departments$sub_batch_stepsArgs<ExtArgs>
+    supervisor?: boolean | departments$supervisorArgs<ExtArgs>
     _count?: boolean | DepartmentsCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["departments"]>
 
   export type departmentsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    supervisor?: boolean
     remarks?: boolean
   }, ExtArgs["result"]["departments"]>
 
   export type departmentsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    supervisor?: boolean
     remarks?: boolean
   }, ExtArgs["result"]["departments"]>
 
   export type departmentsSelectScalar = {
     id?: boolean
     name?: boolean
-    supervisor?: boolean
     remarks?: boolean
   }
 
-  export type departmentsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "supervisor" | "remarks", ExtArgs["result"]["departments"]>
+  export type departmentsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "remarks", ExtArgs["result"]["departments"]>
   export type departmentsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sub_batches?: boolean | departments$sub_batchesArgs<ExtArgs>
     workers?: boolean | departments$workersArgs<ExtArgs>
@@ -12716,6 +12822,7 @@ export namespace Prisma {
     altered?: boolean | departments$alteredArgs<ExtArgs>
     workflow_steps?: boolean | departments$workflow_stepsArgs<ExtArgs>
     sub_batch_steps?: boolean | departments$sub_batch_stepsArgs<ExtArgs>
+    supervisor?: boolean | departments$supervisorArgs<ExtArgs>
     _count?: boolean | DepartmentsCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type departmentsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -12732,11 +12839,11 @@ export namespace Prisma {
       altered: Prisma.$sub_batch_alteredPayload<ExtArgs>[]
       workflow_steps: Prisma.$workflow_stepsPayload<ExtArgs>[]
       sub_batch_steps: Prisma.$sub_batch_workflow_stepsPayload<ExtArgs>[]
+      supervisor: Prisma.$SupervisorPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       name: string
-      supervisor: string
       remarks: string | null
     }, ExtArgs["result"]["departments"]>
     composites: {}
@@ -13140,6 +13247,7 @@ export namespace Prisma {
     altered<T extends departments$alteredArgs<ExtArgs> = {}>(args?: Subset<T, departments$alteredArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sub_batch_alteredPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     workflow_steps<T extends departments$workflow_stepsArgs<ExtArgs> = {}>(args?: Subset<T, departments$workflow_stepsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$workflow_stepsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sub_batch_steps<T extends departments$sub_batch_stepsArgs<ExtArgs> = {}>(args?: Subset<T, departments$sub_batch_stepsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sub_batch_workflow_stepsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    supervisor<T extends departments$supervisorArgs<ExtArgs> = {}>(args?: Subset<T, departments$supervisorArgs<ExtArgs>>): Prisma__SupervisorClient<$Result.GetResult<Prisma.$SupervisorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13171,7 +13279,6 @@ export namespace Prisma {
   interface departmentsFieldRefs {
     readonly id: FieldRef<"departments", 'Int'>
     readonly name: FieldRef<"departments", 'String'>
-    readonly supervisor: FieldRef<"departments", 'String'>
     readonly remarks: FieldRef<"departments", 'String'>
   }
     
@@ -13750,6 +13857,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: Sub_batch_workflow_stepsScalarFieldEnum | Sub_batch_workflow_stepsScalarFieldEnum[]
+  }
+
+  /**
+   * departments.supervisor
+   */
+  export type departments$supervisorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supervisor
+     */
+    select?: SupervisorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supervisor
+     */
+    omit?: SupervisorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupervisorInclude<ExtArgs> | null
+    where?: SupervisorWhereInput
   }
 
   /**
@@ -27406,6 +27532,1128 @@ export namespace Prisma {
 
 
   /**
+   * Model Supervisor
+   */
+
+  export type AggregateSupervisor = {
+    _count: SupervisorCountAggregateOutputType | null
+    _avg: SupervisorAvgAggregateOutputType | null
+    _sum: SupervisorSumAggregateOutputType | null
+    _min: SupervisorMinAggregateOutputType | null
+    _max: SupervisorMaxAggregateOutputType | null
+  }
+
+  export type SupervisorAvgAggregateOutputType = {
+    id: number | null
+    departmentId: number | null
+  }
+
+  export type SupervisorSumAggregateOutputType = {
+    id: number | null
+    departmentId: number | null
+  }
+
+  export type SupervisorMinAggregateOutputType = {
+    id: number | null
+    name: string | null
+    email: string | null
+    password: string | null
+    role: $Enums.Role | null
+    departmentId: number | null
+    createdAt: Date | null
+  }
+
+  export type SupervisorMaxAggregateOutputType = {
+    id: number | null
+    name: string | null
+    email: string | null
+    password: string | null
+    role: $Enums.Role | null
+    departmentId: number | null
+    createdAt: Date | null
+  }
+
+  export type SupervisorCountAggregateOutputType = {
+    id: number
+    name: number
+    email: number
+    password: number
+    role: number
+    departmentId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type SupervisorAvgAggregateInputType = {
+    id?: true
+    departmentId?: true
+  }
+
+  export type SupervisorSumAggregateInputType = {
+    id?: true
+    departmentId?: true
+  }
+
+  export type SupervisorMinAggregateInputType = {
+    id?: true
+    name?: true
+    email?: true
+    password?: true
+    role?: true
+    departmentId?: true
+    createdAt?: true
+  }
+
+  export type SupervisorMaxAggregateInputType = {
+    id?: true
+    name?: true
+    email?: true
+    password?: true
+    role?: true
+    departmentId?: true
+    createdAt?: true
+  }
+
+  export type SupervisorCountAggregateInputType = {
+    id?: true
+    name?: true
+    email?: true
+    password?: true
+    role?: true
+    departmentId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type SupervisorAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Supervisor to aggregate.
+     */
+    where?: SupervisorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Supervisors to fetch.
+     */
+    orderBy?: SupervisorOrderByWithRelationInput | SupervisorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SupervisorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Supervisors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Supervisors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Supervisors
+    **/
+    _count?: true | SupervisorCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SupervisorAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SupervisorSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SupervisorMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SupervisorMaxAggregateInputType
+  }
+
+  export type GetSupervisorAggregateType<T extends SupervisorAggregateArgs> = {
+        [P in keyof T & keyof AggregateSupervisor]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSupervisor[P]>
+      : GetScalarType<T[P], AggregateSupervisor[P]>
+  }
+
+
+
+
+  export type SupervisorGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SupervisorWhereInput
+    orderBy?: SupervisorOrderByWithAggregationInput | SupervisorOrderByWithAggregationInput[]
+    by: SupervisorScalarFieldEnum[] | SupervisorScalarFieldEnum
+    having?: SupervisorScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SupervisorCountAggregateInputType | true
+    _avg?: SupervisorAvgAggregateInputType
+    _sum?: SupervisorSumAggregateInputType
+    _min?: SupervisorMinAggregateInputType
+    _max?: SupervisorMaxAggregateInputType
+  }
+
+  export type SupervisorGroupByOutputType = {
+    id: number
+    name: string
+    email: string
+    password: string
+    role: $Enums.Role
+    departmentId: number
+    createdAt: Date
+    _count: SupervisorCountAggregateOutputType | null
+    _avg: SupervisorAvgAggregateOutputType | null
+    _sum: SupervisorSumAggregateOutputType | null
+    _min: SupervisorMinAggregateOutputType | null
+    _max: SupervisorMaxAggregateOutputType | null
+  }
+
+  type GetSupervisorGroupByPayload<T extends SupervisorGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SupervisorGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SupervisorGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SupervisorGroupByOutputType[P]>
+            : GetScalarType<T[P], SupervisorGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SupervisorSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    email?: boolean
+    password?: boolean
+    role?: boolean
+    departmentId?: boolean
+    createdAt?: boolean
+    department?: boolean | departmentsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["supervisor"]>
+
+  export type SupervisorSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    email?: boolean
+    password?: boolean
+    role?: boolean
+    departmentId?: boolean
+    createdAt?: boolean
+    department?: boolean | departmentsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["supervisor"]>
+
+  export type SupervisorSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    email?: boolean
+    password?: boolean
+    role?: boolean
+    departmentId?: boolean
+    createdAt?: boolean
+    department?: boolean | departmentsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["supervisor"]>
+
+  export type SupervisorSelectScalar = {
+    id?: boolean
+    name?: boolean
+    email?: boolean
+    password?: boolean
+    role?: boolean
+    departmentId?: boolean
+    createdAt?: boolean
+  }
+
+  export type SupervisorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "role" | "departmentId" | "createdAt", ExtArgs["result"]["supervisor"]>
+  export type SupervisorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    department?: boolean | departmentsDefaultArgs<ExtArgs>
+  }
+  export type SupervisorIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    department?: boolean | departmentsDefaultArgs<ExtArgs>
+  }
+  export type SupervisorIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    department?: boolean | departmentsDefaultArgs<ExtArgs>
+  }
+
+  export type $SupervisorPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Supervisor"
+    objects: {
+      department: Prisma.$departmentsPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      name: string
+      email: string
+      password: string
+      role: $Enums.Role
+      departmentId: number
+      createdAt: Date
+    }, ExtArgs["result"]["supervisor"]>
+    composites: {}
+  }
+
+  type SupervisorGetPayload<S extends boolean | null | undefined | SupervisorDefaultArgs> = $Result.GetResult<Prisma.$SupervisorPayload, S>
+
+  type SupervisorCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SupervisorFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SupervisorCountAggregateInputType | true
+    }
+
+  export interface SupervisorDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Supervisor'], meta: { name: 'Supervisor' } }
+    /**
+     * Find zero or one Supervisor that matches the filter.
+     * @param {SupervisorFindUniqueArgs} args - Arguments to find a Supervisor
+     * @example
+     * // Get one Supervisor
+     * const supervisor = await prisma.supervisor.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SupervisorFindUniqueArgs>(args: SelectSubset<T, SupervisorFindUniqueArgs<ExtArgs>>): Prisma__SupervisorClient<$Result.GetResult<Prisma.$SupervisorPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Supervisor that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SupervisorFindUniqueOrThrowArgs} args - Arguments to find a Supervisor
+     * @example
+     * // Get one Supervisor
+     * const supervisor = await prisma.supervisor.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SupervisorFindUniqueOrThrowArgs>(args: SelectSubset<T, SupervisorFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SupervisorClient<$Result.GetResult<Prisma.$SupervisorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Supervisor that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupervisorFindFirstArgs} args - Arguments to find a Supervisor
+     * @example
+     * // Get one Supervisor
+     * const supervisor = await prisma.supervisor.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SupervisorFindFirstArgs>(args?: SelectSubset<T, SupervisorFindFirstArgs<ExtArgs>>): Prisma__SupervisorClient<$Result.GetResult<Prisma.$SupervisorPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Supervisor that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupervisorFindFirstOrThrowArgs} args - Arguments to find a Supervisor
+     * @example
+     * // Get one Supervisor
+     * const supervisor = await prisma.supervisor.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SupervisorFindFirstOrThrowArgs>(args?: SelectSubset<T, SupervisorFindFirstOrThrowArgs<ExtArgs>>): Prisma__SupervisorClient<$Result.GetResult<Prisma.$SupervisorPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Supervisors that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupervisorFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Supervisors
+     * const supervisors = await prisma.supervisor.findMany()
+     * 
+     * // Get first 10 Supervisors
+     * const supervisors = await prisma.supervisor.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const supervisorWithIdOnly = await prisma.supervisor.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SupervisorFindManyArgs>(args?: SelectSubset<T, SupervisorFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupervisorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Supervisor.
+     * @param {SupervisorCreateArgs} args - Arguments to create a Supervisor.
+     * @example
+     * // Create one Supervisor
+     * const Supervisor = await prisma.supervisor.create({
+     *   data: {
+     *     // ... data to create a Supervisor
+     *   }
+     * })
+     * 
+     */
+    create<T extends SupervisorCreateArgs>(args: SelectSubset<T, SupervisorCreateArgs<ExtArgs>>): Prisma__SupervisorClient<$Result.GetResult<Prisma.$SupervisorPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Supervisors.
+     * @param {SupervisorCreateManyArgs} args - Arguments to create many Supervisors.
+     * @example
+     * // Create many Supervisors
+     * const supervisor = await prisma.supervisor.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SupervisorCreateManyArgs>(args?: SelectSubset<T, SupervisorCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Supervisors and returns the data saved in the database.
+     * @param {SupervisorCreateManyAndReturnArgs} args - Arguments to create many Supervisors.
+     * @example
+     * // Create many Supervisors
+     * const supervisor = await prisma.supervisor.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Supervisors and only return the `id`
+     * const supervisorWithIdOnly = await prisma.supervisor.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SupervisorCreateManyAndReturnArgs>(args?: SelectSubset<T, SupervisorCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupervisorPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Supervisor.
+     * @param {SupervisorDeleteArgs} args - Arguments to delete one Supervisor.
+     * @example
+     * // Delete one Supervisor
+     * const Supervisor = await prisma.supervisor.delete({
+     *   where: {
+     *     // ... filter to delete one Supervisor
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SupervisorDeleteArgs>(args: SelectSubset<T, SupervisorDeleteArgs<ExtArgs>>): Prisma__SupervisorClient<$Result.GetResult<Prisma.$SupervisorPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Supervisor.
+     * @param {SupervisorUpdateArgs} args - Arguments to update one Supervisor.
+     * @example
+     * // Update one Supervisor
+     * const supervisor = await prisma.supervisor.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SupervisorUpdateArgs>(args: SelectSubset<T, SupervisorUpdateArgs<ExtArgs>>): Prisma__SupervisorClient<$Result.GetResult<Prisma.$SupervisorPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Supervisors.
+     * @param {SupervisorDeleteManyArgs} args - Arguments to filter Supervisors to delete.
+     * @example
+     * // Delete a few Supervisors
+     * const { count } = await prisma.supervisor.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SupervisorDeleteManyArgs>(args?: SelectSubset<T, SupervisorDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Supervisors.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupervisorUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Supervisors
+     * const supervisor = await prisma.supervisor.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SupervisorUpdateManyArgs>(args: SelectSubset<T, SupervisorUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Supervisors and returns the data updated in the database.
+     * @param {SupervisorUpdateManyAndReturnArgs} args - Arguments to update many Supervisors.
+     * @example
+     * // Update many Supervisors
+     * const supervisor = await prisma.supervisor.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Supervisors and only return the `id`
+     * const supervisorWithIdOnly = await prisma.supervisor.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SupervisorUpdateManyAndReturnArgs>(args: SelectSubset<T, SupervisorUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupervisorPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Supervisor.
+     * @param {SupervisorUpsertArgs} args - Arguments to update or create a Supervisor.
+     * @example
+     * // Update or create a Supervisor
+     * const supervisor = await prisma.supervisor.upsert({
+     *   create: {
+     *     // ... data to create a Supervisor
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Supervisor we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SupervisorUpsertArgs>(args: SelectSubset<T, SupervisorUpsertArgs<ExtArgs>>): Prisma__SupervisorClient<$Result.GetResult<Prisma.$SupervisorPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Supervisors.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupervisorCountArgs} args - Arguments to filter Supervisors to count.
+     * @example
+     * // Count the number of Supervisors
+     * const count = await prisma.supervisor.count({
+     *   where: {
+     *     // ... the filter for the Supervisors we want to count
+     *   }
+     * })
+    **/
+    count<T extends SupervisorCountArgs>(
+      args?: Subset<T, SupervisorCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SupervisorCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Supervisor.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupervisorAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SupervisorAggregateArgs>(args: Subset<T, SupervisorAggregateArgs>): Prisma.PrismaPromise<GetSupervisorAggregateType<T>>
+
+    /**
+     * Group by Supervisor.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupervisorGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SupervisorGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SupervisorGroupByArgs['orderBy'] }
+        : { orderBy?: SupervisorGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SupervisorGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSupervisorGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Supervisor model
+   */
+  readonly fields: SupervisorFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Supervisor.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SupervisorClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    department<T extends departmentsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, departmentsDefaultArgs<ExtArgs>>): Prisma__departmentsClient<$Result.GetResult<Prisma.$departmentsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Supervisor model
+   */
+  interface SupervisorFieldRefs {
+    readonly id: FieldRef<"Supervisor", 'Int'>
+    readonly name: FieldRef<"Supervisor", 'String'>
+    readonly email: FieldRef<"Supervisor", 'String'>
+    readonly password: FieldRef<"Supervisor", 'String'>
+    readonly role: FieldRef<"Supervisor", 'Role'>
+    readonly departmentId: FieldRef<"Supervisor", 'Int'>
+    readonly createdAt: FieldRef<"Supervisor", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Supervisor findUnique
+   */
+  export type SupervisorFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supervisor
+     */
+    select?: SupervisorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supervisor
+     */
+    omit?: SupervisorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupervisorInclude<ExtArgs> | null
+    /**
+     * Filter, which Supervisor to fetch.
+     */
+    where: SupervisorWhereUniqueInput
+  }
+
+  /**
+   * Supervisor findUniqueOrThrow
+   */
+  export type SupervisorFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supervisor
+     */
+    select?: SupervisorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supervisor
+     */
+    omit?: SupervisorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupervisorInclude<ExtArgs> | null
+    /**
+     * Filter, which Supervisor to fetch.
+     */
+    where: SupervisorWhereUniqueInput
+  }
+
+  /**
+   * Supervisor findFirst
+   */
+  export type SupervisorFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supervisor
+     */
+    select?: SupervisorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supervisor
+     */
+    omit?: SupervisorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupervisorInclude<ExtArgs> | null
+    /**
+     * Filter, which Supervisor to fetch.
+     */
+    where?: SupervisorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Supervisors to fetch.
+     */
+    orderBy?: SupervisorOrderByWithRelationInput | SupervisorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Supervisors.
+     */
+    cursor?: SupervisorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Supervisors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Supervisors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Supervisors.
+     */
+    distinct?: SupervisorScalarFieldEnum | SupervisorScalarFieldEnum[]
+  }
+
+  /**
+   * Supervisor findFirstOrThrow
+   */
+  export type SupervisorFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supervisor
+     */
+    select?: SupervisorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supervisor
+     */
+    omit?: SupervisorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupervisorInclude<ExtArgs> | null
+    /**
+     * Filter, which Supervisor to fetch.
+     */
+    where?: SupervisorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Supervisors to fetch.
+     */
+    orderBy?: SupervisorOrderByWithRelationInput | SupervisorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Supervisors.
+     */
+    cursor?: SupervisorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Supervisors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Supervisors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Supervisors.
+     */
+    distinct?: SupervisorScalarFieldEnum | SupervisorScalarFieldEnum[]
+  }
+
+  /**
+   * Supervisor findMany
+   */
+  export type SupervisorFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supervisor
+     */
+    select?: SupervisorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supervisor
+     */
+    omit?: SupervisorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupervisorInclude<ExtArgs> | null
+    /**
+     * Filter, which Supervisors to fetch.
+     */
+    where?: SupervisorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Supervisors to fetch.
+     */
+    orderBy?: SupervisorOrderByWithRelationInput | SupervisorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Supervisors.
+     */
+    cursor?: SupervisorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Supervisors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Supervisors.
+     */
+    skip?: number
+    distinct?: SupervisorScalarFieldEnum | SupervisorScalarFieldEnum[]
+  }
+
+  /**
+   * Supervisor create
+   */
+  export type SupervisorCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supervisor
+     */
+    select?: SupervisorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supervisor
+     */
+    omit?: SupervisorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupervisorInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Supervisor.
+     */
+    data: XOR<SupervisorCreateInput, SupervisorUncheckedCreateInput>
+  }
+
+  /**
+   * Supervisor createMany
+   */
+  export type SupervisorCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Supervisors.
+     */
+    data: SupervisorCreateManyInput | SupervisorCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Supervisor createManyAndReturn
+   */
+  export type SupervisorCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supervisor
+     */
+    select?: SupervisorSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supervisor
+     */
+    omit?: SupervisorOmit<ExtArgs> | null
+    /**
+     * The data used to create many Supervisors.
+     */
+    data: SupervisorCreateManyInput | SupervisorCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupervisorIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Supervisor update
+   */
+  export type SupervisorUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supervisor
+     */
+    select?: SupervisorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supervisor
+     */
+    omit?: SupervisorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupervisorInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Supervisor.
+     */
+    data: XOR<SupervisorUpdateInput, SupervisorUncheckedUpdateInput>
+    /**
+     * Choose, which Supervisor to update.
+     */
+    where: SupervisorWhereUniqueInput
+  }
+
+  /**
+   * Supervisor updateMany
+   */
+  export type SupervisorUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Supervisors.
+     */
+    data: XOR<SupervisorUpdateManyMutationInput, SupervisorUncheckedUpdateManyInput>
+    /**
+     * Filter which Supervisors to update
+     */
+    where?: SupervisorWhereInput
+    /**
+     * Limit how many Supervisors to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Supervisor updateManyAndReturn
+   */
+  export type SupervisorUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supervisor
+     */
+    select?: SupervisorSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supervisor
+     */
+    omit?: SupervisorOmit<ExtArgs> | null
+    /**
+     * The data used to update Supervisors.
+     */
+    data: XOR<SupervisorUpdateManyMutationInput, SupervisorUncheckedUpdateManyInput>
+    /**
+     * Filter which Supervisors to update
+     */
+    where?: SupervisorWhereInput
+    /**
+     * Limit how many Supervisors to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupervisorIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Supervisor upsert
+   */
+  export type SupervisorUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supervisor
+     */
+    select?: SupervisorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supervisor
+     */
+    omit?: SupervisorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupervisorInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Supervisor to update in case it exists.
+     */
+    where: SupervisorWhereUniqueInput
+    /**
+     * In case the Supervisor found by the `where` argument doesn't exist, create a new Supervisor with this data.
+     */
+    create: XOR<SupervisorCreateInput, SupervisorUncheckedCreateInput>
+    /**
+     * In case the Supervisor was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SupervisorUpdateInput, SupervisorUncheckedUpdateInput>
+  }
+
+  /**
+   * Supervisor delete
+   */
+  export type SupervisorDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supervisor
+     */
+    select?: SupervisorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supervisor
+     */
+    omit?: SupervisorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupervisorInclude<ExtArgs> | null
+    /**
+     * Filter which Supervisor to delete.
+     */
+    where: SupervisorWhereUniqueInput
+  }
+
+  /**
+   * Supervisor deleteMany
+   */
+  export type SupervisorDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Supervisors to delete
+     */
+    where?: SupervisorWhereInput
+    /**
+     * Limit how many Supervisors to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Supervisor without action
+   */
+  export type SupervisorDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supervisor
+     */
+    select?: SupervisorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supervisor
+     */
+    omit?: SupervisorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupervisorInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -27423,6 +28671,7 @@ export namespace Prisma {
     id: 'id',
     email: 'email',
     password: 'password',
+    role: 'role',
     createdAt: 'createdAt'
   };
 
@@ -27514,7 +28763,6 @@ export namespace Prisma {
   export const DepartmentsScalarFieldEnum: {
     id: 'id',
     name: 'name',
-    supervisor: 'supervisor',
     remarks: 'remarks'
   };
 
@@ -27657,6 +28905,19 @@ export namespace Prisma {
   export type Department_sub_batch_historyScalarFieldEnum = (typeof Department_sub_batch_historyScalarFieldEnum)[keyof typeof Department_sub_batch_historyScalarFieldEnum]
 
 
+  export const SupervisorScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    email: 'email',
+    password: 'password',
+    role: 'role',
+    departmentId: 'departmentId',
+    createdAt: 'createdAt'
+  };
+
+  export type SupervisorScalarFieldEnum = (typeof SupervisorScalarFieldEnum)[keyof typeof SupervisorScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -27711,6 +28972,20 @@ export namespace Prisma {
    * Reference to a field of type 'String[]'
    */
   export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Role'
+   */
+  export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
+    
+
+
+  /**
+   * Reference to a field of type 'Role[]'
+   */
+  export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
     
 
 
@@ -27773,6 +29048,7 @@ export namespace Prisma {
     id?: IntFilter<"User"> | number
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
+    role?: EnumRoleFilter<"User"> | $Enums.Role
     createdAt?: DateTimeFilter<"User"> | Date | string
   }
 
@@ -27780,6 +29056,7 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    role?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -27790,6 +29067,7 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     password?: StringFilter<"User"> | string
+    role?: EnumRoleFilter<"User"> | $Enums.Role
     createdAt?: DateTimeFilter<"User"> | Date | string
   }, "id" | "email">
 
@@ -27797,6 +29075,7 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    role?: SortOrder
     createdAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
@@ -27812,6 +29091,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"User"> | number
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
+    role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
 
@@ -28290,7 +29570,6 @@ export namespace Prisma {
     NOT?: departmentsWhereInput | departmentsWhereInput[]
     id?: IntFilter<"departments"> | number
     name?: StringFilter<"departments"> | string
-    supervisor?: StringFilter<"departments"> | string
     remarks?: StringNullableFilter<"departments"> | string | null
     sub_batches?: Sub_batchesListRelationFilter
     workers?: WorkersListRelationFilter
@@ -28300,12 +29579,12 @@ export namespace Prisma {
     altered?: Sub_batch_alteredListRelationFilter
     workflow_steps?: Workflow_stepsListRelationFilter
     sub_batch_steps?: Sub_batch_workflow_stepsListRelationFilter
+    supervisor?: XOR<SupervisorNullableScalarRelationFilter, SupervisorWhereInput> | null
   }
 
   export type departmentsOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
-    supervisor?: SortOrder
     remarks?: SortOrderInput | SortOrder
     sub_batches?: sub_batchesOrderByRelationAggregateInput
     workers?: workersOrderByRelationAggregateInput
@@ -28315,6 +29594,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredOrderByRelationAggregateInput
     workflow_steps?: workflow_stepsOrderByRelationAggregateInput
     sub_batch_steps?: sub_batch_workflow_stepsOrderByRelationAggregateInput
+    supervisor?: SupervisorOrderByWithRelationInput
   }
 
   export type departmentsWhereUniqueInput = Prisma.AtLeast<{
@@ -28323,7 +29603,6 @@ export namespace Prisma {
     OR?: departmentsWhereInput[]
     NOT?: departmentsWhereInput | departmentsWhereInput[]
     name?: StringFilter<"departments"> | string
-    supervisor?: StringFilter<"departments"> | string
     remarks?: StringNullableFilter<"departments"> | string | null
     sub_batches?: Sub_batchesListRelationFilter
     workers?: WorkersListRelationFilter
@@ -28333,12 +29612,12 @@ export namespace Prisma {
     altered?: Sub_batch_alteredListRelationFilter
     workflow_steps?: Workflow_stepsListRelationFilter
     sub_batch_steps?: Sub_batch_workflow_stepsListRelationFilter
+    supervisor?: XOR<SupervisorNullableScalarRelationFilter, SupervisorWhereInput> | null
   }, "id">
 
   export type departmentsOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
-    supervisor?: SortOrder
     remarks?: SortOrderInput | SortOrder
     _count?: departmentsCountOrderByAggregateInput
     _avg?: departmentsAvgOrderByAggregateInput
@@ -28353,7 +29632,6 @@ export namespace Prisma {
     NOT?: departmentsScalarWhereWithAggregatesInput | departmentsScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"departments"> | number
     name?: StringWithAggregatesFilter<"departments"> | string
-    supervisor?: StringWithAggregatesFilter<"departments"> | string
     remarks?: StringNullableWithAggregatesFilter<"departments"> | string | null
   }
 
@@ -29091,9 +30369,77 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"department_sub_batch_history"> | Date | string
   }
 
+  export type SupervisorWhereInput = {
+    AND?: SupervisorWhereInput | SupervisorWhereInput[]
+    OR?: SupervisorWhereInput[]
+    NOT?: SupervisorWhereInput | SupervisorWhereInput[]
+    id?: IntFilter<"Supervisor"> | number
+    name?: StringFilter<"Supervisor"> | string
+    email?: StringFilter<"Supervisor"> | string
+    password?: StringFilter<"Supervisor"> | string
+    role?: EnumRoleFilter<"Supervisor"> | $Enums.Role
+    departmentId?: IntFilter<"Supervisor"> | number
+    createdAt?: DateTimeFilter<"Supervisor"> | Date | string
+    department?: XOR<DepartmentsScalarRelationFilter, departmentsWhereInput>
+  }
+
+  export type SupervisorOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    password?: SortOrder
+    role?: SortOrder
+    departmentId?: SortOrder
+    createdAt?: SortOrder
+    department?: departmentsOrderByWithRelationInput
+  }
+
+  export type SupervisorWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    email?: string
+    departmentId?: number
+    AND?: SupervisorWhereInput | SupervisorWhereInput[]
+    OR?: SupervisorWhereInput[]
+    NOT?: SupervisorWhereInput | SupervisorWhereInput[]
+    name?: StringFilter<"Supervisor"> | string
+    password?: StringFilter<"Supervisor"> | string
+    role?: EnumRoleFilter<"Supervisor"> | $Enums.Role
+    createdAt?: DateTimeFilter<"Supervisor"> | Date | string
+    department?: XOR<DepartmentsScalarRelationFilter, departmentsWhereInput>
+  }, "id" | "email" | "departmentId">
+
+  export type SupervisorOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    password?: SortOrder
+    role?: SortOrder
+    departmentId?: SortOrder
+    createdAt?: SortOrder
+    _count?: SupervisorCountOrderByAggregateInput
+    _avg?: SupervisorAvgOrderByAggregateInput
+    _max?: SupervisorMaxOrderByAggregateInput
+    _min?: SupervisorMinOrderByAggregateInput
+    _sum?: SupervisorSumOrderByAggregateInput
+  }
+
+  export type SupervisorScalarWhereWithAggregatesInput = {
+    AND?: SupervisorScalarWhereWithAggregatesInput | SupervisorScalarWhereWithAggregatesInput[]
+    OR?: SupervisorScalarWhereWithAggregatesInput[]
+    NOT?: SupervisorScalarWhereWithAggregatesInput | SupervisorScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Supervisor"> | number
+    name?: StringWithAggregatesFilter<"Supervisor"> | string
+    email?: StringWithAggregatesFilter<"Supervisor"> | string
+    password?: StringWithAggregatesFilter<"Supervisor"> | string
+    role?: EnumRoleWithAggregatesFilter<"Supervisor"> | $Enums.Role
+    departmentId?: IntWithAggregatesFilter<"Supervisor"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"Supervisor"> | Date | string
+  }
+
   export type UserCreateInput = {
     email: string
     password: string
+    role: $Enums.Role
     createdAt?: Date | string
   }
 
@@ -29101,12 +30447,14 @@ export namespace Prisma {
     id?: number
     email: string
     password: string
+    role: $Enums.Role
     createdAt?: Date | string
   }
 
   export type UserUpdateInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -29114,6 +30462,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -29121,12 +30470,14 @@ export namespace Prisma {
     id?: number
     email: string
     password: string
+    role: $Enums.Role
     createdAt?: Date | string
   }
 
   export type UserUpdateManyMutationInput = {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -29134,6 +30485,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -29573,7 +30925,6 @@ export namespace Prisma {
 
   export type departmentsCreateInput = {
     name: string
-    supervisor: string
     remarks?: string | null
     sub_batches?: sub_batchesCreateNestedManyWithoutDepartmentInput
     workers?: workersCreateNestedManyWithoutDepartmentInput
@@ -29583,12 +30934,12 @@ export namespace Prisma {
     altered?: sub_batch_alteredCreateNestedManyWithoutSent_to_departmentInput
     workflow_steps?: workflow_stepsCreateNestedManyWithoutDepartmentInput
     sub_batch_steps?: sub_batch_workflow_stepsCreateNestedManyWithoutDepartmentInput
+    supervisor?: SupervisorCreateNestedOneWithoutDepartmentInput
   }
 
   export type departmentsUncheckedCreateInput = {
     id?: number
     name: string
-    supervisor: string
     remarks?: string | null
     sub_batches?: sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
     workers?: workersUncheckedCreateNestedManyWithoutDepartmentInput
@@ -29598,11 +30949,11 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSent_to_departmentInput
     workflow_steps?: workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
     sub_batch_steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+    supervisor?: SupervisorUncheckedCreateNestedOneWithoutDepartmentInput
   }
 
   export type departmentsUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
     sub_batches?: sub_batchesUpdateManyWithoutDepartmentNestedInput
     workers?: workersUpdateManyWithoutDepartmentNestedInput
@@ -29612,12 +30963,12 @@ export namespace Prisma {
     altered?: sub_batch_alteredUpdateManyWithoutSent_to_departmentNestedInput
     workflow_steps?: workflow_stepsUpdateManyWithoutDepartmentNestedInput
     sub_batch_steps?: sub_batch_workflow_stepsUpdateManyWithoutDepartmentNestedInput
+    supervisor?: SupervisorUpdateOneWithoutDepartmentNestedInput
   }
 
   export type departmentsUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
     sub_batches?: sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
     workers?: workersUncheckedUpdateManyWithoutDepartmentNestedInput
@@ -29627,25 +30978,23 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSent_to_departmentNestedInput
     workflow_steps?: workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
     sub_batch_steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+    supervisor?: SupervisorUncheckedUpdateOneWithoutDepartmentNestedInput
   }
 
   export type departmentsCreateManyInput = {
     id?: number
     name: string
-    supervisor: string
     remarks?: string | null
   }
 
   export type departmentsUpdateManyMutationInput = {
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type departmentsUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -30331,6 +31680,72 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SupervisorCreateInput = {
+    name: string
+    email: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    department: departmentsCreateNestedOneWithoutSupervisorInput
+  }
+
+  export type SupervisorUncheckedCreateInput = {
+    id?: number
+    name: string
+    email: string
+    password: string
+    role?: $Enums.Role
+    departmentId: number
+    createdAt?: Date | string
+  }
+
+  export type SupervisorUpdateInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    department?: departmentsUpdateOneRequiredWithoutSupervisorNestedInput
+  }
+
+  export type SupervisorUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    departmentId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupervisorCreateManyInput = {
+    id?: number
+    name: string
+    email: string
+    password: string
+    role?: $Enums.Role
+    departmentId: number
+    createdAt?: Date | string
+  }
+
+  export type SupervisorUpdateManyMutationInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupervisorUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    departmentId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -30357,6 +31772,13 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type EnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -30372,6 +31794,7 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    role?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -30383,6 +31806,7 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    role?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -30390,6 +31814,7 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    role?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -30429,6 +31854,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -30910,6 +32345,11 @@ export namespace Prisma {
     none?: sub_batch_workflow_stepsWhereInput
   }
 
+  export type SupervisorNullableScalarRelationFilter = {
+    is?: SupervisorWhereInput | null
+    isNot?: SupervisorWhereInput | null
+  }
+
   export type workersOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -30929,7 +32369,6 @@ export namespace Prisma {
   export type departmentsCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    supervisor?: SortOrder
     remarks?: SortOrder
   }
 
@@ -30940,14 +32379,12 @@ export namespace Prisma {
   export type departmentsMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    supervisor?: SortOrder
     remarks?: SortOrder
   }
 
   export type departmentsMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    supervisor?: SortOrder
     remarks?: SortOrder
   }
 
@@ -31529,8 +32966,57 @@ export namespace Prisma {
     _max?: NestedEnumDepartmentStageNullableFilter<$PrismaModel>
   }
 
+  export type DepartmentsScalarRelationFilter = {
+    is?: departmentsWhereInput
+    isNot?: departmentsWhereInput
+  }
+
+  export type SupervisorCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    password?: SortOrder
+    role?: SortOrder
+    departmentId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SupervisorAvgOrderByAggregateInput = {
+    id?: SortOrder
+    departmentId?: SortOrder
+  }
+
+  export type SupervisorMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    password?: SortOrder
+    role?: SortOrder
+    departmentId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SupervisorMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    password?: SortOrder
+    role?: SortOrder
+    departmentId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SupervisorSumOrderByAggregateInput = {
+    id?: SortOrder
+    departmentId?: SortOrder
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
+  }
+
+  export type EnumRoleFieldUpdateOperationsInput = {
+    set?: $Enums.Role
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -32221,6 +33707,12 @@ export namespace Prisma {
     connect?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
   }
 
+  export type SupervisorCreateNestedOneWithoutDepartmentInput = {
+    create?: XOR<SupervisorCreateWithoutDepartmentInput, SupervisorUncheckedCreateWithoutDepartmentInput>
+    connectOrCreate?: SupervisorCreateOrConnectWithoutDepartmentInput
+    connect?: SupervisorWhereUniqueInput
+  }
+
   export type sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput = {
     create?: XOR<sub_batchesCreateWithoutDepartmentInput, sub_batchesUncheckedCreateWithoutDepartmentInput> | sub_batchesCreateWithoutDepartmentInput[] | sub_batchesUncheckedCreateWithoutDepartmentInput[]
     connectOrCreate?: sub_batchesCreateOrConnectWithoutDepartmentInput | sub_batchesCreateOrConnectWithoutDepartmentInput[]
@@ -32275,6 +33767,12 @@ export namespace Prisma {
     connectOrCreate?: sub_batch_workflow_stepsCreateOrConnectWithoutDepartmentInput | sub_batch_workflow_stepsCreateOrConnectWithoutDepartmentInput[]
     createMany?: sub_batch_workflow_stepsCreateManyDepartmentInputEnvelope
     connect?: sub_batch_workflow_stepsWhereUniqueInput | sub_batch_workflow_stepsWhereUniqueInput[]
+  }
+
+  export type SupervisorUncheckedCreateNestedOneWithoutDepartmentInput = {
+    create?: XOR<SupervisorCreateWithoutDepartmentInput, SupervisorUncheckedCreateWithoutDepartmentInput>
+    connectOrCreate?: SupervisorCreateOrConnectWithoutDepartmentInput
+    connect?: SupervisorWhereUniqueInput
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -32393,6 +33891,16 @@ export namespace Prisma {
     deleteMany?: sub_batch_workflow_stepsScalarWhereInput | sub_batch_workflow_stepsScalarWhereInput[]
   }
 
+  export type SupervisorUpdateOneWithoutDepartmentNestedInput = {
+    create?: XOR<SupervisorCreateWithoutDepartmentInput, SupervisorUncheckedCreateWithoutDepartmentInput>
+    connectOrCreate?: SupervisorCreateOrConnectWithoutDepartmentInput
+    upsert?: SupervisorUpsertWithoutDepartmentInput
+    disconnect?: SupervisorWhereInput | boolean
+    delete?: SupervisorWhereInput | boolean
+    connect?: SupervisorWhereUniqueInput
+    update?: XOR<XOR<SupervisorUpdateToOneWithWhereWithoutDepartmentInput, SupervisorUpdateWithoutDepartmentInput>, SupervisorUncheckedUpdateWithoutDepartmentInput>
+  }
+
   export type sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput = {
     create?: XOR<sub_batchesCreateWithoutDepartmentInput, sub_batchesUncheckedCreateWithoutDepartmentInput> | sub_batchesCreateWithoutDepartmentInput[] | sub_batchesUncheckedCreateWithoutDepartmentInput[]
     connectOrCreate?: sub_batchesCreateOrConnectWithoutDepartmentInput | sub_batchesCreateOrConnectWithoutDepartmentInput[]
@@ -32503,6 +34011,16 @@ export namespace Prisma {
     update?: sub_batch_workflow_stepsUpdateWithWhereUniqueWithoutDepartmentInput | sub_batch_workflow_stepsUpdateWithWhereUniqueWithoutDepartmentInput[]
     updateMany?: sub_batch_workflow_stepsUpdateManyWithWhereWithoutDepartmentInput | sub_batch_workflow_stepsUpdateManyWithWhereWithoutDepartmentInput[]
     deleteMany?: sub_batch_workflow_stepsScalarWhereInput | sub_batch_workflow_stepsScalarWhereInput[]
+  }
+
+  export type SupervisorUncheckedUpdateOneWithoutDepartmentNestedInput = {
+    create?: XOR<SupervisorCreateWithoutDepartmentInput, SupervisorUncheckedCreateWithoutDepartmentInput>
+    connectOrCreate?: SupervisorCreateOrConnectWithoutDepartmentInput
+    upsert?: SupervisorUpsertWithoutDepartmentInput
+    disconnect?: SupervisorWhereInput | boolean
+    delete?: SupervisorWhereInput | boolean
+    connect?: SupervisorWhereUniqueInput
+    update?: XOR<XOR<SupervisorUpdateToOneWithWhereWithoutDepartmentInput, SupervisorUpdateWithoutDepartmentInput>, SupervisorUncheckedUpdateWithoutDepartmentInput>
   }
 
   export type departmentsCreateNestedOneWithoutDept_workersInput = {
@@ -33085,6 +34603,20 @@ export namespace Prisma {
     update?: XOR<XOR<department_sub_batchesUpdateToOneWithWhereWithoutHistoryInput, department_sub_batchesUpdateWithoutHistoryInput>, department_sub_batchesUncheckedUpdateWithoutHistoryInput>
   }
 
+  export type departmentsCreateNestedOneWithoutSupervisorInput = {
+    create?: XOR<departmentsCreateWithoutSupervisorInput, departmentsUncheckedCreateWithoutSupervisorInput>
+    connectOrCreate?: departmentsCreateOrConnectWithoutSupervisorInput
+    connect?: departmentsWhereUniqueInput
+  }
+
+  export type departmentsUpdateOneRequiredWithoutSupervisorNestedInput = {
+    create?: XOR<departmentsCreateWithoutSupervisorInput, departmentsUncheckedCreateWithoutSupervisorInput>
+    connectOrCreate?: departmentsCreateOrConnectWithoutSupervisorInput
+    upsert?: departmentsUpsertWithoutSupervisorInput
+    connect?: departmentsWhereUniqueInput
+    update?: XOR<XOR<departmentsUpdateToOneWithWhereWithoutSupervisorInput, departmentsUpdateWithoutSupervisorInput>, departmentsUncheckedUpdateWithoutSupervisorInput>
+  }
+
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -33108,6 +34640,13 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringFilter<$PrismaModel> | string
+  }
+
+  export type NestedEnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -33163,6 +34702,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -33718,7 +35267,6 @@ export namespace Prisma {
 
   export type departmentsCreateWithoutSub_batchesInput = {
     name: string
-    supervisor: string
     remarks?: string | null
     workers?: workersCreateNestedManyWithoutDepartmentInput
     dept_workers?: department_workersCreateNestedManyWithoutDepartmentInput
@@ -33727,12 +35275,12 @@ export namespace Prisma {
     altered?: sub_batch_alteredCreateNestedManyWithoutSent_to_departmentInput
     workflow_steps?: workflow_stepsCreateNestedManyWithoutDepartmentInput
     sub_batch_steps?: sub_batch_workflow_stepsCreateNestedManyWithoutDepartmentInput
+    supervisor?: SupervisorCreateNestedOneWithoutDepartmentInput
   }
 
   export type departmentsUncheckedCreateWithoutSub_batchesInput = {
     id?: number
     name: string
-    supervisor: string
     remarks?: string | null
     workers?: workersUncheckedCreateNestedManyWithoutDepartmentInput
     dept_workers?: department_workersUncheckedCreateNestedManyWithoutDepartmentInput
@@ -33741,6 +35289,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSent_to_departmentInput
     workflow_steps?: workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
     sub_batch_steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+    supervisor?: SupervisorUncheckedCreateNestedOneWithoutDepartmentInput
   }
 
   export type departmentsCreateOrConnectWithoutSub_batchesInput = {
@@ -33986,7 +35535,6 @@ export namespace Prisma {
 
   export type departmentsUpdateWithoutSub_batchesInput = {
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
     workers?: workersUpdateManyWithoutDepartmentNestedInput
     dept_workers?: department_workersUpdateManyWithoutDepartmentNestedInput
@@ -33995,12 +35543,12 @@ export namespace Prisma {
     altered?: sub_batch_alteredUpdateManyWithoutSent_to_departmentNestedInput
     workflow_steps?: workflow_stepsUpdateManyWithoutDepartmentNestedInput
     sub_batch_steps?: sub_batch_workflow_stepsUpdateManyWithoutDepartmentNestedInput
+    supervisor?: SupervisorUpdateOneWithoutDepartmentNestedInput
   }
 
   export type departmentsUncheckedUpdateWithoutSub_batchesInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
     workers?: workersUncheckedUpdateManyWithoutDepartmentNestedInput
     dept_workers?: department_workersUncheckedUpdateManyWithoutDepartmentNestedInput
@@ -34009,6 +35557,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSent_to_departmentNestedInput
     workflow_steps?: workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
     sub_batch_steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+    supervisor?: SupervisorUncheckedUpdateOneWithoutDepartmentNestedInput
   }
 
   export type sub_batch_size_detailsUpsertWithWhereUniqueWithoutSub_batchInput = {
@@ -34414,7 +35963,6 @@ export namespace Prisma {
 
   export type departmentsCreateWithoutRejectedInput = {
     name: string
-    supervisor: string
     remarks?: string | null
     sub_batches?: sub_batchesCreateNestedManyWithoutDepartmentInput
     workers?: workersCreateNestedManyWithoutDepartmentInput
@@ -34423,12 +35971,12 @@ export namespace Prisma {
     altered?: sub_batch_alteredCreateNestedManyWithoutSent_to_departmentInput
     workflow_steps?: workflow_stepsCreateNestedManyWithoutDepartmentInput
     sub_batch_steps?: sub_batch_workflow_stepsCreateNestedManyWithoutDepartmentInput
+    supervisor?: SupervisorCreateNestedOneWithoutDepartmentInput
   }
 
   export type departmentsUncheckedCreateWithoutRejectedInput = {
     id?: number
     name: string
-    supervisor: string
     remarks?: string | null
     sub_batches?: sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
     workers?: workersUncheckedCreateNestedManyWithoutDepartmentInput
@@ -34437,6 +35985,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSent_to_departmentInput
     workflow_steps?: workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
     sub_batch_steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+    supervisor?: SupervisorUncheckedCreateNestedOneWithoutDepartmentInput
   }
 
   export type departmentsCreateOrConnectWithoutRejectedInput = {
@@ -34503,7 +36052,6 @@ export namespace Prisma {
 
   export type departmentsUpdateWithoutRejectedInput = {
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
     sub_batches?: sub_batchesUpdateManyWithoutDepartmentNestedInput
     workers?: workersUpdateManyWithoutDepartmentNestedInput
@@ -34512,12 +36060,12 @@ export namespace Prisma {
     altered?: sub_batch_alteredUpdateManyWithoutSent_to_departmentNestedInput
     workflow_steps?: workflow_stepsUpdateManyWithoutDepartmentNestedInput
     sub_batch_steps?: sub_batch_workflow_stepsUpdateManyWithoutDepartmentNestedInput
+    supervisor?: SupervisorUpdateOneWithoutDepartmentNestedInput
   }
 
   export type departmentsUncheckedUpdateWithoutRejectedInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
     sub_batches?: sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
     workers?: workersUncheckedUpdateManyWithoutDepartmentNestedInput
@@ -34526,6 +36074,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSent_to_departmentNestedInput
     workflow_steps?: workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
     sub_batch_steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+    supervisor?: SupervisorUncheckedUpdateOneWithoutDepartmentNestedInput
   }
 
   export type sub_batchesCreateWithoutAlteredInput = {
@@ -34570,7 +36119,6 @@ export namespace Prisma {
 
   export type departmentsCreateWithoutAlteredInput = {
     name: string
-    supervisor: string
     remarks?: string | null
     sub_batches?: sub_batchesCreateNestedManyWithoutDepartmentInput
     workers?: workersCreateNestedManyWithoutDepartmentInput
@@ -34579,12 +36127,12 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedCreateNestedManyWithoutSent_to_departmentInput
     workflow_steps?: workflow_stepsCreateNestedManyWithoutDepartmentInput
     sub_batch_steps?: sub_batch_workflow_stepsCreateNestedManyWithoutDepartmentInput
+    supervisor?: SupervisorCreateNestedOneWithoutDepartmentInput
   }
 
   export type departmentsUncheckedCreateWithoutAlteredInput = {
     id?: number
     name: string
-    supervisor: string
     remarks?: string | null
     sub_batches?: sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
     workers?: workersUncheckedCreateNestedManyWithoutDepartmentInput
@@ -34593,6 +36141,7 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedUncheckedCreateNestedManyWithoutSent_to_departmentInput
     workflow_steps?: workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
     sub_batch_steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+    supervisor?: SupervisorUncheckedCreateNestedOneWithoutDepartmentInput
   }
 
   export type departmentsCreateOrConnectWithoutAlteredInput = {
@@ -34659,7 +36208,6 @@ export namespace Prisma {
 
   export type departmentsUpdateWithoutAlteredInput = {
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
     sub_batches?: sub_batchesUpdateManyWithoutDepartmentNestedInput
     workers?: workersUpdateManyWithoutDepartmentNestedInput
@@ -34668,12 +36216,12 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedUpdateManyWithoutSent_to_departmentNestedInput
     workflow_steps?: workflow_stepsUpdateManyWithoutDepartmentNestedInput
     sub_batch_steps?: sub_batch_workflow_stepsUpdateManyWithoutDepartmentNestedInput
+    supervisor?: SupervisorUpdateOneWithoutDepartmentNestedInput
   }
 
   export type departmentsUncheckedUpdateWithoutAlteredInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
     sub_batches?: sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
     workers?: workersUncheckedUpdateManyWithoutDepartmentNestedInput
@@ -34682,6 +36230,7 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedUncheckedUpdateManyWithoutSent_to_departmentNestedInput
     workflow_steps?: workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
     sub_batch_steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+    supervisor?: SupervisorUncheckedUpdateOneWithoutDepartmentNestedInput
   }
 
   export type sub_batchesCreateWithoutDepartmentInput = {
@@ -34902,6 +36451,28 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type SupervisorCreateWithoutDepartmentInput = {
+    name: string
+    email: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+  }
+
+  export type SupervisorUncheckedCreateWithoutDepartmentInput = {
+    id?: number
+    name: string
+    email: string
+    password: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+  }
+
+  export type SupervisorCreateOrConnectWithoutDepartmentInput = {
+    where: SupervisorWhereUniqueInput
+    create: XOR<SupervisorCreateWithoutDepartmentInput, SupervisorUncheckedCreateWithoutDepartmentInput>
+  }
+
   export type sub_batchesUpsertWithWhereUniqueWithoutDepartmentInput = {
     where: sub_batchesWhereUniqueInput
     update: XOR<sub_batchesUpdateWithoutDepartmentInput, sub_batchesUncheckedUpdateWithoutDepartmentInput>
@@ -35073,9 +36644,36 @@ export namespace Prisma {
     department_id?: IntFilter<"sub_batch_workflow_steps"> | number
   }
 
+  export type SupervisorUpsertWithoutDepartmentInput = {
+    update: XOR<SupervisorUpdateWithoutDepartmentInput, SupervisorUncheckedUpdateWithoutDepartmentInput>
+    create: XOR<SupervisorCreateWithoutDepartmentInput, SupervisorUncheckedCreateWithoutDepartmentInput>
+    where?: SupervisorWhereInput
+  }
+
+  export type SupervisorUpdateToOneWithWhereWithoutDepartmentInput = {
+    where?: SupervisorWhereInput
+    data: XOR<SupervisorUpdateWithoutDepartmentInput, SupervisorUncheckedUpdateWithoutDepartmentInput>
+  }
+
+  export type SupervisorUpdateWithoutDepartmentInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupervisorUncheckedUpdateWithoutDepartmentInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type departmentsCreateWithoutDept_workersInput = {
     name: string
-    supervisor: string
     remarks?: string | null
     sub_batches?: sub_batchesCreateNestedManyWithoutDepartmentInput
     workers?: workersCreateNestedManyWithoutDepartmentInput
@@ -35084,12 +36682,12 @@ export namespace Prisma {
     altered?: sub_batch_alteredCreateNestedManyWithoutSent_to_departmentInput
     workflow_steps?: workflow_stepsCreateNestedManyWithoutDepartmentInput
     sub_batch_steps?: sub_batch_workflow_stepsCreateNestedManyWithoutDepartmentInput
+    supervisor?: SupervisorCreateNestedOneWithoutDepartmentInput
   }
 
   export type departmentsUncheckedCreateWithoutDept_workersInput = {
     id?: number
     name: string
-    supervisor: string
     remarks?: string | null
     sub_batches?: sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
     workers?: workersUncheckedCreateNestedManyWithoutDepartmentInput
@@ -35098,6 +36696,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSent_to_departmentInput
     workflow_steps?: workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
     sub_batch_steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+    supervisor?: SupervisorUncheckedCreateNestedOneWithoutDepartmentInput
   }
 
   export type departmentsCreateOrConnectWithoutDept_workersInput = {
@@ -35146,7 +36745,6 @@ export namespace Prisma {
 
   export type departmentsUpdateWithoutDept_workersInput = {
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
     sub_batches?: sub_batchesUpdateManyWithoutDepartmentNestedInput
     workers?: workersUpdateManyWithoutDepartmentNestedInput
@@ -35155,12 +36753,12 @@ export namespace Prisma {
     altered?: sub_batch_alteredUpdateManyWithoutSent_to_departmentNestedInput
     workflow_steps?: workflow_stepsUpdateManyWithoutDepartmentNestedInput
     sub_batch_steps?: sub_batch_workflow_stepsUpdateManyWithoutDepartmentNestedInput
+    supervisor?: SupervisorUpdateOneWithoutDepartmentNestedInput
   }
 
   export type departmentsUncheckedUpdateWithoutDept_workersInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
     sub_batches?: sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
     workers?: workersUncheckedUpdateManyWithoutDepartmentNestedInput
@@ -35169,6 +36767,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSent_to_departmentNestedInput
     workflow_steps?: workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
     sub_batch_steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+    supervisor?: SupervisorUncheckedUpdateOneWithoutDepartmentNestedInput
   }
 
   export type workersUpsertWithoutDept_workersInput = {
@@ -35235,7 +36834,6 @@ export namespace Prisma {
 
   export type departmentsCreateWithoutDept_batchesInput = {
     name: string
-    supervisor: string
     remarks?: string | null
     sub_batches?: sub_batchesCreateNestedManyWithoutDepartmentInput
     workers?: workersCreateNestedManyWithoutDepartmentInput
@@ -35244,12 +36842,12 @@ export namespace Prisma {
     altered?: sub_batch_alteredCreateNestedManyWithoutSent_to_departmentInput
     workflow_steps?: workflow_stepsCreateNestedManyWithoutDepartmentInput
     sub_batch_steps?: sub_batch_workflow_stepsCreateNestedManyWithoutDepartmentInput
+    supervisor?: SupervisorCreateNestedOneWithoutDepartmentInput
   }
 
   export type departmentsUncheckedCreateWithoutDept_batchesInput = {
     id?: number
     name: string
-    supervisor: string
     remarks?: string | null
     sub_batches?: sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
     workers?: workersUncheckedCreateNestedManyWithoutDepartmentInput
@@ -35258,6 +36856,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSent_to_departmentInput
     workflow_steps?: workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
     sub_batch_steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+    supervisor?: SupervisorUncheckedCreateNestedOneWithoutDepartmentInput
   }
 
   export type departmentsCreateOrConnectWithoutDept_batchesInput = {
@@ -35385,7 +36984,6 @@ export namespace Prisma {
 
   export type departmentsUpdateWithoutDept_batchesInput = {
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
     sub_batches?: sub_batchesUpdateManyWithoutDepartmentNestedInput
     workers?: workersUpdateManyWithoutDepartmentNestedInput
@@ -35394,12 +36992,12 @@ export namespace Prisma {
     altered?: sub_batch_alteredUpdateManyWithoutSent_to_departmentNestedInput
     workflow_steps?: workflow_stepsUpdateManyWithoutDepartmentNestedInput
     sub_batch_steps?: sub_batch_workflow_stepsUpdateManyWithoutDepartmentNestedInput
+    supervisor?: SupervisorUpdateOneWithoutDepartmentNestedInput
   }
 
   export type departmentsUncheckedUpdateWithoutDept_batchesInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
     sub_batches?: sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
     workers?: workersUncheckedUpdateManyWithoutDepartmentNestedInput
@@ -35408,6 +37006,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSent_to_departmentNestedInput
     workflow_steps?: workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
     sub_batch_steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+    supervisor?: SupervisorUncheckedUpdateOneWithoutDepartmentNestedInput
   }
 
   export type sub_batchesUpsertWithoutDept_linksInput = {
@@ -35490,7 +37089,6 @@ export namespace Prisma {
 
   export type departmentsCreateWithoutWorkersInput = {
     name: string
-    supervisor: string
     remarks?: string | null
     sub_batches?: sub_batchesCreateNestedManyWithoutDepartmentInput
     dept_workers?: department_workersCreateNestedManyWithoutDepartmentInput
@@ -35499,12 +37097,12 @@ export namespace Prisma {
     altered?: sub_batch_alteredCreateNestedManyWithoutSent_to_departmentInput
     workflow_steps?: workflow_stepsCreateNestedManyWithoutDepartmentInput
     sub_batch_steps?: sub_batch_workflow_stepsCreateNestedManyWithoutDepartmentInput
+    supervisor?: SupervisorCreateNestedOneWithoutDepartmentInput
   }
 
   export type departmentsUncheckedCreateWithoutWorkersInput = {
     id?: number
     name: string
-    supervisor: string
     remarks?: string | null
     sub_batches?: sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
     dept_workers?: department_workersUncheckedCreateNestedManyWithoutDepartmentInput
@@ -35513,6 +37111,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSent_to_departmentInput
     workflow_steps?: workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
     sub_batch_steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+    supervisor?: SupervisorUncheckedCreateNestedOneWithoutDepartmentInput
   }
 
   export type departmentsCreateOrConnectWithoutWorkersInput = {
@@ -35608,7 +37207,6 @@ export namespace Prisma {
 
   export type departmentsUpdateWithoutWorkersInput = {
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
     sub_batches?: sub_batchesUpdateManyWithoutDepartmentNestedInput
     dept_workers?: department_workersUpdateManyWithoutDepartmentNestedInput
@@ -35617,12 +37215,12 @@ export namespace Prisma {
     altered?: sub_batch_alteredUpdateManyWithoutSent_to_departmentNestedInput
     workflow_steps?: workflow_stepsUpdateManyWithoutDepartmentNestedInput
     sub_batch_steps?: sub_batch_workflow_stepsUpdateManyWithoutDepartmentNestedInput
+    supervisor?: SupervisorUpdateOneWithoutDepartmentNestedInput
   }
 
   export type departmentsUncheckedUpdateWithoutWorkersInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
     sub_batches?: sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
     dept_workers?: department_workersUncheckedUpdateManyWithoutDepartmentNestedInput
@@ -35631,6 +37229,7 @@ export namespace Prisma {
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSent_to_departmentNestedInput
     workflow_steps?: workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
     sub_batch_steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+    supervisor?: SupervisorUncheckedUpdateOneWithoutDepartmentNestedInput
   }
 
   export type worker_logsUpsertWithWhereUniqueWithoutWorkerInput = {
@@ -35970,7 +37569,6 @@ export namespace Prisma {
 
   export type departmentsCreateWithoutWorkflow_stepsInput = {
     name: string
-    supervisor: string
     remarks?: string | null
     sub_batches?: sub_batchesCreateNestedManyWithoutDepartmentInput
     workers?: workersCreateNestedManyWithoutDepartmentInput
@@ -35979,12 +37577,12 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedCreateNestedManyWithoutSent_to_departmentInput
     altered?: sub_batch_alteredCreateNestedManyWithoutSent_to_departmentInput
     sub_batch_steps?: sub_batch_workflow_stepsCreateNestedManyWithoutDepartmentInput
+    supervisor?: SupervisorCreateNestedOneWithoutDepartmentInput
   }
 
   export type departmentsUncheckedCreateWithoutWorkflow_stepsInput = {
     id?: number
     name: string
-    supervisor: string
     remarks?: string | null
     sub_batches?: sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
     workers?: workersUncheckedCreateNestedManyWithoutDepartmentInput
@@ -35993,6 +37591,7 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedUncheckedCreateNestedManyWithoutSent_to_departmentInput
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSent_to_departmentInput
     sub_batch_steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+    supervisor?: SupervisorUncheckedCreateNestedOneWithoutDepartmentInput
   }
 
   export type departmentsCreateOrConnectWithoutWorkflow_stepsInput = {
@@ -36031,7 +37630,6 @@ export namespace Prisma {
 
   export type departmentsUpdateWithoutWorkflow_stepsInput = {
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
     sub_batches?: sub_batchesUpdateManyWithoutDepartmentNestedInput
     workers?: workersUpdateManyWithoutDepartmentNestedInput
@@ -36040,12 +37638,12 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedUpdateManyWithoutSent_to_departmentNestedInput
     altered?: sub_batch_alteredUpdateManyWithoutSent_to_departmentNestedInput
     sub_batch_steps?: sub_batch_workflow_stepsUpdateManyWithoutDepartmentNestedInput
+    supervisor?: SupervisorUpdateOneWithoutDepartmentNestedInput
   }
 
   export type departmentsUncheckedUpdateWithoutWorkflow_stepsInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
     sub_batches?: sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
     workers?: workersUncheckedUpdateManyWithoutDepartmentNestedInput
@@ -36054,6 +37652,7 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedUncheckedUpdateManyWithoutSent_to_departmentNestedInput
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSent_to_departmentNestedInput
     sub_batch_steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+    supervisor?: SupervisorUncheckedUpdateOneWithoutDepartmentNestedInput
   }
 
   export type workflow_templatesUpsertWithoutStepsInput = {
@@ -36205,7 +37804,6 @@ export namespace Prisma {
 
   export type departmentsCreateWithoutSub_batch_stepsInput = {
     name: string
-    supervisor: string
     remarks?: string | null
     sub_batches?: sub_batchesCreateNestedManyWithoutDepartmentInput
     workers?: workersCreateNestedManyWithoutDepartmentInput
@@ -36214,12 +37812,12 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedCreateNestedManyWithoutSent_to_departmentInput
     altered?: sub_batch_alteredCreateNestedManyWithoutSent_to_departmentInput
     workflow_steps?: workflow_stepsCreateNestedManyWithoutDepartmentInput
+    supervisor?: SupervisorCreateNestedOneWithoutDepartmentInput
   }
 
   export type departmentsUncheckedCreateWithoutSub_batch_stepsInput = {
     id?: number
     name: string
-    supervisor: string
     remarks?: string | null
     sub_batches?: sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
     workers?: workersUncheckedCreateNestedManyWithoutDepartmentInput
@@ -36228,6 +37826,7 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedUncheckedCreateNestedManyWithoutSent_to_departmentInput
     altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSent_to_departmentInput
     workflow_steps?: workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+    supervisor?: SupervisorUncheckedCreateNestedOneWithoutDepartmentInput
   }
 
   export type departmentsCreateOrConnectWithoutSub_batch_stepsInput = {
@@ -36266,7 +37865,6 @@ export namespace Prisma {
 
   export type departmentsUpdateWithoutSub_batch_stepsInput = {
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
     sub_batches?: sub_batchesUpdateManyWithoutDepartmentNestedInput
     workers?: workersUpdateManyWithoutDepartmentNestedInput
@@ -36275,12 +37873,12 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedUpdateManyWithoutSent_to_departmentNestedInput
     altered?: sub_batch_alteredUpdateManyWithoutSent_to_departmentNestedInput
     workflow_steps?: workflow_stepsUpdateManyWithoutDepartmentNestedInput
+    supervisor?: SupervisorUpdateOneWithoutDepartmentNestedInput
   }
 
   export type departmentsUncheckedUpdateWithoutSub_batch_stepsInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    supervisor?: StringFieldUpdateOperationsInput | string
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
     sub_batches?: sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
     workers?: workersUncheckedUpdateManyWithoutDepartmentNestedInput
@@ -36289,6 +37887,7 @@ export namespace Prisma {
     rejected?: sub_batch_rejectedUncheckedUpdateManyWithoutSent_to_departmentNestedInput
     altered?: sub_batch_alteredUncheckedUpdateManyWithoutSent_to_departmentNestedInput
     workflow_steps?: workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+    supervisor?: SupervisorUncheckedUpdateOneWithoutDepartmentNestedInput
   }
 
   export type sub_batch_workflowsUpsertWithoutStepsInput = {
@@ -36371,6 +37970,76 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assigned_worker_id?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type departmentsCreateWithoutSupervisorInput = {
+    name: string
+    remarks?: string | null
+    sub_batches?: sub_batchesCreateNestedManyWithoutDepartmentInput
+    workers?: workersCreateNestedManyWithoutDepartmentInput
+    dept_workers?: department_workersCreateNestedManyWithoutDepartmentInput
+    dept_batches?: department_sub_batchesCreateNestedManyWithoutDepartmentInput
+    rejected?: sub_batch_rejectedCreateNestedManyWithoutSent_to_departmentInput
+    altered?: sub_batch_alteredCreateNestedManyWithoutSent_to_departmentInput
+    workflow_steps?: workflow_stepsCreateNestedManyWithoutDepartmentInput
+    sub_batch_steps?: sub_batch_workflow_stepsCreateNestedManyWithoutDepartmentInput
+  }
+
+  export type departmentsUncheckedCreateWithoutSupervisorInput = {
+    id?: number
+    name: string
+    remarks?: string | null
+    sub_batches?: sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
+    workers?: workersUncheckedCreateNestedManyWithoutDepartmentInput
+    dept_workers?: department_workersUncheckedCreateNestedManyWithoutDepartmentInput
+    dept_batches?: department_sub_batchesUncheckedCreateNestedManyWithoutDepartmentInput
+    rejected?: sub_batch_rejectedUncheckedCreateNestedManyWithoutSent_to_departmentInput
+    altered?: sub_batch_alteredUncheckedCreateNestedManyWithoutSent_to_departmentInput
+    workflow_steps?: workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+    sub_batch_steps?: sub_batch_workflow_stepsUncheckedCreateNestedManyWithoutDepartmentInput
+  }
+
+  export type departmentsCreateOrConnectWithoutSupervisorInput = {
+    where: departmentsWhereUniqueInput
+    create: XOR<departmentsCreateWithoutSupervisorInput, departmentsUncheckedCreateWithoutSupervisorInput>
+  }
+
+  export type departmentsUpsertWithoutSupervisorInput = {
+    update: XOR<departmentsUpdateWithoutSupervisorInput, departmentsUncheckedUpdateWithoutSupervisorInput>
+    create: XOR<departmentsCreateWithoutSupervisorInput, departmentsUncheckedCreateWithoutSupervisorInput>
+    where?: departmentsWhereInput
+  }
+
+  export type departmentsUpdateToOneWithWhereWithoutSupervisorInput = {
+    where?: departmentsWhereInput
+    data: XOR<departmentsUpdateWithoutSupervisorInput, departmentsUncheckedUpdateWithoutSupervisorInput>
+  }
+
+  export type departmentsUpdateWithoutSupervisorInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    sub_batches?: sub_batchesUpdateManyWithoutDepartmentNestedInput
+    workers?: workersUpdateManyWithoutDepartmentNestedInput
+    dept_workers?: department_workersUpdateManyWithoutDepartmentNestedInput
+    dept_batches?: department_sub_batchesUpdateManyWithoutDepartmentNestedInput
+    rejected?: sub_batch_rejectedUpdateManyWithoutSent_to_departmentNestedInput
+    altered?: sub_batch_alteredUpdateManyWithoutSent_to_departmentNestedInput
+    workflow_steps?: workflow_stepsUpdateManyWithoutDepartmentNestedInput
+    sub_batch_steps?: sub_batch_workflow_stepsUpdateManyWithoutDepartmentNestedInput
+  }
+
+  export type departmentsUncheckedUpdateWithoutSupervisorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    sub_batches?: sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
+    workers?: workersUncheckedUpdateManyWithoutDepartmentNestedInput
+    dept_workers?: department_workersUncheckedUpdateManyWithoutDepartmentNestedInput
+    dept_batches?: department_sub_batchesUncheckedUpdateManyWithoutDepartmentNestedInput
+    rejected?: sub_batch_rejectedUncheckedUpdateManyWithoutSent_to_departmentNestedInput
+    altered?: sub_batch_alteredUncheckedUpdateManyWithoutSent_to_departmentNestedInput
+    workflow_steps?: workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
+    sub_batch_steps?: sub_batch_workflow_stepsUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type batchesCreateManyRollInput = {
