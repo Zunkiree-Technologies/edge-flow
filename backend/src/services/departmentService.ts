@@ -55,15 +55,52 @@ export const createDepartment = async (data: DepartmentPayload) => {
 
 export const getAllDepartments = async () => {
   return await prisma.departments.findMany({
-    include: departmentInclude,
+    include: {
+      supervisor: true, // fetch supervisor linked to department
+      sub_batches: {
+        include: {
+          attachments: true, // fetch attachments inside each sub_batch
+          size_details: true, // fetch size details of each sub_batch
+        },
+      },
+      workers: true, // fetch all workers in department
+      dept_workers: {
+        include: {
+          worker: true, // also fetch worker info linked
+        },
+      },
+      dept_batches: true, // fetch department_batches
+      rejected: true, // rejected sub-batches linked
+      altered: true, // altered sub-batches linked
+      workflow_steps: true, // workflow steps of this department
+      sub_batch_steps: true, // sub-batch workflow steps linked
+    },
   });
 };
 
 export const getDepartmentById = async (id: number) => {
   const department = await prisma.departments.findUnique({
     where: { id },
-    include: departmentInclude,
+    include: {
+      supervisor: true,
+      sub_batches: {
+        include: {
+          attachments: true,
+          size_details: true,
+        },
+      },
+      workers: true,
+      dept_workers: {
+        include: { worker: true },
+      },
+      dept_batches: true,
+      rejected: true,
+      altered: true,
+      workflow_steps: true,
+      sub_batch_steps: true,
+    },
   });
+
   if (!department) throw new Error("Department not found");
   return department;
 };
