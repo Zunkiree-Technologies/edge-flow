@@ -9,4 +9,4 @@ router.get("/:id", vendorController.getVendorById);
 router.put("/:id", vendorController.updateVendor);
 router.delete("/:id", vendorController.deleteVendor);
 
-export default router;
+export default  router;
