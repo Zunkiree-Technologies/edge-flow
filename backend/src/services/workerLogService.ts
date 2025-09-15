@@ -68,3 +68,16 @@ export const deleteWorkerLog = async (id: number) => {
     where: { id },
   });
 };
+
+
+
+export async function getWorkerLogsBySubBatch(sub_batch_id: number) {
+  return await prisma.worker_logs.findMany({
+    where: { sub_batch_id },
+    include: {
+      worker: true, // includes worker details (name, pan, etc.)
+      sub_batch: true, // optional: includes sub_batch details
+    },
+    orderBy: { work_date: "asc" },
+  });
+}

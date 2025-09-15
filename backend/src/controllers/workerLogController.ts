@@ -7,6 +7,7 @@ import {
   updateWorkerLog,
   deleteWorkerLog,
 } from "../services/workerLogService";
+import * as workerLogService from "../services/workerLogService";
 
 // ✅ Create
 export const createWorkerLogController = async (
@@ -74,5 +75,20 @@ export const deleteWorkerLogController = async (
     res.json({ message: "Worker log deleted successfully" });
   } catch (err: any) {
     res.status(400).json({ error: err.message });
+  }
+};
+
+
+export const getWorkerLogsBySubBatch = async (req: Request, res: Response) => {
+  try {
+    const sub_batch_id = parseInt(req.params.subBatchId);
+    if (isNaN(sub_batch_id)) {
+      return res.status(400).json({ error: "Invalid sub_batch_id" });
+    }
+
+    const logs = await workerLogService.getWorkerLogsBySubBatch(sub_batch_id);
+    res.status(200).json({ success: true, data: logs });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
   }
 };

@@ -4,7 +4,13 @@ import {
   SubBatchPayload,
   SubBatchPayloadWithArrays,
 } from "../types/subBatchTypes";
-import { DepartmentStage } from "../config/constants";
+
+export enum DepartmentStage {
+  NEW_ARRIVAL = "NEW_ARRIVAL",
+  IN_PROGRESS = "IN_PROGRESS",
+  COMPLETED = "COMPLETED",
+}
+
 
 export const createSubBatch = async (data: SubBatchPayload) => {
   // Validation
@@ -149,36 +155,53 @@ export const deleteSubBatch = async (id: number) => {
 
 
 
+
+
+
+
 // Send Sub-Batch to Production (template or manual)
+
+
+interface RejectedOrAlteredPiece {
+  quantity: number;
+  targetDepartmentId: number;
+  reason: string;
+}
+
+
+
 export async function sendToProduction(
   subBatchId: number,
-  workflowTemplateId?: number,    // optional
-  manualDepartments?: number[]    // array of department IDs in order
+  workflowTemplateId?: number, // optional
+  manualDepartments?: number[], // array of department IDs in order
+  rejectedPieces?: RejectedOrAlteredPiece[], // optional rejected pieces
+  alteredPieces?: RejectedOrAlteredPiece[] // optional altered pieces
 ) {
   let steps;
 
-  // 1️⃣ Determine steps
+  // 1️⃣ Determine workflow steps
   if (workflowTemplateId) {
-    // Use template workflow
     const templateSteps = await prisma.workflow_steps.findMany({
       where: { workflow_template_id: workflowTemplateId },
       orderBy: { step_index: "asc" },
     });
 
-    if (!templateSteps.length) throw new Error("Workflow template has no steps");
+    if (!templateSteps.length)
+      throw new Error("Workflow template has no steps");
 
     steps = templateSteps.map((step) => ({
       step_index: step.step_index,
       department_id: step.department_id,
     }));
   } else if (manualDepartments && manualDepartments.length > 0) {
-    // Use manual workflow provided by user
     steps = manualDepartments.map((deptId, index) => ({
       step_index: index,
       department_id: deptId,
     }));
   } else {
-    throw new Error("Workflow must be provided either by template or manual departments");
+    throw new Error(
+      "Workflow must be provided either by template or manual departments"
+    );
   }
 
   // 2️⃣ Create sub-batch workflow
@@ -186,16 +209,14 @@ export async function sendToProduction(
     data: {
       sub_batch_id: subBatchId,
       current_step_index: 0,
-      steps: {
-        create: steps,
-      },
+      steps: { create: steps },
     },
     include: { steps: true },
   });
 
-  // 3️⃣ Send sub-batch to first department (New Arrival)
+  // 3️⃣ Send sub-batch to first department
   const firstDeptId = workflow.steps[0].department_id;
-  await prisma.department_sub_batches.create({
+  const firstDeptSubBatch = await prisma.department_sub_batches.create({
     data: {
       sub_batch_id: subBatchId,
       department_id: firstDeptId,
@@ -204,8 +225,81 @@ export async function sendToProduction(
     },
   });
 
-  return workflow;
+  // 4️⃣ Handle rejected pieces (optional)
+  if (rejectedPieces?.length) {
+    for (const rejected of rejectedPieces) {
+      await prisma.$transaction(async (tx) => {
+        const r = await tx.sub_batch_rejected.create({
+          data: {
+            sub_batch_id: subBatchId,
+            quantity: rejected.quantity,
+            sent_to_department_id: rejected.targetDepartmentId,
+            reason: rejected.reason,
+          },
+        });
+
+        const deptSubBatch = await tx.department_sub_batches.create({
+          data: {
+            sub_batch_id: subBatchId,
+            department_id: rejected.targetDepartmentId,
+            stage: DepartmentStage.NEW_ARRIVAL,
+            is_current: true,
+          },
+        });
+
+        await tx.department_sub_batch_history.create({
+          data: {
+            department_sub_batch_id: deptSubBatch.id,
+            sub_batch_id: subBatchId,
+            from_stage: null,
+            to_stage: DepartmentStage.NEW_ARRIVAL,
+            to_department_id: rejected.targetDepartmentId,
+            reason: rejected.reason,
+          },
+        });
+      });
+    }
+  }
+
+  // 5️⃣ Handle altered pieces (optional, same as rejected)
+  if (alteredPieces?.length) {
+    for (const altered of alteredPieces) {
+      await prisma.$transaction(async (tx) => {
+        const a = await tx.sub_batch_altered.create({
+          data: {
+            sub_batch_id: subBatchId,
+            quantity: altered.quantity,
+            sent_to_department_id: altered.targetDepartmentId,
+            reason: altered.reason,
+          },
+        });
+
+        const deptSubBatch = await tx.department_sub_batches.create({
+          data: {
+            sub_batch_id: subBatchId,
+            department_id: altered.targetDepartmentId,
+            stage: DepartmentStage.NEW_ARRIVAL,
+            is_current: true,
+          },
+        });
+
+        await tx.department_sub_batch_history.create({
+          data: {
+            department_sub_batch_id: deptSubBatch.id,
+            sub_batch_id: subBatchId,
+            from_stage: null,
+            to_stage: DepartmentStage.NEW_ARRIVAL,
+            to_department_id: altered.targetDepartmentId,
+            reason: altered.reason,
+          },
+        });
+      });
+    }
+  }
+
+  return { workflow, firstDeptSubBatch };
 }
+
 
 // Move stage within Kanban
 export async function moveSubBatchStage(
