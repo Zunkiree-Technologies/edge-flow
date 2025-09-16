@@ -1,5 +1,6 @@
 // src/services/subBatchService.ts
 import prisma from "../config/db";
+import { Prisma } from "../generated/prisma";
 import {
   SubBatchPayload,
   SubBatchPayloadWithArrays,
@@ -11,16 +12,16 @@ export enum DepartmentStage {
   COMPLETED = "COMPLETED",
 }
 
-
+// -----------------------------
+// Create Sub-Batch
+// -----------------------------
 export const createSubBatch = async (data: SubBatchPayload) => {
-  // Validation
   if (!data.name.trim()) throw { message: "Name is required" };
   if (data.estimatedPieces <= 0 || data.expectedItems <= 0)
     throw { message: "Estimated and expected items must be positive" };
   if (new Date(data.startDate) > new Date(data.dueDate))
     throw { message: "Start date cannot be after due date" };
 
-  // Create main sub_batch row
   const subBatch = await prisma.sub_batches.create({
     data: {
       name: data.name,
@@ -31,7 +32,6 @@ export const createSubBatch = async (data: SubBatchPayload) => {
       roll_id: data.rollId,
       batch_id: data.batchId,
       department_id: data.departmentId,
-      // Optional: attachments nested
       ...(data.attachments?.length
         ? {
             attachments: {
@@ -45,7 +45,6 @@ export const createSubBatch = async (data: SubBatchPayload) => {
     },
   });
 
-  // Insert size details separately
   if (data.sizeDetails?.length) {
     for (const sd of data.sizeDetails) {
       await prisma.sub_batch_size_details.create({
@@ -61,14 +60,15 @@ export const createSubBatch = async (data: SubBatchPayload) => {
   return { message: "Sub-batch created successfully", subBatch };
 };
 
-// Get all Sub-Batches
+// -----------------------------
+// Get All / By ID
+// -----------------------------
 export const getAllSubBatches = async () => {
   return await prisma.sub_batches.findMany({
     include: { size_details: true, attachments: true },
   });
 };
 
-// Get Sub-Batch by ID
 export const getSubBatchById = async (id: number) => {
   const subBatch = await prisma.sub_batches.findUnique({
     where: { id },
@@ -78,11 +78,14 @@ export const getSubBatchById = async (id: number) => {
   return subBatch;
 };
 
+// -----------------------------
+// Update Sub-Batch
+// -----------------------------
 export const updateSubBatch = async (
   id: number,
   data: Partial<SubBatchPayloadWithArrays>
 ) => {
-  const updateData: any = {};
+  const updateData: Partial<SubBatchPayloadWithArrays> & any = {};
 
   if (data.name !== undefined) updateData.name = data.name;
   if (data.estimatedPieces !== undefined)
@@ -97,16 +100,13 @@ export const updateSubBatch = async (
   if (data.departmentId !== undefined)
     updateData.department_id = data.departmentId;
 
-  // Update main sub_batch row
   const subBatch = await prisma.sub_batches.update({
     where: { id },
     data: updateData,
-    include: { attachments: true }, // optional: include attachments
+    include: { attachments: true },
   });
 
-  // Update size details separately
   if (data.sizeDetails !== undefined) {
-    // Optionally: delete old size details
     await prisma.sub_batch_size_details.deleteMany({
       where: { sub_batch_id: id },
     });
@@ -122,7 +122,6 @@ export const updateSubBatch = async (
     }
   }
 
-  // Optional: update attachments if needed
   if (data.attachments !== undefined) {
     await prisma.sub_batch_attachments.deleteMany({
       where: { sub_batch_id: id },
@@ -143,7 +142,10 @@ export const updateSubBatch = async (
 
   return { message: "Sub-batch updated successfully", subBatch };
 };
+
+// -----------------------------
 // Delete Sub-Batch
+// -----------------------------
 export const deleteSubBatch = async (id: number) => {
   const deleted = await prisma.sub_batches.delete({
     where: { id },
@@ -152,23 +154,14 @@ export const deleteSubBatch = async (id: number) => {
   return { message: "Sub-batch deleted successfully", subBatch: deleted };
 };
 
-
-
-
-
-
-
-
-// Send Sub-Batch to Production (template or manual)
-
-
+// -----------------------------
+// Send Sub-Batch to Production
+// -----------------------------
 interface RejectedOrAlteredPiece {
   quantity: number;
   targetDepartmentId: number;
   reason: string;
 }
-
-
 
 export async function sendToProduction(
   subBatchId: number,
@@ -177,8 +170,8 @@ export async function sendToProduction(
   rejectedPieces?: RejectedOrAlteredPiece[],
   alteredPieces?: RejectedOrAlteredPiece[]
 ) {
-  return await prisma.$transaction(async (tx) => {
-    let steps;
+  return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    let steps: { step_index: number; department_id: number }[];
 
     if (workflowTemplateId) {
       const templateSteps = await tx.workflow_steps.findMany({
@@ -188,10 +181,12 @@ export async function sendToProduction(
       if (!templateSteps.length)
         throw new Error("Workflow template has no steps");
 
-      steps = templateSteps.map((step) => ({
-        step_index: step.step_index,
-        department_id: step.department_id,
-      }));
+      steps = templateSteps.map(
+        (step: { step_index: number; department_id: number }) => ({
+          step_index: step.step_index,
+          department_id: step.department_id,
+        })
+      );
     } else if (manualDepartments && manualDepartments.length > 0) {
       steps = manualDepartments.map((deptId, index) => ({
         step_index: index,
@@ -203,7 +198,6 @@ export async function sendToProduction(
       );
     }
 
-    // 1️⃣ Create or reuse workflow
     const workflow = await tx.sub_batch_workflows.upsert({
       where: { sub_batch_id: subBatchId },
       update: {},
@@ -225,13 +219,13 @@ export async function sendToProduction(
       data: {
         sub_batch_id: subBatchId,
         department_id: firstDeptId,
-        stage: "NEW_ARRIVAL",
+        stage: DepartmentStage.NEW_ARRIVAL,
         is_current: true,
         quantity_remaining: subBatch?.expected_items || 0,
       },
     });
 
-    // 2️⃣ Handle rejected pieces
+    // Handle rejected pieces
     if (rejectedPieces?.length) {
       for (const rejected of rejectedPieces) {
         await tx.sub_batch_rejected.create({
@@ -243,23 +237,20 @@ export async function sendToProduction(
           },
         });
 
-        // reduce quantity from original dept
         await tx.department_sub_batches.updateMany({
           where: {
             sub_batch_id: subBatchId,
             department_id: firstDeptId,
             is_current: true,
           },
-          data: {
-            quantity_remaining: { decrement: rejected.quantity },
-          },
+          data: { quantity_remaining: { decrement: rejected.quantity } },
         });
 
         const deptSubBatch = await tx.department_sub_batches.create({
           data: {
             sub_batch_id: subBatchId,
             department_id: rejected.targetDepartmentId,
-            stage: "NEW_ARRIVAL",
+            stage: DepartmentStage.NEW_ARRIVAL,
             is_current: true,
             quantity_remaining: rejected.quantity,
           },
@@ -270,7 +261,7 @@ export async function sendToProduction(
             department_sub_batch_id: deptSubBatch.id,
             sub_batch_id: subBatchId,
             from_stage: null,
-            to_stage: "NEW_ARRIVAL",
+            to_stage: DepartmentStage.NEW_ARRIVAL,
             to_department_id: rejected.targetDepartmentId,
             reason: rejected.reason,
           },
@@ -278,7 +269,7 @@ export async function sendToProduction(
       }
     }
 
-    // 3️⃣ Handle altered pieces
+    // Handle altered pieces
     if (alteredPieces?.length) {
       for (const altered of alteredPieces) {
         await tx.sub_batch_altered.create({
@@ -296,16 +287,14 @@ export async function sendToProduction(
             department_id: firstDeptId,
             is_current: true,
           },
-          data: {
-            quantity_remaining: { decrement: altered.quantity },
-          },
+          data: { quantity_remaining: { decrement: altered.quantity } },
         });
 
         const deptSubBatch = await tx.department_sub_batches.create({
           data: {
             sub_batch_id: subBatchId,
             department_id: altered.targetDepartmentId,
-            stage: "NEW_ARRIVAL",
+            stage: DepartmentStage.NEW_ARRIVAL,
             is_current: true,
             quantity_remaining: altered.quantity,
           },
@@ -316,7 +305,7 @@ export async function sendToProduction(
             department_sub_batch_id: deptSubBatch.id,
             sub_batch_id: subBatchId,
             from_stage: null,
-            to_stage: "NEW_ARRIVAL",
+            to_stage: DepartmentStage.NEW_ARRIVAL,
             to_department_id: altered.targetDepartmentId,
             reason: altered.reason,
           },
@@ -328,13 +317,13 @@ export async function sendToProduction(
   });
 }
 
-
-// Move stage within Kanban
+// -----------------------------
+// Move stage in Kanban
+// -----------------------------
 export async function moveSubBatchStage(
   departmentSubBatchId: number,
   toStage: DepartmentStage
 ) {
-  // 1️⃣ Get current record
   const dsb = await prisma.department_sub_batches.findUnique({
     where: { id: departmentSubBatchId },
   });
@@ -343,13 +332,11 @@ export async function moveSubBatchStage(
 
   const fromStage = dsb.stage;
 
-  // 2️⃣ Update stage
   const updatedDSB = await prisma.department_sub_batches.update({
     where: { id: departmentSubBatchId },
     data: { stage: toStage },
   });
 
-  // 3️⃣ Log history
   await prisma.department_sub_batch_history.create({
     data: {
       department_sub_batch_id: departmentSubBatchId,
@@ -362,9 +349,10 @@ export async function moveSubBatchStage(
   return updatedDSB;
 }
 
-
+// -----------------------------
+// Advance to next department
+// -----------------------------
 export async function advanceSubBatchToNextDepartment(subBatchId: number) {
-  // 1️⃣ Get workflow with steps
   const workflow = await prisma.sub_batch_workflows.findUnique({
     where: { sub_batch_id: subBatchId },
     include: { steps: true },
@@ -374,13 +362,10 @@ export async function advanceSubBatchToNextDepartment(subBatchId: number) {
 
   let currentIndex = workflow.current_step_index;
 
-  if (currentIndex + 1 >= workflow.steps.length) {
-    return null; // Already at last department
-  }
+  if (currentIndex + 1 >= workflow.steps.length) return null;
 
   const currentStep = workflow.steps[currentIndex];
 
-  // 2️⃣ Mark current department_sub_batch as inactive
   await prisma.department_sub_batches.updateMany({
     where: {
       sub_batch_id: subBatchId,
@@ -390,8 +375,8 @@ export async function advanceSubBatchToNextDepartment(subBatchId: number) {
     data: { is_current: false },
   });
 
-  // 3️⃣ Advance workflow
   currentIndex += 1;
+
   await prisma.sub_batch_workflows.update({
     where: { sub_batch_id: subBatchId },
     data: { current_step_index: currentIndex },
@@ -399,7 +384,6 @@ export async function advanceSubBatchToNextDepartment(subBatchId: number) {
 
   const nextStep = workflow.steps[currentIndex];
 
-  // 4️⃣ Add sub-batch to next department (New Arrival)
   return await prisma.department_sub_batches.create({
     data: {
       sub_batch_id: subBatchId,
