@@ -11,8 +11,8 @@ import categoryRoutes from "./src/routes/category";
 import departmentRoutes from "./src/routes/department";
 import supervisorRoutes from "./src/routes/supervisor";
 import workerLogRoutes from "./src/routes/workerLog";
-import subBatchRejectedRoutes from "./src/routes/subBatchRejected";
-import subBatchAlteredRoutes from "./src/routes/subBatchAltered";
+// import subBatchRejectedRoutes from "./src/routes/subBatchRejected";
+// import subBatchAlteredRoutes from "./src/routes/subBatchAltered";
 
 
 dotenv.config();
@@ -56,8 +56,8 @@ app.use("/api/departments", departmentRoutes);
 app.use("/api/worker-logs", workerLogRoutes);
 
 // sub-batch rejected and altered routes
-app.use("/api/sub-batch-rejected", subBatchRejectedRoutes);
-app.use("/api/sub-batch-altered", subBatchAlteredRoutes);
+// app.use("/api/sub-batch-rejected", subBatchRejectedRoutes);
+// app.use("/api/sub-batch-altered", subBatchAlteredRoutes);
 
 
 // Optional test route
