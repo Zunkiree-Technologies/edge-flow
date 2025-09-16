@@ -1,7 +1,11 @@
 // src/services/subBatchRejected.ts
-import { PrismaClient, Prisma } from "../generated/prisma"; // adjust if using default @prisma/client
+import prisma, {
+  Prisma,
+  department_sub_batches,
+  sub_batch_rejected,
+} from "../config/db";
 
-const prisma = new PrismaClient();
+
 
 // Define a type for input
 interface RejectedData {

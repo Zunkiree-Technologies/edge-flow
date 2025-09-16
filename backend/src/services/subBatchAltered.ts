@@ -1,5 +1,10 @@
 // src/services/subBatchAltered.ts
-import { PrismaClient, Prisma } from "@prisma/client";
+import prisma, {
+  Prisma,
+  department_sub_batches,
+  sub_batch_altered,
+  department_sub_batch_history,
+} from "../config/db";
 
 export enum DepartmentStage {
   NEW_ARRIVAL = "NEW_ARRIVAL",
@@ -7,7 +12,7 @@ export enum DepartmentStage {
   COMPLETED = "COMPLETED",
 }
 
-const prisma = new PrismaClient();
+
 
 interface AlteredPieceInput {
   sub_batch_id: number;

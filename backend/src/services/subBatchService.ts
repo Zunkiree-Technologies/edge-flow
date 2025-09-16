@@ -1,10 +1,11 @@
 // src/services/subBatchService.ts
-import  prisma from "../config/db";
+import prisma, { Prisma, workflow_steps } from "../config/db";
 import {
   SubBatchPayload,
   SubBatchPayloadWithArrays,
 } from "../types/subBatchTypes";
-import { workflow_steps, Prisma } from "../generated/prisma";
+
+
 
 export enum DepartmentStage {
   NEW_ARRIVAL = "NEW_ARRIVAL",
@@ -188,7 +189,7 @@ export async function sendToProduction(
   rejectedPieces?: RejectedOrAlteredPiece[],
   alteredPieces?: RejectedOrAlteredPiece[]
 ) {
-  return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+  return await prisma.$transaction(async (tx) => {
     let steps;
 
     if (workflowTemplateId) {
