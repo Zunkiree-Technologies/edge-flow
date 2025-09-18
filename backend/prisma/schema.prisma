@@ -88,21 +88,27 @@ model sub_batch_attachments {
 model sub_batch_rejected {
   id                   Int          @id @default(autoincrement())
   sub_batch_id         Int?
+  worker_id         Int?
+  worker_log_id      Int?   
   quantity             Int
   sent_to_department_id Int?
   reason               String
   sub_batch            sub_batches?  @relation(fields: [sub_batch_id], references: [id])
   sent_to_department   departments?  @relation("RejectedDept", fields: [sent_to_department_id], references: [id])
+  worker_log           worker_logs?  @relation(fields: [worker_log_id], references: [id])
+  
 }
 
 model sub_batch_altered {
   id                   Int          @id @default(autoincrement())
   sub_batch_id         Int?
   quantity             Int
+  worker_log_id       Int?
   sent_to_department_id Int?
   reason               String
   sub_batch            sub_batches? @relation(fields: [sub_batch_id], references: [id])
   sent_to_department   departments? @relation("AlteredDept", fields: [sent_to_department_id], references: [id])
+  worker_log           worker_logs? @relation(fields: [worker_log_id], references: [id])
 }
 
 model departments {
@@ -193,10 +199,13 @@ model worker_logs {
   quantity_received Int?
   quantity_worked   Int?
   unit_price        Float?
+   activity_type     String?             // NORMAL | REJECTED | ALTERED
 
   // Relations
   worker    workers     @relation(fields: [worker_id], references: [id])
   sub_batch sub_batches @relation(fields: [sub_batch_id], references: [id])
+  rejected_entry    sub_batch_rejected []
+  altered_entry     sub_batch_altered []
 }
 
 
