@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 
@@ -152,13 +155,19 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
   const fetchWorkers = async () => {
     try {
       setLoading(true);
+      console.log('Fetching workers from:', `${process.env.NEXT_PUBLIC_API_URL}/workers`);
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/workers`);
       if (res.ok) {
         const data = await res.json();
+        console.log('Workers data received:', data);
+        console.log('Number of workers:', data?.length);
         setWorkers(data);
-      } else alert('Failed to fetch workers');
+      } else {
+        console.error('Failed to fetch workers. Status:', res.status);
+        alert('Failed to fetch workers');
+      }
     } catch (e) {
-      console.error(e);
+      console.error('Error fetching workers:', e);
       alert('Error fetching workers');
     } finally {
       setLoading(false);
@@ -167,13 +176,15 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
 
   const fetchDepartments = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/departments`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_GET_DEPARTMENTS}`);
       if (res.ok) {
         const data = await res.json();
         setDepartments(data);
+      } else {
+        console.error('Failed to fetch departments');
       }
     } catch (e) {
-      console.error(e);
+      console.error('Error fetching departments:', e);
     }
   };
 
@@ -194,34 +205,116 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
   };
 
   const handleSave = async () => {
+    // Only require worker and date
     if (!formData.workerId || !formData.date) {
       alert('Worker and date are required');
       return;
     }
 
+    // Validate: quantity_worked cannot be more than quantity_received
+    const qtyReceived = formData.qtyReceived ? parseInt(formData.qtyReceived) : 0;
+    const qtyWorked = formData.qtyWorked ? parseInt(formData.qtyWorked) : 0;
+
+    if (qtyReceived > 0 && qtyWorked > qtyReceived) {
+      alert('Quantity worked cannot be more than quantity received!');
+      return;
+    }
+
+    // Validate rejected data - all fields must be filled if any is filled
+    const hasRejectData = formData.rejectReturn || formData.returnTo || formData.rejectionReason;
+    if (hasRejectData) {
+      if (!formData.rejectReturn || !formData.returnTo || !formData.rejectionReason) {
+        alert('Please fill all rejection fields (Reject & Return, Return To, and Reason) or leave them all empty');
+        return;
+      }
+      const rejectQty = parseInt(formData.rejectReturn);
+      if (isNaN(rejectQty) || rejectQty <= 0) {
+        alert('Reject & Return quantity must be a positive number');
+        return;
+      }
+    }
+
+    // Validate alteration data - all fields must be filled if any is filled
+    const hasAlterationData = formData.alteration || formData.alterationReturnTo || formData.alterationNote;
+    if (hasAlterationData) {
+      if (!formData.alteration || !formData.alterationReturnTo || !formData.alterationNote) {
+        alert('Please fill all alteration fields (Alteration, Alteration Return To, and Alteration Note) or leave them all empty');
+        return;
+      }
+      const alterQty = parseInt(formData.alteration);
+      if (isNaN(alterQty) || alterQty <= 0) {
+        alert('Alteration quantity must be a positive number');
+        return;
+      }
+    }
+
     setIsSubmitting(true);
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // Build payload
       const payload: any = {
         worker_id: parseInt(formData.workerId),
         worker_name: formData.workerName,
         work_date: formData.date,
-        size_category: formData.sizeCategory || undefined,
-        particulars: formData.particulars || undefined,
-        quantity_received: formData.qtyReceived ? parseInt(formData.qtyReceived) : undefined,
-        quantity_worked: formData.qtyWorked ? parseInt(formData.qtyWorked) : undefined,
-        unit_price: formData.unitPrice ? parseFloat(formData.unitPrice) : undefined,
-        reject_return: formData.rejectReturn ? parseInt(formData.rejectReturn) : undefined,
-        return_to: formData.returnTo || undefined,
-        rejection_reason: formData.rejectionReason || undefined,
-        alteration: formData.alteration ? parseInt(formData.alteration) : undefined,
-        alteration_note: formData.alterationNote || undefined,
+        activity_type: 'NORMAL', // Default activity type
       };
+
+      // Add optional fields only if they have values
+      if (formData.sizeCategory && formData.sizeCategory.trim()) {
+        payload.size_category = formData.sizeCategory.trim();
+      }
+      if (formData.particulars && formData.particulars.trim()) {
+        payload.particulars = formData.particulars.trim();
+      }
+      if (formData.qtyReceived && formData.qtyReceived.trim()) {
+        payload.quantity_received = parseInt(formData.qtyReceived);
+      }
+      if (formData.qtyWorked && formData.qtyWorked.trim()) {
+        payload.quantity_worked = parseInt(formData.qtyWorked);
+      }
+      if (formData.unitPrice && formData.unitPrice.trim()) {
+        payload.unit_price = parseFloat(formData.unitPrice);
+      }
+
+      // Add rejected array if ALL rejection data exists and is valid
+      if (formData.rejectReturn && formData.rejectReturn.trim() &&
+          formData.returnTo && formData.returnTo.trim() &&
+          formData.rejectionReason && formData.rejectionReason.trim()) {
+        const rejectQty = parseInt(formData.rejectReturn);
+        const returnToDeptId = parseInt(formData.returnTo);
+
+        if (!isNaN(rejectQty) && rejectQty > 0 && !isNaN(returnToDeptId)) {
+          payload.rejected = [{
+            quantity: rejectQty,
+            sent_to_department_id: returnToDeptId,
+            reason: formData.rejectionReason.trim(),
+          }];
+          console.log('Adding rejected data:', payload.rejected);
+        }
+      }
+
+      // Add altered array if ALL alteration data exists and is valid
+      if (formData.alteration && formData.alteration.trim() &&
+          formData.alterationReturnTo && formData.alterationReturnTo.trim() &&
+          formData.alterationNote && formData.alterationNote.trim()) {
+        const alterQty = parseInt(formData.alteration);
+        const alterReturnToDeptId = parseInt(formData.alterationReturnTo);
+
+        if (!isNaN(alterQty) && alterQty > 0 && !isNaN(alterReturnToDeptId)) {
+          payload.altered = [{
+            quantity: alterQty,
+            sent_to_department_id: alterReturnToDeptId,
+            reason: formData.alterationNote.trim(),
+          }];
+          console.log('Adding altered data:', payload.altered);
+        }
+      }
 
       let response;
       if (mode === 'edit' && editRecord) {
-        response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/worker-logs/logs/${editRecord.id}`, {
+        console.log('Updating worker log ID:', editRecord.id);
+        console.log('Payload:', JSON.stringify(payload, null, 2));
+        response = await fetch(`${process.env.NEXT_PUBLIC_CREATE_WORKER_LOGS}/${editRecord.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -232,15 +325,24 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
           return;
         }
         payload.sub_batch_id = subBatch.id;
-        response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/worker-logs/logs`, {
+        console.log('Creating worker log with payload:');
+        console.log(JSON.stringify(payload, null, 2));
+        response = await fetch(`${process.env.NEXT_PUBLIC_CREATE_WORKER_LOGS}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
       }
 
+      console.log('Response status:', response.status);
+
       if (response.ok) {
         const result = await response.json();
+        console.log('Success result:', result);
+
+        // Find department name for display
+        const returnToDept = departments.find(d => d.id === parseInt(formData.returnTo));
+
         const record: WorkerRecord = {
           id: result.id,
           worker: formData.workerName,
@@ -251,7 +353,7 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
           qtyWorked: Number(formData.qtyWorked) || 0,
           unitPrice: Number(formData.unitPrice) || 0,
           rejectReturn: Number(formData.rejectReturn) || 0,
-          returnTo: formData.returnTo,
+          returnTo: returnToDept?.name || formData.returnTo,
           rejectionReason: formData.rejectionReason,
           alteration: Number(formData.alteration) || 0,
           alterationNote: formData.alterationNote,
@@ -260,12 +362,20 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
         onSave(record);
         alert(`Record ${mode === 'edit' ? 'updated' : 'saved'} successfully!`);
       } else {
-        const err = await response.json().catch(() => ({}));
-        alert(`Failed to save: ${err.message || 'Unknown error'}`);
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        let errorMessage = 'Unknown error';
+        try {
+          const err = JSON.parse(errorText);
+          errorMessage = err.message || err.error || errorText;
+        } catch {
+          errorMessage = errorText;
+        }
+        alert(`Failed to save: ${errorMessage}`);
       }
     } catch (e) {
-      console.error(e);
-      alert('Error saving record');
+      console.error('Exception while saving:', e);
+      alert(`Error saving record: ${e instanceof Error ? e.message : 'Unknown error'}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -336,6 +446,57 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
               {subBatch ? subBatch.name : editRecord ? `Sub Batch ID: ${editRecord.id}` : 'No sub-batch selected'}
             </div>
           </div>
+
+          {/* Show quantity_remaining and remarks for rejected/altered items */}
+          {subBatch && (subBatch as any).quantity_remaining && (subBatch as any).remarks && (
+            <div className={`border-2 rounded-lg p-4 ${
+              (subBatch as any).remarks.toLowerCase().includes('reject')
+                ? 'bg-red-50 border-red-400'
+                : 'bg-orange-50 border-orange-400'
+            }`}>
+              <div className="flex items-center justify-between mb-2">
+                <span className={`font-bold text-lg ${
+                  (subBatch as any).remarks.toLowerCase().includes('reject')
+                    ? 'text-red-900'
+                    : 'text-orange-900'
+                }`}>
+                  {(subBatch as any).remarks.toUpperCase()}
+                </span>
+                <span className={`px-3 py-1 rounded-md font-bold text-white ${
+                  (subBatch as any).remarks.toLowerCase().includes('reject')
+                    ? 'bg-red-600'
+                    : 'bg-orange-600'
+                }`}>
+                  {(subBatch as any).quantity_remaining.toLocaleString()} PCS
+                </span>
+              </div>
+              <p className={`text-sm ${
+                (subBatch as any).remarks.toLowerCase().includes('reject')
+                  ? 'text-red-800'
+                  : 'text-orange-800'
+              }`}>
+                Work on this {(subBatch as any).remarks.toLowerCase()} quantity only.
+              </p>
+              {/* Show rejection/alteration reason and source department */}
+              {(subBatch as any).rejection_source && (
+                <div className="mt-2 text-sm text-red-900 bg-red-100 p-2 rounded">
+                  <p className="font-semibold">From: {(subBatch as any).rejection_source.from_department_name}</p>
+                  <p className="text-xs mt-1"><strong>Reason:</strong> {(subBatch as any).rejection_source.reason}</p>
+                </div>
+              )}
+              {(subBatch as any).alteration_source && (
+                <div className="mt-2 text-sm text-orange-900 bg-orange-100 p-2 rounded">
+                  <p className="font-semibold">From: {(subBatch as any).alteration_source.from_department_name}</p>
+                  <p className="text-xs mt-1"><strong>Reason:</strong> {(subBatch as any).alteration_source.reason}</p>
+                </div>
+              )}
+              {(subBatch as any).quantity_remaining !== subBatch.estimated_pieces && (
+                <p className="text-xs text-gray-600 mt-2">
+                  Original batch: {subBatch.estimated_pieces.toLocaleString()} pieces
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Size/Particulars */}
           <div className="grid grid-cols-2 gap-4">
@@ -433,7 +594,7 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
                 >
                   <option value="">Select department</option>
                   {departments.map(d => (
-                    <option key={d.id} value={d.name}>
+                    <option key={d.id} value={d.id}>
                       {d.name}
                     </option>
                   ))}
@@ -478,7 +639,7 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
                 >
                   <option value="">Select department</option>
                   {departments.map(d => (
-                    <option key={d.id} value={d.name}>
+                    <option key={d.id} value={d.id}>
                       {d.name}
                     </option>
                   ))}

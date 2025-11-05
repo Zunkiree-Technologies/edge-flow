@@ -26,13 +26,37 @@ interface WorkerAssignmentTableProps {
   loading?: boolean;
 }
 
-const WorkerAssignmentTable: React.FC<WorkerAssignmentTableProps> = ({ 
-  records, 
-  onDelete, 
-  onEdit, 
-  onPreview 
+const WorkerAssignmentTable: React.FC<WorkerAssignmentTableProps> = ({
+  records,
+  onDelete,
+  onEdit,
+  onPreview
 }) => {
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+
+  // Console log all worker records data
+  console.log('======= WORKER ASSIGNMENT TABLE DATA =======');
+  console.log('Total Records:', records.length);
+  console.log('All Worker Records:', records);
+  records.forEach((record, index) => {
+    console.log(`Record ${index + 1}:`, {
+      id: record.id,
+      worker: record.worker,
+      date: record.date,
+      realCategory: record.realCategory,
+      particulars: record.particulars,
+      qtyReceived: record.qtyReceived,
+      qtyWorked: record.qtyWorked,
+      unitPrice: record.unitPrice,
+      rejectReturn: record.rejectReturn,
+      returnTo: record.returnTo,
+      rejectionReason: record.rejectionReason,
+      alteration: record.alteration,
+      alterationNote: record.alterationNote,
+      status: record.status
+    });
+  });
+  console.log('===========================================');
 
   const handleMenuAction = (action: string, record: WorkerRecord) => {
     setOpenMenuId(null);
@@ -62,52 +86,51 @@ const WorkerAssignmentTable: React.FC<WorkerAssignmentTableProps> = ({
 
   return (
     <div className="overflow-x-auto border border-gray-200 rounded-lg">
-      <table className="w-full table-auto">
+      <table className="min-w-full border-collapse">
         <thead className="bg-gray-50">
           <tr>
-            <th className="p-3 text-left text-sm font-medium text-gray-700">Worker</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700">Date</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700">Size/Category</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700">Particulars</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700">Qty received</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700">Qty Worked</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700">Unit Price</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700">Rejected</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700">Returned department</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700">Reason for Rejection</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700">Alteration</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700">Alteration Note</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700">Status</th>
-            <th className="p-3 text-center text-sm font-medium text-gray-700">Actions</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[120px] whitespace-nowrap">Worker</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[100px] whitespace-nowrap">Date</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[120px] whitespace-nowrap">Size/Category</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[120px] whitespace-nowrap">Particulars</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[100px] whitespace-nowrap">Qty Received</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[100px] whitespace-nowrap">Qty Worked</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[100px] whitespace-nowrap">Unit Price</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[90px] whitespace-nowrap">Rejected</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[140px] whitespace-nowrap">Returned Dept</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[150px] whitespace-nowrap">Rejection Reason</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[90px] whitespace-nowrap">Alteration</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[150px] whitespace-nowrap">Alteration Note</th>
+            <th className="p-3 text-center text-sm font-medium text-gray-700 min-w-[80px] whitespace-nowrap">Actions</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
           {records.map((record) => (
             <tr key={record.id} className="hover:bg-gray-50">
-              <td className="p-3 text-sm text-gray-900">{record.worker}</td>
-              <td className="p-3 text-sm text-gray-600">{record.date}</td>
-              <td className="p-3 text-sm text-gray-600">{record.realCategory}</td>
-              <td className="p-3 text-sm text-gray-600">{record.particulars || '-'}</td>
-              <td className="p-3 text-sm text-gray-600">{record.qtyReceived || 0}</td>
-              <td className="p-3 text-sm text-gray-600">{record.qtyWorked || 0}</td>
-              <td className="p-3 text-sm text-gray-600">{record.unitPrice || 0}</td>
-              <td className="p-3 text-sm text-gray-600">{record.rejectReturn || 0}</td>
-              <td className="p-3 text-sm text-gray-600">{record.returnTo || '-'}</td>
-              <td className="p-3 text-sm text-gray-600">{record.rejectionReason || '-'}</td>
-              <td className="p-3 text-sm text-gray-600">{record.alteration || 0}</td>
-              <td className="p-3 text-sm text-gray-600">{record.alterationNote || '-'}</td>
-              <td className="p-3">
-                <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                  record.status === 'On Time' 
-                    ? 'bg-green-100 text-green-800'
-                    : record.status === 'Delayed'
-                    ? 'bg-red-100 text-red-800'
-                    : 'bg-yellow-100 text-yellow-800'
-                }`}>
-                  {record.status}
-                </span>
+              <td className="p-3 text-sm text-gray-900 min-w-[120px] whitespace-nowrap">{record.worker}</td>
+              <td className="p-3 text-sm text-gray-600 min-w-[100px] whitespace-nowrap">{record.date}</td>
+              <td className="p-3 text-sm text-gray-600 min-w-[120px]">{record.realCategory}</td>
+              <td className="p-3 text-sm text-gray-600 min-w-[120px]">{record.particulars || '-'}</td>
+              <td className="p-3 text-sm text-gray-600 min-w-[100px] text-right">{record.qtyReceived ?? 0}</td>
+              <td className="p-3 text-sm text-gray-600 min-w-[100px] text-right">{record.qtyWorked ?? 0}</td>
+              <td className="p-3 text-sm text-gray-600 min-w-[100px] text-right">${record.unitPrice ?? 0}</td>
+              <td className={`p-3 text-sm min-w-[90px] text-right font-semibold ${
+                (record.rejectReturn ?? 0) > 0 ? 'text-red-600' : 'text-gray-600'
+              }`}>
+                {record.rejectReturn ?? 0}
               </td>
-              <td className="p-3 text-center">
+              <td className="p-3 text-sm text-gray-600 min-w-[140px]">{record.returnTo || '-'}</td>
+              <td className="p-3 text-sm text-gray-600 min-w-[150px]">{record.rejectionReason || '-'}</td>
+              <td className={`p-3 text-sm min-w-[90px] text-right font-semibold ${
+                (record.alteration ?? 0) > 0 ? 'text-red-600' : 'text-gray-600'
+              }`}>
+                {record.alteration ?? 0}
+              </td>
+              <td className="p-3 text-sm text-gray-600 min-w-[150px]">{record.alterationNote || '-'}</td>
+              <td className="p-3 min-w-[100px]">
+                
+              </td>
+              <td className="p-3 text-center min-w-[80px]">
                 <div className="relative">
                   <button
                     onClick={() => setOpenMenuId(openMenuId === record.id ? null : record.id)}

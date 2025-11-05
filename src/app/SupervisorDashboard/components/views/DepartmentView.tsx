@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import {
-  Users,
   Calendar,
   Package,
   Clock,
@@ -57,6 +56,20 @@ interface Department {
   remarks: string;
 }
 
+interface RejectionSource {
+  quantity: number;
+  reason: string;
+  from_department_id: number;
+  from_department_name: string;
+}
+
+interface AlterationSource {
+  quantity: number;
+  reason: string;
+  from_department_id: number;
+  from_department_name: string;
+}
+
 interface WorkItem {
   id: number;
   department_id: number;
@@ -69,6 +82,10 @@ interface WorkItem {
   sub_batch: SubBatch;
   assigned_worker: any | null;
   department: Department;
+  remarks?: string | null;
+  quantity_remaining?: number | null;
+  rejection_source?: RejectionSource | null;
+  alteration_source?: AlterationSource | null;
 }
 
 interface KanbanData {
@@ -192,13 +209,29 @@ const SupervisorKanban = () => {
       }
 
       const result = await response.json();
-      console.log("Supervisor kanban API response:", result);
+      console.log("======= SUPERVISOR KANBAN API RESPONSE =======");
+      console.log("Full API Response:", result);
+      console.log("Success:", result.success);
+      console.log("Data:", result.data);
 
       if (result.success && result.data) {
+        console.log("======= KANBAN DATA BREAKDOWN =======");
+        console.log("New Arrival items:", result.data.newArrival);
+        console.log("New Arrival count:", result.data.newArrival?.length || 0);
+        console.log("In Progress items:", result.data.inProgress);
+        console.log("In Progress count:", result.data.inProgress?.length || 0);
+        console.log("Completed items:", result.data.completed);
+        console.log("Completed count:", result.data.completed?.length || 0);
+
         setKanbanData(result.data);
 
         // Set supervisor department name from the first item if available
         const firstItem = result.data.newArrival[0] || result.data.inProgress[0] || result.data.completed[0];
+        console.log("======= FIRST ITEM FOR DEPARTMENT =======");
+        console.log("First item:", firstItem);
+        console.log("Department:", firstItem?.department);
+        console.log("Department name:", firstItem?.department?.name);
+
         if (firstItem?.department?.name) {
           setSupervisorDepartment(firstItem.department.name);
         }
@@ -219,8 +252,19 @@ const SupervisorKanban = () => {
 
   // Handle item click to open task details
   const handleItemClick = (item: WorkItem) => {
+    console.log('======= ITEM CLICKED =======');
     console.log('Selected item:', item);
+    console.log('Item ID:', item.id);
+    console.log('Sub-batch:', item.sub_batch);
+    console.log('Sub-batch ID:', item.sub_batch_id);
+    console.log('Stage:', item.stage);
+    console.log('Assigned worker:', item.assigned_worker);
+    console.log('Assigned worker ID:', item.assigned_worker_id);
+    console.log('Department:', item.department);
+    console.log('Rejection source:', item.rejection_source);
+    console.log('Alteration source:', item.alteration_source);
     console.log('Current supervisor ID:', currentSupervisorId);
+    console.log('================================');
     setSelectedItem(item);
     setIsTaskDetailsOpen(true);
   };
@@ -237,6 +281,11 @@ const SupervisorKanban = () => {
     count: kanbanData[stage.key as keyof KanbanData]?.length || 0
   }));
 
+  console.log('======= CURRENT KANBAN STATE =======');
+  console.log('Updated stages:', updatedStages);
+  console.log('Current kanban data:', kanbanData);
+  console.log('====================================');
+
   if (loading) {
     return (
       <div className="p-8 bg-gray-50 min-h-full">
@@ -252,8 +301,8 @@ const SupervisorKanban = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold">Production Dashboard</h2>
-          <p className="text-gray-500">Track sub-batches through production stages</p>
+          <h2 className="text-2xl font-bold">Department View Dashboard</h2>
+          <p className="text-gray-500">Track sub-batches through Department stages</p>
         </div>
         <div className="flex items-center gap-4">
           <div className="bg-white px-4 py-2 rounded-lg shadow ">
@@ -276,6 +325,12 @@ const SupervisorKanban = () => {
         {updatedStages.map((stage) => {
           const StageIcon = stage.icon;
           const items = kanbanData[stage.key as keyof KanbanData] || [];
+
+          console.log(`======= RENDERING STAGE: ${stage.title} =======`);
+          console.log(`Stage key: ${stage.key}`);
+          console.log(`Items count: ${items.length}`);
+          console.log(`Items:`, items);
+          console.log(`=====================================`);
 
           return (
             <div key={stage.key} className={`${stage.color} rounded-lg border-2 p-4`}>
@@ -302,19 +357,79 @@ const SupervisorKanban = () => {
                     const daysRemaining = getDaysRemaining(item.sub_batch.due_date);
                     const statusColor = getStatusColor(item.sub_batch.due_date);
 
+                    // Determine if item is rejected or altered based on remarks
+                    const isRejected = item.remarks?.toLowerCase().includes('reject') || !!item.rejection_source;
+                    const isAltered = item.remarks?.toLowerCase().includes('alter') || !!item.alteration_source;
+                    const workQuantity = item.quantity_remaining ?? item.sub_batch.estimated_pieces;
+
+                    console.log(`--- Rendering item ${item.id} in ${stage.title} ---`);
+                    console.log('Item details:', {
+                      id: item.id,
+                      subBatchName: item.sub_batch.name,
+                      stage: item.stage,
+                      remarks: item.remarks,
+                      quantityRemaining: item.quantity_remaining,
+                      estimatedPieces: item.sub_batch.estimated_pieces,
+                      dueDate: item.sub_batch.due_date,
+                      isRejected,
+                      isAltered,
+                      workQuantity,
+                      rejectionSource: item.rejection_source,
+                      alterationSource: item.alteration_source,
+                      assignedWorkerId: item.assigned_worker_id
+                    });
+
                     return (
                       <div
                         key={item.id}
-                        className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
+                        className={`rounded-lg p-4 shadow-sm border-2 hover:shadow-md transition-shadow cursor-pointer ${
+                          isRejected
+                            ? 'bg-red-50 border-red-300'
+                            : isAltered
+                            ? 'bg-orange-50 border-orange-300'
+                            : 'bg-white border-gray-200'
+                        }`}
                         onClick={() => handleItemClick(item)}
                       >
+                        {/* Rejection/Alteration Badge at Top */}
+                        {isRejected && (
+                          <div className="bg-red-400 text-white px-3 py-1 rounded-md mb-3 text-center font-bold text-sm">
+                            REJECTED - {workQuantity.toLocaleString()} PCS
+                          </div>
+                        )}
+                        {isAltered && !isRejected && (
+                          <div className="bg-orange-400 text-white px-3 py-1 rounded-md mb-3 text-center font-bold text-sm">
+                            ALTERATION - {workQuantity.toLocaleString()} PCS
+                          </div>
+                        )}
+
                         {/* Item Header */}
-                        <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-medium text-gray-900 truncate">
-                            {item.sub_batch.name}
-                          </h4>
+                        <div className="flex items-start justify-between mb-3 gap-2">
+                          <div className="flex-1">
+                            <h4 className="font-medium text-gray-900">
+                              {item.sub_batch.name}
+                            </h4>
+                            {/* Show remarks badge */}
+                            {item.remarks && (
+                              <div className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full mt-1 font-semibold ${
+                                isRejected
+                                  ? 'bg-red-200 text-red-900'
+                                  : isAltered
+                                  ? 'bg-orange-200 text-orange-900'
+                                  : 'bg-gray-200 text-gray-900'
+                              }`}>
+                                {item.remarks}
+                              </div>
+                            )}
+                            {/* Show source department for rejected/altered items */}
+                            {(item.rejection_source || item.alteration_source) && (
+                              <div className="text-xs text-gray-600 mt-1">
+                                From: {item.rejection_source?.from_department_name || item.alteration_source?.from_department_name}
+                              </div>
+                            )}
+                          </div>
                           {item.assigned_worker_id && (
-                            <div className="flex items-center gap-1 text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                            <div className="flex items-center gap-1 text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full whitespace-nowrap">
                               <User size={12} />
                               <span>Assigned</span>
                             </div>
@@ -323,14 +438,78 @@ const SupervisorKanban = () => {
 
                         {/* Item Details */}
                         <div className="space-y-2 text-sm text-gray-600">
-                          <div className="flex items-center gap-2">
-                            <Package size={14} />
-                            <span>{item.sub_batch.estimated_pieces.toLocaleString()} pieces</span>
+                          {/* Rejection/Alteration Info Box */}
+                          {(isRejected || isAltered) && (
+                            <div className={`border-2 rounded-lg p-3 mb-2 ${
+                              isRejected
+                                ? 'border-red-500 '
+                                : 'bg-orange-100 border-orange-400'
+                            }`}>
+                              <p className={`font-bold text-sm mb-2 ${
+                                isRejected ? 'text-red-900' : 'text-orange-900'
+                              }`}>
+                                {isRejected ? ' Rejection Details:' : ' Alteration Details:'}
+                              </p>
+                              <div className="space-y-1">
+                                <p className={`text-xs ${
+                                  isRejected ? 'text-red-800' : 'text-orange-800'
+                                }`}>
+                                </p>
+                                <p className={`text-xs ${
+                                  isRejected ? 'text-red-800' : 'text-orange-800'
+                                }`}>
+                                  <span className="font-semibold">Quantity to Work:</span> {workQuantity.toLocaleString()} pieces
+                                </p>
+                                {item.rejection_source && (
+                                  <>
+                                    <p className="text-red-800 text-xs">
+                                      <span className="font-semibold">From Department:</span> {item.rejection_source.from_department_name}
+                                    </p>
+                                    <p className="text-red-800 text-xs">
+                                      <span className="font-semibold">Reason:</span> {item.rejection_source.reason}
+                                    </p>
+                                  </>
+                                )}
+                                {item.alteration_source && (
+                                  <>
+                                    <p className="text-orange-800 text-xs">
+                                      <span className="font-semibold">From Department:</span> {item.alteration_source.from_department_name}
+                                    </p>
+                                    <p className="text-orange-800 text-xs">
+                                      <span className="font-semibold">Reason:</span> {item.alteration_source.reason}
+                                    </p>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Work Quantity - Prominently display the actual quantity to work */}
+                          <div className="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg p-2">
+                            <Package size={16} className="text-blue-600" />
+                            <div className="flex-1">
+                              <span className="font-bold text-blue-900">
+                                {workQuantity.toLocaleString()} pieces
+                              </span>
+                              {(isRejected || isAltered) && (
+                                <span className={`ml-2 text-xs font-semibold ${
+                                  isRejected ? 'text-red-600' : 'text-orange-600'
+                                }`}>
+                                  ({isRejected ? 'REJECTED' : 'ALTERATION'})
+                                </span>
+                              )}
+                            </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <Users size={14} />
-                            <span>{item.sub_batch.expected_items} items expected</span>
-                          </div>
+
+                          {/* Show original sub-batch pieces if different from work quantity */}
+                          {workQuantity !== item.sub_batch.estimated_pieces && (
+                            <div className="flex items-center gap-2 text-xs text-gray-500  bg-gray-50 p-2 rounded">
+                              <Package size={12} />
+                              <span>Original pieces: {item.sub_batch.estimated_pieces.toLocaleString()} pieces</span>
+                            </div>
+                          )}
+
+                          
                           <div className="flex items-center gap-2">
                             <Calendar size={14} />
                             <span>Due: {formatDate(item.sub_batch.due_date)}</span>
@@ -341,6 +520,8 @@ const SupervisorKanban = () => {
                               <span>Batch: {item.sub_batch.batch.name}</span>
                             </div>
                           )}
+
+                        
                         </div>
 
                         {/* Status Badge */}
@@ -370,6 +551,7 @@ const SupervisorKanban = () => {
         onClose={closeTaskDetails}
         taskData={selectedItem}
         currentSupervisorId={currentSupervisorId}
+        onStageChange={fetchKanbanData}
       />
     </div>
   );

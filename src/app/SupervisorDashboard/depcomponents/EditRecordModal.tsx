@@ -200,8 +200,8 @@ const EditRecordModal: React.FC<EditRecordModalProps> = ({ isOpen, onClose, reco
       });
 
       if (response.ok) {
-        const result = await response.json();
-        
+        await response.json(); // Parse response
+
         // Transform data for the parent component
         const updatedRecord: WorkerRecord = {
           id: record.id,

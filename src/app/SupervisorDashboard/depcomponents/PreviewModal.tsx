@@ -106,7 +106,11 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, record }) 
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Rejected Qty</label>
-                <div className="text-gray-900">{record.rejectReturn || 0}</div>
+                <div className={`text-xl font-bold ${
+                  (record.rejectReturn ?? 0) > 0 ? 'text-red-600' : 'text-gray-900'
+                }`}>
+                  {record.rejectReturn ?? 0}
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Returned To</label>
@@ -115,7 +119,9 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, record }) 
             </div>
             <div className="mt-4">
               <label className="block text-sm font-semibold text-gray-700 mb-1">Rejection Reason</label>
-              <div className="text-gray-900 bg-gray-50 p-3 rounded-lg">
+              <div className={`p-3 rounded-lg ${
+                (record.rejectReturn ?? 0) > 0 ? 'text-red-800 bg-red-50 border border-red-200' : 'text-gray-900 bg-gray-50'
+              }`}>
                 {record.rejectionReason || 'No reason provided'}
               </div>
             </div>
@@ -126,11 +132,17 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ isOpen, onClose, record }) 
             <h4 className="text-sm font-semibold mb-3 text-gray-700">Alteration</h4>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">Alteration Qty</label>
-              <div className="text-gray-900">{record.alteration || 0}</div>
+              <div className={`text-xl font-bold ${
+                (record.alteration ?? 0) > 0 ? 'text-red-600' : 'text-gray-900'
+              }`}>
+                {record.alteration ?? 0}
+              </div>
             </div>
             <div className="mt-4">
               <label className="block text-sm font-semibold text-gray-700 mb-1">Alteration Note</label>
-              <div className="text-gray-900 bg-gray-50 p-3 rounded-lg">
+              <div className={`p-3 rounded-lg ${
+                (record.alteration ?? 0) > 0 ? 'text-red-800 bg-red-50 border border-red-200' : 'text-gray-900 bg-gray-50'
+              }`}>
                 {record.alterationNote || 'No notes provided'}
               </div>
             </div>
