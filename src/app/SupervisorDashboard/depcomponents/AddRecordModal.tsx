@@ -80,6 +80,7 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
     alteration: '',
     alterationReturnTo: '',
     alterationNote: '',
+    selectedAttachments: [] as number[], // Store selected attachment IDs
   });
 
   const [workers, setWorkers] = useState<Worker[]>([]);
@@ -123,6 +124,7 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
         alteration: editRecord.alteration?.toString() || '',
         alterationReturnTo: '',
         alterationNote: editRecord.alterationNote || '',
+        selectedAttachments: [],
       });
     } else if (mode === 'add') {
       setFormData({
@@ -140,6 +142,7 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
         alteration: '',
         alterationReturnTo: '',
         alterationNote: '',
+        selectedAttachments: [],
       });
     }
   }, [isOpen, editRecord, mode]);
@@ -274,6 +277,12 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
       }
       if (formData.unitPrice && formData.unitPrice.trim()) {
         payload.unit_price = parseFloat(formData.unitPrice);
+      }
+
+      // Add selected attachments if any
+      if (formData.selectedAttachments && formData.selectedAttachments.length > 0) {
+        payload.attachment_ids = formData.selectedAttachments;
+        console.log('Adding attachment IDs:', payload.attachment_ids);
       }
 
       // Add rejected array if ALL rejection data exists and is valid
@@ -566,6 +575,45 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
+
+          {/* Attachments Display */}
+          {(subBatch as any)?.attachments && (subBatch as any).attachments.length > 0 && (
+            <div className="  rounded-lg p-4">
+              <h4 className="text-sm font-semibold mb-3 text-blue-900">Attachments</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {(subBatch as any).attachments.map((attachment: any) => (
+                  <div
+                    key={attachment.id}
+                    className="flex items-center gap-2 bg-white p-2 rounded border border-blue-100 cursor-pointer hover:bg-blue-50"
+                    onClick={() => {
+                      if (isPreviewMode) return;
+                      const isSelected = formData.selectedAttachments.includes(attachment.id);
+                      setFormData(prev => ({
+                        ...prev,
+                        selectedAttachments: isSelected
+                          ? prev.selectedAttachments.filter(id => id !== attachment.id)
+                          : [...prev.selectedAttachments, attachment.id]
+                      }));
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={formData.selectedAttachments.includes(attachment.id)}
+                      disabled={isPreviewMode}
+                      onChange={() => {}} // Handled by div onClick
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <div className="flex-1 flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-800">{attachment.attachment_name}</span>
+                      <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">
+                        Qty: {attachment.quantity}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Additional Tracking */}
           <div className="border-t pt-4">

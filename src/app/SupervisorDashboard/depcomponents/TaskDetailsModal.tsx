@@ -21,6 +21,8 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
     const [workerRecords, setWorkerRecords] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [sendToDepartment, setSendToDepartment] = useState('');
+    const [departments, setDepartments] = useState<any[]>([]);
 
     const fetchWorkerLogs = useCallback(async () => {
         if (!taskData?.sub_batch?.id) return;
@@ -62,16 +64,31 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                     const rejectedQty = rejectedEntry?.quantity ?? 0;
                     const rejectionReason = rejectedEntry?.reason || '-';
                     const returnToDeptId = rejectedEntry?.sent_to_department_id || null;
+                    const returnToDeptName = rejectedEntry?.sent_to_department_name || rejectedEntry?.sent_to_department?.name || null;
 
                     // Extract alteration data from altered_entry array
                     const alteredEntry = r.altered_entry && r.altered_entry.length > 0 ? r.altered_entry[0] : null;
                     const alteredQty = alteredEntry?.quantity ?? 0;
                     const alterationNote = alteredEntry?.reason || '-';
+                    const alterReturnToDeptId = alteredEntry?.sent_to_department_id || null;
+                    const alterReturnToDeptName = alteredEntry?.sent_to_department_name || alteredEntry?.sent_to_department?.name || null;
 
                     console.log(`  - Rejected Entry:`, rejectedEntry);
-                    console.log(`  - Rejected Qty: ${rejectedQty}, Reason: ${rejectionReason}`);
+                    console.log(`  - Rejected Qty: ${rejectedQty}, Reason: ${rejectionReason}, Return To Dept: ${returnToDeptName || returnToDeptId}`);
                     console.log(`  - Altered Entry:`, alteredEntry);
-                    console.log(`  - Altered Qty: ${alteredQty}, Note: ${alterationNote}`);
+                    console.log(`  - Altered Qty: ${alteredQty}, Note: ${alterationNote}, Return To Dept: ${alterReturnToDeptName || alterReturnToDeptId}`);
+
+                    // Format department return display: show name if available, otherwise show "Dept ID"
+                    let returnToDisplay = '-';
+                    if (returnToDeptName) {
+                        returnToDisplay = returnToDeptName;
+                    } else if (returnToDeptId) {
+                        returnToDisplay = `Dept ${returnToDeptId}`;
+                    } else if (alterReturnToDeptName) {
+                        returnToDisplay = alterReturnToDeptName;
+                    } else if (alterReturnToDeptId) {
+                        returnToDisplay = `Dept ${alterReturnToDeptId}`;
+                    }
 
                     return {
                         id: r.id || idx + 1,
@@ -83,7 +100,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                         qtyWorked: r.quantity_worked ?? 0,
                         unitPrice: r.unit_price ?? 0,
                         rejectReturn: rejectedQty,
-                        returnTo: returnToDeptId ? `Dept ${returnToDeptId}` : '-',
+                        returnTo: returnToDisplay,
                         rejectionReason: rejectionReason,
                         alteration: alteredQty,
                         alterationNote: alterationNote,
@@ -110,6 +127,25 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
         if (isOpen && taskData?.sub_batch?.id) fetchWorkerLogs();
     }, [isOpen, fetchWorkerLogs, taskData?.sub_batch?.id]);
 
+    // Fetch departments when modal opens
+    useEffect(() => {
+        const fetchDepartments = async () => {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/departments`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setDepartments(data);
+                }
+            } catch (error) {
+                console.error('Error fetching departments:', error);
+            }
+        };
+
+        if (isOpen) {
+            fetchDepartments();
+        }
+    }, [isOpen]);
+
     // Initialize status from taskData
     useEffect(() => {
         if (taskData?.stage) {
@@ -117,59 +153,147 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
         }
     }, [taskData?.stage]);
 
-    // Handle save - update stage via API
+    // Handle save - update stage via API or advance to next department
     const handleSave = async () => {
-        if (!taskData?.id) {
+        if (!taskData?.id || !taskData?.sub_batch?.id) {
             alert('Invalid task data');
             return;
         }
 
-        try {
-            setSaving(true);
-            const token = localStorage.getItem('token');
+        console.log('=== SAVE BUTTON CLICKED ===');
+        console.log('taskData.stage:', taskData.stage);
+        console.log('sendToDepartment:', sendToDepartment);
+        console.log('taskData.sub_batch.id:', taskData.sub_batch.id);
 
-            if (!token) {
-                alert('Authentication required. Please login again.');
-                return;
-            }
+        // If card is ALREADY COMPLETED and sending to another department
+        if (taskData.stage === 'COMPLETED' && sendToDepartment) {
+            console.log('✅ Advancing to next department...');
 
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/sub-batches/move-stage`,
-                {
+            try {
+                setSaving(true);
+                const token = localStorage.getItem('token');
+
+                if (!token) {
+                    alert('Authentication required. Please login again.');
+                    return;
+                }
+
+                const apiUrl = process.env.NEXT_PUBLIC_SEND_TO_ANOTHER_DEPARTMENT;
+                const requestBody = {
+                    subBatchId: taskData.sub_batch.id,
+                    departmentId: parseInt(sendToDepartment),
+                };
+
+                console.log('API URL:', apiUrl);
+                console.log('Request Body:', requestBody);
+
+                // Advance to next department
+                const advanceResponse = await fetch(apiUrl!, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`,
                     },
-                    body: JSON.stringify({
-                        departmentSubBatchId: taskData.id,
-                        toStage: status,
-                    }),
+                    body: JSON.stringify(requestBody),
+                });
+
+                console.log('Response Status:', advanceResponse.status);
+
+                if (!advanceResponse.ok) {
+                    const errorData = await advanceResponse.json();
+                    console.error('Error Response:', errorData);
+                    throw new Error(errorData.message || 'Failed to advance to next department');
                 }
-            );
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to update stage');
-            }
+                const result = await advanceResponse.json();
+                console.log('Success Response:', result);
+                console.log('Next Department Data:', result.nextDept);
 
-            const result = await response.json();
+                if (result.success) {
+                    console.log('✅ Successfully sent to department:', result.nextDept?.department_id);
 
-            if (result.success) {
-                alert('Stage updated successfully!');
-                onClose();
-                // Refresh the kanban board
-                if (onStageChange) {
-                    onStageChange();
+                    // Close modal immediately
+                    onClose();
+
+                    // Show success alert
+                    alert(`Successfully sent to department!`);
+
+                    // Clear the selected department
+                    setSendToDepartment('');
+
+                    // Wait a bit for backend to process, then refresh Kanban board
+                    console.log('Refreshing Kanban board in 500ms...');
+                    setTimeout(() => {
+                        if (onStageChange) {
+                            console.log('Calling onStageChange() to refresh data...');
+                            onStageChange();
+                        } else {
+                            console.warn('onStageChange callback not provided! Forcing page reload...');
+                            window.location.reload();
+                        }
+                    }, 500);
+                } else {
+                    throw new Error(result.message || 'Failed to advance to next department');
                 }
-            } else {
-                throw new Error(result.message || 'Failed to update stage');
+            } catch (error: any) {
+                console.error('Error:', error);
+                alert(`Failed to send to department: ${error.message}`);
+            } finally {
+                setSaving(false);
             }
-        } catch (error: any) {
-            console.error('Error updating stage:', error);
-            alert(`Failed to update stage: ${error.message}`);
-        } finally {
-            setSaving(false);
+        } else if (taskData.stage === 'COMPLETED' && !sendToDepartment) {
+            // Card is COMPLETED but no department selected - require selection
+            alert('Please select a department to send this completed task to');
+            return;
+        } else {
+            // Normal stage update (not COMPLETED)
+            try {
+                setSaving(true);
+                const token = localStorage.getItem('token');
+
+                if (!token) {
+                    alert('Authentication required. Please login again.');
+                    return;
+                }
+
+                const response = await fetch(
+                    `${process.env.NEXT_PUBLIC_API_URL}/sub-batches/move-stage`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({
+                            departmentSubBatchId: taskData.id,
+                            toStage: status,
+                        }),
+                    }
+                );
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to update stage');
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Stage updated successfully!');
+                    onClose();
+                    // Refresh the kanban board
+                    if (onStageChange) {
+                        onStageChange();
+                    }
+                } else {
+                    throw new Error(result.message || 'Failed to update stage');
+                }
+            } catch (error: any) {
+                console.error('Error updating stage:', error);
+                alert(`Failed to update stage: ${error.message}`);
+            } finally {
+                setSaving(false);
+            }
         }
     };
 
@@ -182,6 +306,14 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
     const totalProcessed = totalWorkDone + totalAltered + totalRejected;
     const quantityToWork = taskData.quantity_remaining ?? taskData.sub_batch?.estimated_pieces ?? 0;
     const remainingWork = quantityToWork - totalProcessed;
+
+    // Extract rejection/alteration logs from worker records
+    const rejectionLogs = workerRecords.filter(record => (record.rejectReturn ?? 0) > 0);
+    const alterationLogs = workerRecords.filter(record => (record.alteration ?? 0) > 0);
+
+    // Get the most recent rejection or alteration log
+    const latestRejectionLog = rejectionLogs.length > 0 ? rejectionLogs[rejectionLogs.length - 1] : null;
+    const latestAlterationLog = alterationLogs.length > 0 ? alterationLogs[alterationLogs.length - 1] : null;
 
     // Log task data for debugging
     console.log('======= TASK DETAILS MODAL DATA =======');
@@ -376,6 +508,26 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                                             <option value="COMPLETED">Completed</option>
                                         </select>
                                     </div>
+
+                                    {/* Send to Department - Only show when card is ALREADY COMPLETED in database */}
+                                    {taskData.stage === 'COMPLETED' && (
+                                        <div>
+                                            <h4 className="text-medium font-semibold text-black mb-2">Send to Department</h4>
+                                            <select
+                                                value={sendToDepartment}
+                                                onChange={(e) => setSendToDepartment(e.target.value)}
+                                                className="text-gray-900 bg-white border border-gray-300 rounded-lg px-4 py-2 min-w-[150px] max-w-[200px]"
+                                            >
+                                                <option value="">Select Department</option>
+                                                {departments.map((dept: any) => (
+                                                    <option key={dept.id} value={dept.id}>
+                                                        {dept.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
+
                                     <div>
                                         <h4 className="text-medium font-semibold text-black mb-2">
                                             {taskData.quantity_remaining ? 'Quantity to Work' : 'Pieces'}
@@ -407,6 +559,97 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                                         )}
                                     </div>
                                 </div>
+
+                                {/* Attachments - Only show when card is COMPLETED */}
+                                {taskData.stage === 'COMPLETED' && taskData.sub_batch?.attachments && taskData.sub_batch.attachments.length > 0 && (
+                                    <div className="mt-6">
+                                        <h4 className="font-semibold mb-3">Attachments</h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                            {taskData.sub_batch.attachments.map((attachment: any) => (
+                                                <div
+                                                    key={attachment.id}
+                                                    className="flex items-center justify-between bg-gray-50 p-2 rounded border border-gray-200"
+                                                >
+                                                    <span className="text-sm font-medium text-gray-800">{attachment.attachment_name}</span>
+                                                    <span className="text-xs text-gray-600 bg-white px-2 py-1 rounded border border-gray-300">
+                                                        {attachment.quantity}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Rejection/Alteration Log - Only show if this is a rejected or altered sub-batch */}
+                                {(taskData.rejection_source || taskData.alteration_source || taskData.remarks?.toLowerCase().includes('reject') || taskData.remarks?.toLowerCase().includes('alter')) && (latestRejectionLog || latestAlterationLog) && (
+                                    <div className="mt-8 p-6 border-t border-gray-300">
+                                        <h4 className="font-semibold text-lg mb-4">
+                                            {latestRejectionLog ? 'Rejection Log' : 'Alteration Log'}
+                                        </h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            {/* Date */}
+                                            <div>
+                                                <label className="text-sm font-semibold text-gray-700">Date</label>
+                                                <p className="text-gray-900 border border-gray-200 rounded-lg px-4 py-2 mt-1">
+                                                    {latestRejectionLog?.date || latestAlterationLog?.date || '-'}
+                                                </p>
+                                            </div>
+
+                                            {/* Altered/Rejected By */}
+                                            <div>
+                                                <label className="text-sm font-semibold text-gray-700">
+                                                    {latestRejectionLog ? 'Rejected By' : 'Altered By'}
+                                                </label>
+                                                <p className="text-gray-900 border border-gray-200 rounded-lg px-4 py-2 mt-1">
+                                                    {latestRejectionLog?.worker || latestAlterationLog?.worker || '-'}
+                                                </p>
+                                            </div>
+
+                                            {/* Quantity */}
+                                            <div>
+                                                <label className="text-sm font-semibold text-gray-700">
+                                                    {latestRejectionLog ? 'Rejected Quantity' : 'Altered Quantity'}
+                                                </label>
+                                                <p className="text-gray-900 border border-gray-200 rounded-lg px-4 py-2 mt-1 font-semibold">
+                                                    {latestRejectionLog
+                                                        ? (latestRejectionLog.rejectReturn || 0).toLocaleString()
+                                                        : (latestAlterationLog?.alteration || 0).toLocaleString()
+                                                    }
+                                                </p>
+                                            </div>
+
+                                            {/* Reason/Note */}
+                                            <div>
+                                                <label className="text-sm font-semibold text-gray-700">
+                                                    {latestRejectionLog ? 'Rejection Reason' : 'Alteration Note'}
+                                                </label>
+                                                <p className="text-gray-900 border border-gray-200 rounded-lg px-4 py-2 mt-1">
+                                                    {latestRejectionLog?.rejectionReason || latestAlterationLog?.alterationNote || '-'}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {/* Attachments - Show only for rejected/altered items */}
+                                        {taskData.sub_batch?.attachments && taskData.sub_batch.attachments.length > 0 && (
+                                            <div className="mt-6 pt-6 border-t border-gray-200">
+                                                <h4 className="text-sm font-semibold mb-3 text-gray-700">Attachments</h4>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                                    {taskData.sub_batch.attachments.map((attachment: any) => (
+                                                        <div
+                                                            key={attachment.id}
+                                                            className="flex items-center justify-between bg-gray-50 p-2 rounded border border-gray-200"
+                                                        >
+                                                            <span className="text-sm font-medium text-gray-800">{attachment.attachment_name}</span>
+                                                            <span className="text-xs text-gray-600 bg-white px-2 py-1 rounded border border-gray-300">
+                                                                Qty: {attachment.quantity}
+                                                            </span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
 
                                 {/* Work Progress Tracking Summary */}
                                 <div className="mt-8 p-6 ">
@@ -471,13 +714,19 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                                     <h4 className="font-semibold">Worker Assignment & Records</h4>
                                     <button
                                         onClick={handleAddRecord}
-                                        disabled={status === 'NEW_ARRIVAL'}
+                                        disabled={status === 'NEW_ARRIVAL' || taskData.stage === 'COMPLETED'}
                                         className={`border px-4 py-1 rounded-lg text-sm transition ${
-                                            status === 'NEW_ARRIVAL'
+                                            status === 'NEW_ARRIVAL' || taskData.stage === 'COMPLETED'
                                                 ? 'border-gray-300 text-gray-400 cursor-not-allowed bg-gray-100'
                                                 : 'border-blue-600 text-blue-600 hover:bg-blue-700 hover:text-white'
                                         }`}
-                                        title={status === 'NEW_ARRIVAL' ? 'Move to In Progress to assign workers' : 'Add worker record'}
+                                        title={
+                                            status === 'NEW_ARRIVAL'
+                                                ? 'Move to In Progress to assign workers'
+                                                : taskData.stage === 'COMPLETED'
+                                                ? 'Cannot add records to completed tasks'
+                                                : 'Add worker record'
+                                        }
                                     >
                                         + Add Record
                                     </button>
@@ -486,6 +735,12 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                                 {status === 'NEW_ARRIVAL' && (
                                     <div className="px-8 py-2 text-sm text-orange-600 bg-orange-50 border-b">
                                         <strong>Note:</strong> Worker assignment is only available after moving to In Progress stage.
+                                    </div>
+                                )}
+
+                                {taskData.stage === 'COMPLETED' && (
+                                    <div className="px-8 py-2 text-sm text-green-800 bg-green-50 border-b">
+                                        <strong>Note:</strong> This task is completed. You can only view records and send to another department.
                                     </div>
                                 )}
 

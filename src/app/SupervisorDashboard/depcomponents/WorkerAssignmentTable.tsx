@@ -127,9 +127,6 @@ const WorkerAssignmentTable: React.FC<WorkerAssignmentTableProps> = ({
                 {record.alteration ?? 0}
               </td>
               <td className="p-3 text-sm text-gray-600 min-w-[150px]">{record.alterationNote || '-'}</td>
-              <td className="p-3 min-w-[100px]">
-                
-              </td>
               <td className="p-3 text-center min-w-[80px]">
                 <div className="relative">
                   <button
