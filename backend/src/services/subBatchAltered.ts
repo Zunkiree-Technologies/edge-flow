@@ -12,6 +12,7 @@ interface AlteredPieceInput {
   sub_batch_id: number;
   quantity: number;
   target_department_id: number;
+  original_department_id: number; // department from which quantity is reduced
   reason: string;
   worker_log_id?: number; // optional link to worker log
 }
@@ -34,6 +35,18 @@ export const createAlteredSubBatch = async (data: AlteredPieceInput) => {
       where: { id: data.sub_batch_id },
     });
     if (!subBatch) throw new Error("Sub-batch not found");
+
+    // 2.5️⃣ Reduce quantity_remaining from original department
+    await tx.department_sub_batches.updateMany({
+      where: {
+        sub_batch_id: data.sub_batch_id,
+        department_id: data.original_department_id,
+        is_current: true,
+      },
+      data: {
+        quantity_remaining: { decrement: data.quantity },
+      },
+    });
 
     // 3️⃣ Add to department_sub_batches for target department
     const deptSubBatch = await tx.department_sub_batches.create({

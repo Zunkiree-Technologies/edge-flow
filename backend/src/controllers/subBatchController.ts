@@ -115,8 +115,8 @@ export const moveStage = async (req: Request, res: Response) => {
 // Advance to next department
 export const advanceDepartment = async (req: Request, res: Response) => {
   try {
-    const { subBatchId } = req.body;
-    const nextDept = await advanceSubBatchToNextDepartment(subBatchId);
+    const { subBatchId, departmentId } = req.body;
+    const nextDept = await advanceSubBatchToNextDepartment(subBatchId, departmentId);
     res.status(200).json({ success: true, nextDept });
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });

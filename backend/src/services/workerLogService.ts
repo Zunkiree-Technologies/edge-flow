@@ -23,6 +23,7 @@ interface RejectedInput {
 interface AlteredInput {
   quantity: number;
   sent_to_department_id: number;
+  original_department_id: number;
   reason: string;
 }
 
@@ -124,6 +125,18 @@ export const createWorkerLog = async (data: WorkerLogInput) => {
             sent_to_department_id: a.sent_to_department_id,
             reason: a.reason,
             worker_log_id: logId,
+          },
+        });
+
+        // Reduce quantity from original department
+        await tx.department_sub_batches.updateMany({
+          where: {
+            sub_batch_id: data.sub_batch_id,
+            department_id: a.original_department_id,
+            is_current: true,
+          },
+          data: {
+            quantity_remaining: { decrement: a.quantity },
           },
         });
 

@@ -267,49 +267,46 @@ export async function moveSubBatchStage(
 }
 
 
-export async function advanceSubBatchToNextDepartment(subBatchId: number) {
-  // 1️⃣ Get workflow with steps
-  const workflow = await prisma.sub_batch_workflows.findUnique({
-    where: { sub_batch_id: subBatchId },
-    include: { steps: true },
-  });
-
-  if (!workflow) throw new Error("Workflow not found");
-
-  let currentIndex = workflow.current_step_index;
-
-  if (currentIndex + 1 >= workflow.steps.length) {
-    return null; // Already at last department
-  }
-
-  const currentStep = workflow.steps[currentIndex];
-
-  // 2️⃣ Mark current department_sub_batch as inactive
-  await prisma.department_sub_batches.updateMany({
+export async function advanceSubBatchToNextDepartment(subBatchId: number, departmentId: number) {
+  // 1️⃣ Get current department's main workflow entry (excluding rejected/altered branches)
+  const currentDept = await prisma.department_sub_batches.findFirst({
     where: {
       sub_batch_id: subBatchId,
-      department_id: currentStep.department_id,
       is_current: true,
+      OR: [
+        { remarks: null },
+        { remarks: { notIn: ["Rejected", "Altered"] } },
+      ],
+    },
+  });
+
+  if (!currentDept) throw new Error("No active main workflow found for this sub-batch");
+
+  const quantityToAdvance = currentDept.quantity_remaining || 0;
+
+  // 2️⃣ Validate that the department exists
+  const department = await prisma.departments.findUnique({
+    where: { id: departmentId },
+  });
+
+  if (!department) throw new Error("Department not found");
+
+  // 3️⃣ Mark ONLY this specific main workflow entry as inactive (NOT rejected/altered entries)
+  await prisma.department_sub_batches.update({
+    where: {
+      id: currentDept.id,
     },
     data: { is_current: false },
   });
 
-  // 3️⃣ Advance workflow
-  currentIndex += 1;
-  await prisma.sub_batch_workflows.update({
-    where: { sub_batch_id: subBatchId },
-    data: { current_step_index: currentIndex },
-  });
-
-  const nextStep = workflow.steps[currentIndex];
-
-  // 4️⃣ Add sub-batch to next department (New Arrival)
+  // 4️⃣ Add sub-batch to specified department with correct quantity
   return await prisma.department_sub_batches.create({
     data: {
       sub_batch_id: subBatchId,
-      department_id: nextStep.department_id,
+      department_id: departmentId,
       stage: DepartmentStage.NEW_ARRIVAL,
       is_current: true,
+      quantity_remaining: quantityToAdvance,
     },
   });
 }
