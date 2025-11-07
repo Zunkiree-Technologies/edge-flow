@@ -293,21 +293,20 @@ export const deleteWorkerLog = async (id: number) => {
         console.log(`Source entry ID: ${rejectedRecord.source_department_sub_batch_id}`);
         console.log(`Created entry ID: ${rejectedRecord.created_department_sub_batch_id}`);
 
-        // ✅ Use the EXACT created entry ID that was stored
+        // ✅ DELETE the created entry completely (don't just mark inactive)
         if (rejectedRecord.created_department_sub_batch_id) {
           const createdEntry = await tx.department_sub_batches.findUnique({
             where: { id: rejectedRecord.created_department_sub_batch_id },
           });
 
-          if (createdEntry && createdEntry.is_current) {
-            // Mark the created rejected entry as inactive
-            await tx.department_sub_batches.update({
+          if (createdEntry) {
+            // DELETE the created rejected entry completely
+            await tx.department_sub_batches.delete({
               where: { id: rejectedRecord.created_department_sub_batch_id },
-              data: { is_current: false },
             });
-            console.log(`✓ Marked created rejected entry ${rejectedRecord.created_department_sub_batch_id} as inactive`);
+            console.log(`✓ Deleted rejected department entry ${rejectedRecord.created_department_sub_batch_id} completely`);
           } else {
-            console.warn(`⚠ Created entry ${rejectedRecord.created_department_sub_batch_id} not found or already inactive`);
+            console.warn(`⚠ Created entry ${rejectedRecord.created_department_sub_batch_id} not found (already deleted?)`);
           }
         }
 
@@ -349,21 +348,20 @@ export const deleteWorkerLog = async (id: number) => {
         console.log(`Source entry ID: ${alteredRecord.source_department_sub_batch_id}`);
         console.log(`Created entry ID: ${alteredRecord.created_department_sub_batch_id}`);
 
-        // ✅ Use the EXACT created entry ID that was stored
+        // ✅ DELETE the created entry completely (don't just mark inactive)
         if (alteredRecord.created_department_sub_batch_id) {
           const createdEntry = await tx.department_sub_batches.findUnique({
             where: { id: alteredRecord.created_department_sub_batch_id },
           });
 
-          if (createdEntry && createdEntry.is_current) {
-            // Mark the created altered entry as inactive
-            await tx.department_sub_batches.update({
+          if (createdEntry) {
+            // DELETE the created altered entry completely
+            await tx.department_sub_batches.delete({
               where: { id: alteredRecord.created_department_sub_batch_id },
-              data: { is_current: false },
             });
-            console.log(`✓ Marked created altered entry ${alteredRecord.created_department_sub_batch_id} as inactive`);
+            console.log(`✓ Deleted altered department entry ${alteredRecord.created_department_sub_batch_id} completely`);
           } else {
-            console.warn(`⚠ Created entry ${alteredRecord.created_department_sub_batch_id} not found or already inactive`);
+            console.warn(`⚠ Created entry ${alteredRecord.created_department_sub_batch_id} not found (already deleted?)`);
           }
         }
 
