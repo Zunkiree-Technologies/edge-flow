@@ -192,6 +192,7 @@ model worker_logs {
   work_date         DateTime?
   worker_name       String?
   activity_type     String?
+  is_billable       Boolean              @default(true)
   altered_entry     sub_batch_altered[]
   rejected_entry    sub_batch_rejected[]
   sub_batch         sub_batches          @relation(fields: [sub_batch_id], references: [id])

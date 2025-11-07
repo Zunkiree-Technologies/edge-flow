@@ -38,6 +38,7 @@ export interface WorkerLogInput {
   quantity_worked?: number;
   unit_price?: number;
   activity_type?: WorkerActivityType;
+  is_billable?: boolean;
   rejected?: RejectedInput[];
   altered?: AlteredInput[];
 }
@@ -57,6 +58,7 @@ export const createWorkerLog = async (data: WorkerLogInput) => {
       quantity_worked: data.quantity_worked,
       unit_price: data.unit_price,
       activity_type: data.activity_type ?? "NORMAL",
+      is_billable: data.is_billable ?? true,
     },
   });
 
@@ -255,6 +257,7 @@ export const updateWorkerLog = async (id: number, data: WorkerLogInput) => {
       quantity_worked: data.quantity_worked,
       unit_price: data.unit_price,
       activity_type: data.activity_type,
+      is_billable: data.is_billable,
     },
     include: {
       worker: true,
