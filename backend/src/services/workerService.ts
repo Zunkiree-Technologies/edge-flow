@@ -58,3 +58,18 @@ export const deleteWorker = async (id: number) => {
   });
 };
 
+// ✅ Get Workers by Department ID
+export const getWorkersByDepartment = async (departmentId: number) => {
+  return await prisma.workers.findMany({
+    where: {
+      department_id: departmentId,
+    },
+    include: {
+      department: true, // Include department details
+    },
+    orderBy: {
+      name: "asc", // Sort by name alphabetically
+    },
+  });
+};
+

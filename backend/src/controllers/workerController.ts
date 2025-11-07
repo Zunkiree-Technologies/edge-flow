@@ -61,4 +61,21 @@ export const deleteWorker = async (req: Request, res: Response) => {
   }
 };
 
+export const getWorkersByDepartment = async (req: Request, res: Response) => {
+  try {
+    const departmentId = Number(req.params.departmentId);
+
+    if (isNaN(departmentId)) {
+      return res.status(400).json({ message: "Invalid department ID" });
+    }
+
+    const workers = await workerService.getWorkersByDepartment(departmentId);
+    res.json(workers);
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error fetching workers by department", error: error.message });
+  }
+};
+
 
