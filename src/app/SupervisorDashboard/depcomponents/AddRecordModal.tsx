@@ -29,6 +29,7 @@ interface SubBatch {
   start_date: string;
   due_date: string;
   department_id: number | null;
+  department_sub_batch_id?: number;  // The ID from department_sub_batches table - required for reject/alter operations
 }
 
 export interface WorkerRecord {
@@ -293,9 +294,17 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
         const returnToDeptId = parseInt(formData.returnTo);
 
         if (!isNaN(rejectQty) && rejectQty > 0 && !isNaN(returnToDeptId)) {
+          // Validate that department_sub_batch_id exists
+          if (!subBatch?.department_sub_batch_id) {
+            alert('Error: Missing department sub-batch ID. Cannot process rejection.');
+            setIsSubmitting(false);
+            return;
+          }
+
           payload.rejected = [{
             quantity: rejectQty,
             sent_to_department_id: returnToDeptId,
+            source_department_sub_batch_id: subBatch.department_sub_batch_id,  // Updated to use specific entry ID
             reason: formData.rejectionReason.trim(),
           }];
           console.log('Adding rejected data:', payload.rejected);
@@ -310,9 +319,17 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
         const alterReturnToDeptId = parseInt(formData.alterationReturnTo);
 
         if (!isNaN(alterQty) && alterQty > 0 && !isNaN(alterReturnToDeptId)) {
+          // Validate that department_sub_batch_id exists
+          if (!subBatch?.department_sub_batch_id) {
+            alert('Error: Missing department sub-batch ID. Cannot process alteration.');
+            setIsSubmitting(false);
+            return;
+          }
+
           payload.altered = [{
             quantity: alterQty,
             sent_to_department_id: alterReturnToDeptId,
+            source_department_sub_batch_id: subBatch.department_sub_batch_id,  // Updated to use specific entry ID
             reason: formData.alterationNote.trim(),
           }];
           console.log('Adding altered data:', payload.altered);

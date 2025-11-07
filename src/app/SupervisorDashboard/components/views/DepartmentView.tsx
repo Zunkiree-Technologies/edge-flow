@@ -71,7 +71,8 @@ interface AlterationSource {
 }
 
 interface WorkItem {
-  id: number;
+  id: number; // department_sub_batch_id - Primary key from department_sub_batches table
+                // This ID is required for advance/reject/alter operations
   department_id: number;
   sub_batch_id: number;
   stage: string;

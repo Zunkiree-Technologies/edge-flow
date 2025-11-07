@@ -155,19 +155,38 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
 
     // Handle save - update stage via API or advance to next department
     const handleSave = async () => {
-        if (!taskData?.id || !taskData?.sub_batch?.id) {
-            alert('Invalid task data');
+        console.log('=== SAVE BUTTON CLICKED ===');
+        console.log('Full taskData:', taskData);
+        console.log('taskData.id:', taskData?.id);
+        console.log('taskData.sub_batch:', taskData?.sub_batch);
+        console.log('taskData.sub_batch_id:', taskData?.sub_batch_id);
+        console.log('taskData.stage:', taskData?.stage);
+        console.log('sendToDepartment:', sendToDepartment);
+        console.log('Is Rejected:', taskData?.remarks?.toLowerCase().includes('reject'));
+        console.log('Is Altered:', taskData?.remarks?.toLowerCase().includes('alter'));
+
+        if (!taskData?.id) {
+            alert('Invalid task data - missing task ID');
             return;
         }
 
-        console.log('=== SAVE BUTTON CLICKED ===');
-        console.log('taskData.stage:', taskData.stage);
-        console.log('sendToDepartment:', sendToDepartment);
-        console.log('taskData.sub_batch.id:', taskData.sub_batch.id);
+        // Get sub_batch_id from either sub_batch object or direct property
+        const subBatchId = taskData.sub_batch?.id || taskData.sub_batch_id;
+
+        if (!subBatchId) {
+            console.error('Missing sub_batch_id!');
+            console.error('taskData.sub_batch:', taskData.sub_batch);
+            console.error('taskData.sub_batch_id:', taskData.sub_batch_id);
+            alert('Cannot send to department: Sub-batch ID is missing');
+            return;
+        }
+
+        console.log('Using subBatchId:', subBatchId);
 
         // If card is ALREADY COMPLETED and sending to another department
         if (taskData.stage === 'COMPLETED' && sendToDepartment) {
             console.log('✅ Advancing to next department...');
+            console.log('Card type:', taskData.remarks || 'Regular');
 
             try {
                 setSaving(true);
@@ -179,13 +198,14 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                 }
 
                 const apiUrl = process.env.NEXT_PUBLIC_SEND_TO_ANOTHER_DEPARTMENT;
+                // Updated to use department_sub_batch_id instead of fromDepartmentId
                 const requestBody = {
-                    subBatchId: taskData.sub_batch.id,
-                    departmentId: parseInt(sendToDepartment),
+                    departmentSubBatchId: taskData.id,  // The department_sub_batches.id
+                    toDepartmentId: parseInt(sendToDepartment),
                 };
 
                 console.log('API URL:', apiUrl);
-                console.log('Request Body:', requestBody);
+                console.log('Request Body:', JSON.stringify(requestBody, null, 2));
 
                 // Advance to next department
                 const advanceResponse = await fetch(apiUrl!, {
@@ -815,6 +835,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                 onSave={handleSaveRecord}
                 subBatch={{
                     ...taskData.sub_batch,
+                    department_sub_batch_id: taskData.id,  // Pass the department_sub_batch_id
                     quantity_remaining: taskData.quantity_remaining,
                     remarks: taskData.remarks,
                     rejection_source: taskData.rejection_source,
