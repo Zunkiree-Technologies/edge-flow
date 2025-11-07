@@ -227,6 +227,14 @@ export async function sendToProduction(
     },
   });
 
+  // ✅ Update sub-batch status to IN_PRODUCTION (first department entry created)
+  await prisma.sub_batches.update({
+    where: { id: subBatchId },
+    data: { status: 'IN_PRODUCTION' }
+  });
+
+  console.log(`✅ Sub-batch #${subBatchId} status updated to IN_PRODUCTION`);
+
   return workflow;
 }
 

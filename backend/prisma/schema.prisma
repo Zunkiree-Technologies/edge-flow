@@ -50,6 +50,7 @@ model sub_batches {
   due_date         DateTime
   department_id    Int?
   name             String
+  status           SubBatchStatus           @default(DRAFT)
   dept_links       department_sub_batches[]
   altered          sub_batch_altered[]
   attachments      sub_batch_attachments[]
@@ -79,28 +80,36 @@ model sub_batch_attachments {
 }
 
 model sub_batch_rejected {
-  id                    Int          @id @default(autoincrement())
-  sub_batch_id          Int?
-  quantity              Int
-  sent_to_department_id Int?
-  reason                String
-  worker_id             Int?
-  worker_log_id         Int?
-  sent_to_department    departments? @relation("RejectedDept", fields: [sent_to_department_id], references: [id])
-  sub_batch             sub_batches? @relation(fields: [sub_batch_id], references: [id])
-  worker_log            worker_logs? @relation(fields: [worker_log_id], references: [id])
+  id                              Int                         @id @default(autoincrement())
+  sub_batch_id                    Int?
+  quantity                        Int
+  sent_to_department_id           Int?
+  reason                          String
+  worker_id                       Int?
+  worker_log_id                   Int?
+  source_department_sub_batch_id  Int?
+  created_department_sub_batch_id Int?
+  sent_to_department              departments?                @relation("RejectedDept", fields: [sent_to_department_id], references: [id])
+  sub_batch                       sub_batches?                @relation(fields: [sub_batch_id], references: [id])
+  worker_log                      worker_logs?                @relation(fields: [worker_log_id], references: [id])
+  source_entry                    department_sub_batches?     @relation("RejectedSource", fields: [source_department_sub_batch_id], references: [id])
+  created_entry                   department_sub_batches?     @relation("RejectedCreated", fields: [created_department_sub_batch_id], references: [id])
 }
 
 model sub_batch_altered {
-  id                    Int          @id @default(autoincrement())
-  sub_batch_id          Int?
-  quantity              Int
-  sent_to_department_id Int?
-  reason                String
-  worker_log_id         Int?
-  sent_to_department    departments? @relation("AlteredDept", fields: [sent_to_department_id], references: [id])
-  sub_batch             sub_batches? @relation(fields: [sub_batch_id], references: [id])
-  worker_log            worker_logs? @relation(fields: [worker_log_id], references: [id])
+  id                              Int                         @id @default(autoincrement())
+  sub_batch_id                    Int?
+  quantity                        Int
+  sent_to_department_id           Int?
+  reason                          String
+  worker_log_id                   Int?
+  source_department_sub_batch_id  Int?
+  created_department_sub_batch_id Int?
+  sent_to_department              departments?                @relation("AlteredDept", fields: [sent_to_department_id], references: [id])
+  sub_batch                       sub_batches?                @relation(fields: [sub_batch_id], references: [id])
+  worker_log                      worker_logs?                @relation(fields: [worker_log_id], references: [id])
+  source_entry                    department_sub_batches?     @relation("AlteredSource", fields: [source_department_sub_batch_id], references: [id])
+  created_entry                   department_sub_batches?     @relation("AlteredCreated", fields: [created_department_sub_batch_id], references: [id])
 }
 
 model departments {
@@ -142,6 +151,10 @@ model department_sub_batches {
   assigned_worker    workers?                       @relation(fields: [assigned_worker_id], references: [id])
   department         departments?                   @relation(fields: [department_id], references: [id])
   sub_batch          sub_batches?                   @relation(fields: [sub_batch_id], references: [id])
+  rejected_source    sub_batch_rejected[]           @relation("RejectedSource")
+  rejected_created   sub_batch_rejected[]           @relation("RejectedCreated")
+  altered_source     sub_batch_altered[]            @relation("AlteredSource")
+  altered_created    sub_batch_altered[]            @relation("AlteredCreated")
 }
 
 model clients {
@@ -270,4 +283,11 @@ enum DepartmentStage {
 enum Role {
   ADMIN
   SUPERVISOR
+}
+
+enum SubBatchStatus {
+  DRAFT
+  IN_PRODUCTION
+  COMPLETED
+  CANCELLED
 }

@@ -36,18 +36,7 @@ export const createAlteredSubBatch = async (data: AlteredPieceInput) => {
       throw new Error(`Insufficient quantity in source entry. Available: ${sourceEntry.quantity_remaining}, requested: ${data.quantity}`);
     }
 
-    // 2️⃣ Create altered record
-    const altered = await tx.sub_batch_altered.create({
-      data: {
-        sub_batch_id: data.sub_batch_id,
-        quantity: data.quantity,
-        sent_to_department_id: data.target_department_id,
-        reason: data.reason,
-        worker_log_id: data.worker_log_id ?? null,
-      },
-    });
-
-    // 3️⃣ Reduce quantity_remaining from SPECIFIC entry (not all entries)
+    // 2️⃣ Reduce quantity_remaining from SPECIFIC entry (not all entries)
     await tx.department_sub_batches.update({
       where: {
         id: data.source_department_sub_batch_id,
@@ -57,7 +46,7 @@ export const createAlteredSubBatch = async (data: AlteredPieceInput) => {
       },
     });
 
-    // 4️⃣ Add to department_sub_batches for target department
+    // 3️⃣ Add to department_sub_batches for target department
     const deptSubBatch = await tx.department_sub_batches.create({
       data: {
         sub_batch_id: data.sub_batch_id,
@@ -66,6 +55,19 @@ export const createAlteredSubBatch = async (data: AlteredPieceInput) => {
         is_current: true,
         quantity_remaining: data.quantity, // only altered quantity
         remarks: "Altered",
+      },
+    });
+
+    // 4️⃣ Create altered record with BOTH source and created IDs
+    const altered = await tx.sub_batch_altered.create({
+      data: {
+        sub_batch_id: data.sub_batch_id,
+        quantity: data.quantity,
+        sent_to_department_id: data.target_department_id,
+        reason: data.reason,
+        worker_log_id: data.worker_log_id ?? null,
+        source_department_sub_batch_id: data.source_department_sub_batch_id,  // ✅ Store source entry
+        created_department_sub_batch_id: deptSubBatch.id,                     // ✅ Store created entry
       },
     });
 

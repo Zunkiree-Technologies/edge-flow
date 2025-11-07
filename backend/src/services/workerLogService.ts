@@ -83,16 +83,6 @@ export const createWorkerLog = async (data: WorkerLogInput) => {
           throw new Error(`Insufficient quantity in source entry. Available: ${sourceEntry.quantity_remaining}, requested: ${r.quantity}`);
         }
 
-        const rejectedRecord = await tx.sub_batch_rejected.create({
-          data: {
-            sub_batch_id: data.sub_batch_id,
-            quantity: r.quantity,
-            sent_to_department_id: r.sent_to_department_id,
-            reason: r.reason,
-            worker_log_id: logId,
-          },
-        });
-
         // Reduce quantity from SPECIFIC entry (not all entries)
         await tx.department_sub_batches.update({
           where: {
@@ -112,6 +102,19 @@ export const createWorkerLog = async (data: WorkerLogInput) => {
             is_current: true,
             quantity_remaining: r.quantity,
             remarks: "Rejected",
+          },
+        });
+
+        // Create rejected record with BOTH source and created IDs
+        const rejectedRecord = await tx.sub_batch_rejected.create({
+          data: {
+            sub_batch_id: data.sub_batch_id,
+            quantity: r.quantity,
+            sent_to_department_id: r.sent_to_department_id,
+            reason: r.reason,
+            worker_log_id: logId,
+            source_department_sub_batch_id: r.source_department_sub_batch_id,  // ✅ Store source entry
+            created_department_sub_batch_id: newDept.id,                       // ✅ Store created entry
           },
         });
 
@@ -150,16 +153,6 @@ export const createWorkerLog = async (data: WorkerLogInput) => {
           throw new Error(`Insufficient quantity in source entry. Available: ${sourceEntry.quantity_remaining}, requested: ${a.quantity}`);
         }
 
-        const alteredRecord = await tx.sub_batch_altered.create({
-          data: {
-            sub_batch_id: data.sub_batch_id,
-            quantity: a.quantity,
-            sent_to_department_id: a.sent_to_department_id,
-            reason: a.reason,
-            worker_log_id: logId,
-          },
-        });
-
         // Reduce quantity from SPECIFIC entry (not all entries)
         await tx.department_sub_batches.update({
           where: {
@@ -179,6 +172,19 @@ export const createWorkerLog = async (data: WorkerLogInput) => {
             is_current: true,
             quantity_remaining: a.quantity,
             remarks: "Altered",
+          },
+        });
+
+        // Create altered record with BOTH source and created IDs
+        const alteredRecord = await tx.sub_batch_altered.create({
+          data: {
+            sub_batch_id: data.sub_batch_id,
+            quantity: a.quantity,
+            sent_to_department_id: a.sent_to_department_id,
+            reason: a.reason,
+            worker_log_id: logId,
+            source_department_sub_batch_id: a.source_department_sub_batch_id,  // ✅ Store source entry
+            created_department_sub_batch_id: newDept.id,                       // ✅ Store created entry
           },
         });
 
@@ -259,14 +265,147 @@ export const updateWorkerLog = async (id: number, data: WorkerLogInput) => {
   });
 };
 
-/// ✅ Delete Worker Log (cascade delete rejected/altered)
+/// ✅ Delete Worker Log (and reverse all reject/alter operations)
 export const deleteWorkerLog = async (id: number) => {
-  return await prisma.worker_logs.delete({
-    where: { id },
-    include: {
-      rejected_entry: true,
-      altered_entry: true,
-    },
+  return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    // 1️⃣ First, fetch the worker log with all related data
+    const workerLog = await tx.worker_logs.findUnique({
+      where: { id },
+      include: {
+        rejected_entry: true,
+        altered_entry: true,
+      },
+    });
+
+    if (!workerLog) {
+      throw new Error(`Worker log ${id} not found`);
+    }
+
+    console.log(`=== Deleting Worker Log ${id} ===`);
+    console.log(`Rejected entries: ${workerLog.rejected_entry?.length || 0}`);
+    console.log(`Altered entries: ${workerLog.altered_entry?.length || 0}`);
+
+    // 2️⃣ Reverse rejected entries
+    if (workerLog.rejected_entry && workerLog.rejected_entry.length > 0) {
+      for (const rejectedRecord of workerLog.rejected_entry) {
+        console.log(`\n--- Processing Rejected Entry ${rejectedRecord.id} ---`);
+        console.log(`Quantity: ${rejectedRecord.quantity}`);
+        console.log(`Source entry ID: ${rejectedRecord.source_department_sub_batch_id}`);
+        console.log(`Created entry ID: ${rejectedRecord.created_department_sub_batch_id}`);
+
+        // ✅ Use the EXACT created entry ID that was stored
+        if (rejectedRecord.created_department_sub_batch_id) {
+          const createdEntry = await tx.department_sub_batches.findUnique({
+            where: { id: rejectedRecord.created_department_sub_batch_id },
+          });
+
+          if (createdEntry && createdEntry.is_current) {
+            // Mark the created rejected entry as inactive
+            await tx.department_sub_batches.update({
+              where: { id: rejectedRecord.created_department_sub_batch_id },
+              data: { is_current: false },
+            });
+            console.log(`✓ Marked created rejected entry ${rejectedRecord.created_department_sub_batch_id} as inactive`);
+          } else {
+            console.warn(`⚠ Created entry ${rejectedRecord.created_department_sub_batch_id} not found or already inactive`);
+          }
+        }
+
+        // ✅ Use the EXACT source entry ID that was stored
+        if (rejectedRecord.source_department_sub_batch_id) {
+          const sourceEntry = await tx.department_sub_batches.findUnique({
+            where: { id: rejectedRecord.source_department_sub_batch_id },
+          });
+
+          if (sourceEntry) {
+            // Restore quantity to the EXACT source entry
+            await tx.department_sub_batches.update({
+              where: { id: rejectedRecord.source_department_sub_batch_id },
+              data: {
+                quantity_remaining: { increment: rejectedRecord.quantity },
+              },
+            });
+            console.log(`✓ Restored ${rejectedRecord.quantity} to source entry ${rejectedRecord.source_department_sub_batch_id}`);
+          } else {
+            console.error(`❌ Source entry ${rejectedRecord.source_department_sub_batch_id} not found! Cannot restore quantity.`);
+          }
+        } else {
+          console.error(`❌ No source_department_sub_batch_id stored! Cannot restore quantity precisely.`);
+        }
+
+        // Delete the sub_batch_rejected record
+        await tx.sub_batch_rejected.delete({
+          where: { id: rejectedRecord.id },
+        });
+        console.log(`✓ Deleted rejected record ${rejectedRecord.id}`);
+      }
+    }
+
+    // 3️⃣ Reverse altered entries
+    if (workerLog.altered_entry && workerLog.altered_entry.length > 0) {
+      for (const alteredRecord of workerLog.altered_entry) {
+        console.log(`\n--- Processing Altered Entry ${alteredRecord.id} ---`);
+        console.log(`Quantity: ${alteredRecord.quantity}`);
+        console.log(`Source entry ID: ${alteredRecord.source_department_sub_batch_id}`);
+        console.log(`Created entry ID: ${alteredRecord.created_department_sub_batch_id}`);
+
+        // ✅ Use the EXACT created entry ID that was stored
+        if (alteredRecord.created_department_sub_batch_id) {
+          const createdEntry = await tx.department_sub_batches.findUnique({
+            where: { id: alteredRecord.created_department_sub_batch_id },
+          });
+
+          if (createdEntry && createdEntry.is_current) {
+            // Mark the created altered entry as inactive
+            await tx.department_sub_batches.update({
+              where: { id: alteredRecord.created_department_sub_batch_id },
+              data: { is_current: false },
+            });
+            console.log(`✓ Marked created altered entry ${alteredRecord.created_department_sub_batch_id} as inactive`);
+          } else {
+            console.warn(`⚠ Created entry ${alteredRecord.created_department_sub_batch_id} not found or already inactive`);
+          }
+        }
+
+        // ✅ Use the EXACT source entry ID that was stored
+        if (alteredRecord.source_department_sub_batch_id) {
+          const sourceEntry = await tx.department_sub_batches.findUnique({
+            where: { id: alteredRecord.source_department_sub_batch_id },
+          });
+
+          if (sourceEntry) {
+            // Restore quantity to the EXACT source entry
+            await tx.department_sub_batches.update({
+              where: { id: alteredRecord.source_department_sub_batch_id },
+              data: {
+                quantity_remaining: { increment: alteredRecord.quantity },
+              },
+            });
+            console.log(`✓ Restored ${alteredRecord.quantity} to source entry ${alteredRecord.source_department_sub_batch_id}`);
+          } else {
+            console.error(`❌ Source entry ${alteredRecord.source_department_sub_batch_id} not found! Cannot restore quantity.`);
+          }
+        } else {
+          console.error(`❌ No source_department_sub_batch_id stored! Cannot restore quantity precisely.`);
+        }
+
+        // Delete the sub_batch_altered record
+        await tx.sub_batch_altered.delete({
+          where: { id: alteredRecord.id },
+        });
+        console.log(`✓ Deleted altered record ${alteredRecord.id}`);
+      }
+    }
+
+    // 4️⃣ Finally, delete the worker log
+    console.log(`\n✓ Deleting worker log ${id}`);
+    return await tx.worker_logs.delete({
+      where: { id },
+      include: {
+        rejected_entry: true,
+        altered_entry: true,
+      },
+    });
   });
 };
 

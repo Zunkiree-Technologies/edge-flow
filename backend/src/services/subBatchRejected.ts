@@ -36,18 +36,7 @@ export const createRejectedSubBatch = async (data: RejectedData) => {
       throw new Error(`Insufficient quantity in source entry. Available: ${sourceEntry.quantity_remaining}, requested: ${data.quantity}`);
     }
 
-    // 2️⃣ Add record to sub_batch_rejected
-    const rejected = await tx.sub_batch_rejected.create({
-      data: {
-        sub_batch_id: data.sub_batch_id,
-        quantity: data.quantity,
-        reason: data.reason,
-        sent_to_department_id: data.sent_to_department_id,
-        worker_log_id: data.worker_log_id ?? null,
-      },
-    });
-
-    // 3️⃣ Reduce quantity_remaining from SPECIFIC entry (not all entries)
+    // 2️⃣ Reduce quantity_remaining from SPECIFIC entry (not all entries)
     await tx.department_sub_batches.update({
       where: {
         id: data.source_department_sub_batch_id,
@@ -57,7 +46,7 @@ export const createRejectedSubBatch = async (data: RejectedData) => {
       },
     });
 
-    // 4️⃣ Create new department_sub_batches record for rejected pieces
+    // 3️⃣ Create new department_sub_batches record for rejected pieces
     const newDeptSubBatch = await tx.department_sub_batches.create({
       data: {
         sub_batch_id: data.sub_batch_id,
@@ -66,6 +55,19 @@ export const createRejectedSubBatch = async (data: RejectedData) => {
         is_current: true,
         quantity_remaining: data.quantity,
         remarks: "Rejected",
+      },
+    });
+
+    // 4️⃣ Add record to sub_batch_rejected with BOTH source and created IDs
+    const rejected = await tx.sub_batch_rejected.create({
+      data: {
+        sub_batch_id: data.sub_batch_id,
+        quantity: data.quantity,
+        reason: data.reason,
+        sent_to_department_id: data.sent_to_department_id,
+        worker_log_id: data.worker_log_id ?? null,
+        source_department_sub_batch_id: data.source_department_sub_batch_id,  // ✅ Store source entry
+        created_department_sub_batch_id: newDeptSubBatch.id,                  // ✅ Store created entry
       },
     });
 
