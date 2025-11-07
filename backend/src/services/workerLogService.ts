@@ -16,14 +16,14 @@ export enum WorkerActivityType {
 interface RejectedInput {
   quantity: number;
   sent_to_department_id: number;
-  original_department_id: number;
+  source_department_sub_batch_id: number; // Specific entry to reduce from
   reason: string;
 }
 
 interface AlteredInput {
   quantity: number;
   sent_to_department_id: number;
-  original_department_id: number;
+  source_department_sub_batch_id: number; // Specific entry to reduce from
   reason: string;
 }
 
@@ -66,6 +66,23 @@ export const createWorkerLog = async (data: WorkerLogInput) => {
   if (data.rejected && data.rejected.length > 0) {
     for (const r of data.rejected) {
       await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+        // Verify source entry exists and has sufficient quantity
+        const sourceEntry = await tx.department_sub_batches.findUnique({
+          where: { id: r.source_department_sub_batch_id },
+        });
+
+        if (!sourceEntry) {
+          throw new Error(`Source department_sub_batch entry ${r.source_department_sub_batch_id} not found`);
+        }
+
+        if (!sourceEntry.is_current) {
+          throw new Error(`Source entry ${r.source_department_sub_batch_id} is not active`);
+        }
+
+        if ((sourceEntry.quantity_remaining || 0) < r.quantity) {
+          throw new Error(`Insufficient quantity in source entry. Available: ${sourceEntry.quantity_remaining}, requested: ${r.quantity}`);
+        }
+
         const rejectedRecord = await tx.sub_batch_rejected.create({
           data: {
             sub_batch_id: data.sub_batch_id,
@@ -76,12 +93,10 @@ export const createWorkerLog = async (data: WorkerLogInput) => {
           },
         });
 
-        // Reduce quantity from original department
-        await tx.department_sub_batches.updateMany({
+        // Reduce quantity from SPECIFIC entry (not all entries)
+        await tx.department_sub_batches.update({
           where: {
-            sub_batch_id: data.sub_batch_id,
-            department_id: r.original_department_id,
-            is_current: true,
+            id: r.source_department_sub_batch_id,
           },
           data: {
             quantity_remaining: { decrement: r.quantity },
@@ -118,6 +133,23 @@ export const createWorkerLog = async (data: WorkerLogInput) => {
   if (data.altered && data.altered.length > 0) {
     for (const a of data.altered) {
       await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+        // Verify source entry exists and has sufficient quantity
+        const sourceEntry = await tx.department_sub_batches.findUnique({
+          where: { id: a.source_department_sub_batch_id },
+        });
+
+        if (!sourceEntry) {
+          throw new Error(`Source department_sub_batch entry ${a.source_department_sub_batch_id} not found`);
+        }
+
+        if (!sourceEntry.is_current) {
+          throw new Error(`Source entry ${a.source_department_sub_batch_id} is not active`);
+        }
+
+        if ((sourceEntry.quantity_remaining || 0) < a.quantity) {
+          throw new Error(`Insufficient quantity in source entry. Available: ${sourceEntry.quantity_remaining}, requested: ${a.quantity}`);
+        }
+
         const alteredRecord = await tx.sub_batch_altered.create({
           data: {
             sub_batch_id: data.sub_batch_id,
@@ -128,12 +160,10 @@ export const createWorkerLog = async (data: WorkerLogInput) => {
           },
         });
 
-        // Reduce quantity from original department
-        await tx.department_sub_batches.updateMany({
+        // Reduce quantity from SPECIFIC entry (not all entries)
+        await tx.department_sub_batches.update({
           where: {
-            sub_batch_id: data.sub_batch_id,
-            department_id: a.original_department_id,
-            is_current: true,
+            id: a.source_department_sub_batch_id,
           },
           data: {
             quantity_remaining: { decrement: a.quantity },

@@ -13,13 +13,30 @@ interface RejectedData {
   quantity: number;
   reason: string;
   sent_to_department_id: number; // where rejected pieces go
-  original_department_id: number; // department from which quantity is reduced
+  source_department_sub_batch_id: number; // SPECIFIC entry to reduce from
   worker_log_id?: number; // optional link to worker log
 }
 
 export const createRejectedSubBatch = async (data: RejectedData) => {
   return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-    // 1️⃣ Add record to sub_batch_rejected
+    // 1️⃣ Verify source entry exists and has sufficient quantity
+    const sourceEntry = await tx.department_sub_batches.findUnique({
+      where: { id: data.source_department_sub_batch_id },
+    });
+
+    if (!sourceEntry) {
+      throw new Error(`Source department_sub_batch entry ${data.source_department_sub_batch_id} not found`);
+    }
+
+    if (!sourceEntry.is_current) {
+      throw new Error(`Source entry ${data.source_department_sub_batch_id} is not active`);
+    }
+
+    if ((sourceEntry.quantity_remaining || 0) < data.quantity) {
+      throw new Error(`Insufficient quantity in source entry. Available: ${sourceEntry.quantity_remaining}, requested: ${data.quantity}`);
+    }
+
+    // 2️⃣ Add record to sub_batch_rejected
     const rejected = await tx.sub_batch_rejected.create({
       data: {
         sub_batch_id: data.sub_batch_id,
@@ -30,19 +47,17 @@ export const createRejectedSubBatch = async (data: RejectedData) => {
       },
     });
 
-    // 2️⃣ Reduce quantity_remaining from original department
-    await tx.department_sub_batches.updateMany({
+    // 3️⃣ Reduce quantity_remaining from SPECIFIC entry (not all entries)
+    await tx.department_sub_batches.update({
       where: {
-        sub_batch_id: data.sub_batch_id,
-        department_id: data.original_department_id,
-        is_current: true,
+        id: data.source_department_sub_batch_id,
       },
       data: {
         quantity_remaining: { decrement: data.quantity },
       },
     });
 
-    // 3️⃣ Create new department_sub_batches record for rejected pieces
+    // 4️⃣ Create new department_sub_batches record for rejected pieces
     const newDeptSubBatch = await tx.department_sub_batches.create({
       data: {
         sub_batch_id: data.sub_batch_id,
@@ -54,7 +69,7 @@ export const createRejectedSubBatch = async (data: RejectedData) => {
       },
     });
 
-    // 4️⃣ Log history
+    // 5️⃣ Log history
     await tx.department_sub_batch_history.create({
       data: {
         department_sub_batch_id: newDeptSubBatch.id,

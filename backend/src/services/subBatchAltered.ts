@@ -12,14 +12,31 @@ interface AlteredPieceInput {
   sub_batch_id: number;
   quantity: number;
   target_department_id: number;
-  original_department_id: number; // department from which quantity is reduced
+  source_department_sub_batch_id: number; // SPECIFIC entry to reduce from
   reason: string;
   worker_log_id?: number; // optional link to worker log
 }
 
 export const createAlteredSubBatch = async (data: AlteredPieceInput) => {
   return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-    // 1️⃣ Create altered record
+    // 1️⃣ Verify source entry exists and has sufficient quantity
+    const sourceEntry = await tx.department_sub_batches.findUnique({
+      where: { id: data.source_department_sub_batch_id },
+    });
+
+    if (!sourceEntry) {
+      throw new Error(`Source department_sub_batch entry ${data.source_department_sub_batch_id} not found`);
+    }
+
+    if (!sourceEntry.is_current) {
+      throw new Error(`Source entry ${data.source_department_sub_batch_id} is not active`);
+    }
+
+    if ((sourceEntry.quantity_remaining || 0) < data.quantity) {
+      throw new Error(`Insufficient quantity in source entry. Available: ${sourceEntry.quantity_remaining}, requested: ${data.quantity}`);
+    }
+
+    // 2️⃣ Create altered record
     const altered = await tx.sub_batch_altered.create({
       data: {
         sub_batch_id: data.sub_batch_id,
@@ -30,25 +47,17 @@ export const createAlteredSubBatch = async (data: AlteredPieceInput) => {
       },
     });
 
-    // 2️⃣ Get original sub-batch to know estimated pieces
-    const subBatch = await tx.sub_batches.findUnique({
-      where: { id: data.sub_batch_id },
-    });
-    if (!subBatch) throw new Error("Sub-batch not found");
-
-    // 2.5️⃣ Reduce quantity_remaining from original department
-    await tx.department_sub_batches.updateMany({
+    // 3️⃣ Reduce quantity_remaining from SPECIFIC entry (not all entries)
+    await tx.department_sub_batches.update({
       where: {
-        sub_batch_id: data.sub_batch_id,
-        department_id: data.original_department_id,
-        is_current: true,
+        id: data.source_department_sub_batch_id,
       },
       data: {
         quantity_remaining: { decrement: data.quantity },
       },
     });
 
-    // 3️⃣ Add to department_sub_batches for target department
+    // 4️⃣ Add to department_sub_batches for target department
     const deptSubBatch = await tx.department_sub_batches.create({
       data: {
         sub_batch_id: data.sub_batch_id,
@@ -60,7 +69,7 @@ export const createAlteredSubBatch = async (data: AlteredPieceInput) => {
       },
     });
 
-    // 4️⃣ Log history
+    // 5️⃣ Log history
     await tx.department_sub_batch_history.create({
       data: {
         department_sub_batch_id: deptSubBatch.id,

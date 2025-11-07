@@ -9,6 +9,7 @@ import workerRoutes from "./src/routes/worker";
 import vendorRoutes from "./src/routes/vendor";
 import categoryRoutes from "./src/routes/category";
 import departmentRoutes from "./src/routes/department";
+import departmentSubBatchRoutes from "./src/routes/departmentSubBatch";
 import supervisorRoutes from "./src/routes/supervisor";
 import workerLogRoutes from "./src/routes/workerLog";
 import subBatchRejectedRoutes from "./src/routes/subBatchRejected";
@@ -53,6 +54,9 @@ app.use("/api/categories", categoryRoutes);
 
 // Department Routes
 app.use("/api/departments", departmentRoutes);
+
+// Department Sub-Batch Routes
+app.use("/api/department-sub-batches", departmentSubBatchRoutes);
 
 //worker Log Routes
 app.use("/api/worker-logs", workerLogRoutes);

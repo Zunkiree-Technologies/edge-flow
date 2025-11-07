@@ -267,31 +267,39 @@ export async function moveSubBatchStage(
 }
 
 
-export async function advanceSubBatchToNextDepartment(subBatchId: number, departmentId: number) {
-  // 1️⃣ Get current department's main workflow entry (excluding rejected/altered branches)
-  const currentDept = await prisma.department_sub_batches.findFirst({
+export async function advanceSubBatchToNextDepartment(
+  departmentSubBatchId: number,
+  toDepartmentId: number
+) {
+  // 1️⃣ Get the specific department_sub_batch entry to advance
+  const currentDept = await prisma.department_sub_batches.findUnique({
     where: {
-      sub_batch_id: subBatchId,
-      is_current: true,
-      OR: [
-        { remarks: null },
-        { remarks: { notIn: ["Rejected", "Altered"] } },
-      ],
+      id: departmentSubBatchId,
     },
   });
 
-  if (!currentDept) throw new Error("No active main workflow found for this sub-batch");
+  if (!currentDept) {
+    throw new Error(
+      `Department sub-batch entry with id ${departmentSubBatchId} not found`
+    );
+  }
+
+  if (!currentDept.is_current) {
+    throw new Error(
+      `Department sub-batch entry ${departmentSubBatchId} is not active`
+    );
+  }
 
   const quantityToAdvance = currentDept.quantity_remaining || 0;
 
-  // 2️⃣ Validate that the department exists
-  const department = await prisma.departments.findUnique({
-    where: { id: departmentId },
+  // 2️⃣ Validate that the target department exists
+  const targetDepartment = await prisma.departments.findUnique({
+    where: { id: toDepartmentId },
   });
 
-  if (!department) throw new Error("Department not found");
+  if (!targetDepartment) throw new Error("Target department not found");
 
-  // 3️⃣ Mark ONLY this specific main workflow entry as inactive (NOT rejected/altered entries)
+  // 3️⃣ Mark this specific entry as inactive
   await prisma.department_sub_batches.update({
     where: {
       id: currentDept.id,
@@ -299,14 +307,15 @@ export async function advanceSubBatchToNextDepartment(subBatchId: number, depart
     data: { is_current: false },
   });
 
-  // 4️⃣ Add sub-batch to specified department with correct quantity
+  // 4️⃣ Create new entry in target department with correct quantity
   return await prisma.department_sub_batches.create({
     data: {
-      sub_batch_id: subBatchId,
-      department_id: departmentId,
+      sub_batch_id: currentDept.sub_batch_id,
+      department_id: toDepartmentId,
       stage: DepartmentStage.NEW_ARRIVAL,
       is_current: true,
       quantity_remaining: quantityToAdvance,
+      remarks: currentDept.remarks, // Preserve remarks (Rejected/Altered/null)
     },
   });
 }
