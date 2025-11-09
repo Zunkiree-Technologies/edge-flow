@@ -16,6 +16,7 @@ import subBatchRejectedRoutes from "./src/routes/subBatchRejected";
 import subBatchAlteredRoutes from "./src/routes/subBatchAltered";
 import subBatchWorkflowRoutes from "./src/routes/subBatchWorkflow";
 import wageRoutes from "./src/routes/wage";
+import productionViewRoutes from "./src/routes/productionView";
 
 
 dotenv.config();
@@ -71,6 +72,9 @@ app.use("/api/sub-batches/workflow", subBatchWorkflowRoutes);
 
 // Wage Calculation Routes
 app.use("/api/wages", wageRoutes);
+
+// Production View Routes
+app.use("/api/production-view", productionViewRoutes);
 
 
 // Optional test route
