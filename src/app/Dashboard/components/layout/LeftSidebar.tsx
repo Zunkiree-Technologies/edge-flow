@@ -15,7 +15,8 @@ import {
   Truck,
   Users2,
   Building,
-  UserPlus, 
+  UserPlus,
+  Calculator,
 } from "lucide-react";
 
 import { NavigationItem } from "../../types/navigation";
@@ -33,6 +34,7 @@ const navItems: NavigationItem[] = [
   { id: "departmentview", label: "Department View", icon: Building2 },
   { id: "productionview", label: "Production View", icon: Monitor },
   { id: "inventory", label: "Inventory", icon: Archive },
+  { id: "wagecalculation", label: "Wage Calculation", icon: Calculator },
   {
     id: "settings",
     label: "Settings",
@@ -42,7 +44,7 @@ const navItems: NavigationItem[] = [
       { id: "vendors", label: "Vendors", icon: Truck },
       { id: "workers", label: "Workers", icon: Users2 },
       { id: "departmentform", label: "Department", icon: Building },
-      { id: "createsupervisor", label: "Supervisor", icon: UserPlus }, 
+      { id: "createsupervisor", label: "Supervisor", icon: UserPlus },
     ],
   },
 ];

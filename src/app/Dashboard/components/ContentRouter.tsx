@@ -9,7 +9,9 @@ import DepartmentView from "./views/DepartmentView";
 import GenericView from "./views/GenericView";
 import Worker from "./views/Worker";
 import DepartmentForm from "./views/DepartmentForm";
-import CreateSupervisor from "./views/CreateSupervisor"; // 👈 import it
+import CreateSupervisor from "./views/CreateSupervisor";
+import WageCalculation from "./views/WageCalculation";
+import ProductionView from "./views/ProductionView";
 
 interface ContentRouterProps {
   activeView: string;
@@ -41,8 +43,14 @@ const ContentRouter: React.FC<ContentRouterProps> = ({ activeView }) => {
     case "departmentform":
       return <DepartmentForm />;
 
-    case "createsupervisor": 
+    case "createsupervisor":
       return <CreateSupervisor />;
+
+    case "wagecalculation":
+      return <WageCalculation />;
+
+    case "productionview":
+      return <ProductionView />;
 
     default:
       return (
