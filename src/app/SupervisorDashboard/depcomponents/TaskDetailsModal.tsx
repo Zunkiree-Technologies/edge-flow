@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useCallback } from 'react';
-import { Calendar, X } from 'lucide-react';
+import { Calendar, X, CheckCircle, Edit3, XCircle, Clock } from 'lucide-react';
 import AddRecordModal from './AddRecordModal';
 import WorkerAssignmentTable from './WorkerAssignmentTable';
 import PreviewModal from './PreviewModal';
@@ -17,12 +17,13 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
     const [isAddRecordOpen, setIsAddRecordOpen] = useState(false);
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState<any | null>(null);
+    const [recordToEdit, setRecordToEdit] = useState<any | null>(null);
+    const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
     const [status, setStatus] = useState('NEW_ARRIVAL');
     const [workerRecords, setWorkerRecords] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [sendToDepartment, setSendToDepartment] = useState('');
-    const [departments, setDepartments] = useState<any[]>([]);
     const [showCompletionDialog, setShowCompletionDialog] = useState(false);
     const [confirmationText, setConfirmationText] = useState('');
 
@@ -128,25 +129,6 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
     useEffect(() => {
         if (isOpen && taskData?.sub_batch?.id) fetchWorkerLogs();
     }, [isOpen, fetchWorkerLogs, taskData?.sub_batch?.id]);
-
-    // Fetch departments when modal opens
-    useEffect(() => {
-        const fetchDepartments = async () => {
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/departments`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setDepartments(data);
-                }
-            } catch (error) {
-                console.error('Error fetching departments:', error);
-            }
-        };
-
-        if (isOpen) {
-            fetchDepartments();
-        }
-    }, [isOpen]);
 
     // Initialize status from taskData
     useEffect(() => {
@@ -443,11 +425,22 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
     console.log('Progress Percentage:', quantityToWork > 0 ? Math.round((totalProcessed / quantityToWork) * 100) : 0, '%');
     console.log('======================================');
 
-    const handleAddRecord = () => setIsAddRecordOpen(true);
+    const handleAddRecord = () => {
+        setModalMode('add');
+        setRecordToEdit(null);
+        setIsAddRecordOpen(true);
+    };
+
+    const handleEditRecord = (record: any) => {
+        setModalMode('edit');
+        setRecordToEdit(record);
+        setIsAddRecordOpen(true);
+    };
 
     const handleSaveRecord = async () => {
         // Close the modal
         setIsAddRecordOpen(false);
+        setRecordToEdit(null);
 
         // Refresh worker logs from backend to get the latest data
         await fetchWorkerLogs();
@@ -505,184 +498,102 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                 <div className="bg-white rounded-lg w-[95vw] max-w-[650px] mx-4 relative shadow-xl max-h-[95vh] overflow-hidden flex flex-col">
 
                     {/* Header */}
-                    <div className="flex items-center justify-between p-6 border-b border-gray-400 ">
-                        <h3 className="text-lg font-bold">Task Details</h3>
-                        <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-gray-300">
+                        <h3 className="text-lg font-semibold text-gray-900">Task Details</h3>
+                        <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
                             <X size={20} />
                         </button>
                     </div>
 
-                    {/* Rejection/Alteration Alert Banner */}
-                    {taskData.remarks && (
-                        <div className={`px-6 py-4  ${
-                            taskData.remarks.toLowerCase().includes('reject')
-                                ? 'bg-red-100 border-red-500'
-                                : taskData.remarks.toLowerCase().includes('alter')
-                                ? 'bg-orange-100 border-orange-500'
-                                : 'bg-blue-100 border-blue-500'
-                        }`}>
-                            <div className="flex items-start gap-3">
-                                <span className="text-2xl">
-                                    {taskData.remarks.toLowerCase().includes('reject') ? '' : ''}
-                                </span>
-                                <div className="flex-1">
-                                    <p className={`font-bold text-lg ${
-                                        taskData.remarks.toLowerCase().includes('reject')
-                                            ? 'text-red-900'
-                                            : 'text-orange-900'
-                                    }`}>
-                                        {taskData.remarks.toUpperCase()}
-                                    </p>
-                                    <p className={`text-sm ${
-                                        taskData.remarks.toLowerCase().includes('reject')
-                                            ? 'text-red-700'
-                                            : 'text-orange-700'
-                                    }`}>
-                                        This batch requires {taskData.remarks.toLowerCase()} work
-                                    </p>
-                                    {/* Show rejection/alteration reason and source */}
-                                    {taskData.rejection_source && (
-                                        <div className="mt-2 text-sm text-red-800">
-                                            <p><strong>From:</strong> {taskData.rejection_source.from_department_name}</p>
-                                            <p><strong>Reason:</strong> {taskData.rejection_source.reason}</p>
-                                        </div>
-                                    )}
-                                    {taskData.alteration_source && (
-                                        <div className="mt-2 text-sm text-orange-800">
-                                            <p><strong>From:</strong> {taskData.alteration_source.from_department_name}</p>
-                                            <p><strong>Reason:</strong> {taskData.alteration_source.reason}</p>
-                                        </div>
-                                    )}
-                                </div>
-                               
-                            </div>
-                        </div>
-                    )}
-
                     {/* Content */}
-                    <div className="p-6 overflow-y-auto flex-1">
-                        <div className="space-y-8">
+                    <div className="overflow-y-auto flex-1">
+                        <div className="space-y-6">
 
-                            {/* Task Info */}
-                            <div className="p-6">
-                                <h4 className="font-semibold mb-6">Task Information</h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Regular Card Layout */}
+                            <div className="px-6 py-4">
+                                    <h4 className="font-semibold mb-4 text-base">Task Information</h4>
+                                    <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                                    {/* Row 1: Roll Name and Batch Name */}
                                     <div>
-                                        <label className="text-medium font-semibold text-black">Batch Name</label>
-                                        <p className="text-gray-900 border border-gray-200 rounded-lg min-w-[90px] max-w-[150px] px-6 py-2 mt-1">
-                                            {taskData.sub_batch?.batch?.name || '-'}
-                                        </p>
+                                        <label className="text-sm font-medium text-gray-700 block mb-1">Roll Name</label>
+                                        <div className="bg-gray-50 border border-gray-300 rounded px-3 py-2 text-sm text-gray-900">
+                                            {taskData.sub_batch?.batch?.name || 'Roll 1'}
+                                        </div>
                                     </div>
                                     <div>
-                                        <label className="text-medium font-semibold text-black">Sub Batch Name</label>
-                                        <p className="text-gray-900 border border-gray-200 rounded-lg min-w-[90px] max-w-[150px] px-6 py-2 mt-1">
+                                        <label className="text-sm font-medium text-gray-700 block mb-1">Batch Name</label>
+                                        <div className="bg-gray-50 border border-gray-300 rounded px-3 py-2 text-sm text-gray-900">
+                                            {taskData.sub_batch?.batch?.name || 'Batch B'}
+                                        </div>
+                                    </div>
+
+                                    {/* Row 2: Sub Batch Name and Total Quantity */}
+                                    <div>
+                                        <label className="text-sm font-medium text-gray-700 block mb-1">Sub Batch Name</label>
+                                        <div className="bg-gray-50 border border-gray-300 rounded px-3 py-2 text-sm text-gray-900">
                                             {taskData.sub_batch?.name || '-'}
-                                        </p>
+                                        </div>
                                     </div>
                                     <div>
-                                        <label className="text-medium font-semibold text-black">Planned Start Date</label>
-                                        <p className="text-gray-900 border border-gray-200 rounded-lg w-fit px-6 py-2 mt-1 flex gap-2">
-                                            {formatDate(taskData.sub_batch?.start_date)}
-                                            <Calendar size={20} />
-                                        </p>
+                                        <label className="text-sm font-medium text-gray-700 block mb-1">Total Quantity</label>
+                                        <div className="bg-gray-50 border border-gray-300 rounded px-3 py-2 text-sm text-gray-900">
+                                            {(taskData.quantity_remaining ?? taskData.sub_batch?.estimated_pieces)?.toLocaleString() || '-'}
+                                        </div>
+                                    </div>
+
+                                    {/* Row 3: Estimated Start Date and Due Date */}
+                                    <div>
+                                        <label className="text-sm font-medium text-gray-700 block mb-1">Estimated Start Date</label>
+                                        <div className="bg-gray-50 border border-gray-300 rounded px-3 py-2 text-sm text-gray-900 flex items-center justify-between">
+                                            <span>{formatDate(taskData.sub_batch?.start_date)}</span>
+                                            <Calendar size={16} className="text-gray-500" />
+                                        </div>
                                     </div>
                                     <div>
-                                        <label className="text-medium font-semibold text-black">Due Date</label>
-                                        <p className="text-gray-900 border border-gray-200 rounded-lg w-fit px-6 py-2 mt-1 flex gap-2">
-                                            {formatDate(taskData.sub_batch?.due_date)}
-                                            <Calendar size={20} />
-                                        </p>
+                                        <label className="text-sm font-medium text-gray-700 block mb-1">Due Date</label>
+                                        <div className="bg-gray-50 border border-gray-300 rounded px-3 py-2 text-sm text-gray-900 flex items-center justify-between">
+                                            <span>{formatDate(taskData.sub_batch?.due_date)}</span>
+                                            <Calendar size={16} className="text-gray-500" />
+                                        </div>
                                     </div>
+
+                                    {/* Row 4: Status and Sent from Department */}
                                     <div>
-                                        <h4 className="text-medium font-semibold text-black mb-2">Status</h4>
+                                        <label className="text-sm font-medium text-gray-700 block mb-1">Status</label>
                                         <select
                                             value={status}
                                             onChange={(e) => setStatus(e.target.value)}
                                             disabled={taskData.sub_batch?.status === 'COMPLETED'}
-                                            className="text-gray-900 bg-[#D8D8D8] border-gray-200 rounded-lg px-6 py-2 min-w-[90px] max-w-[150px] disabled:opacity-50 disabled:cursor-not-allowed"
+                                            className="w-full bg-gray-50 border border-gray-300 rounded px-3 py-2 text-sm text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
                                             <option value="NEW_ARRIVAL">Not Started</option>
                                             <option value="IN_PROGRESS">In Progress</option>
                                             <option value="COMPLETED">Completed</option>
                                         </select>
-                                        {taskData.sub_batch?.status === 'COMPLETED' && (
-                                            <p className="text-xs text-red-600 font-semibold mt-1">
-                                                🔒 Sub-batch is COMPLETED
-                                            </p>
-                                        )}
                                     </div>
-
-                                    {/* Send to Department - Only show when card is ALREADY COMPLETED in database */}
-                                    {taskData.stage === 'COMPLETED' && (
-                                        <div>
-                                            <h4 className="text-medium font-semibold text-black mb-2">Send to Department</h4>
-                                            <select
-                                                value={sendToDepartment}
-                                                onChange={(e) => setSendToDepartment(e.target.value)}
-                                                disabled={taskData.sub_batch?.status === 'COMPLETED'}
-                                                className="text-gray-900 bg-white border border-gray-300 rounded-lg px-4 py-2 min-w-[150px] max-w-[200px] disabled:opacity-50 disabled:cursor-not-allowed"
-                                            >
-                                                <option value="">Select Department</option>
-                                                {departments.map((dept: any) => (
-                                                    <option key={dept.id} value={dept.id}>
-                                                        {dept.name}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            {taskData.sub_batch?.status === 'COMPLETED' && (
-                                                <p className="text-xs text-red-600 font-semibold mt-1">
-                                                    🔒 Cannot move - Sub-batch COMPLETED
-                                                </p>
-                                            )}
-                                        </div>
-                                    )}
-
                                     <div>
-                                        <h4 className="text-medium font-semibold text-black mb-2">
-                                            {taskData.quantity_remaining ? 'Quantity to Work' : 'Pieces'}
-                                        </h4>
-                                        <div className={`rounded-lg px-6 py-2 mt-2 min-w-[150px] max-w-[200px] ${
-                                            taskData.quantity_remaining
-                                                ? 'bg-blue-100 border-2 border-blue-500'
-                                                : 'border border-gray-200'
-                                        }`}>
-                                            <p className={`font-bold ${
-                                                taskData.quantity_remaining ? 'text-blue-900 text-lg' : 'text-gray-900'
-                                            }`}>
-                                                {(taskData.quantity_remaining ?? taskData.sub_batch?.estimated_pieces)?.toLocaleString() || '-'}
-                                            </p>
-                                            {taskData.quantity_remaining && taskData.quantity_remaining !== taskData.sub_batch?.estimated_pieces && (
-                                                <p className="text-xs text-gray-600 mt-1">
-                                                    Original: {taskData.sub_batch?.estimated_pieces?.toLocaleString()}
-                                                </p>
-                                            )}
+                                        <label className="text-sm font-medium text-gray-700 block mb-1">Sent from Department</label>
+                                        <div className="bg-gray-50 border border-gray-300 rounded px-3 py-2 text-sm text-gray-900">
+                                            {taskData.rejection_source?.from_department_name ||
+                                             taskData.alteration_source?.from_department_name ||
+                                             taskData.department?.name || 'Department 1'}
                                         </div>
-                                        {taskData.remarks && (
-                                            <p className={`text-xs mt-2 font-semibold ${
-                                                taskData.remarks.toLowerCase().includes('reject')
-                                                    ? 'text-red-600'
-                                                    : 'text-orange-600'
-                                            }`}>
-                                                {taskData.remarks}
-                                            </p>
-                                        )}
                                     </div>
                                 </div>
 
-                                {/* Attachments - Only show when card is COMPLETED */}
-                                {taskData.stage === 'COMPLETED' && taskData.sub_batch?.attachments && taskData.sub_batch.attachments.length > 0 && (
+                                {/* Attachments */}
+                                {taskData.sub_batch?.attachments && taskData.sub_batch.attachments.length > 0 && (
                                     <div className="mt-6">
-                                        <h4 className="font-semibold mb-3">Attachments</h4>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                        <h4 className="font-semibold mb-3 text-base">Attachments</h4>
+                                        <div className="flex flex-wrap gap-2">
                                             {taskData.sub_batch.attachments.map((attachment: any) => (
                                                 <div
                                                     key={attachment.id}
-                                                    className="flex items-center justify-between bg-gray-50 p-2 rounded border border-gray-200"
+                                                    className="inline-flex items-center gap-1 bg-gray-100 px-3 py-1.5 rounded-md text-sm border border-gray-300"
                                                 >
-                                                    <span className="text-sm font-medium text-gray-800">{attachment.attachment_name}</span>
-                                                    <span className="text-xs text-gray-600 bg-white px-2 py-1 rounded border border-gray-300">
-                                                        {attachment.quantity}
-                                                    </span>
+                                                    <span className="font-medium text-gray-700">{attachment.attachment_name}</span>
+                                                    <span className="text-gray-600">:</span>
+                                                    <span className="font-semibold text-gray-900">{attachment.quantity}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -760,77 +671,117 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                                     </div>
                                 )}
 
-                                {/* Work Progress Tracking Summary */}
-                                <div className="mt-8 p-6 ">
-                                    <h4 className="font-bold text-lg text-gray-900 mb-4 flex items-center gap-2">
-                                  Production Summary
-                                    </h4>
+                                {/* Production Summary */}
+                                <div className="mt-6 px-6 py-4">
+                                    <h4 className="font-semibold text-base mb-4">Production Summary</h4>
 
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                        {/* Quantity to Work */}
-                                        <div className="bg-white rounded-lg p-4 border-2 border-blue-500">
-                                            <p className="text-xs text-gray-600 font-semibold mb-1">Quantity to Work</p>
-                                            <p className="text-2xl font-bold text-blue-600">{quantityToWork.toLocaleString()}</p>
-                                        </div>
-
-                                        {/* Work Done */}
-                                        <div className="bg-white rounded-lg p-4 border border-gray-300">
-                                            <p className="text-xs text-gray-600 font-semibold mb-1">Work Done</p>
+                                    <div className="grid grid-cols-4 gap-4">
+                                        {/* Worked */}
+                                        <div className="flex flex-col items-center">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <CheckCircle className="text-green-500" size={20} />
+                                                <span className="text-sm text-gray-600">Worked</span>
+                                            </div>
                                             <p className="text-2xl font-bold text-gray-900">{totalWorkDone.toLocaleString()}</p>
-                                            <p className="text-xs text-gray-500 mt-1">Completed pieces</p>
                                         </div>
 
                                         {/* Altered */}
-                                        <div className="bg-white rounded-lg p-4 border border-gray-300">
-                                            <p className="text-xs text-gray-600 font-semibold mb-1">Altered</p>
+                                        <div className="flex flex-col items-center">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Edit3 className="text-yellow-500" size={20} />
+                                                <span className="text-sm text-gray-600">Altered</span>
+                                            </div>
                                             <p className="text-2xl font-bold text-gray-900">{totalAltered.toLocaleString()}</p>
-                                            <p className="text-xs text-gray-500 mt-1">Alteration pieces</p>
                                         </div>
 
                                         {/* Rejected */}
-                                        <div className="bg-white rounded-lg p-4 border border-gray-300">
-                                            <p className="text-xs text-gray-600 font-semibold mb-1">Rejected</p>
+                                        <div className="flex flex-col items-center">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <XCircle className="text-red-500" size={20} />
+                                                <span className="text-sm text-gray-600">Rejected</span>
+                                            </div>
                                             <p className="text-2xl font-bold text-gray-900">{totalRejected.toLocaleString()}</p>
-                                            <p className="text-xs text-gray-500 mt-1">Rejected pieces</p>
-                                        </div>
-
-                                        {/* Total Processed */}
-                                        <div className="bg-white rounded-lg p-4 border border-gray-300">
-                                            <p className="text-xs text-gray-600 font-semibold mb-1">Total Processed</p>
-                                            <p className="text-2xl font-bold text-gray-900">{totalProcessed.toLocaleString()}</p>
-                                            <p className="text-xs text-gray-500 mt-1">Done + Altered + Rejected</p>
                                         </div>
 
                                         {/* Remaining */}
-                                        <div className="bg-white rounded-lg p-4 border-2 border-blue-500">
-                                            <p className="text-xs text-gray-600 font-semibold mb-1">Remaining</p>
-                                            <p className="text-2xl font-bold text-blue-600">
-                                                {remainingWork.toLocaleString()}
-                                            </p>
-                                            <p className="text-xs text-gray-500 mt-1">
-                                                {remainingWork > 0 ? 'Work pending' : 'All complete!'}
-                                            </p>
+                                        <div className="flex flex-col items-center">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Clock className="text-orange-500" size={20} />
+                                                <span className="text-sm text-gray-600">Remaining</span>
+                                            </div>
+                                            <p className="text-2xl font-bold text-gray-900">{remainingWork.toLocaleString()}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+
+                            {/* Alteration Log Section - Only for alteration cards */}
+                            {taskData.alteration_source && (
+                                <div className="px-6 py-4 border-t border-gray-300">
+                                    <h4 className="font-semibold mb-4 text-base">Alteration Log</h4>
+                                    <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 block mb-1">Date</label>
+                                            <div className="bg-gray-50 border border-gray-300 rounded px-3 py-2 text-sm text-gray-900 flex items-center justify-between">
+                                                <span>{latestAlterationLog?.date || formatDate(new Date().toISOString())}</span>
+                                                <Calendar size={16} className="text-gray-500" />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 block mb-1">Altered By</label>
+                                            <div className="bg-gray-50 border border-gray-300 rounded px-3 py-2 text-sm text-gray-900">
+                                                {latestAlterationLog?.worker || taskData.alteration_source.from_department_name || 'Ram Bahadur'}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 block mb-1">Quantity</label>
+                                            <div className="bg-gray-50 border border-gray-300 rounded px-3 py-2 text-sm text-gray-900">
+                                                {taskData.alteration_source.quantity || taskData.quantity_remaining || '0'}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 block mb-1">Alteration Note</label>
+                                            <div className="bg-gray-50 border border-gray-300 rounded px-3 py-2 text-sm text-gray-900">
+                                                {taskData.alteration_source.reason || latestAlterationLog?.alterationNote || 'Zip Repositioning'}
+                                            </div>
                                         </div>
                                     </div>
 
-
+                                    {/* Attachments for Alteration */}
+                                    {taskData.sub_batch?.attachments && taskData.sub_batch.attachments.length > 0 && (
+                                        <div className="mt-6">
+                                            <h4 className="font-semibold mb-3 text-base">Attachments</h4>
+                                            <div className="flex flex-wrap gap-2">
+                                                {taskData.sub_batch.attachments.map((attachment: any) => (
+                                                    <div
+                                                        key={attachment.id}
+                                                        className="inline-flex items-center gap-1 bg-gray-100 px-3 py-1.5 rounded-md text-sm border border-gray-300"
+                                                    >
+                                                        <span className="font-medium text-gray-700">{attachment.attachment_name}</span>
+                                                        <span className="text-gray-600">:</span>
+                                                        <span className="font-semibold text-gray-900">{attachment.quantity}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
-                            </div>
+                            )}
 
                             {/* Worker Assignment & Records */}
                             <div>
-                                <div className="border-t border-gray-400 flex items-center justify-between px-8 py-3 w-full">
-                                    <h4 className="font-semibold">Worker Assignment & Records</h4>
+                                <div className="border-t border-gray-300 flex items-center justify-between px-6 py-4 w-full">
+                                    <h4 className="font-semibold text-base">{taskData.alteration_source ? 'Assign Workers' : 'Worker Assignment & Records'}</h4>
                                     <button
                                         onClick={handleAddRecord}
-                                        disabled={status === 'NEW_ARRIVAL' || taskData.stage === 'COMPLETED'}
-                                        className={`border px-4 py-1 rounded-lg text-sm transition ${
-                                            status === 'NEW_ARRIVAL' || taskData.stage === 'COMPLETED'
-                                                ? 'border-gray-300 text-gray-400 cursor-not-allowed bg-gray-100'
-                                                : 'border-blue-600 text-blue-600 hover:bg-blue-700 hover:text-white'
+                                        disabled={(status === 'NEW_ARRIVAL' && !taskData.alteration_source) || taskData.stage === 'COMPLETED'}
+                                        className={`px-4 py-1.5 rounded text-sm transition ${
+                                            (status === 'NEW_ARRIVAL' && !taskData.alteration_source) || taskData.stage === 'COMPLETED'
+                                                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                                : 'border-blue-500 border text-blue-500 hover:bg-blue-700 hover:text-white'
                                         }`}
                                         title={
-                                            status === 'NEW_ARRIVAL'
+                                            status === 'NEW_ARRIVAL' && !taskData.alteration_source
                                                 ? 'Move to In Progress to assign workers'
                                                 : taskData.stage === 'COMPLETED'
                                                 ? 'Cannot add records to completed tasks'
@@ -841,7 +792,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                                     </button>
                                 </div>
 
-                                {status === 'NEW_ARRIVAL' && (
+                                {status === 'NEW_ARRIVAL' && !taskData.alteration_source && (
                                     <div className="px-8 py-2 text-sm text-orange-600 bg-orange-50 border-b">
                                         <strong>Note:</strong> Worker assignment is only available after moving to In Progress stage.
                                     </div>
@@ -853,8 +804,8 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                                     </div>
                                 )}
 
-                                {/* Show quantity info for rejected/altered items */}
-                                {taskData.quantity_remaining && (
+                                {/* Show quantity info for rejected items only (not for alteration cards) */}
+                                {taskData.quantity_remaining && !taskData.alteration_source && (
                                     <div className={`px-8 py-3 text-sm border-b ${
                                         taskData.remarks?.toLowerCase().includes('reject')
                                             ? 'text-red-800 bg-red-50'
@@ -871,11 +822,6 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                                                 <strong>Reason:</strong> {taskData.rejection_source.reason} (from {taskData.rejection_source.from_department_name})
                                             </div>
                                         )}
-                                        {taskData.alteration_source?.reason && (
-                                            <div className="text-xs mt-1">
-                                                <strong>Reason:</strong> {taskData.alteration_source.reason} (from {taskData.alteration_source.from_department_name})
-                                            </div>
-                                        )}
                                     </div>
                                 )}
 
@@ -884,24 +830,69 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                                 </div>
 
                                 <div className="overflow-x-auto max-w-[700px]">
-                                    <WorkerAssignmentTable
-                                        records={workerRecords}
-                                        onDelete={handleDeleteRecord}
-                                        onPreview={handlePreviewRecord}
-                                        loading={loading}
-                                    />
+                                    {taskData.alteration_source ? (
+                                        /* Simplified table for alteration cards */
+                                        <table className="min-w-full border-collapse">
+                                            <thead className="bg-gray-50">
+                                                <tr>
+                                                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 border-b">Worker Name</th>
+                                                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 border-b">Quantity</th>
+                                                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 border-b">Date</th>
+                                                    <th className="px-4 py-3 text-center text-sm font-medium text-gray-700 border-b">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-200">
+                                                {workerRecords.length === 0 ? (
+                                                    <tr>
+                                                        <td colSpan={4} className="px-4 py-8 text-center text-gray-500 text-sm">
+                                                            No worker assignments yet. Click + Add Record to assign workers.
+                                                        </td>
+                                                    </tr>
+                                                ) : (
+                                                    workerRecords.map((record) => (
+                                                        <tr key={record.id} className="hover:bg-gray-50">
+                                                            <td className="px-4 py-3 text-sm text-gray-900">{record.worker}</td>
+                                                            <td className="px-4 py-3 text-sm text-gray-900">{record.qtyWorked ?? 0}</td>
+                                                            <td className="px-4 py-3 text-sm text-gray-900 flex items-center gap-2">
+                                                                {record.date}
+                                                                <Calendar size={14} className="text-gray-400" />
+                                                            </td>
+                                                            <td className="px-4 py-3 text-center">
+                                                                <button
+                                                                    onClick={() => handleDeleteRecord(record.id)}
+                                                                    className="text-red-600 hover:text-red-800"
+                                                                    title="Delete record"
+                                                                >
+                                                                    <XCircle size={18} />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    ) : (
+                                        /* Full table for regular cards */
+                                        <WorkerAssignmentTable
+                                            records={workerRecords}
+                                            onDelete={handleDeleteRecord}
+                                            onEdit={handleEditRecord}
+                                            onPreview={handlePreviewRecord}
+                                            loading={loading}
+                                        />
+                                    )}
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     {/* Footer */}
-                    <div className="p-6 border-t border-gray-400 bg-gray-50 flex-shrink-0">
+                    <div className="p-6 border-t border-gray-300 flex-shrink-0">
                         <div className="flex justify-between items-center">
                             <button
                                 onClick={onClose}
                                 disabled={saving}
-                                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50"
+                                className="px-6 py-2 text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
                             >
                                 Cancel
                             </button>
@@ -911,7 +902,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                                     <button
                                         onClick={() => setShowCompletionDialog(true)}
                                         disabled={saving}
-                                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                                        className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
                                     >
                                         Mark Sub-batch as Completed
                                     </button>
@@ -919,7 +910,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                                 <button
                                     onClick={handleSave}
                                     disabled={saving || taskData.sub_batch?.status === 'COMPLETED'}
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                                     title={taskData.sub_batch?.status === 'COMPLETED' ? 'Cannot modify - Sub-batch is completed' : ''}
                                 >
                                     {saving ? 'Saving...' : taskData.sub_batch?.status === 'COMPLETED' ? 'Locked' : 'Save'}
@@ -930,11 +921,16 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                 </div>
             </div>
 
-            {/* Add Record Modal */}
+            {/* Add/Edit Record Modal */}
             <AddRecordModal
                 isOpen={isAddRecordOpen}
-                onClose={() => setIsAddRecordOpen(false)}
+                onClose={() => {
+                    setIsAddRecordOpen(false);
+                    setRecordToEdit(null);
+                }}
                 onSave={handleSaveRecord}
+                mode={modalMode}
+                editRecord={recordToEdit}
                 subBatch={{
                     ...taskData.sub_batch,
                     department_sub_batch_id: taskData.id,  // Pass the department_sub_batch_id
@@ -969,7 +965,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                                     Are you sure you want to mark this sub-batch as <strong>COMPLETED</strong>?
                                 </p>
                                 <p className="text-sm text-red-600 font-semibold mb-4">
-                                    ⚠️ Once completed, this sub-batch can NO LONGER be moved to other departments or stages.
+                                     Once completed, this sub-batch can NO LONGER be moved to other departments or stages.
                                 </p>
                                 <p className="text-sm text-gray-600 mb-4">
                                     Sub-batch: <strong>{taskData.sub_batch?.name}</strong>

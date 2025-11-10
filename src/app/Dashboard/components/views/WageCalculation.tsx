@@ -18,6 +18,7 @@ interface WageDetail {
   quantity_worked: number;
   unit_price: number;
   total: number;
+  is_billable: boolean;
 }
 
 const WageCalculation = () => {
@@ -44,9 +45,11 @@ const WageCalculation = () => {
     fetchWorkers();
   }, [fetchWorkers]);
 
-  // Calculate total wage whenever wageDetails change
+  // Calculate total wage whenever wageDetails change (only billable)
   useEffect(() => {
-    const total = wageDetails.reduce((sum, detail) => sum + detail.total, 0);
+    const total = wageDetails
+      .filter(detail => detail.is_billable)
+      .reduce((sum, detail) => sum + detail.total, 0);
     setTotalWage(total);
   }, [wageDetails]);
 
@@ -77,9 +80,10 @@ const WageCalculation = () => {
         quantity_worked?: number;
         unit_price?: number;
         amount?: number;
+        is_billable?: boolean;
       }
 
-      // Transform API data to table format
+      // Transform API data to table format (showing all logs)
       const transformedData: WageDetail[] = detailed_logs.map((log: DetailedLog) => ({
         id: log.id.toString(),
         date: log.work_date ? new Date(log.work_date).toLocaleDateString("en-US") : "",
@@ -88,6 +92,7 @@ const WageCalculation = () => {
         quantity_worked: log.quantity_worked || 0,
         unit_price: log.unit_price || 0,
         total: log.amount || 0,
+        is_billable: log.is_billable ?? false,
       }));
 
       setWageDetails(transformedData);
@@ -118,6 +123,7 @@ const WageCalculation = () => {
       quantity_worked: 0,
       unit_price: 0,
       total: 0,
+      is_billable: true,
     };
     setWageDetails([...wageDetails, newRow]);
   };
@@ -144,8 +150,6 @@ const WageCalculation = () => {
     );
   };
 
-  if (loading) return <Loader />;
-
   return (
     <div className="p-6 bg-white min-h-full">
       {/* Header */}
@@ -165,7 +169,8 @@ const WageCalculation = () => {
             <select
               value={selectedWorkerId}
               onChange={(e) => setSelectedWorkerId(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={loading}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
             >
               <option value="">Select Worker</option>
               {workers.map((worker) => (
@@ -185,7 +190,8 @@ const WageCalculation = () => {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={loading}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
           </div>
 
@@ -198,7 +204,8 @@ const WageCalculation = () => {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={loading}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
           </div>
 
@@ -206,13 +213,15 @@ const WageCalculation = () => {
           <div className="flex gap-3">
             <button
               onClick={handleSubmit}
-              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={loading}
+              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-blue-400 disabled:cursor-not-allowed"
             >
-              Submit
+              {loading ? "Loading..." : "Submit"}
             </button>
             <button
               onClick={handleReset}
-              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              disabled={loading}
+              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
             >
               Reset
             </button>
@@ -226,7 +235,8 @@ const WageCalculation = () => {
           <h2 className="text-lg font-semibold text-gray-900">Wage Details</h2>
           <button
             onClick={handleAddRow}
-            className="px-4 py-2 rounded-md text-sm font-bold border-1"
+            disabled={loading}
+            className="px-4 py-2 rounded-md text-sm font-bold border-1 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ color: '#4880FF', borderColor: '#4880FF' }}
           >
             + Add Row
@@ -256,19 +266,31 @@ const WageCalculation = () => {
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: '#374151' }}>
                   TOTAL
                 </th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: '#374151' }}>
+                  STATUS
+                </th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {wageDetails.length === 0 ? (
+              {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+                  <td colSpan={8} className="px-4 py-12">
+                    <Loader />
+                  </td>
+                </tr>
+              ) : wageDetails.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
                     No wage details available. Select a worker and click Submit.
                   </td>
                 </tr>
               ) : (
                 wageDetails.map((detail) => (
-                  <tr key={detail.id} className="hover:bg-gray-50">
+                  <tr
+                    key={detail.id}
+                    className={`hover:bg-gray-50 ${!detail.is_billable ? 'bg-gray-50' : ''}`}
+                  >
                     <td className="px-4 py-3 text-sm text-gray-900">{detail.date}</td>
                     <td className="px-4 py-3 text-sm text-gray-900">
                       <input
@@ -310,6 +332,17 @@ const WageCalculation = () => {
                       {detail.total.toFixed(2)}
                     </td>
                     <td className="px-4 py-3 text-sm">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          detail.is_billable
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-red-100 text-red-800'
+                        }`}
+                      >
+                        {detail.is_billable ? 'Billable' : 'Non-Billable'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm">
                       <button
                         onClick={() => handleDeleteRow(detail.id)}
                         className="text-gray-400 hover:text-gray-600"
@@ -325,7 +358,7 @@ const WageCalculation = () => {
         </div>
 
         {/* Total Wage */}
-        {wageDetails.length > 0 && (
+        {wageDetails.length > 0 && !loading && (
           <div className="mt-4 flex justify-end items-center gap-2 text-sm">
             <span className="text-gray-600">Total Wage:</span>
             <span className="text-blue-600 font-semibold text-lg">{totalWage.toFixed(2)}</span>

@@ -109,6 +109,27 @@ const RollView = () => {
     fetchVendors();
   }, []);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (openMenuId !== null) {
+        const target = event.target as HTMLElement;
+        // Check if click is outside the dropdown menu
+        if (!target.closest('.relative')) {
+          setOpenMenuId(null);
+        }
+      }
+    };
+
+    if (openMenuId !== null) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [openMenuId]);
+
   // Form change
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

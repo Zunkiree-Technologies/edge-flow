@@ -6,9 +6,11 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  User,
+  ChevronDown,
 } from "lucide-react";
 import TaskDetailsModal from "../../depcomponents/TaskDetailsModal";
+import AlteredTaskDetailsModal from "../../depcomponents/altered/AlteredTaskDetailsModal";
+import RejectedTaskDetailsModal from "../../depcomponents/rejected/RejectedTaskDetailsModal";
 import Loader from "@/app/Components/Loader";
 
 interface SizeDetail {
@@ -100,26 +102,26 @@ interface KanbanData {
 const STAGES = [
   {
     key: 'newArrival',
-    title: 'New Arrival',
+    title: 'New Arrivals',
     icon: AlertCircle,
-    color: 'bg-blue-50 border-blue-200',
-    headerColor: 'bg-blue-100 text-blue-800',
+    color: 'bg-blue-50',
+    headerColor: 'text-gray-700',
     count: 0
   },
   {
     key: 'inProgress',
     title: 'In Progress',
     icon: Clock,
-    color: 'bg-yellow-50 border-yellow-200',
-    headerColor: 'bg-yellow-100 text-yellow-800',
+    color: 'bg-yellow-50',
+    headerColor: 'text-gray-700',
     count: 0
   },
   {
     key: 'completed',
     title: 'Completed',
     icon: CheckCircle,
-    color: 'bg-green-50 border-green-200',
-    headerColor: 'bg-green-100 text-green-800',
+    color: 'bg-green-50',
+    headerColor: 'text-gray-700',
     count: 0
   }
 ];
@@ -133,8 +135,11 @@ const SupervisorKanban = () => {
   const [loading, setLoading] = useState(true);
   const [selectedItem, setSelectedItem] = useState<WorkItem | null>(null);
   const [isTaskDetailsOpen, setIsTaskDetailsOpen] = useState(false);
-  const [supervisorDepartment, setSupervisorDepartment] = useState<string>('');
+  const [isAlteredTask, setIsAlteredTask] = useState(false);
+  const [isRejectedTask, setIsRejectedTask] = useState(false);
   const [currentSupervisorId, setCurrentSupervisorId] = useState<number>(0);
+  const [showSortMenu, setShowSortMenu] = useState(false);
+  const [sortBy, setSortBy] = useState<'name' | 'startDate' | 'dueDate'>('name');
 
   // Format date helper
   const formatDate = (dateString: string) => {
@@ -145,22 +150,33 @@ const SupervisorKanban = () => {
     });
   };
 
-  // Calculate days remaining
-  const getDaysRemaining = (dueDate: string) => {
-    const today = new Date();
-    const due = new Date(dueDate);
-    const diffTime = due.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
+  // Sort items based on selected option
+  const sortItems = (items: WorkItem[]) => {
+    const sortedItems = [...items];
+    switch (sortBy) {
+      case 'name':
+        return sortedItems.sort((a, b) =>
+          a.sub_batch.name.localeCompare(b.sub_batch.name)
+        );
+      case 'startDate':
+        return sortedItems.sort((a, b) =>
+          new Date(a.sub_batch.start_date).getTime() - new Date(b.sub_batch.start_date).getTime()
+        );
+      case 'dueDate':
+        return sortedItems.sort((a, b) =>
+          new Date(a.sub_batch.due_date).getTime() - new Date(b.sub_batch.due_date).getTime()
+        );
+      default:
+        return sortedItems;
+    }
   };
 
-  // Get status color based on days remaining
-  const getStatusColor = (dueDate: string) => {
-    const days = getDaysRemaining(dueDate);
-    if (days < 0) return 'text-red-600 bg-red-100';
-    if (days <= 2) return 'text-orange-600 bg-orange-100';
-    return 'text-green-600 bg-green-100';
+  // Handle sort option change
+  const handleSortChange = (option: 'name' | 'startDate' | 'dueDate') => {
+    setSortBy(option);
+    setShowSortMenu(false);
   };
+
 
   // Fetch kanban data for supervisor
   const fetchKanbanData = async () => {
@@ -228,16 +244,12 @@ const SupervisorKanban = () => {
 
         setKanbanData(result.data);
 
-        // Set supervisor department name from the first item if available
+        // Log department info from the first item if available
         const firstItem = result.data.newArrival[0] || result.data.inProgress[0] || result.data.completed[0];
         console.log("======= FIRST ITEM FOR DEPARTMENT =======");
         console.log("First item:", firstItem);
         console.log("Department:", firstItem?.department);
         console.log("Department name:", firstItem?.department?.name);
-
-        if (firstItem?.department?.name) {
-          setSupervisorDepartment(firstItem.department.name);
-        }
       } else {
         throw new Error(result.message || 'API returned unsuccessful response');
       }
@@ -253,6 +265,21 @@ const SupervisorKanban = () => {
     fetchKanbanData();
   }, []);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (showSortMenu && !target.closest('.sort-menu-container')) {
+        setShowSortMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showSortMenu]);
+
   // Handle item click to open task details
   const handleItemClick = (item: WorkItem) => {
     console.log('======= ITEM CLICKED =======');
@@ -267,8 +294,19 @@ const SupervisorKanban = () => {
     console.log('Rejection source:', item.rejection_source);
     console.log('Alteration source:', item.alteration_source);
     console.log('Current supervisor ID:', currentSupervisorId);
+
+    // Check if this is an altered task
+    const isAltered = !!item.alteration_source || (item.remarks?.toLowerCase().includes('alter') ?? false);
+    console.log('Is Altered Task:', isAltered);
+
+    // Check if this is a rejected task
+    const isRejected = !!item.rejection_source || (item.remarks?.toLowerCase().includes('reject') ?? false);
+    console.log('Is Rejected Task:', isRejected);
     console.log('================================');
+
     setSelectedItem(item);
+    setIsAlteredTask(isAltered);
+    setIsRejectedTask(isRejected);
     setIsTaskDetailsOpen(true);
   };
 
@@ -276,6 +314,8 @@ const SupervisorKanban = () => {
   const closeTaskDetails = () => {
     setIsTaskDetailsOpen(false);
     setSelectedItem(null);
+    setIsAlteredTask(false);
+    setIsRejectedTask(false);
   };
 
   // Update stages with current counts
@@ -300,51 +340,74 @@ const SupervisorKanban = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-full">
+    <div className="p-6 bg-white min-h-full">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold">Department View Dashboard</h2>
-          <p className="text-gray-500">Track sub-batches through Department stages</p>
+          <h2 className="text-2xl font-bold text-gray-900">Department View</h2>
+          <p className="text-sm text-gray-500">Manage task across departments</p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="bg-white px-4 py-2 rounded-lg shadow ">
-            <span className="text-sm text-gray-500">Department:</span>
-            <span className="ml-2 font-semibold">
-              {supervisorDepartment || `D00${localStorage.getItem("departmentId")}`}
-            </span>
-          </div>
+        <div className="flex items-center gap-3 relative sort-menu-container">
           <button
-            onClick={fetchKanbanData}
-            className=" text-blue-600 border border-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 hover:text-white transition-colors"
+            onClick={() => setShowSortMenu(!showSortMenu)}
+            className="text-sm text-gray-600 flex items-center gap-1 hover:text-gray-900"
           >
-            Refresh
+            <span>⬆⬇</span> Sort by
           </button>
+
+          {/* Sort Dropdown Menu */}
+          {showSortMenu && (
+            <div className="absolute top-8 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[160px]">
+              <button
+                onClick={() => handleSortChange('name')}
+                className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 rounded-t-lg ${
+                  sortBy === 'name' ? 'bg-gray-50 font-semibold' : ''
+                }`}
+              >
+                Name
+              </button>
+              <button
+                onClick={() => handleSortChange('startDate')}
+                className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${
+                  sortBy === 'startDate' ? 'bg-gray-50 font-semibold' : ''
+                }`}
+              >
+                Start Date
+              </button>
+              <button
+                onClick={() => handleSortChange('dueDate')}
+                className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 rounded-b-lg ${
+                  sortBy === 'dueDate' ? 'bg-gray-50 font-semibold' : ''
+                }`}
+              >
+                Due Date
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Kanban Board */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {updatedStages.map((stage) => {
-          const StageIcon = stage.icon;
-          const items = kanbanData[stage.key as keyof KanbanData] || [];
+          const items = sortItems(kanbanData[stage.key as keyof KanbanData] || []);
 
           console.log(`======= RENDERING STAGE: ${stage.title} =======`);
           console.log(`Stage key: ${stage.key}`);
           console.log(`Items count: ${items.length}`);
           console.log(`Items:`, items);
+          console.log(`Sorted by: ${sortBy}`);
           console.log(`=====================================`);
 
           return (
-            <div key={stage.key} className={`${stage.color} rounded-lg border-2 p-4`}>
+            <div key={stage.key} className={`${stage.color} rounded-lg p-4`}>
               {/* Stage Header */}
-              <div className={`${stage.headerColor} rounded-lg p-3 mb-4 flex items-center justify-between`}>
+              <div className={`${stage.headerColor} p-2 mb-4 flex items-center justify-between`}>
                 <div className="flex items-center gap-2">
-                  <StageIcon size={20} />
-                  <h3 className="font-semibold">{stage.title}</h3>
+                  <h3 className="font-semibold text-sm">{stage.title}</h3>
                 </div>
-                <span className="bg-white px-2 py-1 rounded-full text-sm font-medium">
-                  {stage.count}
+                <span className="text-gray-500 text-xs">
+                  {stage.count} {stage.count === 1 ? 'item' : 'items'}
                 </span>
               </div>
 
@@ -357,9 +420,6 @@ const SupervisorKanban = () => {
                   </div>
                 ) : (
                   items.map((item) => {
-                    const daysRemaining = getDaysRemaining(item.sub_batch.due_date);
-                    const statusColor = getStatusColor(item.sub_batch.due_date);
-
                     // Determine if item is rejected or altered based on remarks
                     const isRejected = item.remarks?.toLowerCase().includes('reject') || !!item.rejection_source;
                     const isAltered = item.remarks?.toLowerCase().includes('alter') || !!item.alteration_source;
@@ -385,159 +445,60 @@ const SupervisorKanban = () => {
                     return (
                       <div
                         key={item.id}
-                        className={`rounded-lg p-4 shadow-sm border-2 hover:shadow-md transition-shadow cursor-pointer ${
+                        className={`relative rounded-lg p-4 border bg-gray-50 hover:shadow-md transition-shadow cursor-pointer ${
                           isRejected
-                            ? 'bg-red-50 border-red-300'
+                            ? 'border-red-500'
                             : isAltered
-                            ? 'bg-orange-50 border-orange-300'
-                            : 'bg-white border-gray-200'
+                            ? 'border-gray-500'
+                            : 'border-gray-200'
                         }`}
                         onClick={() => handleItemClick(item)}
                       >
-                        {/* Rejection/Alteration Badge at Top */}
+                        {/* Status Badge - Top Right */}
                         {isRejected && (
-                          <div className="bg-red-400 text-white px-3 py-1 rounded-md mb-3 text-center font-bold text-sm">
-                            REJECTED - {workQuantity.toLocaleString()} PCS
-                          </div>
+                          <span className="absolute top-3 right-1 inline-block px-3 py-1 bg-[#D9796C] text-white text-xs rounded-md font-medium rounded-xl">
+                            Rejected
+                          </span>
                         )}
                         {isAltered && !isRejected && (
-                          <div className="bg-orange-400 text-white px-3 py-1 rounded-md mb-3 text-center font-bold text-sm">
-                            ALTERATION - {workQuantity.toLocaleString()} PCS
-                          </div>
+                          <span className="absolute top-3 right-1 inline-block px-3 py-1 bg-[#979797] text-white text-xs rounded-md font-medium rounded-xl">
+                            Alteration
+                          </span>
+                        )}
+                        {stage.key === 'completed' && !isRejected && !isAltered && (
+                          <span className="absolute bottom-3 right-3 inline-flex items-center gap-1 px-3 py-1 bg-blue-500 text-white text-xs rounded-md font-medium rounded-xl">
+                            Send To <ChevronDown size={18} />
+                          </span>
+                        )}
+                        {stage.key === 'newArrival' && !isRejected && !isAltered && (
+                          <span className="absolute top-3 right-3 inline-block px-3 py-1 bg-gray-500 text-white text-xs rounded-md font-medium">
+                            Closed
+                          </span>
                         )}
 
-                        {/* Item Header */}
-                        <div className="flex items-start justify-between mb-3 gap-2">
-                          <div className="flex-1">
-                            <h4 className="font-medium text-gray-900">
-                              {item.sub_batch.name}
-                            </h4>
-                            {/* Show remarks badge */}
-                            {item.remarks && (
-                              <div className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full mt-1 font-semibold ${
-                                isRejected
-                                  ? 'bg-red-200 text-red-900'
-                                  : isAltered
-                                  ? 'bg-orange-200 text-orange-900'
-                                  : 'bg-gray-200 text-gray-900'
-                              }`}>
-                                {item.remarks}
-                              </div>
-                            )}
-                            {/* Show source department for rejected/altered items */}
-                            {(item.rejection_source || item.alteration_source) && (
-                              <div className="text-xs text-gray-600 mt-1">
-                                From: {item.rejection_source?.from_department_name || item.alteration_source?.from_department_name}
-                              </div>
-                            )}
-                          </div>
-                          {item.assigned_worker_id && (
-                            <div className="flex items-center gap-1 text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full whitespace-nowrap">
-                              <User size={12} />
-                              <span>Assigned</span>
-                            </div>
-                          )}
+                        {/* Material Name */}
+                        <h4 className="font-semibold text-gray-900 mb-3 pr-20">
+                          {item.sub_batch.name}
+                        </h4>
+
+                        {/* Start Date */}
+                        <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                          <Calendar size={14} className="text-gray-400" />
+                          <span className="text-xs">Start: {formatDate(item.sub_batch.start_date)}</span>
                         </div>
 
-                        {/* Item Details */}
-                        <div className="space-y-2 text-sm text-gray-600">
-                          {/* Rejection/Alteration Info Box */}
-                          {(isRejected || isAltered) && (
-                            <div className={`border-2 rounded-lg p-3 mb-2 ${
-                              isRejected
-                                ? 'border-red-500 '
-                                : 'bg-orange-100 border-orange-400'
-                            }`}>
-                              <p className={`font-bold text-sm mb-2 ${
-                                isRejected ? 'text-red-900' : 'text-orange-900'
-                              }`}>
-                                {isRejected ? ' Rejection Details:' : ' Alteration Details:'}
-                              </p>
-                              <div className="space-y-1">
-                                <p className={`text-xs ${
-                                  isRejected ? 'text-red-800' : 'text-orange-800'
-                                }`}>
-                                </p>
-                                <p className={`text-xs ${
-                                  isRejected ? 'text-red-800' : 'text-orange-800'
-                                }`}>
-                                  <span className="font-semibold">Quantity to Work:</span> {workQuantity.toLocaleString()} pieces
-                                </p>
-                                {item.rejection_source && (
-                                  <>
-                                    <p className="text-red-800 text-xs">
-                                      <span className="font-semibold">From Department:</span> {item.rejection_source.from_department_name}
-                                    </p>
-                                    <p className="text-red-800 text-xs">
-                                      <span className="font-semibold">Reason:</span> {item.rejection_source.reason}
-                                    </p>
-                                  </>
-                                )}
-                                {item.alteration_source && (
-                                  <>
-                                    <p className="text-orange-800 text-xs">
-                                      <span className="font-semibold">From Department:</span> {item.alteration_source.from_department_name}
-                                    </p>
-                                    <p className="text-orange-800 text-xs">
-                                      <span className="font-semibold">Reason:</span> {item.alteration_source.reason}
-                                    </p>
-                                  </>
-                                )}
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Work Quantity - Prominently display the actual quantity to work */}
-                          <div className="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg p-2">
-                            <Package size={16} className="text-blue-600" />
-                            <div className="flex-1">
-                              <span className="font-bold text-blue-900">
-                                {workQuantity.toLocaleString()} pieces
-                              </span>
-                              {(isRejected || isAltered) && (
-                                <span className={`ml-2 text-xs font-semibold ${
-                                  isRejected ? 'text-red-600' : 'text-orange-600'
-                                }`}>
-                                  ({isRejected ? 'REJECTED' : 'ALTERATION'})
-                                </span>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Show original sub-batch pieces if different from work quantity */}
-                          {workQuantity !== item.sub_batch.estimated_pieces && (
-                            <div className="flex items-center gap-2 text-xs text-gray-500  bg-gray-50 p-2 rounded">
-                              <Package size={12} />
-                              <span>Original pieces: {item.sub_batch.estimated_pieces.toLocaleString()} pieces</span>
-                            </div>
-                          )}
-
-                          
-                          <div className="flex items-center gap-2">
-                            <Calendar size={14} />
-                            <span>Due: {formatDate(item.sub_batch.due_date)}</span>
-                          </div>
-                          {item.sub_batch.batch && (
-                            <div className="flex items-center gap-2">
-                              <Package size={14} />
-                              <span>Batch: {item.sub_batch.batch.name}</span>
-                            </div>
-                          )}
-
-                        
+                        {/* Due Date */}
+                        <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                          <Clock size={14} className="text-gray-400" />
+                          <span className="text-xs">Due: {formatDate(item.sub_batch.due_date)}</span>
                         </div>
 
-                        {/* Status Badge */}
-                        <div className="mt-3">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColor}`}>
-                            {daysRemaining < 0
-                              ? `${Math.abs(daysRemaining)} days overdue`
-                              : daysRemaining === 0
-                                ? 'Due today'
-                                : `${daysRemaining} days remaining`
-                            }
-                          </span>
-                        </div>
+                        {/* Batch Info */}
+                        {item.sub_batch.batch && (
+                          <div className="text-xs text-gray-500">
+                            Batch: {item.sub_batch.batch.name}
+                          </div>
+                        )}
                       </div>
                     );
                   })
@@ -548,14 +509,68 @@ const SupervisorKanban = () => {
         })}
       </div>
 
-      {/* Task Details Modal */}
-      <TaskDetailsModal
-        isOpen={isTaskDetailsOpen}
-        onClose={closeTaskDetails}
-        taskData={selectedItem}
-        currentSupervisorId={currentSupervisorId}
-        onStageChange={fetchKanbanData}
-      />
+      {/* Task Details Modal - Conditional rendering based on altered/rejected status */}
+      {isAlteredTask ? (
+        <AlteredTaskDetailsModal
+          isOpen={isTaskDetailsOpen}
+          onClose={closeTaskDetails}
+          taskData={selectedItem ? {
+            id: selectedItem.id,
+            roll_name: selectedItem.sub_batch?.batch?.name || 'Roll 1',
+            batch_name: selectedItem.sub_batch?.batch?.name || 'Batch B',
+            sub_batch_name: selectedItem.sub_batch?.name || '-',
+            total_quantity: selectedItem.quantity_remaining ?? selectedItem.sub_batch?.estimated_pieces ?? 0,
+            estimated_start_date: selectedItem.sub_batch?.start_date || '',
+            due_date: selectedItem.sub_batch?.due_date || '',
+            status: selectedItem.stage || 'NEW_ARRIVAL',
+            sent_from_department: selectedItem.alteration_source?.from_department_name || selectedItem.department?.name || 'Department 1',
+            alteration_date: new Date().toISOString(),
+            altered_by: selectedItem.alteration_source?.from_department_name || 'Department Worker',
+            altered_quantity: selectedItem.alteration_source?.quantity ?? selectedItem.quantity_remaining ?? 0,
+            alteration_reason: selectedItem.alteration_source?.reason || 'Alteration required',
+            attachments: selectedItem.sub_batch?.attachments?.map((att: Attachment) => ({
+              name: att.attachment_name,
+              count: att.quantity
+            })) || [],
+            quantity_remaining: selectedItem.quantity_remaining
+          } : {} as any}
+          onStageChange={fetchKanbanData}
+        />
+      ) : isRejectedTask ? (
+        <RejectedTaskDetailsModal
+          isOpen={isTaskDetailsOpen}
+          onClose={closeTaskDetails}
+          taskData={selectedItem ? {
+            id: selectedItem.id,
+            roll_name: selectedItem.sub_batch?.batch?.name || 'Roll 1',
+            batch_name: selectedItem.sub_batch?.batch?.name || 'Batch B',
+            sub_batch_name: selectedItem.sub_batch?.name || '-',
+            total_quantity: selectedItem.quantity_remaining ?? selectedItem.sub_batch?.estimated_pieces ?? 0,
+            estimated_start_date: selectedItem.sub_batch?.start_date || '',
+            due_date: selectedItem.sub_batch?.due_date || '',
+            status: selectedItem.stage || 'NEW_ARRIVAL',
+            sent_from_department: selectedItem.rejection_source?.from_department_name || selectedItem.department?.name || 'Department 1',
+            rejection_date: new Date().toISOString(),
+            rejected_by: selectedItem.rejection_source?.from_department_name || 'Department Worker',
+            rejected_quantity: selectedItem.rejection_source?.quantity ?? selectedItem.quantity_remaining ?? 0,
+            rejection_reason: selectedItem.rejection_source?.reason || 'Quality issue',
+            attachments: selectedItem.sub_batch?.attachments?.map((att: Attachment) => ({
+              name: att.attachment_name,
+              count: att.quantity
+            })) || [],
+            quantity_remaining: selectedItem.quantity_remaining
+          } : {} as any}
+          onStageChange={fetchKanbanData}
+        />
+      ) : (
+        <TaskDetailsModal
+          isOpen={isTaskDetailsOpen}
+          onClose={closeTaskDetails}
+          taskData={selectedItem}
+          currentSupervisorId={currentSupervisorId}
+          onStageChange={fetchKanbanData}
+        />
+      )}
     </div>
   );
 };

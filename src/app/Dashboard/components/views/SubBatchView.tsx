@@ -111,13 +111,13 @@ const SubBatchView = () => {
         );
       case 'IN_PRODUCTION':
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
             In Production
           </span>
         );
       case 'COMPLETED':
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
             Completed
           </span>
         );
@@ -256,6 +256,27 @@ const SubBatchView = () => {
     fetchCategories();
     fetchDepartments();
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (openMenuId !== null) {
+        const target = event.target as HTMLElement;
+        // Check if click is outside the dropdown menu
+        if (!target.closest('.relative')) {
+          setOpenMenuId(null);
+        }
+      }
+    };
+
+    if (openMenuId !== null) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [openMenuId]);
 
   // Send to production function
   const handleSendToProduction = async () => {
@@ -541,13 +562,13 @@ const SubBatchView = () => {
             <span className="text-xs text-gray-600">- Not yet sent to production</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
               In Production
             </span>
             <span className="text-xs text-gray-600">- Currently in departments</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
               Completed
             </span>
             <span className="text-xs text-gray-600">- All departments finished</span>
@@ -576,68 +597,68 @@ const SubBatchView = () => {
           </div>
         ) : (
           <div className="min-h-fit max-h-screen">
-            <table className="w-full">
+            <table className="w-full table-auto border-collapse">
               <thead>
-                <tr className="bg-gray-50 border-b">
-                  <th className="p-2 text-left">SN</th>
-                  <th className="p-2 text-left">ID</th>
-                  <th className="p-2 text-left">Name</th>
-                  <th className="p-2 text-left">Status</th>
-                  <th className="p-2 text-left">Parent Roll</th>
-                  <th className="p-2 text-left">Parent Batch</th>
-                  <th className="p-2 text-left">Estimated Pieces</th>
-                  <th className="p-2 text-left">Start Date</th>
-                  <th className="p-2 text-left">Due Date</th>
-                  <th className="p-2 text-left">Actions</th>
+                <tr className="bg-[#E5E7EB]">
+                  <th className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider">SN</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider">ID</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider">NAME</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider">PARENT ROLL</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider">PARENT BATCH</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider">STATUS</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider">ESTIMATED PIECES</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider">START DATE</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider">DUE DATE</th>
+                  <th className="px-4 py-3"></th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {subBatches.map((sb, index) => (
-                  <tr key={sb.id} className="hover:bg-gray-50">
-                    <td className="p-2 bg-gray-50 font-inter font-regular">{index + 1}</td>
-                    <td className="p-2 bg-gray-50 font-inter">{`B${sb.id.toString().padStart(4, "0")}`}</td>
-                    <td className="p-2 bg-gray-50 font-inter">{sb.name}</td>
-                    <td className="p-2 bg-gray-50 font-inter">{getStatusBadge(sb.status)}</td>
-                    <td className="p-2 bg-gray-50 font-inter">{getRollName(sb.roll_id)}</td>
-                    <td className="p-2 bg-gray-50 font-inter">{getBatchName(sb.batch_id)}</td>
-                    <td className="p-2 bg-gray-50 font-inter">{sb.estimated_pieces}</td>
-                    <td className="p-2 bg-gray-50 font-inter">{formatDate(sb.start_date)}</td>
-                    <td className="p-2 bg-gray-50 font-inter">{formatDate(sb.due_date)}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                  <tr key={sb.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-4 py-4 text-sm">{index + 1}</td>
+                    <td className="px-4 py-4 text-sm">{`B00${sb.id.toString().padStart(2, "0")}`}</td>
+                    <td className="px-4 py-4 text-sm">{sb.name}</td>
+                    <td className="px-4 py-4 text-sm">{getRollName(sb.roll_id)}</td>
+                    <td className="px-4 py-4 text-sm">{getBatchName(sb.batch_id)}</td>
+                    <td className="px-4 py-4 text-sm">{getStatusBadge(sb.status)}</td>
+                    <td className="px-4 py-4 text-sm">{sb.estimated_pieces}</td>
+                    <td className="px-4 py-4 text-sm">{formatDate(sb.start_date)}</td>
+                    <td className="px-4 py-4 text-sm">{formatDate(sb.due_date)}</td>
+                    <td className="px-4 py-4 text-sm relative">
                       <div className="relative">
                         <button
                           onClick={() => toggleMenu(sb.id)}
-                          className="p-1 text-gray-500 hover:text-gray-700"
+                          className="p-1 rounded hover:bg-gray-200 transition-colors"
                         >
-                          <MoreVertical size={16} />
+                          <MoreVertical size={18} className="text-gray-600" />
                         </button>
                         {openMenuId === sb.id && (
-                          <div className="absolute right-0 mt-2 w-44 bg-white rounded shadow-lg z-50">
+                          <div className="absolute right-0 mt-2 w-44 bg-white rounded shadow-lg z-50 border border-gray-200">
                             <button
                               onClick={() => handlePreview(sb.id)}
-                              className="w-full px-4 py-2 text-left hover:bg-gray-100 text-black flex items-center gap-2"
+                              className="w-full px-4 py-2 text-left hover:bg-gray-100 text-black flex items-center gap-2 text-sm"
                               title="View"
                             >
-                              <Eye size={16} />Preview
+                              <Eye size={14} />Preview
                             </button>
 
                             <button
                               onClick={() => handleEdit(sb)}
-                              className="w-full px-4 py-2 text-left hover:bg-gray-100 text-black flex items-center gap-2"
+                              className="w-full px-4 py-2 text-left hover:bg-gray-100 text-black flex items-center gap-2 text-sm"
                             >
-                              <Edit2 size={16} /> Edit
+                              <Edit2 size={14} /> Edit
                             </button>
                             <button
                               onClick={() => handleDelete(sb.id)}
-                              className="w-full px-4 py-2 text-left hover:bg-gray-100 text-red-600 flex items-center gap-2"
+                              className="w-full px-4 py-2 text-left hover:bg-gray-100 text-red-600 flex items-center gap-2 text-sm"
                             >
-                              <Trash2 size={16} /> Delete
+                              <Trash2 size={14} /> Delete
                             </button>
                             <button
                               onClick={() => handleSend(sb)}
-                              className="w-full px-4 py-2 text-left hover:bg-gray-100 text-green-600 flex items-center gap-2"
+                              className="w-full px-4 py-2 text-left hover:bg-gray-100 text-green-600 flex items-center gap-2 text-sm"
                             >
-                              <Package size={16} /> Send to Production
+                              <Package size={14} /> Send to Production
                             </button>
                           </div>
                         )}

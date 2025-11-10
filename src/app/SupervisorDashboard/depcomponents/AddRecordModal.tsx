@@ -111,22 +111,35 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
           return d;
         }
       };
+
+      // Helper function to convert numeric values - only show if > 0
+      const formatNumericValue = (val: number | undefined | null) => {
+        if (val === null || val === undefined || val === 0) return '';
+        return val.toString();
+      };
+
+      // Helper function to clean text values - don't show "-"
+      const formatTextValue = (val: string | undefined | null) => {
+        if (!val || val === '-') return '';
+        return val;
+      };
+
       setFormData({
         workerId: '', // will be set after workers load
         workerName: editRecord.worker,
         date: formatDate(editRecord.date),
         sizeCategory: editRecord.realCategory || '',
-        particulars: editRecord.particulars || '',
-        qtyReceived: editRecord.qtyReceived?.toString() || '',
-        qtyWorked: editRecord.qtyWorked?.toString() || '',
-        unitPrice: editRecord.unitPrice?.toString() || '',
+        particulars: formatTextValue(editRecord.particulars),
+        qtyReceived: formatNumericValue(editRecord.qtyReceived),
+        qtyWorked: formatNumericValue(editRecord.qtyWorked),
+        unitPrice: formatNumericValue(editRecord.unitPrice),
         isBillable: true,
-        rejectReturn: editRecord.rejectReturn?.toString() || '',
-        returnTo: editRecord.returnTo || '',
-        rejectionReason: editRecord.rejectionReason || '',
-        alteration: editRecord.alteration?.toString() || '',
+        rejectReturn: formatNumericValue(editRecord.rejectReturn),
+        returnTo: formatTextValue(editRecord.returnTo),
+        rejectionReason: formatTextValue(editRecord.rejectionReason),
+        alteration: formatNumericValue(editRecord.alteration),
         alterationReturnTo: '',
-        alterationNote: editRecord.alterationNote || '',
+        alterationNote: formatTextValue(editRecord.alterationNote),
         selectedAttachments: [],
       });
     } else if (mode === 'add') {
@@ -231,31 +244,36 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
       return;
     }
 
-    // Validate rejected data - all fields must be filled if any is filled
-    const hasRejectData = formData.rejectReturn || formData.returnTo || formData.rejectionReason;
-    if (hasRejectData) {
-      if (!formData.rejectReturn || !formData.returnTo || !formData.rejectionReason) {
-        alert('Please fill all rejection fields (Reject & Return, Return To, and Reason) or leave them all empty');
-        return;
-      }
-      const rejectQty = parseInt(formData.rejectReturn);
-      if (isNaN(rejectQty) || rejectQty <= 0) {
-        alert('Reject & Return quantity must be a positive number');
-        return;
-      }
-    }
+    // Skip rejection/alteration validation for cards that are already alteration/rejection cards
+    const isAlterationOrRejectionCard = (subBatch as any)?.alteration_source || (subBatch as any)?.rejection_source;
 
-    // Validate alteration data - all fields must be filled if any is filled
-    const hasAlterationData = formData.alteration || formData.alterationReturnTo || formData.alterationNote;
-    if (hasAlterationData) {
-      if (!formData.alteration || !formData.alterationReturnTo || !formData.alterationNote) {
-        alert('Please fill all alteration fields (Alteration, Alteration Return To, and Alteration Note) or leave them all empty');
-        return;
+    if (!isAlterationOrRejectionCard) {
+      // Validate rejected data - all fields must be filled if any is filled
+      const hasRejectData = formData.rejectReturn || formData.returnTo || formData.rejectionReason;
+      if (hasRejectData) {
+        if (!formData.rejectReturn || !formData.returnTo || !formData.rejectionReason) {
+          alert('Please fill all rejection fields (Reject & Return, Return To, and Reason) or leave them all empty');
+          return;
+        }
+        const rejectQty = parseInt(formData.rejectReturn);
+        if (isNaN(rejectQty) || rejectQty <= 0) {
+          alert('Reject & Return quantity must be a positive number');
+          return;
+        }
       }
-      const alterQty = parseInt(formData.alteration);
-      if (isNaN(alterQty) || alterQty <= 0) {
-        alert('Alteration quantity must be a positive number');
-        return;
+
+      // Validate alteration data - all fields must be filled if any is filled
+      const hasAlterationData = formData.alteration || formData.alterationReturnTo || formData.alterationNote;
+      if (hasAlterationData) {
+        if (!formData.alteration || !formData.alterationReturnTo || !formData.alterationNote) {
+          alert('Please fill all alteration fields (Alteration, Alteration Return To, and Alteration Note) or leave them all empty');
+          return;
+        }
+        const alterQty = parseInt(formData.alteration);
+        if (isNaN(alterQty) || alterQty <= 0) {
+          alert('Alteration quantity must be a positive number');
+          return;
+        }
       }
     }
 
@@ -660,7 +678,8 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
             </div>
           )}
 
-          {/* Additional Tracking */}
+          {/* Additional Tracking - Only show for regular cards, not for alteration/rejection cards */}
+          {!(subBatch as any)?.alteration_source && !(subBatch as any)?.rejection_source && (
           <div className="border-t pt-4">
             <h4 className="text-sm font-semibold mb-3 text-gray-700">Additional Tracking</h4>
             {/* Reject & Return */}
@@ -753,6 +772,7 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
               />
             </div>
           </div>
+          )}
         </div>
 
         {/* Footer */}
