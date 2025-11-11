@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { X, Calendar, Plus, Trash2, ChevronDown, CheckCircle, Clock, Inbox } from 'lucide-react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useEffect, useCallback } from 'react';
+import { X, Calendar, Plus, Trash2, ChevronDown, ChevronRight, CheckCircle, Clock, Inbox } from 'lucide-react';
 
 interface AlteredTaskData {
     id: number;
@@ -49,16 +50,37 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
     const [departments, setDepartments] = useState<Array<{ id: number; name: string }>>([]);
     const [showCompletionDialog, setShowCompletionDialog] = useState(false);
     const [confirmationText, setConfirmationText] = useState('');
+    const [subBatchHistory, setSubBatchHistory] = useState<any>(null);
+    const [expandedDepartments, setExpandedDepartments] = useState<number[]>([]);
 
-    useEffect(() => {
-        if (taskData) {
-            setStatus(taskData.status || 'NEW_ARRIVAL');
-            // Load assigned workers for this altered task
-            fetchWorkerRecords();
-            // Fetch departments
-            fetchDepartments();
+    // Fetch sub-batch history (department flow and worker logs)
+    const fetchSubBatchHistory = useCallback(async () => {
+        if (!taskData?.id) return;
+
+        // For altered tasks, we need to get the sub_batch_id
+        // The taskData.id might be the department_sub_batch_id, but we need the actual sub_batch_id
+        // We'll try to fetch using the taskData.id first
+        const apiUrl = `${process.env.NEXT_PUBLIC_SUB_BATCH_HISTORY}/${taskData.id}`;
+
+        try {
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+                console.error('Error fetching sub-batch history:', response.status);
+                return;
+            }
+
+            const result = await response.json();
+            console.log('======= SUB-BATCH HISTORY API RESPONSE (ALTERED) =======');
+            console.log('API Result:', result);
+            console.log('========================================================');
+
+            if (result.success) {
+                setSubBatchHistory(result);
+            }
+        } catch (error) {
+            console.error('Error fetching sub-batch history:', error);
         }
-    }, [taskData]);
+    }, [taskData?.id]);
 
     const fetchDepartments = async () => {
         try {
@@ -77,6 +99,18 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
         // TODO: Replace with actual API call when backend is ready
         setWorkerRecords([]);
     };
+
+    useEffect(() => {
+        if (taskData) {
+            setStatus(taskData.status || 'NEW_ARRIVAL');
+            // Load assigned workers for this altered task
+            fetchWorkerRecords();
+            // Fetch departments
+            fetchDepartments();
+            // Fetch sub-batch history
+            fetchSubBatchHistory();
+        }
+    }, [taskData, fetchSubBatchHistory]);
 
     const handleAddWorker = () => {
         if (!newWorkerName || !newWorkerQuantity || !newWorkerDate) {
@@ -293,7 +327,6 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
             } else {
                 throw new Error(result.message || 'Failed to mark sub-batch as completed');
             }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error('Error marking as completed:', error);
             alert(`Failed to mark as completed: ${error.message}`);
@@ -620,12 +653,148 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
                             </div>
                         </div>
 
-                        {/* Right Column - Work History (Full Height Sidebar) */}
+                        {/* Right Column - Route Details (Full Height Sidebar) */}
                         <div className="px-8 py-6">
-                            <h4 className="text-lg font-semibold mb-6 text-gray-900">Work History</h4>
-                            <div className="text-sm text-gray-400">
-                                No work history available
+                            <h4 className="text-lg font-semibold mb-6 text-gray-900">Route Details</h4>
+
+                            {/* Product Name and Batch ID */}
+                            <div className="mb-6">
+                                <p className="text-base font-normal text-gray-900">{taskData.batch_name || 'Linen Silk'}</p>
+                                <p className="text-sm text-gray-400">{taskData.sub_batch_name || 'B001.1'}</p>
                             </div>
+
+                            {/* Department Flow with connecting line */}
+                            {subBatchHistory && subBatchHistory.department_flow ? (
+                                <div className="relative">
+                                    {/* Vertical line connecting dots */}
+                                    <div className="absolute left-[5px] top-[8px] bottom-[8px] w-[2px] bg-gray-200" />
+
+                                    <div className="space-y-4 relative">
+                                        {subBatchHistory.department_flow.split('→').map((deptName: string, index: number) => {
+                                            const trimmedName = deptName.trim();
+                                            // For altered tasks, find the current department
+                                            // Match by department name OR by department_id
+                                            const isCurrentDepartment =
+                                                trimmedName === taskData.sent_from_department ||
+                                                subBatchHistory.department_details?.some(
+                                                    (dept: any) => dept.department_name === trimmedName && dept.department_id === taskData.id
+                                                );
+                                            return (
+                                                <div key={index} className="flex items-center gap-3 relative">
+                                                    <div className={`w-[10px] h-[10px] rounded-full border-2 z-10 ${
+                                                        isCurrentDepartment
+                                                            ? 'bg-green-500 border-green-500'
+                                                            : 'bg-gray-300 border-gray-300'
+                                                    }`} />
+                                                    <span className={`text-sm ${isCurrentDepartment ? 'font-medium text-gray-900' : 'text-gray-600'}`}>
+                                                        {trimmedName}
+                                                    </span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="text-sm text-gray-400">
+                                    Loading route details...
+                                </div>
+                            )}
+
+                            {/* Completed Departments (Expandable) */}
+                            {subBatchHistory && subBatchHistory.department_details && subBatchHistory.department_details.length > 0 && (
+                                <div className="mt-8">
+                                    <h5 className="text-sm font-semibold mb-3 text-gray-900">Completed Departments</h5>
+                                    <div className="space-y-2">
+                                        {subBatchHistory.department_details
+                                            .filter((dept: any) => dept.worker_logs && dept.worker_logs.length > 0)
+                                            .map((dept: any) => {
+                                                const isExpanded = expandedDepartments.includes(dept.department_entry_id);
+                                                return (
+                                                    <div key={dept.department_entry_id} className="border border-gray-300 rounded-lg">
+                                                        <button
+                                                            onClick={() => {
+                                                                if (isExpanded) {
+                                                                    setExpandedDepartments(expandedDepartments.filter(id => id !== dept.department_entry_id));
+                                                                } else {
+                                                                    setExpandedDepartments([...expandedDepartments, dept.department_entry_id]);
+                                                                }
+                                                            }}
+                                                            className="w-full flex items-center justify-between px-3 py-2 hover:bg-gray-50 rounded-lg"
+                                                        >
+                                                            <span className="text-xs font-medium text-gray-900">{dept.department_name}</span>
+                                                            <ChevronRight
+                                                                size={14}
+                                                                className={`text-gray-500 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
+                                                            />
+                                                        </button>
+
+                                                        {isExpanded && dept.worker_logs && dept.worker_logs.length > 0 && (
+                                                            <div className="border-t border-gray-200 bg-gray-50">
+                                                                <div className="overflow-x-auto">
+                                                                    <table className="min-w-full border-collapse">
+                                                                        <thead className="bg-gray-100">
+                                                                            <tr>
+                                                                                <th className="p-2 text-left text-[10px] font-medium text-gray-700 whitespace-nowrap">Worker</th>
+                                                                                <th className="p-2 text-left text-[10px] font-medium text-gray-700 whitespace-nowrap">Date</th>
+                                                                                <th className="p-2 text-left text-[10px] font-medium text-gray-700 whitespace-nowrap">Size/Category</th>
+                                                                                <th className="p-2 text-left text-[10px] font-medium text-gray-700 whitespace-nowrap">Particulars</th>
+                                                                                <th className="p-2 text-right text-[10px] font-medium text-gray-700 whitespace-nowrap">Qty Received</th>
+                                                                                <th className="p-2 text-right text-[10px] font-medium text-gray-700 whitespace-nowrap">Qty Worked</th>
+                                                                                <th className="p-2 text-right text-[10px] font-medium text-gray-700 whitespace-nowrap">Unit Price</th>
+                                                                                <th className="p-2 text-right text-[10px] font-medium text-gray-700 whitespace-nowrap">Rejected</th>
+                                                                                <th className="p-2 text-left text-[10px] font-medium text-gray-700 whitespace-nowrap">Returned Dept</th>
+                                                                                <th className="p-2 text-left text-[10px] font-medium text-gray-700 whitespace-nowrap">Rejection Reason</th>
+                                                                                <th className="p-2 text-right text-[10px] font-medium text-gray-700 whitespace-nowrap">Alteration</th>
+                                                                                <th className="p-2 text-left text-[10px] font-medium text-gray-700 whitespace-nowrap">Alteration Note</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody className="divide-y divide-gray-200">
+                                                                            {dept.worker_logs.map((log: any, index: number) => {
+                                                                                // Extract rejection data from rejected array
+                                                                                const rejectedData = log.rejected && log.rejected.length > 0 ? log.rejected[0] : null;
+                                                                                const rejectedQty = rejectedData?.quantity ?? 0;
+                                                                                const rejectedDept = rejectedData?.sent_to_department_name || '-';
+                                                                                const rejectionReason = rejectedData?.reason || '-';
+
+                                                                                // Extract alteration data from altered array
+                                                                                const alteredData = log.altered && log.altered.length > 0 ? log.altered[0] : null;
+                                                                                const alteredQty = alteredData?.quantity ?? 0;
+                                                                                const alterationNote = alteredData?.reason || '-';
+
+                                                                                return (
+                                                                                    <tr key={index} className="hover:bg-gray-100">
+                                                                                        <td className="p-2 text-[10px] text-gray-900 whitespace-nowrap">{log.worker_name || 'Unknown'}</td>
+                                                                                        <td className="p-2 text-[10px] text-gray-600 whitespace-nowrap">
+                                                                                            {log.work_date ? new Date(log.work_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '-'}
+                                                                                        </td>
+                                                                                        <td className="p-2 text-[10px] text-gray-600">{log.size_category || '-'}</td>
+                                                                                        <td className="p-2 text-[10px] text-gray-600">{log.particulars || '-'}</td>
+                                                                                        <td className="p-2 text-[10px] text-gray-600 text-right">{log.quantity_received ?? 0}</td>
+                                                                                        <td className="p-2 text-[10px] text-gray-600 text-right">{log.quantity_worked ?? 0}</td>
+                                                                                        <td className="p-2 text-[10px] text-gray-600 text-right">${log.unit_price ?? 0}</td>
+                                                                                        <td className={`p-2 text-[10px] text-right font-semibold ${rejectedQty > 0 ? 'text-red-600' : 'text-gray-600'}`}>
+                                                                                            {rejectedQty}
+                                                                                        </td>
+                                                                                        <td className="p-2 text-[10px] text-gray-600">{rejectedDept}</td>
+                                                                                        <td className="p-2 text-[10px] text-gray-600">{rejectionReason}</td>
+                                                                                        <td className={`p-2 text-[10px] text-right font-semibold ${alteredQty > 0 ? 'text-orange-600' : 'text-gray-600'}`}>
+                                                                                            {alteredQty}
+                                                                                        </td>
+                                                                                        <td className="p-2 text-[10px] text-gray-600">{alterationNote}</td>
+                                                                                    </tr>
+                                                                                );
+                                                                            })}
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
 
