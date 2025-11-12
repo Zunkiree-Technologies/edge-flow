@@ -17,6 +17,8 @@ import subBatchAlteredRoutes from "./src/routes/subBatchAltered";
 import subBatchWorkflowRoutes from "./src/routes/subBatchWorkflow";
 import wageRoutes from "./src/routes/wage";
 import productionViewRoutes from "./src/routes/productionView";
+import inventoryRoutes from "./src/routes/inventory";
+import inventorySubtractionRoutes from "./src/routes/inventorySubtraction";
 
 
 dotenv.config();
@@ -75,6 +77,12 @@ app.use("/api/wages", wageRoutes);
 
 // Production View Routes
 app.use("/api/production-view", productionViewRoutes);
+
+// Inventory Routes
+app.use("/api/inventory", inventoryRoutes);
+
+// Inventory Subtraction Routes
+app.use("/api/inventory-subtraction", inventorySubtractionRoutes);
 
 
 // Optional test route

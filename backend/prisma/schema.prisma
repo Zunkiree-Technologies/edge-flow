@@ -282,6 +282,38 @@ model Supervisor {
   department   departments? @relation(fields: [departmentId], references: [id])
 }
 
+model inventory {
+  id                     Int                      @id @default(autoincrement())
+  name                   String
+  unit                   String
+  date                   DateTime                 @default(now())
+  quantity               Float
+  price                  Float
+  vendor                 String
+  phone                  String
+  remarks                String?
+  inventory_subtractions inventory_subtraction[]
+  inventory_additions    inventory_addition[]
+}
+
+model inventory_subtraction {
+  id           Int        @id @default(autoincrement())
+  inventory_id Int
+  date         DateTime   @default(now())
+  quantity     Float
+  remarks      String?
+  inventory    inventory  @relation(fields: [inventory_id], references: [id])
+}
+
+model inventory_addition {
+  id           Int        @id @default(autoincrement())
+  inventory_id Int
+  date         DateTime   @default(now())
+  quantity     Float
+  remarks      String?
+  inventory    inventory  @relation(fields: [inventory_id], references: [id])
+}
+
 enum DepartmentStage {
   NEW_ARRIVAL
   IN_PROGRESS
