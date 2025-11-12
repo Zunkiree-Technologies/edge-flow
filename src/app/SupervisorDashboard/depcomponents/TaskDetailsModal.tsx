@@ -445,7 +445,10 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
     const totalAltered = currentDepartmentRecords.reduce((sum, record) => sum + (record.alteration || 0), 0);
     const totalRejected = currentDepartmentRecords.reduce((sum, record) => sum + (record.rejectReturn || 0), 0);
     const totalProcessed = totalWorkDone + totalAltered + totalRejected;
-    const quantityToWork = taskData.quantity_remaining ?? taskData.sub_batch?.estimated_pieces ?? 0;
+    // Total/original quantity for display only
+    const totalQuantity = taskData.sub_batch?.estimated_pieces ?? 0;
+    // Quantity to work is what this department received (from backend)
+    const quantityToWork = taskData.quantity_remaining ?? totalQuantity;
     const remainingWork = quantityToWork - totalProcessed;
 
     // Extract rejection/alteration logs from current department worker records
@@ -601,7 +604,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                                     <div>
                                         <label className="text-sm font-medium text-gray-700 block mb-1">Total Quantity</label>
                                         <div className="bg-gray-50 border border-gray-300 rounded px-3 py-2 text-sm text-gray-900">
-                                            {(taskData.quantity_remaining ?? taskData.sub_batch?.estimated_pieces)?.toLocaleString() || '-'}
+                                            {taskData.sub_batch?.estimated_pieces?.toLocaleString() || '-'}
                                         </div>
                                     </div>
 
@@ -1013,17 +1016,15 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                                     <h4 className="font-semibold text-base">Current Assignment</h4>
                                     <button
                                         onClick={handleAddRecord}
-                                        disabled={(status === 'NEW_ARRIVAL' && !taskData.alteration_source) || taskData.stage === 'COMPLETED' || remainingWork <= 0}
+                                        disabled={taskData.stage !== 'IN_PROGRESS' || remainingWork <= 0}
                                         className={`px-4 py-1.5 rounded text-sm transition ${
-                                            (status === 'NEW_ARRIVAL' && !taskData.alteration_source) || taskData.stage === 'COMPLETED' || remainingWork <= 0
+                                            taskData.stage !== 'IN_PROGRESS' || remainingWork <= 0
                                                 ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                                                 : 'border-blue-500 border text-blue-500 hover:bg-blue-700 hover:text-white'
                                         }`}
                                         title={
-                                            status === 'NEW_ARRIVAL' && !taskData.alteration_source
-                                                ? 'Move to In Progress to assign workers'
-                                                : taskData.stage === 'COMPLETED'
-                                                ? 'Cannot add records to completed tasks'
+                                            taskData.stage !== 'IN_PROGRESS'
+                                                ? 'Save the status as In Progress first to add records'
                                                 : remainingWork <= 0
                                                 ? 'All work has been completed. No more records can be added.'
                                                 : 'Add worker record'
@@ -1033,9 +1034,9 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                                     </button>
                                 </div>
 
-                                {status === 'NEW_ARRIVAL' && !taskData.alteration_source && (
+                                {taskData.stage !== 'IN_PROGRESS' && (
                                     <div className="px-8 py-2 text-sm text-orange-600 bg-orange-50 border-b">
-                                        <strong>Note:</strong> Worker assignment is only available after moving to In Progress stage.
+                                        <strong>Note:</strong> Worker assignment is only available after saving the status as In Progress.
                                     </div>
                                 )}
 
@@ -1191,6 +1192,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                     department_sub_batch_id: taskData.id,  // Pass the department_sub_batch_id
                     department_id: taskData.department_id,  // Pass the current department_id
                     quantity_remaining: taskData.quantity_remaining,
+                    remaining_work: remainingWork,  // Pass the calculated remaining work from production summary
                     remarks: taskData.remarks,
                     rejection_source: taskData.rejection_source,
                     alteration_source: taskData.alteration_source

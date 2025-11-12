@@ -533,12 +533,14 @@ const SupervisorKanban = () => {
             alteration_date: new Date().toISOString(),
             altered_by: selectedItem.alteration_source?.from_department_name || 'Department Worker',
             altered_quantity: selectedItem.alteration_source?.quantity ?? selectedItem.quantity_remaining ?? 0,
-            alteration_reason: selectedItem.alteration_source?.reason || 'Alteration required',
+            alteration_reason: selectedItem.alteration_source?.reason || selectedItem.remarks || '',
             attachments: selectedItem.sub_batch?.attachments?.map((att: Attachment) => ({
               name: att.attachment_name,
               count: att.quantity
             })) || [],
-            quantity_remaining: selectedItem.quantity_remaining
+            quantity_remaining: selectedItem.quantity_remaining,
+            sub_batch: selectedItem.sub_batch,  // Pass the entire sub_batch object
+            original_quantity: selectedItem.sub_batch?.estimated_pieces  // Pass original quantity
           } : {} as any}
           onStageChange={fetchKanbanData}
         />
@@ -564,7 +566,9 @@ const SupervisorKanban = () => {
               name: att.attachment_name,
               count: att.quantity
             })) || [],
-            quantity_remaining: selectedItem.quantity_remaining
+            quantity_remaining: selectedItem.quantity_remaining,
+            sub_batch: selectedItem.sub_batch,  // Pass the entire sub_batch object
+            original_quantity: selectedItem.sub_batch?.estimated_pieces  // Pass original quantity
           } : {} as any}
           onStageChange={fetchKanbanData}
         />

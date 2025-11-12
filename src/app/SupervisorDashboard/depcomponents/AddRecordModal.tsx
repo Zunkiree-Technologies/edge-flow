@@ -30,6 +30,7 @@ interface SubBatch {
   due_date: string;
   department_id: number | null;
   department_sub_batch_id?: number;  // The ID from department_sub_batches table - required for reject/alter operations
+  remaining_work?: number;  // Remaining work from production summary
 }
 
 export interface WorkerRecord {
@@ -252,10 +253,17 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
       return;
     }
 
-    // Validate: quantity_worked cannot be more than quantity_received
+    // Validate: quantity_received cannot exceed remaining work from production summary
     const qtyReceived = formData.qtyReceived ? parseInt(formData.qtyReceived) : 0;
     const qtyWorked = formData.qtyWorked ? parseInt(formData.qtyWorked) : 0;
+    const remainingWork = subBatch?.remaining_work ?? 0;
 
+    if (qtyReceived > 0 && remainingWork > 0 && qtyReceived > remainingWork) {
+      alert(`Quantity received cannot exceed the remaining work!\nRemaining work: ${remainingWork.toLocaleString()} pieces\nYou entered: ${qtyReceived.toLocaleString()} pieces`);
+      return;
+    }
+
+    // Validate: quantity_worked cannot be more than quantity_received
     if (qtyReceived > 0 && qtyWorked > qtyReceived) {
       alert('Quantity worked cannot be more than quantity received!');
       return;
@@ -621,6 +629,11 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
                 disabled={isPreviewMode}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
+              {subBatch?.remaining_work !== undefined && subBatch.remaining_work >= 0 && (
+                <p className="text-xs text-gray-600 mt-1">
+                  Remaining: <span className="font-semibold text-blue-600">{subBatch.remaining_work.toLocaleString()}</span> pieces
+                </p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-semibold mb-2">Qty Worked</label>

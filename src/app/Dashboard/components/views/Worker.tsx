@@ -152,15 +152,15 @@ const WorkerPage = () => {
     };
 
     return (
-        <div className="p-8 bg-gray-50 min-h-screen">
+        <div className="min-h-screen bg-gray-50 p-6">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h2 className="text-2xl font-bold">Workers</h2>
-                    <p className="text-gray-500 text-sm">Manage workers, wages and details</p>
+                    <h1 className="text-2xl font-semibold text-gray-900 mb-2">Workers</h1>
+                    <p className="text-sm text-gray-600">Manage workers, wages and details</p>
                 </div>
                 <button
-                    className="flex items-center gap-2 bg-[#6B98FF] text-white px-4 py-2 rounded-[10px] hover:bg-blue-700"
+                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
                     onClick={() => { closeDrawer(); setIsDrawerOpen(true); }}
                 >
                     <Plus size={16} /> Add Worker
@@ -168,55 +168,55 @@ const WorkerPage = () => {
             </div>
 
             {/* Main Table */}
-            <div className="bg-white rounded-lg shadow border-gray-200 p-6 flex flex-col gap-4 mb-8">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col gap-4 mb-8">
                 {loading ? (
                    <Loader loading={true} message="Loading Workers..." />
                 ) : workers.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12">
                         <FileText size={48} className="text-gray-300 mb-4" />
-                        <p className="text-black mb-2 font-medium">No workers found</p>
-                        <p className="text-gray-500 mb-2 font-medium">Click Add Worker to get started</p>
+                        <p className="text-gray-900 mb-2 font-medium">No workers found</p>
+                        <p className="text-gray-600 text-sm">Click Add Worker to get started</p>
                     </div>
                 ) : (
                     <table className="w-full table-auto border-collapse">
                         <thead>
-                            <tr className="bg-gray-200">
-                                <th className="p-2 text-left">S.N.</th>
-                                <th className="p-2 text-left">ID</th>
-                                <th className="p-2 text-left">Name</th>
-                                <th className="p-2 text-left">PAN</th>
-                                <th className="p-2 text-left">Address</th>
-                                <th className="p-2 text-left">Wage Type</th>
-                                <th className="p-2 text-left">Wage Rate</th>
-                                <th className="p-2 text-left">Actions</th>
+                            <tr className="bg-gray-50 border-b border-gray-200">
+                                <th className="p-3 text-left text-sm font-medium text-gray-900">S.N.</th>
+                                <th className="p-3 text-left text-sm font-medium text-gray-900">ID</th>
+                                <th className="p-3 text-left text-sm font-medium text-gray-900">Name</th>
+                                <th className="p-3 text-left text-sm font-medium text-gray-900">PAN</th>
+                                <th className="p-3 text-left text-sm font-medium text-gray-900">Address</th>
+                                <th className="p-3 text-left text-sm font-medium text-gray-900">Wage Type</th>
+                                <th className="p-3 text-left text-sm font-medium text-gray-900">Wage Rate</th>
+                                <th className="p-3 text-left text-sm font-medium text-gray-900">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {workers.map((worker, index) => (
-                                <tr key={worker.id} className="border-b border-gray-200 ">
-                                    <td className="p-2 bg-gray-50">{index + 1}</td>
-                                    <td className="p-2 bg-gray-50">WR{worker.id}</td>
-                                    <td className="p-2 bg-gray-50">{worker.name}</td>
-                                    <td className="p-2 bg-gray-50">{worker.pan}</td>
-                                    <td className="p-2 bg-gray-50">{worker.address}</td>
-                                    <td className="p-2 bg-gray-50">{worker.wage_type}</td>
-                                    <td className="p-2 bg-gray-50">{worker.wage_rate}</td>
-                                    <td className="p-2 flex justify-center relative">
+                                <tr key={worker.id} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
+                                    <td className="p-3 text-sm text-gray-600">{index + 1}</td>
+                                    <td className="p-3 text-sm text-gray-900 font-medium">WR{worker.id}</td>
+                                    <td className="p-3 text-sm text-gray-900">{worker.name}</td>
+                                    <td className="p-3 text-sm text-gray-600">{worker.pan}</td>
+                                    <td className="p-3 text-sm text-gray-600">{worker.address}</td>
+                                    <td className="p-3 text-sm text-gray-600">{worker.wage_type}</td>
+                                    <td className="p-3 text-sm text-gray-900 font-medium">{worker.wage_rate}</td>
+                                    <td className="p-3 flex justify-center relative">
                                         <button
-                                            className="p-1 rounded hover:bg-gray-100"
+                                            className="p-1 rounded hover:bg-gray-100 transition-colors"
                                             onClick={() => setOpenMenuId(openMenuId === worker.id ? null : worker.id)}
                                         >
-                                            <MoreVertical size={20} />
+                                            <MoreVertical size={20} className="text-gray-600" />
                                         </button>
                                         {openMenuId === worker.id && (
-                                            <div className="absolute right-0 top-full mt-2 w-32 bg-white rounded shadow-lg z-50">
-                                                <button className="w-full px-4 py-2 hover:bg-gray-100 flex items-center gap-2" onClick={() => { setOpenMenuId(null); handlePreview(worker); }}>
+                                            <div className="absolute right-0 top-full mt-2 w-36 bg-white rounded-md shadow-sm border border-gray-200 z-50">
+                                                <button className="w-full px-4 py-2 hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-700 transition-colors" onClick={() => { setOpenMenuId(null); handlePreview(worker); }}>
                                                     <Eye size={14} /> Preview
                                                 </button>
-                                                <button className="w-full px-4 py-2 hover:bg-gray-100 flex items-center gap-2" onClick={() => { setOpenMenuId(null); handleEdit(worker); }}>
+                                                <button className="w-full px-4 py-2 hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-700 transition-colors" onClick={() => { setOpenMenuId(null); handleEdit(worker); }}>
                                                     <Edit2 size={14} /> Edit
                                                 </button>
-                                                <button className="w-full px-4 py-2 hover:bg-gray-100 flex items-center gap-2 text-red-500" onClick={() => { setOpenMenuId(null); handleDelete(worker.id); }}>
+                                                <button className="w-full px-4 py-2 hover:bg-gray-50 flex items-center gap-2 text-sm text-red-600 transition-colors" onClick={() => { setOpenMenuId(null); handleDelete(worker.id); }}>
                                                     <Trash2 size={14} /> Delete
                                                 </button>
                                             </div>
@@ -236,15 +236,15 @@ const WorkerPage = () => {
                     <div className="absolute inset-0 bg-black/30" onClick={closeDrawer} />
 
                     {/* Drawer */}
-                    <div className="ml-auto w-full max-w-md bg-white shadow-lg p-6 relative rounded-[25px] max-h-[90vh] overflow-y-auto">
+                    <div className="ml-auto w-full max-w-md bg-white shadow-sm p-6 relative rounded-lg max-h-[90vh] overflow-y-auto">
                         <button
-                            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors"
                             onClick={closeDrawer}
                         >
                             <X size={20} />
                         </button>
 
-                        <h3 className="text-lg font-semibold mb-4 flex gap-2 items-center">
+                        <h3 className="text-lg font-medium text-gray-900 mb-6 flex gap-2 items-center">
                             <Shell size={20} />
                             {isPreview ? "Worker Preview" : editingWorker ? "Edit Worker" : "Add New Worker"}
                         </h3>
@@ -255,15 +255,15 @@ const WorkerPage = () => {
                                 type="text"
                                 value={`WR${editingWorker.id}`}
                                 readOnly
-                                className="w-full border border-gray-300 rounded-[10px] px-3 py-2 bg-gray-100 cursor-not-allowed mb-4"
+                                className="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-50 cursor-not-allowed mb-6 text-sm text-gray-600"
                             />
                         )}
 
                         {/* Flex grid for inputs */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {/* Name */}
-                            <div className="flex flex-col">
-                                <label className="flex items-center gap-2 font-semibold">
+                            <div className="flex flex-col gap-2">
+                                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
                                     <Users size={16} /> Name *
                                 </label>
                                 <input
@@ -272,13 +272,13 @@ const WorkerPage = () => {
                                     value={formData.name}
                                     onChange={handleChange}
                                     readOnly={isPreview}
-                                    className="border rounded px-2 py-1"
+                                    className="border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                 />
                             </div>
 
                             {/* PAN */}
-                            <div className="flex flex-col">
-                                <label className="flex items-center gap-2 font-semibold">
+                            <div className="flex flex-col gap-2">
+                                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
                                     <FileText size={16} /> PAN *
                                 </label>
                                 <input
@@ -287,13 +287,13 @@ const WorkerPage = () => {
                                     value={formData.pan}
                                     onChange={handleChange}
                                     readOnly={isPreview}
-                                    className="border rounded px-2 py-1"
+                                    className="border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                 />
                             </div>
 
                             {/* Address */}
-                            <div className="flex flex-col sm:col-span-2">
-                                <label className="flex items-center gap-2 font-semibold">
+                            <div className="flex flex-col gap-2 sm:col-span-2">
+                                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
                                     <MapPin size={16} /> Address *
                                 </label>
                                 <input
@@ -302,21 +302,21 @@ const WorkerPage = () => {
                                     value={formData.address}
                                     onChange={handleChange}
                                     readOnly={isPreview}
-                                    className="border rounded px-2 py-1"
+                                    className="border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                 />
                             </div>
 
                             {/* Wage Type */}
-                            <div className="flex flex-col">
-                                <label className="flex items-center gap-2 font-semibold">
-                                    <Scale size={16} /> Wage Type
+                            <div className="flex flex-col gap-2">
+                                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
+                                    <Scale size={16} /> Wage Type <span className="text-gray-500 font-normal">(optional)</span>
                                 </label>
                                 <select
                                     name="wage_type"
                                     value={formData.wage_type}
                                     onChange={handleChange}
                                     disabled={isPreview}
-                                    className="border rounded px-2 py-1"
+                                    className="border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                 >
                                     <option value="HOURLY">HOURLY</option>
                                     <option value="SALARY">SALARY</option>
@@ -324,9 +324,9 @@ const WorkerPage = () => {
                             </div>
 
                             {/* Wage Rate */}
-                            <div className="flex flex-col">
-                                <label className="flex items-center gap-2 font-semibold">
-                                    <CircleDollarSign size={16} /> Wage Rate
+                            <div className="flex flex-col gap-2">
+                                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
+                                    <CircleDollarSign size={16} /> Wage Rate *
                                 </label>
                                 <input
                                     type="number"
@@ -334,22 +334,22 @@ const WorkerPage = () => {
                                     value={formData.wage_rate_input}
                                     onChange={handleChange}
                                     readOnly={isPreview}
-                                    className="border rounded px-2 py-1"
+                                    className="border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                 />
                             </div>
                         </div>
 
                         {/* Buttons */}
-                        <div className="flex justify-end gap-2 mt-6 sticky bottom-0 bg-white pt-4">
+                        <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
                             <button
-                                className="px-4 py-2 border rounded text-gray-700 hover:bg-gray-100"
+                                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                                 onClick={closeDrawer}
                             >
                                 {isPreview ? "Close" : "Cancel"}
                             </button>
                             {!isPreview && (
                                 <button
-                                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+                                    className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                     onClick={handleSave}
                                     disabled={saveLoading}
                                 >

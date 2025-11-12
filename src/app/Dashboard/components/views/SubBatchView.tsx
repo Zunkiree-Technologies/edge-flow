@@ -21,6 +21,7 @@ interface SubBatch {
   batch_id?: number | null;
   department_id?: number | null;
   status?: 'DRAFT' | 'IN_PRODUCTION' | 'COMPLETED' | 'CANCELLED';
+  total_quantity?: number;
 }
 
 interface Roll {
@@ -297,7 +298,8 @@ const SubBatchView = () => {
     try {
       const payload = {
         subBatchId: selectedSubBatch.id,
-        manualDepartments: validWorkflow.map(step => step.departmentId)
+        manualDepartments: validWorkflow.map(step => step.departmentId),
+        total_quantity: selectedSubBatch.total_quantity || selectedSubBatch.estimated_pieces || 0
       };
 
       console.log("Sending payload:", payload);

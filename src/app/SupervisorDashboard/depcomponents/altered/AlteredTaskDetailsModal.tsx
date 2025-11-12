@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useCallback } from 'react';
-import { X, Calendar, Plus, Trash2, ChevronDown, ChevronRight, CheckCircle, Clock, Inbox } from 'lucide-react';
+import { X, Calendar, Plus, ChevronDown, ChevronRight, CheckCircle, Clock, Inbox } from 'lucide-react';
 
 interface AlteredTaskData {
     id: number;
@@ -8,6 +8,7 @@ interface AlteredTaskData {
     batch_name: string;
     sub_batch_name: string;
     total_quantity: number;
+    original_quantity?: number;  // Original sub-batch quantity
     estimated_start_date: string;
     due_date: string;
     status: string;
@@ -18,6 +19,7 @@ interface AlteredTaskData {
     alteration_reason: string;
     attachments?: { name: string; count: number }[];
     quantity_remaining?: number;
+    sub_batch?: any;  // Add sub_batch object for accessing estimated_pieces
 }
 
 interface AlteredTaskDetailsModalProps {
@@ -25,6 +27,16 @@ interface AlteredTaskDetailsModalProps {
     onClose: () => void;
     taskData: AlteredTaskData;
     onStageChange?: () => void;
+}
+
+interface Worker {
+    id: number;
+    name: string;
+    pan: string;
+    address: string;
+    department_id: number | null;
+    wage_type: string;
+    wage_rate: number;
 }
 
 interface WorkerRecord {
@@ -43,7 +55,9 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
     const [status, setStatus] = useState(taskData.status || 'NEW_ARRIVAL');
     const [saving, setSaving] = useState(false);
     const [workerRecords, setWorkerRecords] = useState<WorkerRecord[]>([]);
-    const [newWorkerName, setNewWorkerName] = useState('');
+    const [workers, setWorkers] = useState<Worker[]>([]);
+    const [loadingWorkers, setLoadingWorkers] = useState(false);
+    const [newWorkerId, setNewWorkerId] = useState('');
     const [newWorkerQuantity, setNewWorkerQuantity] = useState('');
     const [newWorkerDate, setNewWorkerDate] = useState('');
     const [sendToDepartment, setSendToDepartment] = useState('');
@@ -55,12 +69,17 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
 
     // Fetch sub-batch history (department flow and worker logs)
     const fetchSubBatchHistory = useCallback(async () => {
-        if (!taskData?.id) return;
+        // For altered tasks, we need to get the actual sub_batch_id, not the department_sub_batch_id
+        const subBatchId = taskData?.sub_batch?.id;
 
-        // For altered tasks, we need to get the sub_batch_id
-        // The taskData.id might be the department_sub_batch_id, but we need the actual sub_batch_id
-        // We'll try to fetch using the taskData.id first
-        const apiUrl = `${process.env.NEXT_PUBLIC_SUB_BATCH_HISTORY}/${taskData.id}`;
+        if (!subBatchId) {
+            console.error('Sub-batch ID not found in taskData');
+            console.log('Available taskData:', taskData);
+            return;
+        }
+
+        const apiUrl = `${process.env.NEXT_PUBLIC_SUB_BATCH_HISTORY}/${subBatchId}`;
+        console.log('Fetching sub-batch history from:', apiUrl);
 
         try {
             const response = await fetch(apiUrl);
@@ -80,9 +99,9 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
         } catch (error) {
             console.error('Error fetching sub-batch history:', error);
         }
-    }, [taskData?.id]);
+    }, [taskData]);
 
-    const fetchDepartments = async () => {
+    const fetchDepartments = useCallback(async () => {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/departments`);
             if (response.ok) {
@@ -92,47 +111,240 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
         } catch (error) {
             console.error('Error fetching departments:', error);
         }
-    };
+    }, []);
 
-    const fetchWorkerRecords = async () => {
-        // Fetch worker records from API
-        // TODO: Replace with actual API call when backend is ready
-        setWorkerRecords([]);
-    };
+    const fetchWorkers = useCallback(async () => {
+        try {
+            setLoadingWorkers(true);
+            const departmentId = localStorage.getItem("departmentId");
+
+            if (!departmentId) {
+                console.error('No department ID found in localStorage');
+                setWorkers([]);
+                setLoadingWorkers(false);
+                return;
+            }
+
+            console.log('Fetching workers for department:', departmentId);
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/workers/department/${departmentId}`);
+            if (res.ok) {
+                const data = await res.json();
+                console.log('Workers data received:', data);
+                setWorkers(data);
+            } else {
+                console.error('Failed to fetch workers. Status:', res.status);
+            }
+        } catch (e) {
+            console.error('Error fetching workers:', e);
+        } finally {
+            setLoadingWorkers(false);
+        }
+    }, []);
+
+    const fetchWorkerRecords = useCallback(async () => {
+        if (!taskData?.sub_batch?.id) return;
+
+        const subBatchId = taskData.sub_batch.id;
+        const apiUrl = `${process.env.NEXT_PUBLIC_GET_WORKER_LOGS}/${subBatchId}`;
+
+        try {
+            setLoadingWorkers(true);
+            const response = await fetch(apiUrl);
+            const contentType = response.headers.get('content-type');
+
+            if (!contentType || !contentType.includes('application/json')) {
+                const text = await response.text();
+                console.error('Backend returned non-JSON:', text);
+                return;
+            }
+
+            if (!response.ok) {
+                const text = await response.text();
+                console.error('Error fetching worker logs:', response.status, text);
+                setWorkerRecords([]);
+                return;
+            }
+
+            const result = await response.json();
+            console.log('Worker Logs API Response:', result);
+
+            if (result.success && Array.isArray(result.data)) {
+                // Filter to show ONLY workers assigned to this altered sub-batch
+                const filteredData = result.data.filter((r: any) => r.activity_type === 'ALTERED');
+
+                console.log('Filtered ALTERED workers:', filteredData);
+
+                const mappedRecords = filteredData.map((r: any) => ({
+                    id: r.id,
+                    worker_name: r.worker_name || r.worker?.name || '-',
+                    quantity: r.quantity_worked ?? 0,
+                    date: r.work_date ? new Date(r.work_date).toLocaleDateString('en-US') : '-',
+                }));
+                setWorkerRecords(mappedRecords);
+            } else {
+                setWorkerRecords([]);
+            }
+        } catch (err) {
+            console.error('Fetch error:', err);
+            setWorkerRecords([]);
+        } finally {
+            setLoadingWorkers(false);
+        }
+    }, [taskData]);
 
     useEffect(() => {
         if (taskData) {
+            console.log('======= ALTERED TASK DATA =======');
+            console.log('Full Task Data:', JSON.stringify(taskData, null, 2));
+            console.log('ID:', taskData.id);
+            console.log('Total Quantity:', taskData.total_quantity);
+            console.log('Original Quantity:', taskData.original_quantity);
+            console.log('Quantity Remaining:', taskData.quantity_remaining);
+            console.log('Sub-batch:', taskData.sub_batch);
+            console.log('Sub-batch ID:', taskData.sub_batch?.id);
+            console.log('Sub-batch Estimated Pieces:', taskData.sub_batch?.estimated_pieces);
+            console.log('Altered Quantity:', taskData.altered_quantity);
+            console.log('Alteration Reason:', taskData.alteration_reason);
+            console.log('Altered By:', taskData.altered_by);
+            console.log('Alteration Date:', taskData.alteration_date);
+            console.log('================================');
+
             setStatus(taskData.status || 'NEW_ARRIVAL');
             // Load assigned workers for this altered task
             fetchWorkerRecords();
             // Fetch departments
             fetchDepartments();
+            // Fetch workers for department
+            fetchWorkers();
             // Fetch sub-batch history
             fetchSubBatchHistory();
         }
-    }, [taskData, fetchSubBatchHistory]);
+    }, [taskData, fetchSubBatchHistory, fetchWorkerRecords, fetchDepartments, fetchWorkers]);
 
-    const handleAddWorker = () => {
-        if (!newWorkerName || !newWorkerQuantity || !newWorkerDate) {
-            alert('Please fill in all worker details');
+    const handleAddWorker = async () => {
+        // Calculate remaining work from production summary
+        const receivedQuantity = taskData.quantity_remaining ?? taskData.altered_quantity;
+        const workedQuantity = workerRecords.reduce((sum, record) => sum + (record.quantity || 0), 0);
+        const remainingWork = receivedQuantity - workedQuantity;
+
+        // Check if there's remaining work
+        if (remainingWork <= 0) {
+            alert('Cannot add worker!\n\nThere is no remaining work. All received quantity has been assigned to workers.');
             return;
         }
 
-        const newRecord: WorkerRecord = {
-            id: Date.now(),
-            worker_name: newWorkerName,
-            quantity: parseInt(newWorkerQuantity),
-            date: newWorkerDate
-        };
+        // Only require worker and date (quantity is optional, like in AddRecordModal)
+        if (!newWorkerId || !newWorkerDate) {
+            alert('Please select worker and date');
+            return;
+        }
 
-        setWorkerRecords([...workerRecords, newRecord]);
-        setNewWorkerName('');
-        setNewWorkerQuantity('');
-        setNewWorkerDate('');
-    };
+        const selectedWorker = workers.find(w => w.id === parseInt(newWorkerId));
 
-    const handleDeleteWorker = (id: number) => {
-        setWorkerRecords(workerRecords.filter(record => record.id !== id));
+        if (!selectedWorker) {
+            alert('Selected worker not found');
+            return;
+        }
+
+        if (!taskData?.sub_batch?.id) {
+            alert('Sub-batch ID is missing');
+            console.error('taskData.sub_batch:', taskData?.sub_batch);
+            return;
+        }
+
+        setSaving(true);
+
+        try {
+            // Get department ID - ensure it's an integer
+            const departmentId = taskData.sub_batch?.department_id || localStorage.getItem("departmentId");
+            const parsedDepartmentId = typeof departmentId === 'string' ? parseInt(departmentId) : departmentId;
+
+            console.log('======= WORKER ASSIGNMENT DEBUG =======');
+            console.log('Selected Worker:', selectedWorker);
+            console.log('Quantity:', newWorkerQuantity);
+            console.log('Date:', newWorkerDate);
+            console.log('Sub-batch ID:', taskData.sub_batch?.id);
+            console.log('Department ID (raw):', departmentId);
+            console.log('Department ID (parsed):', parsedDepartmentId);
+
+            if (!parsedDepartmentId) {
+                alert('Error: Department ID is missing!');
+                setSaving(false);
+                return;
+            }
+
+            // Build payload matching AddRecordModal structure EXACTLY
+            const payload: any = {
+                worker_id: parseInt(newWorkerId),
+                worker_name: selectedWorker.name,
+                work_date: newWorkerDate,
+                activity_type: 'ALTERED',  // For altered cards
+                is_billable: true,
+                department_id: parsedDepartmentId,
+            };
+
+            // Add optional fields only if they have values (matching AddRecordModal)
+            if (newWorkerQuantity && newWorkerQuantity.trim()) {
+                const quantity = parseInt(newWorkerQuantity);
+                payload.quantity_received = quantity;
+                payload.quantity_worked = quantity;
+            }
+
+            // Add sub_batch_id (like AddRecordModal does in create mode)
+            payload.sub_batch_id = taskData.sub_batch.id;
+
+            console.log('Final Payload:', JSON.stringify(payload, null, 2));
+            console.log('API URL:', process.env.NEXT_PUBLIC_CREATE_WORKER_LOGS);
+            console.log('======================================');
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_CREATE_WORKER_LOGS}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+
+            console.log('Response status:', response.status);
+            console.log('Response OK:', response.ok);
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('======= SUCCESS RESPONSE =======');
+                console.log('Result:', JSON.stringify(result, null, 2));
+                console.log('================================');
+
+                // Refresh worker records
+                await fetchWorkerRecords();
+
+                alert('Worker assigned successfully!');
+                setNewWorkerId('');
+                setNewWorkerQuantity('');
+                setNewWorkerDate('');
+            } else {
+                const errorText = await response.text();
+                console.error('======= ERROR RESPONSE =======');
+                console.error('Status:', response.status);
+                console.error('Status Text:', response.statusText);
+                console.error('Error Body:', errorText);
+                console.error('==============================');
+
+                let errorMessage = 'Unknown error';
+                try {
+                    const err = JSON.parse(errorText);
+                    errorMessage = err.message || err.error || errorText;
+                } catch {
+                    errorMessage = errorText;
+                }
+                alert(`Failed to save worker!\n\nError: ${errorMessage}\n\nCheck console for full details.`);
+            }
+        } catch (e) {
+            console.error('======= EXCEPTION =======');
+            console.error('Exception while saving:', e);
+            console.error('Stack:', e instanceof Error ? e.stack : 'No stack trace');
+            console.error('=========================');
+            alert(`Error saving record!\n\n${e instanceof Error ? e.message : 'Unknown error'}\n\nCheck console for details.`);
+        } finally {
+            setSaving(false);
+        }
     };
 
     const formatDate = (dateString: string) => {
@@ -385,7 +597,7 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
                                         <div>
                                             <label className="text-sm font-medium text-gray-900 block mb-2">Total Quantity</label>
                                             <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-600">
-                                                {taskData.total_quantity.toLocaleString()}
+                                                {(taskData.original_quantity || taskData.sub_batch?.estimated_pieces || taskData.total_quantity).toLocaleString()}
                                             </div>
                                         </div>
                                     </div>
@@ -572,6 +784,102 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
                                 </div>
                             </div>
 
+                            {/* Completed Departments */}
+                            {subBatchHistory && subBatchHistory.department_details && subBatchHistory.department_details.length > 0 && (
+                                <div className="mb-8">
+                                    <h4 className="text-lg font-semibold mb-4 text-gray-900">Completed Departments</h4>
+                                    <div className="space-y-2">
+                                        {subBatchHistory.department_details
+                                            .filter((dept: any) => dept.worker_logs && dept.worker_logs.length > 0)
+                                            .map((dept: any) => {
+                                                const isExpanded = expandedDepartments.includes(dept.department_entry_id);
+                                                return (
+                                                    <div key={dept.department_entry_id} className="border border-gray-300 rounded-lg">
+                                                        <button
+                                                            onClick={() => {
+                                                                if (isExpanded) {
+                                                                    setExpandedDepartments(expandedDepartments.filter(id => id !== dept.department_entry_id));
+                                                                } else {
+                                                                    setExpandedDepartments([...expandedDepartments, dept.department_entry_id]);
+                                                                }
+                                                            }}
+                                                            className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 rounded-t-lg"
+                                                        >
+                                                            <span className="text-sm font-medium text-gray-900">{dept.department_name}</span>
+                                                            <ChevronRight
+                                                                size={16}
+                                                                className={`text-gray-500 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
+                                                            />
+                                                        </button>
+
+                                                        {isExpanded && dept.worker_logs && dept.worker_logs.length > 0 && (
+                                                            <div className="border-t border-gray-200 bg-gray-50">
+                                                                <div className="overflow-x-auto">
+                                                                    <table className="min-w-full border-collapse">
+                                                                        <thead className="bg-gray-100">
+                                                                            <tr>
+                                                                                <th className="p-3 text-left text-xs font-medium text-gray-700 whitespace-nowrap">Worker</th>
+                                                                                <th className="p-3 text-left text-xs font-medium text-gray-700 whitespace-nowrap">Date</th>
+                                                                                <th className="p-3 text-left text-xs font-medium text-gray-700 whitespace-nowrap">Size/Category</th>
+                                                                                <th className="p-3 text-left text-xs font-medium text-gray-700 whitespace-nowrap">Particulars</th>
+                                                                                <th className="p-3 text-right text-xs font-medium text-gray-700 whitespace-nowrap">Qty Received</th>
+                                                                                <th className="p-3 text-right text-xs font-medium text-gray-700 whitespace-nowrap">Qty Worked</th>
+                                                                                <th className="p-3 text-right text-xs font-medium text-gray-700 whitespace-nowrap">Unit Price</th>
+                                                                                <th className="p-3 text-right text-xs font-medium text-gray-700 whitespace-nowrap">Rejected</th>
+                                                                                <th className="p-3 text-left text-xs font-medium text-gray-700 whitespace-nowrap">Returned Dept</th>
+                                                                                <th className="p-3 text-left text-xs font-medium text-gray-700 whitespace-nowrap">Rejection Reason</th>
+                                                                                <th className="p-3 text-right text-xs font-medium text-gray-700 whitespace-nowrap">Alteration</th>
+                                                                                <th className="p-3 text-left text-xs font-medium text-gray-700 whitespace-nowrap">Alteration Note</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody className="divide-y divide-gray-200">
+                                                                            {dept.worker_logs.map((log: any, index: number) => {
+                                                                                // Extract rejection data from rejected array
+                                                                                const rejectedData = log.rejected && log.rejected.length > 0 ? log.rejected[0] : null;
+                                                                                const rejectedQty = rejectedData?.quantity ?? 0;
+                                                                                const rejectedDept = rejectedData?.sent_to_department_name || '-';
+                                                                                const rejectionReason = rejectedData?.reason || '-';
+
+                                                                                // Extract alteration data from altered array
+                                                                                const alteredData = log.altered && log.altered.length > 0 ? log.altered[0] : null;
+                                                                                const alteredQty = alteredData?.quantity ?? 0;
+                                                                                const alterationNote = alteredData?.reason || '-';
+
+                                                                                return (
+                                                                                    <tr key={index} className="hover:bg-gray-100">
+                                                                                        <td className="p-3 text-xs text-gray-900 whitespace-nowrap">{log.worker_name || 'Unknown'}</td>
+                                                                                        <td className="p-3 text-xs text-gray-600 whitespace-nowrap">
+                                                                                            {log.work_date ? new Date(log.work_date).toLocaleDateString('en-US') : '-'}
+                                                                                        </td>
+                                                                                        <td className="p-3 text-xs text-gray-600">{log.size_category || '-'}</td>
+                                                                                        <td className="p-3 text-xs text-gray-600">{log.particulars || '-'}</td>
+                                                                                        <td className="p-3 text-xs text-gray-600 text-right">{log.quantity_received ?? 0}</td>
+                                                                                        <td className="p-3 text-xs text-gray-600 text-right">{log.quantity_worked ?? 0}</td>
+                                                                                        <td className="p-3 text-xs text-gray-600 text-right">${log.unit_price ?? 0}</td>
+                                                                                        <td className={`p-3 text-xs text-right font-semibold ${rejectedQty > 0 ? 'text-red-600' : 'text-gray-600'}`}>
+                                                                                            {rejectedQty}
+                                                                                        </td>
+                                                                                        <td className="p-3 text-xs text-gray-600">{rejectedDept}</td>
+                                                                                        <td className="p-3 text-xs text-gray-600">{rejectionReason}</td>
+                                                                                        <td className={`p-3 text-xs text-right font-semibold ${alteredQty > 0 ? 'text-orange-600' : 'text-gray-600'}`}>
+                                                                                            {alteredQty}
+                                                                                        </td>
+                                                                                        <td className="p-3 text-xs text-gray-600">{alterationNote}</td>
+                                                                                    </tr>
+                                                                                );
+                                                                            })}
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                    </div>
+                                </div>
+                            )}
+
                             {/* Assign Workers Section */}
                             <div>
                                 <h4 className="text-lg font-semibold mb-4 text-gray-900">Assign Workers</h4>
@@ -580,13 +888,30 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
                                 <div className="flex items-end gap-3 mb-4">
                                     <div className="flex-1">
                                         <label className="text-sm font-medium text-gray-900 block mb-2">Worker Name</label>
-                                        <input
-                                            type="text"
-                                            value={newWorkerName}
-                                            onChange={(e) => setNewWorkerName(e.target.value)}
-                                            placeholder="Name"
-                                            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                                        />
+                                        <select
+                                            value={newWorkerId}
+                                            onChange={(e) => setNewWorkerId(e.target.value)}
+                                            disabled={loadingWorkers || workers.length === 0}
+                                            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white disabled:bg-gray-100 disabled:cursor-not-allowed"
+                                        >
+                                            <option value="">
+                                                {loadingWorkers
+                                                    ? 'Loading...'
+                                                    : workers.length === 0
+                                                    ? 'No workers available'
+                                                    : 'Select Worker'}
+                                            </option>
+                                            {workers.map(w => (
+                                                <option key={w.id} value={w.id}>
+                                                    {w.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {!loadingWorkers && workers.length === 0 && (
+                                            <p className="text-xs text-orange-600 mt-1">
+                                                No workers assigned to your department.
+                                            </p>
+                                        )}
                                     </div>
                                     <div className="w-32">
                                         <label className="text-sm font-medium text-gray-900 block mb-2">Quantity</label>
@@ -619,31 +944,24 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
 
                                 {/* Workers Table */}
                                 {workerRecords.length > 0 && (
-                                    <div className="border border-gray-200 rounded-lg overflow-hidden">
+                                    <div className="border border-gray-200 rounded-lg overflow-hidden mt-4">
+                                        <div className="bg-gray-100 px-4 py-2 border-b border-gray-200">
+                                            <h5 className="text-sm font-semibold text-gray-900">Assigned Workers</h5>
+                                        </div>
                                         <table className="min-w-full">
                                             <thead className="bg-gray-50 border-b border-gray-200">
                                                 <tr>
                                                     <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Worker Name</th>
                                                     <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Quantity</th>
                                                     <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Date</th>
-                                                    <th className="px-4 py-3 text-center text-sm font-medium text-gray-900 w-16"></th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-200 bg-white">
                                                 {workerRecords.map((record) => (
                                                     <tr key={record.id} className="hover:bg-gray-50">
                                                         <td className="px-4 py-3 text-sm text-gray-900">{record.worker_name}</td>
-                                                        <td className="px-4 py-3 text-sm text-gray-900">{record.quantity}</td>
+                                                        <td className="px-4 py-3 text-sm text-gray-900">{record.quantity.toLocaleString()}</td>
                                                         <td className="px-4 py-3 text-sm text-gray-900">{record.date}</td>
-                                                        <td className="px-4 py-3 text-center">
-                                                            <button
-                                                                onClick={() => handleDeleteWorker(record.id)}
-                                                                className="text-gray-400 hover:text-red-600 transition-colors"
-                                                                title="Delete worker"
-                                                            >
-                                                                <Trash2 size={18} />
-                                                            </button>
-                                                        </td>
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -672,23 +990,69 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
                                     <div className="space-y-4 relative">
                                         {subBatchHistory.department_flow.split('→').map((deptName: string, index: number) => {
                                             const trimmedName = deptName.trim();
-                                            // For altered tasks, find the current department
-                                            // Match by department name OR by department_id
-                                            const isCurrentDepartment =
-                                                trimmedName === taskData.sent_from_department ||
-                                                subBatchHistory.department_details?.some(
-                                                    (dept: any) => dept.department_name === trimmedName && dept.department_id === taskData.id
-                                                );
+
+                                            // Find department details for this department
+                                            const deptDetail = subBatchHistory.department_details?.find(
+                                                (dept: any) => dept.department_name === trimmedName
+                                            );
+
+                                            // Check if this department has altered sub-batches
+                                            const hasAlteredSubBatch = deptDetail?.worker_logs?.some(
+                                                (log: any) => log.altered && log.altered.length > 0
+                                            );
+
+                                            // Check if this department has rejected sub-batches
+                                            const hasRejectedSubBatch = deptDetail?.worker_logs?.some(
+                                                (log: any) => log.rejected && log.rejected.length > 0
+                                            );
+
+                                            // Check if this is the current department (where altered sub-batch currently is)
+                                            const isAlteredCurrentDepartment = trimmedName === taskData.sent_from_department;
+
+                                            // Check if this is where the main/parent sub-batch is currently at
+                                            // The main sub-batch is at the last department with completed work (excluding rejected/altered)
+                                            const departmentIndex = subBatchHistory.department_details?.findIndex(
+                                                (dept: any) => dept.department_name === trimmedName
+                                            );
+                                            const nextDeptIndex = departmentIndex + 1;
+                                            const nextDept = subBatchHistory.department_details?.[nextDeptIndex];
+                                            const isMainSubBatchHere = deptDetail && (!nextDept || !nextDept.worker_logs || nextDept.worker_logs.length === 0);
+
+                                            // Determine dot color and style
+                                            let dotClasses = 'bg-gray-300 border-gray-300'; // Default (not yet reached)
+
+                                            if (isAlteredCurrentDepartment) {
+                                                // Current department - show as active (yellow for altered task)
+                                                dotClasses = 'bg-yellow-500 border-yellow-500';
+                                            } else if (hasRejectedSubBatch) {
+                                                // Has rejected sub-batch - red
+                                                dotClasses = 'bg-red-500 border-red-500';
+                                            } else if (hasAlteredSubBatch) {
+                                                // Has altered sub-batch - yellow
+                                                dotClasses = 'bg-yellow-500 border-yellow-500';
+                                            } else if (deptDetail) {
+                                                // Completed department (parent flow) - green
+                                                dotClasses = 'bg-green-500 border-green-500';
+                                            }
+
                                             return (
                                                 <div key={index} className="flex items-center gap-3 relative">
-                                                    <div className={`w-[10px] h-[10px] rounded-full border-2 z-10 ${
-                                                        isCurrentDepartment
-                                                            ? 'bg-green-500 border-green-500'
-                                                            : 'bg-gray-300 border-gray-300'
-                                                    }`} />
-                                                    <span className={`text-sm ${isCurrentDepartment ? 'font-medium text-gray-900' : 'text-gray-600'}`}>
-                                                        {trimmedName}
-                                                    </span>
+                                                    <div className={`w-[10px] h-[10px] rounded-full border-2 z-10 ${dotClasses}`} />
+                                                    <div className="flex flex-col">
+                                                        <span className={`text-sm ${
+                                                            isAlteredCurrentDepartment || deptDetail
+                                                                ? 'font-medium text-gray-900'
+                                                                : 'text-gray-600'
+                                                        }`}>
+                                                            {trimmedName}
+                                                            {isMainSubBatchHere && !isAlteredCurrentDepartment && !hasRejectedSubBatch && !hasAlteredSubBatch && (
+                                                                <span className="ml-1 text-xs text-green-600 font-semibold">(Main sub-batch)</span>
+                                                            )}
+                                                            {hasRejectedSubBatch && <span className="ml-1 text-xs text-red-600">(Rejected)</span>}
+                                                            {hasAlteredSubBatch && !isAlteredCurrentDepartment && <span className="ml-1 text-xs text-yellow-600">(Altered)</span>}
+                                                            {isAlteredCurrentDepartment && <span className="ml-1 text-xs text-yellow-600">(Current - Altered)</span>}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             );
                                         })}
@@ -697,102 +1061,6 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
                             ) : (
                                 <div className="text-sm text-gray-400">
                                     Loading route details...
-                                </div>
-                            )}
-
-                            {/* Completed Departments (Expandable) */}
-                            {subBatchHistory && subBatchHistory.department_details && subBatchHistory.department_details.length > 0 && (
-                                <div className="mt-8">
-                                    <h5 className="text-sm font-semibold mb-3 text-gray-900">Completed Departments</h5>
-                                    <div className="space-y-2">
-                                        {subBatchHistory.department_details
-                                            .filter((dept: any) => dept.worker_logs && dept.worker_logs.length > 0)
-                                            .map((dept: any) => {
-                                                const isExpanded = expandedDepartments.includes(dept.department_entry_id);
-                                                return (
-                                                    <div key={dept.department_entry_id} className="border border-gray-300 rounded-lg">
-                                                        <button
-                                                            onClick={() => {
-                                                                if (isExpanded) {
-                                                                    setExpandedDepartments(expandedDepartments.filter(id => id !== dept.department_entry_id));
-                                                                } else {
-                                                                    setExpandedDepartments([...expandedDepartments, dept.department_entry_id]);
-                                                                }
-                                                            }}
-                                                            className="w-full flex items-center justify-between px-3 py-2 hover:bg-gray-50 rounded-lg"
-                                                        >
-                                                            <span className="text-xs font-medium text-gray-900">{dept.department_name}</span>
-                                                            <ChevronRight
-                                                                size={14}
-                                                                className={`text-gray-500 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
-                                                            />
-                                                        </button>
-
-                                                        {isExpanded && dept.worker_logs && dept.worker_logs.length > 0 && (
-                                                            <div className="border-t border-gray-200 bg-gray-50">
-                                                                <div className="overflow-x-auto">
-                                                                    <table className="min-w-full border-collapse">
-                                                                        <thead className="bg-gray-100">
-                                                                            <tr>
-                                                                                <th className="p-2 text-left text-[10px] font-medium text-gray-700 whitespace-nowrap">Worker</th>
-                                                                                <th className="p-2 text-left text-[10px] font-medium text-gray-700 whitespace-nowrap">Date</th>
-                                                                                <th className="p-2 text-left text-[10px] font-medium text-gray-700 whitespace-nowrap">Size/Category</th>
-                                                                                <th className="p-2 text-left text-[10px] font-medium text-gray-700 whitespace-nowrap">Particulars</th>
-                                                                                <th className="p-2 text-right text-[10px] font-medium text-gray-700 whitespace-nowrap">Qty Received</th>
-                                                                                <th className="p-2 text-right text-[10px] font-medium text-gray-700 whitespace-nowrap">Qty Worked</th>
-                                                                                <th className="p-2 text-right text-[10px] font-medium text-gray-700 whitespace-nowrap">Unit Price</th>
-                                                                                <th className="p-2 text-right text-[10px] font-medium text-gray-700 whitespace-nowrap">Rejected</th>
-                                                                                <th className="p-2 text-left text-[10px] font-medium text-gray-700 whitespace-nowrap">Returned Dept</th>
-                                                                                <th className="p-2 text-left text-[10px] font-medium text-gray-700 whitespace-nowrap">Rejection Reason</th>
-                                                                                <th className="p-2 text-right text-[10px] font-medium text-gray-700 whitespace-nowrap">Alteration</th>
-                                                                                <th className="p-2 text-left text-[10px] font-medium text-gray-700 whitespace-nowrap">Alteration Note</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody className="divide-y divide-gray-200">
-                                                                            {dept.worker_logs.map((log: any, index: number) => {
-                                                                                // Extract rejection data from rejected array
-                                                                                const rejectedData = log.rejected && log.rejected.length > 0 ? log.rejected[0] : null;
-                                                                                const rejectedQty = rejectedData?.quantity ?? 0;
-                                                                                const rejectedDept = rejectedData?.sent_to_department_name || '-';
-                                                                                const rejectionReason = rejectedData?.reason || '-';
-
-                                                                                // Extract alteration data from altered array
-                                                                                const alteredData = log.altered && log.altered.length > 0 ? log.altered[0] : null;
-                                                                                const alteredQty = alteredData?.quantity ?? 0;
-                                                                                const alterationNote = alteredData?.reason || '-';
-
-                                                                                return (
-                                                                                    <tr key={index} className="hover:bg-gray-100">
-                                                                                        <td className="p-2 text-[10px] text-gray-900 whitespace-nowrap">{log.worker_name || 'Unknown'}</td>
-                                                                                        <td className="p-2 text-[10px] text-gray-600 whitespace-nowrap">
-                                                                                            {log.work_date ? new Date(log.work_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '-'}
-                                                                                        </td>
-                                                                                        <td className="p-2 text-[10px] text-gray-600">{log.size_category || '-'}</td>
-                                                                                        <td className="p-2 text-[10px] text-gray-600">{log.particulars || '-'}</td>
-                                                                                        <td className="p-2 text-[10px] text-gray-600 text-right">{log.quantity_received ?? 0}</td>
-                                                                                        <td className="p-2 text-[10px] text-gray-600 text-right">{log.quantity_worked ?? 0}</td>
-                                                                                        <td className="p-2 text-[10px] text-gray-600 text-right">${log.unit_price ?? 0}</td>
-                                                                                        <td className={`p-2 text-[10px] text-right font-semibold ${rejectedQty > 0 ? 'text-red-600' : 'text-gray-600'}`}>
-                                                                                            {rejectedQty}
-                                                                                        </td>
-                                                                                        <td className="p-2 text-[10px] text-gray-600">{rejectedDept}</td>
-                                                                                        <td className="p-2 text-[10px] text-gray-600">{rejectionReason}</td>
-                                                                                        <td className={`p-2 text-[10px] text-right font-semibold ${alteredQty > 0 ? 'text-orange-600' : 'text-gray-600'}`}>
-                                                                                            {alteredQty}
-                                                                                        </td>
-                                                                                        <td className="p-2 text-[10px] text-gray-600">{alterationNote}</td>
-                                                                                    </tr>
-                                                                                );
-                                                                            })}
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                );
-                                            })}
-                                    </div>
                                 </div>
                             )}
                         </div>
