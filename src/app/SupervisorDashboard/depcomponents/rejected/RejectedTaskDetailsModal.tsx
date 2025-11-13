@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import React, { useState, useEffect } from 'react';
-import { X, Calendar, ChevronDown, Plus, Trash2, Inbox, CheckCircle, Clock } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { X, Calendar, ChevronDown, Plus, Trash2, Inbox, CheckCircle, Clock, Pencil, MoreVertical } from 'lucide-react';
 
 interface RejectedTaskData {
     id: number;
@@ -19,6 +19,7 @@ interface RejectedTaskData {
     rejection_reason: string;
     attachments?: { name: string; count: number }[];
     quantity_remaining?: number;
+    sub_batch?: any;  // Add sub_batch object for accessing ID
 }
 
 interface RejectedTaskDetailsModalProps {
@@ -28,11 +29,22 @@ interface RejectedTaskDetailsModalProps {
     onStageChange?: () => void;
 }
 
+interface Worker {
+    id: number;
+    name: string;
+    pan: string;
+    address: string;
+    department_id: number | null;
+    wage_type: string;
+    wage_rate: number;
+}
+
 interface WorkerRecord {
     id: number;
     worker_name: string;
     quantity: number;
     date: string;
+    is_billable: boolean;
 }
 
 const RejectedTaskDetailsModal: React.FC<RejectedTaskDetailsModalProps> = ({
@@ -44,25 +56,51 @@ const RejectedTaskDetailsModal: React.FC<RejectedTaskDetailsModalProps> = ({
     const [status, setStatus] = useState(taskData.status || 'NEW_ARRIVAL');
     const [saving, setSaving] = useState(false);
     const [workerRecords, setWorkerRecords] = useState<WorkerRecord[]>([]);
-    const [newWorkerName, setNewWorkerName] = useState('');
+    const [workers, setWorkers] = useState<Worker[]>([]);
+    const [loadingWorkers, setLoadingWorkers] = useState(false);
+    const [newWorkerId, setNewWorkerId] = useState('');
     const [newWorkerQuantity, setNewWorkerQuantity] = useState('');
     const [newWorkerDate, setNewWorkerDate] = useState('');
     const [sendToDepartment, setSendToDepartment] = useState('');
     const [departments, setDepartments] = useState<any[]>([]);
     const [showCompletionDialog, setShowCompletionDialog] = useState(false);
     const [confirmationText, setConfirmationText] = useState('');
+    const [editingWorkerId, setEditingWorkerId] = useState<number | null>(null);
+    const [editQuantity, setEditQuantity] = useState('');
+    const [editDate, setEditDate] = useState('');
+    const [isBillable, setIsBillable] = useState(true);
+    const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+    const [subBatchHistory, setSubBatchHistory] = useState<any>(null);
+    const [] = useState<number[]>([]);
 
-    useEffect(() => {
-        if (taskData) {
-            setStatus(taskData.status || 'NEW_ARRIVAL');
-            // Load assigned workers for this rejected task
-            fetchWorkerRecords();
-            // Fetch departments
-            fetchDepartments();
+    const fetchSubBatchHistory = useCallback(async () => {
+        const subBatchId = taskData?.sub_batch?.id;
+
+        if (!subBatchId) {
+            console.error('Sub-batch ID not found in taskData');
+            return;
+        }
+
+        const apiUrl = `${process.env.NEXT_PUBLIC_SUB_BATCH_HISTORY}/${subBatchId}`;
+
+        try {
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+                console.error('Error fetching sub-batch history:', response.status);
+                return;
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+                setSubBatchHistory(result);
+            }
+        } catch (error) {
+            console.error('Error fetching sub-batch history:', error);
         }
     }, [taskData]);
 
-    const fetchDepartments = async () => {
+    const fetchDepartments = useCallback(async () => {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/departments`);
             if (response.ok) {
@@ -72,35 +110,306 @@ const RejectedTaskDetailsModal: React.FC<RejectedTaskDetailsModalProps> = ({
         } catch (error) {
             console.error('Error fetching departments:', error);
         }
-    };
+    }, []);
 
-    const fetchWorkerRecords = async () => {
-        // Fetch worker records from API
-        // TODO: Replace with actual API call when backend is ready
-        setWorkerRecords([]);
-    };
+    const fetchWorkers = useCallback(async () => {
+        try {
+            setLoadingWorkers(true);
+            const departmentId = localStorage.getItem("departmentId");
 
-    const handleAddWorker = () => {
-        if (!newWorkerName || !newWorkerQuantity || !newWorkerDate) {
-            alert('Please fill in all worker details');
+            if (!departmentId) {
+                console.error('No department ID found in localStorage');
+                setWorkers([]);
+                setLoadingWorkers(false);
+                return;
+            }
+
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/workers/department/${departmentId}`);
+            if (res.ok) {
+                const data = await res.json();
+                setWorkers(data);
+            } else {
+                console.error('Failed to fetch workers. Status:', res.status);
+            }
+        } catch (e) {
+            console.error('Error fetching workers:', e);
+        } finally {
+            setLoadingWorkers(false);
+        }
+    }, []);
+
+    const fetchWorkerRecords = useCallback(async () => {
+        if (!taskData?.sub_batch?.id) return;
+
+        const subBatchId = taskData.sub_batch.id;
+        const apiUrl = `${process.env.NEXT_PUBLIC_GET_WORKER_LOGS}/${subBatchId}`;
+
+        try {
+            setLoadingWorkers(true);
+            const response = await fetch(apiUrl);
+            const contentType = response.headers.get('content-type');
+
+            if (!contentType || !contentType.includes('application/json')) {
+                const text = await response.text();
+                console.error('Backend returned non-JSON:', text);
+                return;
+            }
+
+            if (!response.ok) {
+                const text = await response.text();
+                console.error('Error fetching worker logs:', response.status, text);
+                setWorkerRecords([]);
+                return;
+            }
+
+            const result = await response.json();
+
+            if (result.success && Array.isArray(result.data)) {
+                // Filter to show ONLY workers assigned to this rejected sub-batch
+                const filteredData = result.data.filter((r: any) => r.activity_type === 'REJECTED');
+
+                const mappedRecords = filteredData.map((r: any) => ({
+                    id: r.id,
+                    worker_name: r.worker_name || r.worker?.name || '-',
+                    quantity: r.quantity_worked ?? 0,
+                    date: r.work_date ? new Date(r.work_date).toLocaleDateString('en-US') : '-',
+                    is_billable: r.is_billable ?? true,
+                }));
+                setWorkerRecords(mappedRecords);
+            } else {
+                setWorkerRecords([]);
+            }
+        } catch (err) {
+            console.error('Fetch error:', err);
+            setWorkerRecords([]);
+        } finally {
+            setLoadingWorkers(false);
+        }
+    }, [taskData]);
+
+    useEffect(() => {
+        if (taskData) {
+            setStatus(taskData.status || 'NEW_ARRIVAL');
+            fetchWorkerRecords();
+            fetchDepartments();
+            fetchWorkers();
+            fetchSubBatchHistory();
+        }
+    }, [taskData, fetchWorkerRecords, fetchDepartments, fetchWorkers, fetchSubBatchHistory]);
+
+    const handleAddWorker = async () => {
+        // Calculate remaining work from production summary
+        const receivedQuantity = taskData.quantity_remaining ?? taskData.rejected_quantity;
+        const workedQuantity = workerRecords.reduce((sum, record) => sum + (record.quantity || 0), 0);
+        const remainingWork = receivedQuantity - workedQuantity;
+
+        // Check if there's remaining work
+        if (remainingWork <= 0) {
+            alert('Cannot add worker!\n\nThere is no remaining work. All received quantity has been assigned to workers.');
             return;
         }
 
-        const newRecord: WorkerRecord = {
-            id: Date.now(),
-            worker_name: newWorkerName,
-            quantity: parseInt(newWorkerQuantity),
-            date: newWorkerDate
-        };
+        // Require worker, quantity, and date (quantity is now REQUIRED)
+        if (!newWorkerId || !newWorkerDate || !newWorkerQuantity || !newWorkerQuantity.trim()) {
+            alert('Please select worker, enter quantity, and select date');
+            return;
+        }
 
-        setWorkerRecords([...workerRecords, newRecord]);
-        setNewWorkerName('');
-        setNewWorkerQuantity('');
-        setNewWorkerDate('');
+        // Validate quantity is a positive number
+        const quantity = parseInt(newWorkerQuantity);
+        if (isNaN(quantity) || quantity <= 0) {
+            alert('Please enter a valid quantity greater than 0');
+            return;
+        }
+
+        // Check if the entered quantity exceeds remaining work
+        if (quantity > remainingWork) {
+            alert(`Cannot assign ${quantity} units!\n\nOnly ${remainingWork} units remaining from the rejected quantity of ${receivedQuantity}.\n\nAlready assigned: ${workedQuantity} units`);
+            return;
+        }
+
+        const selectedWorker = workers.find(w => w.id === parseInt(newWorkerId));
+
+        if (!selectedWorker) {
+            alert('Selected worker not found');
+            return;
+        }
+
+        if (!taskData?.sub_batch?.id) {
+            alert('Sub-batch ID is missing');
+            console.error('taskData.sub_batch:', taskData?.sub_batch);
+            return;
+        }
+
+        setSaving(true);
+
+        try {
+            // Get department ID - ensure it's an integer
+            const departmentId = taskData.sub_batch?.department_id || localStorage.getItem("departmentId");
+            const parsedDepartmentId = typeof departmentId === 'string' ? parseInt(departmentId) : departmentId;
+
+            if (!parsedDepartmentId) {
+                alert('Error: Department ID is missing!');
+                setSaving(false);
+                return;
+            }
+
+            // Build payload with required quantity
+            const payload: any = {
+                worker_id: parseInt(newWorkerId),
+                worker_name: selectedWorker.name,
+                work_date: newWorkerDate,
+                activity_type: 'REJECTED',  // For rejected cards
+                is_billable: isBillable,  // Use billable state
+                department_id: parsedDepartmentId,
+                quantity_received: quantity,  // Required field
+                quantity_worked: quantity,    // Required field
+                sub_batch_id: taskData.sub_batch.id
+            };
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_CREATE_WORKER_LOGS}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+
+            if (response.ok) {
+                // Refresh worker records
+                await fetchWorkerRecords();
+
+                alert('Worker assigned successfully!');
+                setNewWorkerId('');
+                setNewWorkerQuantity('');
+                setNewWorkerDate('');
+                setIsBillable(true);
+            } else {
+                const errorText = await response.text();
+                let errorMessage = 'Unknown error';
+                try {
+                    const err = JSON.parse(errorText);
+                    errorMessage = err.message || err.error || errorText;
+                } catch {
+                    errorMessage = errorText;
+                }
+                alert(`Failed to save worker!\n\nError: ${errorMessage}`);
+            }
+        } catch (e) {
+            console.error('Exception while saving:', e);
+            alert(`Error saving record!\n\n${e instanceof Error ? e.message : 'Unknown error'}`);
+        } finally {
+            setSaving(false);
+        }
     };
 
-    const handleDeleteWorker = (id: number) => {
-        setWorkerRecords(workerRecords.filter(record => record.id !== id));
+    const handleDeleteWorker = async (workerId: number) => {
+        if (!confirm('Are you sure you want to delete this worker assignment?')) {
+            return;
+        }
+
+        try {
+            setSaving(true);
+            const apiUrl = `${process.env.NEXT_PUBLIC_DELETE_WORKER_LOG}/${workerId}`;
+
+            const response = await fetch(apiUrl, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                alert('Worker assignment deleted successfully!');
+                await fetchWorkerRecords();
+            } else {
+                const errorText = await response.text();
+                console.error('Error deleting worker:', errorText);
+                alert(`Failed to delete worker: ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error deleting worker:', error);
+            alert('Error deleting worker. Please try again.');
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleEditWorker = (record: WorkerRecord) => {
+        setEditingWorkerId(record.id);
+        setEditQuantity(record.quantity.toString());
+        // Convert the date from MM/DD/YYYY to YYYY-MM-DD for the input field
+        const dateParts = record.date.split('/');
+        if (dateParts.length === 3) {
+            const formattedDate = `${dateParts[2]}-${dateParts[0].padStart(2, '0')}-${dateParts[1].padStart(2, '0')}`;
+            setEditDate(formattedDate);
+        }
+    };
+
+    const handleCancelEdit = () => {
+        setEditingWorkerId(null);
+        setEditQuantity('');
+        setEditDate('');
+    };
+
+    const handleSaveEdit = async (workerId: number) => {
+        // Validate quantity
+        if (!editQuantity || !editQuantity.trim()) {
+            alert('Please enter quantity');
+            return;
+        }
+
+        const quantity = parseInt(editQuantity);
+        if (isNaN(quantity) || quantity <= 0) {
+            alert('Please enter a valid quantity greater than 0');
+            return;
+        }
+
+        // Validate date
+        if (!editDate) {
+            alert('Please select a date');
+            return;
+        }
+
+        // Calculate remaining work (excluding the current worker being edited)
+        const receivedQuantity = taskData.quantity_remaining ?? taskData.rejected_quantity;
+        const otherWorkersQuantity = workerRecords
+            .filter(record => record.id !== workerId)
+            .reduce((sum, record) => sum + (record.quantity || 0), 0);
+        const remainingWork = receivedQuantity - otherWorkersQuantity;
+
+        // Check if the new quantity exceeds remaining work
+        if (quantity > remainingWork) {
+            alert(`Cannot assign ${quantity} units!\n\nOnly ${remainingWork} units available (excluding current assignment).\n\nTotal rejected quantity: ${receivedQuantity}\nOther workers: ${otherWorkersQuantity} units`);
+            return;
+        }
+
+        try {
+            setSaving(true);
+            const apiUrl = `${process.env.NEXT_PUBLIC_UPDATE_WORKER_LOG}/${workerId}`;
+
+            const payload = {
+                quantity_worked: quantity,
+                quantity_received: quantity,
+                work_date: editDate,
+            };
+
+            const response = await fetch(apiUrl, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+
+            if (response.ok) {
+                alert('Worker assignment updated successfully!');
+                await fetchWorkerRecords();
+                handleCancelEdit();
+            } else {
+                const errorText = await response.text();
+                console.error('Error updating worker:', errorText);
+                alert(`Failed to update worker: ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error updating worker:', error);
+            alert('Error updating worker. Please try again.');
+        } finally {
+            setSaving(false);
+        }
     };
 
     const formatDate = (dateString: string) => {
@@ -546,21 +855,59 @@ const RejectedTaskDetailsModal: React.FC<RejectedTaskDetailsModalProps> = ({
                             <div className="flex items-end gap-3 mb-4">
                                 <div className="flex-1">
                                     <label className="text-sm font-medium text-gray-900 block mb-2">Worker Name</label>
-                                    <input
-                                        type="text"
-                                        value={newWorkerName}
-                                        onChange={(e) => setNewWorkerName(e.target.value)}
-                                        placeholder="Name"
-                                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                                    />
+                                    <select
+                                        value={newWorkerId}
+                                        onChange={(e) => setNewWorkerId(e.target.value)}
+                                        disabled={loadingWorkers || workers.length === 0}
+                                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white disabled:bg-gray-100 disabled:cursor-not-allowed"
+                                    >
+                                        <option value="">
+                                            {loadingWorkers
+                                                ? 'Loading...'
+                                                : workers.length === 0
+                                                ? 'No workers available'
+                                                : 'Select Worker'}
+                                        </option>
+                                        {workers.map(w => (
+                                            <option key={w.id} value={w.id}>
+                                                {w.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {!loadingWorkers && workers.length === 0 && (
+                                        <p className="text-xs text-orange-600 mt-1">
+                                            No workers assigned to your department.
+                                        </p>
+                                    )}
+
+                                    {/* Billable Checkbox - Only shown when worker is selected */}
+                                    {newWorkerId && (
+                                        <div className="flex items-center gap-2 mt-3">
+                                            <input
+                                                type="checkbox"
+                                                id="billable-checkbox-rejected"
+                                                checked={isBillable}
+                                                onChange={(e) => setIsBillable(e.target.checked)}
+                                                className="w-4 h-4 text-blue-500 bg-white border-gray-300 rounded focus:ring-2 focus:ring-blue-500 accent-blue-500 cursor-pointer"
+                                            />
+                                            <label htmlFor="billable-checkbox-rejected" className="text-sm text-gray-700 cursor-pointer select-none">
+                                                Billable
+                                            </label>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="w-32">
-                                    <label className="text-sm font-medium text-gray-900 block mb-2">Quantity</label>
+                                    <label className="text-sm font-medium text-gray-900 block mb-2">
+                                        Quantity <span className="text-red-500">*</span>
+                                    </label>
                                     <input
                                         type="number"
                                         value={newWorkerQuantity}
                                         onChange={(e) => setNewWorkerQuantity(e.target.value)}
+                                        placeholder="Required"
+                                        min="1"
                                         className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                        required
                                     />
                                 </div>
                                 <div className="w-40">
@@ -585,31 +932,132 @@ const RejectedTaskDetailsModal: React.FC<RejectedTaskDetailsModalProps> = ({
 
                             {/* Workers Table */}
                             {workerRecords.length > 0 && (
-                                <div className="border border-gray-200 rounded-lg overflow-hidden">
+                                <div className="border border-gray-200 rounded-lg overflow-hidden mt-4">
+                                    <div className="bg-gray-100 px-4 py-2 border-b border-gray-200">
+                                        <h5 className="text-sm font-semibold text-gray-900">Assigned Workers</h5>
+                                    </div>
                                     <table className="min-w-full">
                                         <thead className="bg-gray-50 border-b border-gray-200">
                                             <tr>
                                                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Worker Name</th>
                                                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Quantity</th>
                                                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Date</th>
-                                                <th className="px-4 py-3 text-center text-sm font-medium text-gray-900 w-16"></th>
+                                                <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Status</th>
+                                                <th className="px-4 py-3 text-center text-sm font-medium text-gray-900">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-gray-200 bg-white">
                                             {workerRecords.map((record) => (
                                                 <tr key={record.id} className="hover:bg-gray-50">
                                                     <td className="px-4 py-3 text-sm text-gray-900">{record.worker_name}</td>
-                                                    <td className="px-4 py-3 text-sm text-gray-900">{record.quantity}</td>
-                                                    <td className="px-4 py-3 text-sm text-gray-900">{record.date}</td>
-                                                    <td className="px-4 py-3 text-center">
-                                                        <button
-                                                            onClick={() => handleDeleteWorker(record.id)}
-                                                            className="text-gray-400 hover:text-red-600 transition-colors"
-                                                            title="Delete worker"
-                                                        >
-                                                            <Trash2 size={18} />
-                                                        </button>
-                                                    </td>
+                                                    {editingWorkerId === record.id ? (
+                                                        <>
+                                                            <td className="px-4 py-3">
+                                                                <input
+                                                                    type="number"
+                                                                    value={editQuantity}
+                                                                    onChange={(e) => setEditQuantity(e.target.value)}
+                                                                    min="1"
+                                                                    className="w-24 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                                />
+                                                            </td>
+                                                            <td className="px-4 py-3">
+                                                                <input
+                                                                    type="date"
+                                                                    value={editDate}
+                                                                    onChange={(e) => setEditDate(e.target.value)}
+                                                                    className="w-36 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                                />
+                                                            </td>
+                                                            <td className="px-4 py-3">
+                                                                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                                                    record.is_billable
+                                                                        ? 'bg-green-100 text-green-800'
+                                                                        : 'bg-gray-100 text-gray-800'
+                                                                }`}>
+                                                                    {record.is_billable ? 'Billable' : 'Not Billable'}
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-4 py-3">
+                                                                <div className="flex items-center justify-center gap-2">
+                                                                    <button
+                                                                        onClick={() => handleSaveEdit(record.id)}
+                                                                        disabled={saving}
+                                                                        className="px-3 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
+                                                                    >
+                                                                        Save
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={handleCancelEdit}
+                                                                        disabled={saving}
+                                                                        className="px-3 py-1 text-xs bg-gray-500 text-white rounded hover:bg-gray-600 disabled:opacity-50"
+                                                                    >
+                                                                        Cancel
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <td className="px-4 py-3 text-sm text-gray-900">{record.quantity.toLocaleString()}</td>
+                                                            <td className="px-4 py-3 text-sm text-gray-900">{record.date}</td>
+                                                            <td className="px-4 py-3">
+                                                                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                                                    record.is_billable
+                                                                        ? 'bg-green-100 text-green-800'
+                                                                        : 'bg-gray-100 text-gray-800'
+                                                                }`}>
+                                                                    {record.is_billable ? 'Billable' : 'Not Billable'}
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-4 py-3">
+                                                                <div className="flex items-center justify-center relative">
+                                                                    <button
+                                                                        onClick={() => setOpenMenuId(openMenuId === record.id ? null : record.id)}
+                                                                        disabled={saving || editingWorkerId !== null}
+                                                                        className="p-1.5 text-gray-600 hover:bg-gray-100 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                                                                        title="Actions"
+                                                                    >
+                                                                        <MoreVertical size={18} />
+                                                                    </button>
+
+                                                                    {/* Dropdown Menu */}
+                                                                    {openMenuId === record.id && (
+                                                                        <>
+                                                                            {/* Backdrop to close menu when clicking outside */}
+                                                                            <div
+                                                                                className="fixed inset-0 z-10"
+                                                                                onClick={() => setOpenMenuId(null)}
+                                                                            />
+
+                                                                            <div className="absolute right-0 top-8 z-20 w-32 bg-white border border-gray-200 rounded-lg shadow-lg">
+                                                                                <button
+                                                                                    onClick={() => {
+                                                                                        handleEditWorker(record);
+                                                                                        setOpenMenuId(null);
+                                                                                    }}
+                                                                                    className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 rounded-t-lg"
+                                                                                >
+                                                                                    <Pencil size={14} />
+                                                                                    Edit
+                                                                                </button>
+                                                                                <button
+                                                                                    onClick={() => {
+                                                                                        handleDeleteWorker(record.id);
+                                                                                        setOpenMenuId(null);
+                                                                                    }}
+                                                                                    className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 rounded-b-lg"
+                                                                                >
+                                                                                    <Trash2 size={14} />
+                                                                                    Delete
+                                                                                </button>
+                                                                            </div>
+                                                                        </>
+                                                                    )}
+                                                                </div>
+                                                            </td>
+                                                        </>
+                                                    )}
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -619,12 +1067,97 @@ const RejectedTaskDetailsModal: React.FC<RejectedTaskDetailsModalProps> = ({
                         </div>
                         </div>
 
-                        {/* Right Column - Work History (Full Height Sidebar) */}
+                        {/* Right Column - Route Details (Full Height Sidebar) */}
                         <div className="px-8 py-6">
-                            <h4 className="text-lg font-semibold mb-6 text-gray-900">Work History</h4>
-                            <div className="text-sm text-gray-400">
-                                No work history available
+                            <h4 className="text-lg font-semibold mb-6 text-gray-900">Route Details</h4>
+
+                            {/* Product Name and Batch ID */}
+                            <div className="mb-6">
+                                <p className="text-base font-normal text-gray-900">{taskData.batch_name || 'Linen Silk'}</p>
+                                <p className="text-sm text-gray-400">{taskData.sub_batch_name || 'B001.1'}</p>
                             </div>
+
+                            {/* Department Flow with connecting line */}
+                            {subBatchHistory && subBatchHistory.department_flow ? (
+                                <div className="relative">
+                                    {/* Vertical line connecting dots */}
+                                    <div className="absolute left-[5px] top-[8px] bottom-[8px] w-[2px] bg-gray-200" />
+
+                                    <div className="space-y-4 relative">
+                                        {subBatchHistory.department_flow.split('→').map((deptName: string, index: number) => {
+                                            const trimmedName = deptName.trim();
+
+                                            // Find department details for this department
+                                            const deptDetail = subBatchHistory.department_details?.find(
+                                                (dept: any) => dept.department_name === trimmedName
+                                            );
+
+                                            // Check if this department has rejected sub-batches
+                                            const hasRejectedSubBatch = deptDetail?.worker_logs?.some(
+                                                (log: any) => log.rejected && log.rejected.length > 0
+                                            );
+
+                                            // Check if this department has altered sub-batches
+                                            const hasAlteredSubBatch = deptDetail?.worker_logs?.some(
+                                                (log: any) => log.altered && log.altered.length > 0
+                                            );
+
+                                            // Check if this is the current department (where rejected sub-batch currently is)
+                                            const isRejectedCurrentDepartment = trimmedName === taskData.sent_from_department;
+
+                                            // Check if this is where the main/parent sub-batch is currently at
+                                            const departmentIndex = subBatchHistory.department_details?.findIndex(
+                                                (dept: any) => dept.department_name === trimmedName
+                                            );
+                                            const nextDeptIndex = departmentIndex + 1;
+                                            const nextDept = subBatchHistory.department_details?.[nextDeptIndex];
+                                            const isMainSubBatchHere = deptDetail && (!nextDept || !nextDept.worker_logs || nextDept.worker_logs.length === 0);
+
+                                            // Determine dot color and style
+                                            let dotClasses = 'bg-gray-300 border-gray-300'; // Default (not yet reached)
+
+                                            if (isRejectedCurrentDepartment) {
+                                                // Current department - show as active (red for rejected task)
+                                                dotClasses = 'bg-red-500 border-red-500';
+                                            } else if (hasRejectedSubBatch) {
+                                                // Has rejected sub-batch - red
+                                                dotClasses = 'bg-red-500 border-red-500';
+                                            } else if (hasAlteredSubBatch) {
+                                                // Has altered sub-batch - yellow
+                                                dotClasses = 'bg-yellow-500 border-yellow-500';
+                                            } else if (deptDetail) {
+                                                // Completed department (parent flow) - green
+                                                dotClasses = 'bg-green-500 border-green-500';
+                                            }
+
+                                            return (
+                                                <div key={index} className="flex items-center gap-3 relative">
+                                                    <div className={`w-[10px] h-[10px] rounded-full border-2 z-10 ${dotClasses}`} />
+                                                    <div className="flex flex-col">
+                                                        <span className={`text-sm ${
+                                                            isRejectedCurrentDepartment || deptDetail
+                                                                ? 'font-medium text-gray-900'
+                                                                : 'text-gray-600'
+                                                        }`}>
+                                                            {trimmedName}
+                                                            {isMainSubBatchHere && !isRejectedCurrentDepartment && !hasRejectedSubBatch && !hasAlteredSubBatch && (
+                                                                <span className="ml-1 text-xs text-green-600 font-semibold">(Main sub-batch)</span>
+                                                            )}
+                                                            {hasRejectedSubBatch && !isRejectedCurrentDepartment && <span className="ml-1 text-xs text-red-600">(Rejected)</span>}
+                                                            {hasAlteredSubBatch && <span className="ml-1 text-xs text-yellow-600">(Altered)</span>}
+                                                            {isRejectedCurrentDepartment && <span className="ml-1 text-xs text-red-600">(Current - Rejected)</span>}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="text-sm text-gray-400">
+                                    Loading route details...
+                                </div>
+                            )}
                         </div>
                     </div>
 

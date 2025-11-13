@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useCallback } from 'react';
-import { X, Calendar, Plus, ChevronDown, ChevronRight, CheckCircle, Clock, Inbox } from 'lucide-react';
+import { X, Calendar, Plus, ChevronDown, ChevronRight, CheckCircle, Clock, Inbox, Pencil, Trash2, MoreVertical } from 'lucide-react';
 
 interface AlteredTaskData {
     id: number;
@@ -44,6 +44,7 @@ interface WorkerRecord {
     worker_name: string;
     quantity: number;
     date: string;
+    is_billable: boolean;
 }
 
 const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
@@ -66,6 +67,11 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
     const [confirmationText, setConfirmationText] = useState('');
     const [subBatchHistory, setSubBatchHistory] = useState<any>(null);
     const [expandedDepartments, setExpandedDepartments] = useState<number[]>([]);
+    const [editingWorkerId, setEditingWorkerId] = useState<number | null>(null);
+    const [editQuantity, setEditQuantity] = useState('');
+    const [editDate, setEditDate] = useState('');
+    const [isBillable, setIsBillable] = useState(true);
+    const [openMenuId, setOpenMenuId] = useState<number | null>(null);
 
     // Fetch sub-batch history (department flow and worker logs)
     const fetchSubBatchHistory = useCallback(async () => {
@@ -179,6 +185,7 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
                     worker_name: r.worker_name || r.worker?.name || '-',
                     quantity: r.quantity_worked ?? 0,
                     date: r.work_date ? new Date(r.work_date).toLocaleDateString('en-US') : '-',
+                    is_billable: r.is_billable ?? true,
                 }));
                 setWorkerRecords(mappedRecords);
             } else {
@@ -233,9 +240,22 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
             return;
         }
 
-        // Only require worker and date (quantity is optional, like in AddRecordModal)
-        if (!newWorkerId || !newWorkerDate) {
-            alert('Please select worker and date');
+        // Require worker, quantity, and date (quantity is now REQUIRED)
+        if (!newWorkerId || !newWorkerDate || !newWorkerQuantity || !newWorkerQuantity.trim()) {
+            alert('Please select worker, enter quantity, and select date');
+            return;
+        }
+
+        // Validate quantity is a positive number
+        const quantity = parseInt(newWorkerQuantity);
+        if (isNaN(quantity) || quantity <= 0) {
+            alert('Please enter a valid quantity greater than 0');
+            return;
+        }
+
+        // Check if the entered quantity exceeds remaining work
+        if (quantity > remainingWork) {
+            alert(`Cannot assign ${quantity} units!\n\nOnly ${remainingWork} units remaining from the altered quantity of ${receivedQuantity}.\n\nAlready assigned: ${workedQuantity} units`);
             return;
         }
 
@@ -273,25 +293,18 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
                 return;
             }
 
-            // Build payload matching AddRecordModal structure EXACTLY
+            // Build payload with required quantity
             const payload: any = {
                 worker_id: parseInt(newWorkerId),
                 worker_name: selectedWorker.name,
                 work_date: newWorkerDate,
                 activity_type: 'ALTERED',  // For altered cards
-                is_billable: true,
+                is_billable: isBillable,  // Use billable state
                 department_id: parsedDepartmentId,
+                quantity_received: quantity,  // Required field
+                quantity_worked: quantity,    // Required field
+                sub_batch_id: taskData.sub_batch.id
             };
-
-            // Add optional fields only if they have values (matching AddRecordModal)
-            if (newWorkerQuantity && newWorkerQuantity.trim()) {
-                const quantity = parseInt(newWorkerQuantity);
-                payload.quantity_received = quantity;
-                payload.quantity_worked = quantity;
-            }
-
-            // Add sub_batch_id (like AddRecordModal does in create mode)
-            payload.sub_batch_id = taskData.sub_batch.id;
 
             console.log('Final Payload:', JSON.stringify(payload, null, 2));
             console.log('API URL:', process.env.NEXT_PUBLIC_CREATE_WORKER_LOGS);
@@ -319,6 +332,7 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
                 setNewWorkerId('');
                 setNewWorkerQuantity('');
                 setNewWorkerDate('');
+                setIsBillable(true);
             } else {
                 const errorText = await response.text();
                 console.error('======= ERROR RESPONSE =======');
@@ -342,6 +356,124 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
             console.error('Stack:', e instanceof Error ? e.stack : 'No stack trace');
             console.error('=========================');
             alert(`Error saving record!\n\n${e instanceof Error ? e.message : 'Unknown error'}\n\nCheck console for details.`);
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleDeleteWorker = async (workerId: number) => {
+        if (!confirm('Are you sure you want to delete this worker assignment?')) {
+            return;
+        }
+
+        try {
+            setSaving(true);
+            const apiUrl = `${process.env.NEXT_PUBLIC_DELETE_WORKER_LOG}/${workerId}`;
+
+            console.log('Deleting worker log:', workerId);
+            console.log('API URL:', apiUrl);
+
+            const response = await fetch(apiUrl, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                alert('Worker assignment deleted successfully!');
+                await fetchWorkerRecords();
+            } else {
+                const errorText = await response.text();
+                console.error('Error deleting worker:', errorText);
+                alert(`Failed to delete worker: ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error deleting worker:', error);
+            alert('Error deleting worker. Please try again.');
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleEditWorker = (record: WorkerRecord) => {
+        setEditingWorkerId(record.id);
+        setEditQuantity(record.quantity.toString());
+        // Convert the date from MM/DD/YYYY to YYYY-MM-DD for the input field
+        const dateParts = record.date.split('/');
+        if (dateParts.length === 3) {
+            const formattedDate = `${dateParts[2]}-${dateParts[0].padStart(2, '0')}-${dateParts[1].padStart(2, '0')}`;
+            setEditDate(formattedDate);
+        }
+    };
+
+    const handleCancelEdit = () => {
+        setEditingWorkerId(null);
+        setEditQuantity('');
+        setEditDate('');
+    };
+
+    const handleSaveEdit = async (workerId: number) => {
+        // Validate quantity
+        if (!editQuantity || !editQuantity.trim()) {
+            alert('Please enter quantity');
+            return;
+        }
+
+        const quantity = parseInt(editQuantity);
+        if (isNaN(quantity) || quantity <= 0) {
+            alert('Please enter a valid quantity greater than 0');
+            return;
+        }
+
+        // Validate date
+        if (!editDate) {
+            alert('Please select a date');
+            return;
+        }
+
+        // Calculate remaining work (excluding the current worker being edited)
+        const receivedQuantity = taskData.quantity_remaining ?? taskData.altered_quantity;
+        const otherWorkersQuantity = workerRecords
+            .filter(record => record.id !== workerId)
+            .reduce((sum, record) => sum + (record.quantity || 0), 0);
+        const remainingWork = receivedQuantity - otherWorkersQuantity;
+
+        // Check if the new quantity exceeds remaining work
+        if (quantity > remainingWork) {
+            alert(`Cannot assign ${quantity} units!\n\nOnly ${remainingWork} units available (excluding current assignment).\n\nTotal altered quantity: ${receivedQuantity}\nOther workers: ${otherWorkersQuantity} units`);
+            return;
+        }
+
+        try {
+            setSaving(true);
+            const apiUrl = `${process.env.NEXT_PUBLIC_UPDATE_WORKER_LOG}/${workerId}`;
+
+            const payload = {
+                quantity_worked: quantity,
+                quantity_received: quantity,
+                work_date: editDate,
+            };
+
+            console.log('Updating worker log:', workerId);
+            console.log('Payload:', payload);
+            console.log('API URL:', apiUrl);
+
+            const response = await fetch(apiUrl, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+
+            if (response.ok) {
+                alert('Worker assignment updated successfully!');
+                await fetchWorkerRecords();
+                handleCancelEdit();
+            } else {
+                const errorText = await response.text();
+                console.error('Error updating worker:', errorText);
+                alert(`Failed to update worker: ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error updating worker:', error);
+            alert('Error updating worker. Please try again.');
         } finally {
             setSaving(false);
         }
@@ -912,14 +1044,35 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
                                                 No workers assigned to your department.
                                             </p>
                                         )}
+
+                                        {/* Billable Checkbox - Only shown when worker is selected */}
+                                        {newWorkerId && (
+                                            <div className="flex items-center gap-2 mt-3">
+                                                <input
+                                                    type="checkbox"
+                                                    id="billable-checkbox"
+                                                    checked={isBillable}
+                                                    onChange={(e) => setIsBillable(e.target.checked)}
+                                                    className="w-4 h-4 text-blue-500 bg-white border-gray-300 rounded focus:ring-2 focus:ring-blue-500 accent-blue-500 cursor-pointer"
+                                                />
+                                                <label htmlFor="billable-checkbox" className="text-sm text-gray-700 cursor-pointer select-none">
+                                                    Billable
+                                                </label>
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="w-32">
-                                        <label className="text-sm font-medium text-gray-900 block mb-2">Quantity</label>
+                                        <label className="text-sm font-medium text-gray-900 block mb-2">
+                                            Quantity <span className="text-red-500">*</span>
+                                        </label>
                                         <input
                                             type="number"
                                             value={newWorkerQuantity}
                                             onChange={(e) => setNewWorkerQuantity(e.target.value)}
+                                            placeholder="Required"
+                                            min="1"
                                             className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                            required
                                         />
                                     </div>
                                     <div className="w-40">
@@ -954,14 +1107,122 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
                                                     <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Worker Name</th>
                                                     <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Quantity</th>
                                                     <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Date</th>
+                                                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Status</th>
+                                                    <th className="px-4 py-3 text-center text-sm font-medium text-gray-900">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-200 bg-white">
                                                 {workerRecords.map((record) => (
                                                     <tr key={record.id} className="hover:bg-gray-50">
                                                         <td className="px-4 py-3 text-sm text-gray-900">{record.worker_name}</td>
-                                                        <td className="px-4 py-3 text-sm text-gray-900">{record.quantity.toLocaleString()}</td>
-                                                        <td className="px-4 py-3 text-sm text-gray-900">{record.date}</td>
+                                                        {editingWorkerId === record.id ? (
+                                                            <>
+                                                                <td className="px-4 py-3">
+                                                                    <input
+                                                                        type="number"
+                                                                        value={editQuantity}
+                                                                        onChange={(e) => setEditQuantity(e.target.value)}
+                                                                        min="1"
+                                                                        className="w-24 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                                    />
+                                                                </td>
+                                                                <td className="px-4 py-3">
+                                                                    <input
+                                                                        type="date"
+                                                                        value={editDate}
+                                                                        onChange={(e) => setEditDate(e.target.value)}
+                                                                        className="w-36 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                                    />
+                                                                </td>
+                                                                <td className="px-4 py-3">
+                                                                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                                                        record.is_billable
+                                                                            ? 'bg-green-100 text-green-800'
+                                                                            : 'bg-gray-100 text-gray-800'
+                                                                    }`}>
+                                                                        {record.is_billable ? 'Billable' : 'Not Billable'}
+                                                                    </span>
+                                                                </td>
+                                                                <td className="px-4 py-3">
+                                                                    <div className="flex items-center justify-center gap-2">
+                                                                        <button
+                                                                            onClick={() => handleSaveEdit(record.id)}
+                                                                            disabled={saving}
+                                                                            className="px-3 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
+                                                                        >
+                                                                            Save
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={handleCancelEdit}
+                                                                            disabled={saving}
+                                                                            className="px-3 py-1 text-xs bg-gray-500 text-white rounded hover:bg-gray-600 disabled:opacity-50"
+                                                                        >
+                                                                            Cancel
+                                                                        </button>
+                                                                    </div>
+                                                                </td>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <td className="px-4 py-3 text-sm text-gray-900">{record.quantity.toLocaleString()}</td>
+                                                                <td className="px-4 py-3 text-sm text-gray-900">{record.date}</td>
+                                                                <td className="px-4 py-3">
+                                                                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                                                        record.is_billable
+                                                                            ? 'bg-green-100 text-green-800'
+                                                                            : 'bg-gray-100 text-gray-800'
+                                                                    }`}>
+                                                                        {record.is_billable ? 'Billable' : 'Not Billable'}
+                                                                    </span>
+                                                                </td>
+                                                                <td className="px-4 py-3">
+                                                                    <div className="flex items-center justify-center relative">
+                                                                        <button
+                                                                            onClick={() => setOpenMenuId(openMenuId === record.id ? null : record.id)}
+                                                                            disabled={saving || editingWorkerId !== null}
+                                                                            className="p-1.5 text-gray-600 hover:bg-gray-100 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                                                                            title="Actions"
+                                                                        >
+                                                                            <MoreVertical size={18} />
+                                                                        </button>
+
+                                                                        {/* Dropdown Menu */}
+                                                                        {openMenuId === record.id && (
+                                                                            <>
+                                                                                {/* Backdrop to close menu when clicking outside */}
+                                                                                <div
+                                                                                    className="fixed inset-0 z-10"
+                                                                                    onClick={() => setOpenMenuId(null)}
+                                                                                />
+
+                                                                                <div className="absolute right-0 top-8 z-20 w-32 bg-white border border-gray-200 rounded-lg shadow-lg">
+                                                                                    <button
+                                                                                        onClick={() => {
+                                                                                            handleEditWorker(record);
+                                                                                            setOpenMenuId(null);
+                                                                                        }}
+                                                                                        className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 rounded-t-lg"
+                                                                                    >
+                                                                                        <Pencil size={14} />
+                                                                                        Edit
+                                                                                    </button>
+                                                                                    <button
+                                                                                        onClick={() => {
+                                                                                            handleDeleteWorker(record.id);
+                                                                                            setOpenMenuId(null);
+                                                                                        }}
+                                                                                        className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 rounded-b-lg"
+                                                                                    >
+                                                                                        <Trash2 size={14} />
+                                                                                        Delete
+                                                                                    </button>
+                                                                                </div>
+                                                                            </>
+                                                                        )}
+                                                                    </div>
+                                                                </td>
+                                                            </>
+                                                        )}
                                                     </tr>
                                                 ))}
                                             </tbody>

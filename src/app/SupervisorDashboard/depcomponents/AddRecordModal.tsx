@@ -269,6 +269,24 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
       return;
     }
 
+    // Validate: quantity_received should be equal or less than the sum of quantity_worked + reject & return + alteration
+    const rejectReturnQty = formData.rejectReturn ? parseInt(formData.rejectReturn) : 0;
+    const alterationQty = formData.alteration ? parseInt(formData.alteration) : 0;
+    const totalAccountedFor = qtyWorked + rejectReturnQty + alterationQty;
+
+    if (qtyReceived > 0 && totalAccountedFor > qtyReceived) {
+      alert(
+        `Total quantities cannot exceed quantity received!\n\n` +
+        `Quantity Received: ${qtyReceived.toLocaleString()}\n` +
+        `Quantity Worked: ${qtyWorked.toLocaleString()}\n` +
+        `Reject & Return: ${rejectReturnQty.toLocaleString()}\n` +
+        `Alteration: ${alterationQty.toLocaleString()}\n\n` +
+        `Total (Worked + Rejected + Altered): ${totalAccountedFor.toLocaleString()}\n\n` +
+        `Please ensure the sum of Worked, Rejected, and Altered does not exceed Quantity Received.`
+      );
+      return;
+    }
+
     // Skip rejection/alteration validation for cards that are already alteration/rejection cards
     const isAlterationOrRejectionCard = (subBatch as any)?.alteration_source || (subBatch as any)?.rejection_source;
 
