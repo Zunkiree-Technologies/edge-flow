@@ -164,9 +164,17 @@ const RejectedTaskDetailsModal: React.FC<RejectedTaskDetailsModalProps> = ({
 
             const result = await response.json();
 
+            // Get current department ID
+            const currentDepartmentId = localStorage.getItem("departmentId");
+
             if (result.success && Array.isArray(result.data)) {
-                // Filter to show ONLY workers assigned to this rejected sub-batch
-                const filteredData = result.data.filter((r: any) => r.activity_type === 'REJECTED');
+                // Filter to show ONLY workers assigned to this rejected sub-batch in the CURRENT department
+                const filteredData = result.data.filter((r: any) => {
+                    const isRejected = r.activity_type === 'REJECTED';
+                    const isCurrentDepartment = r.department_id && currentDepartmentId &&
+                                               r.department_id.toString() === currentDepartmentId.toString();
+                    return isRejected && isCurrentDepartment;
+                });
 
                 const mappedRecords = filteredData.map((r: any) => ({
                     id: r.id,

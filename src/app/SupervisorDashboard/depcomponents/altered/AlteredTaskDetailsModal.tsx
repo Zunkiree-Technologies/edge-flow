@@ -174,11 +174,20 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
             const result = await response.json();
             console.log('Worker Logs API Response:', result);
 
-            if (result.success && Array.isArray(result.data)) {
-                // Filter to show ONLY workers assigned to this altered sub-batch
-                const filteredData = result.data.filter((r: any) => r.activity_type === 'ALTERED');
+            // Get current department ID
+            const currentDepartmentId = localStorage.getItem("departmentId");
+            console.log('Current Department ID:', currentDepartmentId);
 
-                console.log('Filtered ALTERED workers:', filteredData);
+            if (result.success && Array.isArray(result.data)) {
+                // Filter to show ONLY workers assigned to this altered sub-batch in the CURRENT department
+                const filteredData = result.data.filter((r: any) => {
+                    const isAltered = r.activity_type === 'ALTERED';
+                    const isCurrentDepartment = r.department_id && currentDepartmentId &&
+                                               r.department_id.toString() === currentDepartmentId.toString();
+                    return isAltered && isCurrentDepartment;
+                });
+
+                console.log('Filtered ALTERED workers for current department:', filteredData);
 
                 const mappedRecords = filteredData.map((r: any) => ({
                     id: r.id,
