@@ -16,7 +16,7 @@ interface AlteredTaskData {
     alteration_date: string;
     altered_by: string;
     altered_quantity: number;
-    alteration_reason: string;
+    alteration_reason?: string;  // Alteration reason from database
     attachments?: { name: string; count: number }[];
     quantity_remaining?: number;
     sub_batch?: any;  // Add sub_batch object for accessing estimated_pieces
@@ -204,16 +204,12 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
             console.log('======= ALTERED TASK DATA =======');
             console.log('Full Task Data:', JSON.stringify(taskData, null, 2));
             console.log('ID:', taskData.id);
-            console.log('Total Quantity:', taskData.total_quantity);
-            console.log('Original Quantity:', taskData.original_quantity);
-            console.log('Quantity Remaining:', taskData.quantity_remaining);
-            console.log('Sub-batch:', taskData.sub_batch);
-            console.log('Sub-batch ID:', taskData.sub_batch?.id);
-            console.log('Sub-batch Estimated Pieces:', taskData.sub_batch?.estimated_pieces);
+            console.log('Sent from Department:', taskData.sent_from_department);
             console.log('Altered Quantity:', taskData.altered_quantity);
-            console.log('Alteration Reason:', taskData.alteration_reason);
             console.log('Altered By:', taskData.altered_by);
             console.log('Alteration Date:', taskData.alteration_date);
+            console.log('Alteration Reason:', taskData.alteration_reason);
+            console.log('Sub-batch:', taskData.sub_batch);
             console.log('================================');
 
             setStatus(taskData.status || 'NEW_ARRIVAL');
@@ -1271,13 +1267,33 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
                                             const isAlteredCurrentDepartment = trimmedName === taskData.sent_from_department;
 
                                             // Check if this is where the main/parent sub-batch is currently at
-                                            // The main sub-batch is at the last department with completed work (excluding rejected/altered)
                                             const departmentIndex = subBatchHistory.department_details?.findIndex(
                                                 (dept: any) => dept.department_name === trimmedName
                                             );
                                             const nextDeptIndex = departmentIndex + 1;
                                             const nextDept = subBatchHistory.department_details?.[nextDeptIndex];
-                                            const isMainSubBatchHere = deptDetail && (!nextDept || !nextDept.worker_logs || nextDept.worker_logs.length === 0);
+
+                                            // Main sub-batch location: Check for NORMAL logs (not altered, not rejected)
+                                            // Filter to only count normal/main production logs
+                                            const hasNormalLogs = deptDetail?.worker_logs?.some(
+                                                (log: any) => {
+                                                    const hasAltered = log.altered && log.altered.length > 0;
+                                                    const hasRejected = log.rejected && log.rejected.length > 0;
+                                                    // Has logs that are NOT altered or rejected (normal main production)
+                                                    return !hasAltered && !hasRejected;
+                                                }
+                                            );
+
+                                            const nextHasNormalLogs = nextDept?.worker_logs?.some(
+                                                (log: any) => {
+                                                    const hasAltered = log.altered && log.altered.length > 0;
+                                                    const hasRejected = log.rejected && log.rejected.length > 0;
+                                                    return !hasAltered && !hasRejected;
+                                                }
+                                            );
+
+                                            // Main sub-batch is at the last department with normal logs
+                                            const isMainSubBatchHere = hasNormalLogs && !nextHasNormalLogs;
 
                                             // Determine dot color and style
                                             let dotClasses = 'bg-gray-300 border-gray-300'; // Default (not yet reached)
@@ -1306,11 +1322,11 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
                                                                 : 'text-gray-600'
                                                         }`}>
                                                             {trimmedName}
-                                                            {isMainSubBatchHere && !isAlteredCurrentDepartment && !hasRejectedSubBatch && !hasAlteredSubBatch && (
+                                                            {isMainSubBatchHere && !isAlteredCurrentDepartment && (
                                                                 <span className="ml-1 text-xs text-green-600 font-semibold">(Main sub-batch)</span>
                                                             )}
-                                                            {hasRejectedSubBatch && <span className="ml-1 text-xs text-red-600">(Rejected)</span>}
-                                                            {hasAlteredSubBatch && !isAlteredCurrentDepartment && <span className="ml-1 text-xs text-yellow-600">(Altered)</span>}
+                                                            {hasRejectedSubBatch && !isMainSubBatchHere && <span className="ml-1 text-xs text-red-600">(Rejected)</span>}
+                                                            {hasAlteredSubBatch && !isAlteredCurrentDepartment && !isMainSubBatchHere && <span className="ml-1 text-xs text-yellow-600">(Altered)</span>}
                                                             {isAlteredCurrentDepartment && <span className="ml-1 text-xs text-yellow-600">(Current - Altered)</span>}
                                                         </span>
                                                     </div>
