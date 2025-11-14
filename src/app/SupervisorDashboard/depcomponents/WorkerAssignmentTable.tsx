@@ -16,6 +16,7 @@ interface WorkerRecord {
   rejectionReason?: string;
   alteration?: number;
   alterationNote?: string;
+  activity_type?: string;
 }
 
 interface WorkerAssignmentTableProps {
@@ -34,11 +35,16 @@ const WorkerAssignmentTable: React.FC<WorkerAssignmentTableProps> = ({
 }) => {
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
 
+  // Filter records to only show NORMAL activity type
+  const filteredRecords = records.filter(record => record.activity_type === 'NORMAL' || !record.activity_type);
+
   // Console log all worker records data
   console.log('======= WORKER ASSIGNMENT TABLE DATA =======');
   console.log('Total Records:', records.length);
+  console.log('Filtered Records (NORMAL only):', filteredRecords.length);
   console.log('All Worker Records:', records);
-  records.forEach((record, index) => {
+  console.log('Filtered Worker Records:', filteredRecords);
+  filteredRecords.forEach((record, index) => {
     console.log(`Record ${index + 1}:`, {
       id: record.id,
       worker: record.worker,
@@ -53,7 +59,8 @@ const WorkerAssignmentTable: React.FC<WorkerAssignmentTableProps> = ({
       rejectionReason: record.rejectionReason,
       alteration: record.alteration,
       alterationNote: record.alterationNote,
-      status: record.status
+      status: record.status,
+      activity_type: record.activity_type
     });
   });
   console.log('===========================================');
@@ -75,7 +82,7 @@ const WorkerAssignmentTable: React.FC<WorkerAssignmentTableProps> = ({
     }
   };
 
-  if (records.length === 0) {
+  if (filteredRecords.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500 border border-gray-200 rounded-lg">
         <p>No worker assignments yet</p>
@@ -105,7 +112,7 @@ const WorkerAssignmentTable: React.FC<WorkerAssignmentTableProps> = ({
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
-          {records.map((record) => {
+          {filteredRecords.map((record) => {
             const hasRejectionOrAlteration = (record.rejectReturn ?? 0) > 0 || (record.alteration ?? 0) > 0;
             const rowBgClass = hasRejectionOrAlteration ? 'bg-[#FEF2F2]' : 'bg-[#ECFDF5]';
 

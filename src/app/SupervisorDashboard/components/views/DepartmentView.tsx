@@ -89,9 +89,12 @@ interface WorkItem {
   department: Department;
   remarks?: string | null;
   quantity_remaining?: number | null;
+  quantity_received?: number | null;
   sent_from_department?: number | null;
   alter_reason?: string | null;
   reject_reason?: string | null;
+  rejection_source?: RejectionSource | null;
+  alteration_source?: AlterationSource | null;
 }
 
 interface KanbanData {
@@ -335,7 +338,8 @@ const SupervisorKanban = () => {
   console.log('Current kanban data:', kanbanData);
   console.log('====================================');
 
-  if (loading) {
+  if (loading && kanbanData.newArrival.length === 0 && kanbanData.inProgress.length === 0 && kanbanData.completed.length === 0) {
+    // Initial loading - show full page loader
     return (
       <div className="p-8 bg-gray-50 min-h-full">
         <div className="flex items-center justify-center py-12">
@@ -346,7 +350,13 @@ const SupervisorKanban = () => {
   }
 
   return (
-    <div className="p-6 bg-white min-h-full">
+    <div className="p-6 bg-white min-h-full relative">
+      {/* Overlay loader for refreshing data */}
+      {loading && (
+        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <Loader loading={true} message="Refreshing data..."/>
+        </div>
+      )}
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>

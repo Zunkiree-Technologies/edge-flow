@@ -55,15 +55,9 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
             }
 
             const result = await response.json();
-            console.log('======= RAW WORKER LOGS API RESPONSE =======');
-            console.log('API Result:', result);
-            console.log('Is Success:', result.success);
-            console.log('Data Array:', result.data);
-            console.log('==========================================');
 
             if (result.success && Array.isArray(result.data)) {
                 const mappedRecords = result.data.map((r: any, idx: number) => {
-                    console.log(`Mapping Record ${idx + 1}:`, r);
 
                     // Extract rejection data from rejected_entry array
                     const rejectedEntry = r.rejected_entry && r.rejected_entry.length > 0 ? r.rejected_entry[0] : null;
@@ -78,11 +72,6 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                     const alterationNote = alteredEntry?.reason || '-';
                     const alterReturnToDeptId = alteredEntry?.sent_to_department_id || null;
                     const alterReturnToDeptName = alteredEntry?.sent_to_department_name || alteredEntry?.sent_to_department?.name || null;
-
-                    console.log(`  - Rejected Entry:`, rejectedEntry);
-                    console.log(`  - Rejected Qty: ${rejectedQty}, Reason: ${rejectionReason}, Return To Dept: ${returnToDeptName || returnToDeptId}`);
-                    console.log(`  - Altered Entry:`, alteredEntry);
-                    console.log(`  - Altered Qty: ${alteredQty}, Note: ${alterationNote}, Return To Dept: ${alterReturnToDeptName || alterReturnToDeptId}`);
 
                     // Format department return display: show name if available, otherwise show "Dept ID"
                     let returnToDisplay = '-';
@@ -112,11 +101,9 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                         alterationNote: alterationNote,
                         status: r.status || '-',
                         department_id: r.department_id, // Store department_id for filtering
+                        activity_type: r.activity_type || 'NORMAL', // Store activity_type for filtering
                     };
                 });
-                console.log('======= MAPPED WORKER RECORDS =======');
-                console.log('Mapped Records:', mappedRecords);
-                console.log('====================================');
                 setWorkerRecords(mappedRecords);
 
             } else {
@@ -186,16 +173,6 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
 
     // Handle save - update stage via API or advance to next department
     const handleSave = async () => {
-        console.log('=== SAVE BUTTON CLICKED ===');
-        console.log('Full taskData:', taskData);
-        console.log('taskData.id:', taskData?.id);
-        console.log('taskData.sub_batch:', taskData?.sub_batch);
-        console.log('taskData.sub_batch_id:', taskData?.sub_batch_id);
-        console.log('taskData.stage:', taskData?.stage);
-        console.log('sendToDepartment:', sendToDepartment);
-        console.log('Is Rejected:', taskData?.remarks?.toLowerCase().includes('reject'));
-        console.log('Is Altered:', taskData?.remarks?.toLowerCase().includes('alter'));
-
         // Check if sub-batch is already marked as COMPLETED (status level)
         if (taskData?.sub_batch?.status === 'COMPLETED') {
             alert('This sub-batch has been marked as COMPLETED and can no longer be moved or modified.');
@@ -211,20 +188,12 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
         const subBatchId = taskData.sub_batch?.id || taskData.sub_batch_id;
 
         if (!subBatchId) {
-            console.error('Missing sub_batch_id!');
-            console.error('taskData.sub_batch:', taskData.sub_batch);
-            console.error('taskData.sub_batch_id:', taskData.sub_batch_id);
             alert('Cannot send to department: Sub-batch ID is missing');
             return;
         }
 
-        console.log('Using subBatchId:', subBatchId);
-
         // If sending to another department (works for any stage)
         if (sendToDepartment) {
-            console.log('✅ Sending to another department...');
-            console.log('Card type:', taskData.remarks || 'Regular');
-            console.log('Current stage:', taskData.stage);
 
             // Calculate remaining work before allowing department transfer
             const currentDepartmentRecords = workerRecords.filter(record => record.department_id === taskData.department_id);
@@ -258,9 +227,6 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                     quantityBeingSent: totalWorkDone, // The total quantity completed in current department
                 };
 
-                console.log('API URL:', apiUrl);
-                console.log('Request Body:', JSON.stringify(requestBody, null, 2));
-
                 // Advance to next department
                 const advanceResponse = await fetch(apiUrl!, {
                     method: 'POST',
@@ -271,8 +237,6 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                     body: JSON.stringify(requestBody),
                 });
 
-                console.log('Response Status:', advanceResponse.status);
-
                 if (!advanceResponse.ok) {
                     const errorData = await advanceResponse.json();
                     console.error('Error Response:', errorData);
@@ -280,11 +244,8 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                 }
 
                 const result = await advanceResponse.json();
-                console.log('Success Response:', result);
-                console.log('Next Department Data:', result.nextDept);
 
                 if (result.success) {
-                    console.log('✅ Successfully sent to department:', result.nextDept?.department_id);
 
                     // Close modal immediately
                     onClose();
@@ -296,13 +257,10 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                     setSendToDepartment('');
 
                     // Wait a bit for backend to process, then refresh Kanban board
-                    console.log('Refreshing Kanban board in 500ms...');
                     setTimeout(() => {
                         if (onStageChange) {
-                            console.log('Calling onStageChange() to refresh data...');
                             onStageChange();
                         } else {
-                            console.warn('onStageChange callback not provided! Forcing page reload...');
                             window.location.reload();
                         }
                     }, 500);
@@ -445,12 +403,13 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
     const totalWorkDone = currentDepartmentRecords.reduce((sum, record) => sum + (record.qtyWorked || 0), 0);
     const totalAltered = currentDepartmentRecords.reduce((sum, record) => sum + (record.alteration || 0), 0);
     const totalRejected = currentDepartmentRecords.reduce((sum, record) => sum + (record.rejectReturn || 0), 0);
-    const totalProcessed = totalWorkDone + totalAltered + totalRejected;
     // Total/original quantity for display only
     const totalQuantity = taskData.sub_batch?.estimated_pieces ?? 0;
-    // Quantity to work is what this department received (from backend)
-    const quantityToWork = taskData.quantity_remaining ?? totalQuantity;
-    const remainingWork = quantityToWork - totalProcessed;
+    // Quantity to work is what this department received (from backend) - used in Received field
+    // Use quantity_received if available (constant), otherwise fall back to quantity_remaining
+    const quantityToWork = taskData.quantity_received ?? taskData.quantity_remaining ?? totalQuantity;
+    // Remaining = Received - Worked - Rejected - Altered
+    const remainingWork = quantityToWork - totalWorkDone - totalRejected - totalAltered;
 
     // Extract rejection/alteration logs from current department worker records
     const rejectionLogs = currentDepartmentRecords.filter(record => (record.rejectReturn ?? 0) > 0);
@@ -459,37 +418,6 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
     // Get the most recent rejection or alteration log
     const latestRejectionLog = rejectionLogs.length > 0 ? rejectionLogs[rejectionLogs.length - 1] : null;
     const latestAlterationLog = alterationLogs.length > 0 ? alterationLogs[alterationLogs.length - 1] : null;
-
-    // Log task data for debugging
-    console.log('======= TASK DETAILS MODAL DATA =======');
-    console.log('Task Data:', taskData);
-    console.log('Remarks:', taskData.remarks);
-    console.log('Quantity Remaining:', taskData.quantity_remaining);
-    console.log('Sub-batch Estimated Pieces:', taskData.sub_batch?.estimated_pieces);
-    console.log('Is Rejected:', taskData.remarks?.toLowerCase().includes('reject'));
-    console.log('Is Altered:', taskData.remarks?.toLowerCase().includes('alter'));
-    console.log('Rejection Source:', taskData.rejection_source);
-    console.log('Alteration Source:', taskData.alteration_source);
-    if (taskData.rejection_source) {
-        console.log('  - From Department:', taskData.rejection_source.from_department_name);
-        console.log('  - Reason:', taskData.rejection_source.reason);
-        console.log('  - Quantity:', taskData.rejection_source.quantity);
-    }
-    if (taskData.alteration_source) {
-        console.log('  - From Department:', taskData.alteration_source.from_department_name);
-        console.log('  - Reason:', taskData.alteration_source.reason);
-        console.log('  - Quantity:', taskData.alteration_source.quantity);
-    }
-    console.log('======= WORK PROGRESS TRACKING =======');
-    console.log('Worker Records:', workerRecords);
-    console.log('Total Work Done:', totalWorkDone);
-    console.log('Total Altered:', totalAltered);
-    console.log('Total Rejected:', totalRejected);
-    console.log('Total Processed:', totalProcessed);
-    console.log('Quantity to Work:', quantityToWork);
-    console.log('Remaining Work:', remainingWork);
-    console.log('Progress Percentage:', quantityToWork > 0 ? Math.round((totalProcessed / quantityToWork) * 100) : 0, '%');
-    console.log('======================================');
 
     const handleAddRecord = () => {
         setModalMode('add');
@@ -779,6 +707,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                                         </div>
                                         <p className="text-[16px] text-center font-semibold text-gray-900">{totalRejected.toLocaleString()}</p>
                                     </div>
+
 
                                     {/* Remaining */}
                                     <div className="flex flex-col">
