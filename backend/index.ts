@@ -19,6 +19,7 @@ import wageRoutes from "./src/routes/wage";
 import productionViewRoutes from "./src/routes/productionView";
 import inventoryRoutes from "./src/routes/inventory";
 import inventorySubtractionRoutes from "./src/routes/inventorySubtraction";
+import adminProductionRoutes from "./src/routes/adminProduction";
 
 
 dotenv.config();
@@ -83,6 +84,9 @@ app.use("/api/inventory", inventoryRoutes);
 
 // Inventory Subtraction Routes
 app.use("/api/inventory-subtraction", inventorySubtractionRoutes);
+
+// Admin Production Routes
+app.use("/api/admin/production", adminProductionRoutes);
 
 
 // Optional test route

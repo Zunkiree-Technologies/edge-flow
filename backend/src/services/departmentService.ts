@@ -192,6 +192,14 @@ export async function getSubBatchesByDepartment(supervisorId: number) {
       },
       assigned_worker: true,
       department: true,
+      worker_logs: {
+        include: {
+          worker: true,  // ✅ Include worker who performed the work
+        },
+        orderBy: {
+          work_date: 'desc',  // Most recent logs first
+        },
+      },
     },
   });
 

@@ -127,6 +127,7 @@ export const createWorkerLog = async (data: WorkerLogInput) => {
             total_quantity: sourceEntry.total_quantity, // Copy the original total quantity
             remarks: "Rejected",
             reject_reason: r.reason, // ✅ Store reject reason
+            sent_from_department: sourceEntry.department_id, // ✅ Track which department it came from
           },
         });
 
@@ -199,6 +200,7 @@ export const createWorkerLog = async (data: WorkerLogInput) => {
             total_quantity: sourceEntry.total_quantity, // Copy the original total quantity
             remarks: "Altered",
             alter_reason: a.reason, // ✅ Store alter reason
+            sent_from_department: sourceEntry.department_id, // ✅ Track which department it came from
           },
         });
 

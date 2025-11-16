@@ -17,6 +17,7 @@ interface RejectedData {
   worker_log_id?: number; // optional link to worker log
 }
 
+
 export const createRejectedSubBatch = async (data: RejectedData) => {
   return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     // 1️⃣ Verify source entry exists and has sufficient quantity
@@ -57,6 +58,7 @@ export const createRejectedSubBatch = async (data: RejectedData) => {
         total_quantity: sourceEntry.total_quantity, // Copy the original total quantity
         remarks: "Rejected",
         reject_reason: data.reason, // ✅ Store reject reason
+        sent_from_department: sourceEntry.department_id, // ✅ Track which department it came from
       },
     });
 

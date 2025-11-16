@@ -17,6 +17,7 @@ interface AlteredPieceInput {
   worker_log_id?: number; // optional link to worker log
 }
 
+
 export const createAlteredSubBatch = async (data: AlteredPieceInput) => {
   return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     // 1️⃣ Verify source entry exists and has sufficient quantity
@@ -57,6 +58,7 @@ export const createAlteredSubBatch = async (data: AlteredPieceInput) => {
         total_quantity: sourceEntry.total_quantity, // Copy the original total quantity
         remarks: "Altered",
         alter_reason: data.reason, // ✅ Store alter reason
+        sent_from_department: sourceEntry.department_id, // ✅ Track which department it came from
       },
     });
 
