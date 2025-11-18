@@ -75,35 +75,52 @@ export const createWorkerLog = async (data: WorkerLogInput) => {
         throw new Error(`No unassigned department_sub_batch entry found with sufficient quantity (${data.quantity_worked} pieces needed)`);
       }
 
-      // 2️⃣ Split the sub-batch: Create a new entry for the assigned pieces
-      const newDeptSubBatch = await tx.department_sub_batches.create({
-        data: {
-          sub_batch_id: data.sub_batch_id,
-          department_id: data.department_id,
-          assigned_worker_id: data.worker_id,
-          stage: activeDeptSubBatch.stage,
-          is_current: true,
-          quantity_assigned: data.quantity_worked,  // ✅ Store assigned quantity
-          quantity_remaining: data.quantity_worked,  // Initially same as assigned
-          quantity_received: data.quantity_worked,
-          total_quantity: activeDeptSubBatch.total_quantity,
-          sent_from_department: activeDeptSubBatch.sent_from_department,
-          remarks: "Assigned",  // ✅ Mark as split/assigned
-        },
-      });
+      // 2️⃣ Check if assigning ALL pieces or only PARTIAL
+      const isAssigningAll = data.quantity_worked === activeDeptSubBatch.quantity_remaining;
 
-      newDeptSubBatchId = newDeptSubBatch.id;
+      if (isAssigningAll) {
+        // ✅ Assigning ALL pieces - Just update the existing entry, NO SPLIT
+        await tx.department_sub_batches.update({
+          where: { id: activeDeptSubBatch.id },
+          data: {
+            assigned_worker_id: data.worker_id,
+            quantity_assigned: data.quantity_worked,
+            remarks: "Assigned",
+          },
+        });
 
-      // 3️⃣ Reduce quantity from the original entry and mark as "Main" if no remarks
-      await tx.department_sub_batches.update({
-        where: { id: activeDeptSubBatch.id },
-        data: {
-          quantity_remaining: { decrement: data.quantity_worked },
-          remarks: activeDeptSubBatch.remarks || "Main",  // ✅ Mark as main if no existing remarks
-        },
-      });
+        departmentSubBatchId = activeDeptSubBatch.id;
+      } else {
+        // ✅ Assigning PARTIAL pieces - CREATE SPLIT
+        const newDeptSubBatch = await tx.department_sub_batches.create({
+          data: {
+            sub_batch_id: data.sub_batch_id,
+            department_id: data.department_id,
+            assigned_worker_id: data.worker_id,
+            stage: activeDeptSubBatch.stage,
+            is_current: true,
+            quantity_assigned: data.quantity_worked,
+            quantity_remaining: data.quantity_worked,
+            quantity_received: data.quantity_worked,
+            total_quantity: activeDeptSubBatch.total_quantity,
+            sent_from_department: activeDeptSubBatch.sent_from_department,
+            remarks: "Assigned",
+          },
+        });
 
-      departmentSubBatchId = newDeptSubBatchId;
+        newDeptSubBatchId = newDeptSubBatch.id;
+
+        // Reduce quantity from the original entry and mark as "Main"
+        await tx.department_sub_batches.update({
+          where: { id: activeDeptSubBatch.id },
+          data: {
+            quantity_remaining: { decrement: data.quantity_worked },
+            remarks: activeDeptSubBatch.remarks || "Main",
+          },
+        });
+
+        departmentSubBatchId = newDeptSubBatchId;
+      }
     }
 
     // 4️⃣ Create main worker log with department_sub_batch_id
