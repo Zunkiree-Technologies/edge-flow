@@ -31,7 +31,8 @@ interface SubBatch {
   due_date: string;
   department_id: number | null;
   department_sub_batch_id?: number;  // The ID from department_sub_batches table - required for reject/alter operations
-  remaining_work?: number;  // Remaining work from production summary
+  remaining_work?: number;  // Remaining work from production summary for this specific card
+  parent_remaining_work?: number;  // Total remaining work for the parent/main sub-batch (across all cards)
   quantity_remaining?: number | null;  // Remaining quantity for this card
   quantity_assigned?: number | null;  // Assigned quantity for "Assigned" cards
   remarks?: string | null;  // Card type: "Main", "Assigned", "Rejected", "Altered"
@@ -309,13 +310,20 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
       return;
     }
 
-    // Validate: quantity_received cannot exceed remaining work from production summary
+    // Validate: quantity_received cannot exceed parent remaining work
     const qtyReceived = formData.qtyReceived ? parseInt(formData.qtyReceived) : 0;
     const qtyWorked = formData.qtyWorked ? parseInt(formData.qtyWorked) : 0;
-    const remainingWork = subBatch?.remaining_work ?? 0;
+    const parentRemainingWork = subBatch?.parent_remaining_work ?? subBatch?.remaining_work ?? 0;
 
-    if (qtyReceived > 0 && remainingWork > 0 && qtyReceived > remainingWork) {
-      alert(`Quantity received cannot exceed the remaining work!\nRemaining work: ${remainingWork.toLocaleString()} pieces\nYou entered: ${qtyReceived.toLocaleString()} pieces`);
+    // When editing, we need to account for the current record's quantity
+    let availableQuantity = parentRemainingWork;
+    if (mode === 'edit' && editRecord?.qtyReceived) {
+      // Add back the quantity from the record being edited
+      availableQuantity = parentRemainingWork + (editRecord.qtyReceived || 0);
+    }
+
+    if (qtyReceived > 0 && availableQuantity > 0 && qtyReceived > availableQuantity) {
+      alert(`Quantity received cannot exceed the parent sub-batch's remaining work!\n\nParent Remaining: ${parentRemainingWork.toLocaleString()} pieces${mode === 'edit' ? `\nCurrent Record: ${editRecord?.qtyReceived || 0} pieces\nAvailable: ${availableQuantity.toLocaleString()} pieces` : ''}\n\nYou entered: ${qtyReceived.toLocaleString()} pieces`);
       return;
     }
 
@@ -751,7 +759,22 @@ const AddRecordModal: React.FC<AddRecordModalProps> = ({
                 disabled={isPreviewMode}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
-              {subBatch?.remaining_work !== undefined && subBatch.remaining_work >= 0 && (
+              {/* Show parent remaining work for validation */}
+              {subBatch?.parent_remaining_work !== undefined && subBatch.parent_remaining_work >= 0 && (
+                <div className="mt-1 space-y-1">
+                  <p className="text-xs font-semibold text-green-700">
+                    Parent Remaining: <span className="text-green-600">{subBatch.parent_remaining_work.toLocaleString()}</span> pcs
+                  </p>
+                  {/* For Assigned cards, also show this card's remaining */}
+                  {subBatch.remarks === 'Assigned' && subBatch.remaining_work !== undefined && (
+                    <p className="text-xs text-gray-600">
+                      This Card: <span className="font-semibold text-blue-600">{subBatch.remaining_work.toLocaleString()}</span> pcs
+                    </p>
+                  )}
+                </div>
+              )}
+              {/* Fallback to remaining_work if parent_remaining_work not available */}
+              {!subBatch?.parent_remaining_work && subBatch?.remaining_work !== undefined && subBatch.remaining_work >= 0 && (
                 <p className="text-xs text-gray-600 mt-1">
                   Remaining: <span className="font-semibold text-blue-600">{subBatch.remaining_work.toLocaleString()}</span> pieces
                 </p>

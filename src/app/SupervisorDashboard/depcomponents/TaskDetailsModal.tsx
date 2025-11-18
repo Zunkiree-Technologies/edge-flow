@@ -452,6 +452,17 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
     // Remaining = Received - Worked - Rejected - Altered
     const remainingWork = quantityToWork - totalWorkDone - totalRejected - totalAltered;
 
+    // Calculate TOTAL remaining work for the entire sub-batch (across ALL cards in this department)
+    // This is used for validation when adding/editing records to ensure we don't exceed the parent's capacity
+    const allDepartmentRecords = workerRecords.filter(record => record.department_id === taskData.department_id);
+    const totalWorkedAll = allDepartmentRecords.reduce((sum, record) => sum + (record.qtyWorked || 0), 0);
+    const totalAlteredAll = allDepartmentRecords.reduce((sum, record) => sum + (record.alteration || 0), 0);
+    const totalRejectedAll = allDepartmentRecords.reduce((sum, record) => sum + (record.rejectReturn || 0), 0);
+
+    // Parent remaining = Total quantity - All work done across all cards
+    const parentTotalQuantity = taskData.quantity_received ?? taskData.sub_batch?.estimated_pieces ?? totalQuantity;
+    const parentRemainingWork = parentTotalQuantity - totalWorkedAll - totalRejectedAll - totalAlteredAll;
+
     // Extract rejection/alteration logs from current department worker records
     const rejectionLogs = currentDepartmentRecords.filter(record => (record.rejectReturn ?? 0) > 0);
     const alterationLogs = currentDepartmentRecords.filter(record => (record.alteration ?? 0) > 0);
@@ -1161,7 +1172,9 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                     department_sub_batch_id: taskData.id,  // Pass the department_sub_batch_id
                     department_id: taskData.department_id,  // Pass the current department_id
                     quantity_remaining: taskData.quantity_remaining,
+                    quantity_assigned: taskData.quantity_assigned,  // Pass assigned quantity for Assigned cards
                     remaining_work: remainingWork,  // Pass the calculated remaining work from production summary
+                    parent_remaining_work: parentRemainingWork,  // Pass parent/total remaining work for validation
                     remarks: taskData.remarks,
                     rejection_source: taskData.rejection_source,
                     alteration_source: taskData.alteration_source,
