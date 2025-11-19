@@ -56,6 +56,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
             }
 
             const result = await response.json();
+            console.log(`GET /api/worker-logs/${subBatchId} - Response:`, result);
 
             if (result.success && Array.isArray(result.data)) {
                 const mappedRecords = result.data.map((r: any, idx: number) => {
@@ -126,6 +127,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/departments`);
             if (response.ok) {
                 const data = await response.json();
+                console.log('GET /api/departments - Response:', data);
                 setDepartments(data);
             }
         } catch (error) {
@@ -148,6 +150,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
             }
 
             const result = await response.json();
+            console.log(`GET /api/department-sub-batches/sub-batch-history/${subBatchId} - Response:`, result);
 
             if (result.success) {
                 setSubBatchHistory(result);
@@ -185,6 +188,8 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
             }
 
             const result = await response.json();
+            console.log('GET /api/supervisors/sub-batches - Response:', result);
+
             if (result.success && result.data) {
                 // Combine all cards from all statuses
                 const allCards = [
@@ -194,17 +199,15 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                 ];
 
                 // Find the Main card with the same sub_batch_id and department_id
+                // Can be either "Main" (after split) or "Main in this Department" (fresh arrival)
                 const mainCard = allCards.find(card =>
                     card.sub_batch_id === taskData.sub_batch_id &&
                     card.department_id === taskData.department_id &&
-                    (card.remarks === 'Main' || !card.remarks)
+                    (card.remarks === 'Main' || card.remarks === 'Main in this Department' || !card.remarks)
                 );
 
                 if (mainCard) {
                     setMainCardData(mainCard);
-                    console.log('Found Main card:', mainCard);
-                } else {
-                    console.log('Main card not found for sub_batch_id:', taskData.sub_batch_id);
                 }
             }
         } catch (error) {
@@ -480,17 +483,12 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
         currentDepartmentRecords = workerRecords.filter(record =>
             record.department_sub_batch_id === taskData.id
         );
-        console.log('Assigned card - Filtering by card ID:', taskData.id);
     } else {
         // For Main/Unassigned cards, show all worker records for this department
         currentDepartmentRecords = workerRecords.filter(record =>
             record.department_id === taskData.department_id
         );
-        console.log('Main card - Filtering by department ID:', taskData.department_id);
     }
-
-    console.log('Card remarks:', taskData.remarks);
-    console.log('Filtered records:', currentDepartmentRecords);
 
     // Calculate work progress from current department worker records only
     const totalWorkDone = currentDepartmentRecords.reduce((sum, record) => sum + (record.qtyWorked || 0), 0);
@@ -498,12 +496,19 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
     const totalRejected = currentDepartmentRecords.reduce((sum, record) => sum + (record.rejectReturn || 0), 0);
     // Total/original quantity for display only
     const totalQuantity = taskData.sub_batch?.estimated_pieces ?? 0;
-    // Quantity to work is what this department received (from backend) - used in Received field
-    // For "Assigned" cards, use quantity_assigned instead of quantity_remaining
+    // Quantity to work depends on card type:
+    // 1. "Assigned" cards (child): use quantity_assigned
+    // 2. "Main" cards (after split): use quantity_remaining (dynamic after split)
+    // 3. "Main in this Department" cards (fresh arrival): use quantity_received (constant baseline)
     let quantityToWork;
     if (taskData.remarks === 'Assigned' && taskData.quantity_assigned) {
+        // Child card assigned to worker
         quantityToWork = taskData.quantity_assigned;
+    } else if (taskData.remarks === 'Main') {
+        // Parent card after split - use remaining quantity (dynamic)
+        quantityToWork = taskData.quantity_remaining ?? taskData.quantity_received ?? totalQuantity;
     } else {
+        // Fresh arrival card ("Main in this Department") or other cards - use received quantity (baseline)
         quantityToWork = taskData.quantity_received ?? taskData.quantity_remaining ?? totalQuantity;
     }
     // Remaining = Received - Worked - Rejected - Altered
@@ -516,11 +521,13 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
     let parentRemainingWork;
 
     if (taskData.remarks === 'Assigned' && mainCardData) {
-        // For Assigned cards: Use the Main card's quantity_remaining (unassigned remaining)
+        // For Assigned cards: Use the Main/Main in this Department card's quantity_remaining (unassigned remaining)
         parentRemainingWork = mainCardData.quantity_remaining ?? 0;
-        console.log('Using Main card remaining for Assigned card:', parentRemainingWork);
+    } else if (taskData.remarks === 'Main') {
+        // For Main cards (after split): Use its own quantity_remaining
+        parentRemainingWork = taskData.quantity_remaining ?? 0;
     } else {
-        // For Main/regular cards: Calculate based on all department records
+        // For "Main in this Department" or regular cards: Calculate based on all department records
         const allDepartmentRecords = workerRecords.filter(record => record.department_id === taskData.department_id);
         const totalWorkedAll = allDepartmentRecords.reduce((sum, record) => sum + (record.qtyWorked || 0), 0);
         const totalAlteredAll = allDepartmentRecords.reduce((sum, record) => sum + (record.alteration || 0), 0);
