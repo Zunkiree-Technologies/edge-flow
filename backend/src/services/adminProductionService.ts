@@ -61,6 +61,7 @@ export const getTaskDetails = async (subBatchId: number, departmentId: number) =
       },
       assigned_worker: true,
       sent_to_department: true,
+      parent_card: true, // ✅ Include parent card data
     },
   });
 
@@ -277,14 +278,16 @@ export const createRejection = async (data: AdminRejectionInput) => {
       },
     });
 
-    // 3️⃣ Create new department_sub_batches record for rejected pieces
+    // 3️⃣ Create new department_sub_batches record for rejected pieces (new Main card in target department)
     const newDeptSubBatch = await tx.department_sub_batches.create({
       data: {
         sub_batch_id: data.sub_batch_id,
         department_id: data.return_to_department_id,
+        parent_department_sub_batch_id: null, // ✅ New Main card has no parent in the new department
         stage: DepartmentStage.NEW_ARRIVAL,
         is_current: true,
         quantity_remaining: data.quantity,
+        quantity_received: data.quantity,
         total_quantity: sourceEntry.total_quantity,
         remarks: "REJECTED",
         reject_reason: data.reason,
@@ -365,14 +368,16 @@ export const createAlteration = async (data: AdminAlterationInput) => {
       },
     });
 
-    // 3️⃣ Create new department_sub_batches record for altered pieces
+    // 3️⃣ Create new department_sub_batches record for altered pieces (new Main card in target department)
     const newDeptSubBatch = await tx.department_sub_batches.create({
       data: {
         sub_batch_id: data.sub_batch_id,
         department_id: data.return_to_department_id,
+        parent_department_sub_batch_id: null, // ✅ New Main card has no parent in the new department
         stage: DepartmentStage.NEW_ARRIVAL,
         is_current: true,
         quantity_remaining: data.quantity,
+        quantity_received: data.quantity,
         total_quantity: sourceEntry.total_quantity,
         remarks: "ALTERED",
         alter_reason: data.note,

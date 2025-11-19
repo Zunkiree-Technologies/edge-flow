@@ -221,6 +221,7 @@ export async function sendToProduction(
     data: {
       sub_batch_id: subBatchId,
       department_id: firstDeptId,
+      parent_department_sub_batch_id: null, // ✅ First Main card has no parent
       stage: DepartmentStage.NEW_ARRIVAL,
       is_current: true,
       quantity_received: subBatch.estimated_pieces, // ✅ Initial quantity received
@@ -331,11 +332,12 @@ export async function advanceSubBatchToNextDepartment(
     },
   });
 
-  // 4️⃣ Create new entry in target department with quantity_received and quantity_remaining both set to quantityBeingSent
+  // 4️⃣ Create new entry in target department (this becomes the new Main card)
   return await prisma.department_sub_batches.create({
     data: {
       sub_batch_id: currentDept.sub_batch_id,
       department_id: toDepartmentId,
+      parent_department_sub_batch_id: null, // ✅ New Main card in new department has no parent
       stage: DepartmentStage.NEW_ARRIVAL,
       is_current: true,
       quantity_received: quantityBeingSent, // ✅ Set received quantity (constant baseline)

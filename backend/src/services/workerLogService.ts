@@ -97,6 +97,7 @@ export const createWorkerLog = async (data: WorkerLogInput) => {
             sub_batch_id: data.sub_batch_id,
             department_id: data.department_id,
             assigned_worker_id: data.worker_id,
+            parent_department_sub_batch_id: activeDeptSubBatch.id, // ✅ Link to parent card
             stage: activeDeptSubBatch.stage,
             is_current: true,
             quantity_assigned: data.quantity_worked,
@@ -174,14 +175,16 @@ export const createWorkerLog = async (data: WorkerLogInput) => {
           },
         });
 
-        // Create new department_sub_batches for rejected pieces
+        // Create new department_sub_batches for rejected pieces (this becomes the new Main card in target department)
         const newDept = await tx.department_sub_batches.create({
           data: {
             sub_batch_id: data.sub_batch_id,
             department_id: r.sent_to_department_id,
+            parent_department_sub_batch_id: null, // ✅ New Main card has no parent in the new department
             stage: DepartmentStage.NEW_ARRIVAL,
             is_current: true,
             quantity_remaining: r.quantity,
+            quantity_received: r.quantity,
             total_quantity: sourceEntry.total_quantity, // Copy the original total quantity
             remarks: "Rejected",
             reject_reason: r.reason, // ✅ Store reject reason
@@ -245,14 +248,16 @@ export const createWorkerLog = async (data: WorkerLogInput) => {
           },
         });
 
-        // Create department_sub_batches for altered pieces
+        // Create department_sub_batches for altered pieces (this becomes the new Main card in target department)
         const newDept = await tx.department_sub_batches.create({
           data: {
             sub_batch_id: data.sub_batch_id,
             department_id: a.sent_to_department_id,
+            parent_department_sub_batch_id: null, // ✅ New Main card has no parent in the new department
             stage: DepartmentStage.NEW_ARRIVAL,
             is_current: true,
             quantity_remaining: a.quantity,
+            quantity_received: a.quantity,
             total_quantity: sourceEntry.total_quantity, // Copy the original total quantity
             remarks: "Altered",
             alter_reason: a.reason, // ✅ Store alter reason
@@ -430,17 +435,16 @@ export const deleteWorkerLog = async (id: number) => {
     console.log(`Altered entries: ${workerLog.altered_entry?.length || 0}`);
     console.log(`Department sub-batch ID: ${workerLog.department_sub_batch_id}`);
 
-    // 1.5️⃣ Handle the split sub-batch (if this log created a new department_sub_batch for assigned work)
+    // 1.5️⃣ Handle the department_sub_batch (split or full assignment)
     if (workerLog.department_sub_batch_id && workerLog.department_sub_batch) {
       const deptSubBatch = workerLog.department_sub_batch;
 
-      // Check if this is a split sub-batch (has quantity_assigned)
+      // Check if this entry was assigned (has quantity_assigned)
       if (deptSubBatch.quantity_assigned && deptSubBatch.quantity_assigned > 0) {
-        console.log(`\n--- Reversing Split Sub-Batch ${deptSubBatch.id} ---`);
+        console.log(`\n--- Reversing Assignment ${deptSubBatch.id} ---`);
         console.log(`Assigned quantity: ${deptSubBatch.quantity_assigned}`);
 
-        // Find the parent/sibling entry to restore quantity to
-        // Look for an unassigned entry in the same department and sub-batch
+        // Check if there's a parent/sibling entry (meaning this was a SPLIT)
         const parentEntry = await tx.department_sub_batches.findFirst({
           where: {
             sub_batch_id: deptSubBatch.sub_batch_id,
@@ -458,39 +462,33 @@ export const deleteWorkerLog = async (id: number) => {
         });
 
         if (parentEntry) {
-          // Restore the quantity to the parent entry
+          // ✅ CASE 1: This was a SPLIT - Restore quantity to parent and delete this entry
           await tx.department_sub_batches.update({
             where: { id: parentEntry.id },
             data: {
               quantity_remaining: { increment: deptSubBatch.quantity_assigned },
-              remarks: parentEntry.remarks === "Main" ? null : parentEntry.remarks,  // ✅ Clear "Main" if restoring
+              remarks: parentEntry.remarks === "Main" ? null : parentEntry.remarks,
             },
           });
           console.log(`✓ Restored ${deptSubBatch.quantity_assigned} pieces to parent entry ${parentEntry.id}`);
+
+          // Delete the split sub-batch entry
+          await tx.department_sub_batches.delete({
+            where: { id: deptSubBatch.id },
+          });
+          console.log(`✓ Deleted split sub-batch entry ${deptSubBatch.id}`);
         } else {
-          console.warn(`⚠ No parent entry found for split sub-batch ${deptSubBatch.id}. Creating a new unassigned entry.`);
-          // If no parent found, create a new unassigned entry with the quantity
-          await tx.department_sub_batches.create({
+          // ✅ CASE 2: ALL pieces were assigned (no split) - Just unassign the entry
+          await tx.department_sub_batches.update({
+            where: { id: deptSubBatch.id },
             data: {
-              sub_batch_id: deptSubBatch.sub_batch_id,
-              department_id: deptSubBatch.department_id,
-              stage: deptSubBatch.stage,
-              is_current: true,
-              quantity_remaining: deptSubBatch.quantity_assigned,
-              quantity_received: deptSubBatch.quantity_assigned,
-              total_quantity: deptSubBatch.total_quantity,
-              sent_from_department: deptSubBatch.sent_from_department,
-              remarks: null,  // ✅ No remarks for restored entry
+              assigned_worker_id: null,
+              quantity_assigned: null,
+              remarks: null,  // Clear "Assigned" remark
             },
           });
-          console.log(`✓ Created new unassigned entry with ${deptSubBatch.quantity_assigned} pieces`);
+          console.log(`✓ Unassigned worker from entry ${deptSubBatch.id} (all pieces were assigned)`);
         }
-
-        // Delete the split sub-batch entry
-        await tx.department_sub_batches.delete({
-          where: { id: deptSubBatch.id },
-        });
-        console.log(`✓ Deleted split sub-batch entry ${deptSubBatch.id}`);
       }
     }
 

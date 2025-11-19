@@ -41,6 +41,7 @@ export const getProductionViewData = async () => {
         },
         department: true,
         assigned_worker: true,
+        parent_card: true, // ✅ Include parent card to show remaining from main card
       },
       orderBy: {
         createdAt: 'desc'
@@ -85,6 +86,9 @@ export const getProductionViewData = async () => {
           attachments: dsb.sub_batch!.attachments,
           createdAt: dsb.createdAt,
           remarks: dsb.remarks,
+          // ✅ Parent card data for showing "Remaining from Main Card"
+          parent_card_id: dsb.parent_card?.id || null,
+          parent_card_quantity_remaining: dsb.parent_card?.quantity_remaining || null,
         }));
 
       return {

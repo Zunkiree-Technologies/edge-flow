@@ -140,33 +140,36 @@ model department_workers {
 }
 
 model department_sub_batches {
-  id                     Int                            @id @default(autoincrement())
-  department_id          Int?
-  sub_batch_id           Int?
-  assigned_worker_id     Int?
-  createdAt              DateTime                       @default(now())
-  is_current             Boolean                        @default(false)
-  stage                  DepartmentStage                @default(NEW_ARRIVAL)
-  updatedAt              DateTime                       @updatedAt
-  quantity_remaining     Int?
-  quantity_received      Int?
-  quantity_assigned      Int?
-  total_quantity         Int?
-  remarks                String?
-  sent_to_department_id  Int?
-  sent_from_department   Int?
-  alter_reason           String?
-  reject_reason          String?
-  history                department_sub_batch_history[]
-  worker_logs            worker_logs[]
-  assigned_worker        workers?                       @relation(fields: [assigned_worker_id], references: [id])
-  department             departments?                   @relation(fields: [department_id], references: [id])
-  sub_batch              sub_batches?                   @relation(fields: [sub_batch_id], references: [id])
-  sent_to_department     departments?                   @relation("SentToDepartment", fields: [sent_to_department_id], references: [id])
-  rejected_source        sub_batch_rejected[]           @relation("RejectedSource")
-  rejected_created       sub_batch_rejected[]           @relation("RejectedCreated")
-  altered_source         sub_batch_altered[]            @relation("AlteredSource")
-  altered_created        sub_batch_altered[]            @relation("AlteredCreated")
+  id                           Int                            @id @default(autoincrement())
+  department_id                Int?
+  sub_batch_id                 Int?
+  assigned_worker_id           Int?
+  parent_department_sub_batch_id Int?
+  createdAt                    DateTime                       @default(now())
+  is_current                   Boolean                        @default(false)
+  stage                        DepartmentStage                @default(NEW_ARRIVAL)
+  updatedAt                    DateTime                       @updatedAt
+  quantity_remaining           Int?
+  quantity_received            Int?
+  quantity_assigned            Int?
+  total_quantity               Int?
+  remarks                      String?
+  sent_to_department_id        Int?
+  sent_from_department         Int?
+  alter_reason                 String?
+  reject_reason                String?
+  history                      department_sub_batch_history[]
+  worker_logs                  worker_logs[]
+  assigned_worker              workers?                       @relation(fields: [assigned_worker_id], references: [id])
+  department                   departments?                   @relation(fields: [department_id], references: [id])
+  sub_batch                    sub_batches?                   @relation(fields: [sub_batch_id], references: [id])
+  sent_to_department           departments?                   @relation("SentToDepartment", fields: [sent_to_department_id], references: [id])
+  parent_card                  department_sub_batches?        @relation("CardSplits", fields: [parent_department_sub_batch_id], references: [id], onDelete: SetNull)
+  child_cards                  department_sub_batches[]       @relation("CardSplits")
+  rejected_source              sub_batch_rejected[]           @relation("RejectedSource")
+  rejected_created             sub_batch_rejected[]           @relation("RejectedCreated")
+  altered_source               sub_batch_altered[]            @relation("AlteredSource")
+  altered_created              sub_batch_altered[]            @relation("AlteredCreated")
 }
 
 model clients {
