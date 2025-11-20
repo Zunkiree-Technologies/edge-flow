@@ -106,19 +106,19 @@ export const getTaskDetails = async (subBatchId: number, departmentId: number) =
   });
 
   // Build work history array
-  const workHistory = workerLogs.map((log) => {
+  const workHistory = workerLogs.map((log: any) => {
     // Calculate rejected and altered totals
-    const totalRejected = log.rejected_entry.reduce((sum, r) => sum + r.quantity, 0);
-    const totalAltered = log.altered_entry.reduce((sum, a) => sum + a.quantity, 0);
+    const totalRejected = log.rejected_entry.reduce((sum: number, r: any) => sum + r.quantity, 0);
+    const totalAltered = log.altered_entry.reduce((sum: number, a: any) => sum + a.quantity, 0);
 
     // Combine rejection reasons
     const rejectionReasons = log.rejected_entry
-      .map((r) => `${r.reason} - Returned to ${r.sent_to_department?.name || "Unknown"}`)
+      .map((r: any) => `${r.reason} - Returned to ${r.sent_to_department?.name || "Unknown"}`)
       .join("; ");
 
     // Combine alteration notes
     const alterationNotes = log.altered_entry
-      .map((a) => `${a.reason} - Sent to ${a.sent_to_department?.name || "Unknown"}`)
+      .map((a: any) => `${a.reason} - Sent to ${a.sent_to_department?.name || "Unknown"}`)
       .join("; ");
 
     return {
@@ -135,7 +135,7 @@ export const getTaskDetails = async (subBatchId: number, departmentId: number) =
 
   // Get route steps from workflow
   const routeSteps =
-    deptSubBatch.sub_batch?.workflows?.steps.map((step) => {
+    deptSubBatch.sub_batch?.workflows?.steps.map((step: any) => {
       // Check if this department has been completed
       // A department is completed if there's a dept_link with sent_to_department_id set
       const isCompleted = deptSubBatch.sub_batch?.dept_links.some(
@@ -168,12 +168,12 @@ export const getTaskDetails = async (subBatchId: number, departmentId: number) =
   });
 
   // Calculate production summary
-  const worked = workerLogs.reduce((sum, log) => sum + (log.quantity_worked || 0), 0);
-  const altered = workerLogs.reduce((sum, log) => {
-    return sum + log.altered_entry.reduce((s, a) => s + a.quantity, 0);
+  const worked = workerLogs.reduce((sum: number, log: any) => sum + (log.quantity_worked || 0), 0);
+  const altered = workerLogs.reduce((sum: number, log: any) => {
+    return sum + log.altered_entry.reduce((s: number, a: any) => s + a.quantity, 0);
   }, 0);
-  const rejected = workerLogs.reduce((sum, log) => {
-    return sum + log.rejected_entry.reduce((s, r) => s + r.quantity, 0);
+  const rejected = workerLogs.reduce((sum: number, log: any) => {
+    return sum + log.rejected_entry.reduce((s: number, r: any) => s + r.quantity, 0);
   }, 0);
   const remaining = deptSubBatch.quantity_remaining || 0;
 
@@ -219,7 +219,7 @@ export const getTaskDetails = async (subBatchId: number, departmentId: number) =
 
       // Attachments
       attachments:
-        deptSubBatch.sub_batch?.attachments.map((att) => ({
+        deptSubBatch.sub_batch?.attachments.map((att: any) => ({
           name: att.attachment_name,
           quantity: att.quantity,
         })) || [],
