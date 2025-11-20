@@ -86,7 +86,19 @@ export const getWorkerLogsBySubBatch = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Invalid sub_batch_id" });
     }
 
-    const logs = await workerLogService.getWorkerLogsBySubBatch(sub_batch_id);
+    // Get optional query parameters for filtering
+    const department_id = req.query.department_id
+      ? parseInt(req.query.department_id as string)
+      : undefined;
+    const department_sub_batch_id = req.query.department_sub_batch_id
+      ? parseInt(req.query.department_sub_batch_id as string)
+      : undefined;
+
+    const logs = await workerLogService.getWorkerLogsBySubBatch(
+      sub_batch_id,
+      department_id,
+      department_sub_batch_id
+    );
     res.status(200).json({ success: true, data: logs });
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });

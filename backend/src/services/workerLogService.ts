@@ -615,9 +615,23 @@ export const deleteWorkerLog = async (id: number) => {
 };
 
 /// ✅ Get Worker Logs by Sub-Batch (with rejected/altered)
-export const getWorkerLogsBySubBatch = async (sub_batch_id: number) => {
+export const getWorkerLogsBySubBatch = async (
+  sub_batch_id: number,
+  department_id?: number,
+  department_sub_batch_id?: number
+) => {
+  const whereClause: any = { sub_batch_id };
+
+  // Add optional filters if provided
+  if (department_id) {
+    whereClause.department_id = department_id;
+  }
+  if (department_sub_batch_id) {
+    whereClause.department_sub_batch_id = department_sub_batch_id;
+  }
+
   return await prisma.worker_logs.findMany({
-    where: { sub_batch_id },
+    where: whereClause,
     include: {
       worker: true,
       sub_batch: true,
