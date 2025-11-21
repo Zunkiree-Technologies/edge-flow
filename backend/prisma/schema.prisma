@@ -158,6 +158,23 @@ model department_sub_batches {
   sent_from_department         Int?
   alter_reason                 String?
   reject_reason                String?
+
+  // New fields for parent-child-dual workflow
+  is_parent                    Boolean                        @default(false)
+  is_dual                      Boolean                        @default(false)
+  is_forwarded                 Boolean                        @default(false)
+  forwarded_at                 DateTime?
+
+  // Child-specific fields
+  child_received               Int?
+  child_worked                 Int?                           @default(0)
+  child_altered                Int?                           @default(0)
+  child_remaining              Int?
+
+  // Parent-specific calculated fields
+  parent_worked                Int?                           @default(0)
+  parent_altered               Int?                           @default(0)
+
   history                      department_sub_batch_history[]
   worker_logs                  worker_logs[]
   assigned_worker              workers?                       @relation(fields: [assigned_worker_id], references: [id])

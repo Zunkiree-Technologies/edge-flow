@@ -19,4 +19,24 @@ router.get("/sub-batch/:subBatchId", departmentSubBatchController.getAllEntriesF
 // ✅ Assign worker to a department_sub_batch entry
 router.put("/assign-worker", departmentSubBatchController.assignWorkerToDepartmentSubBatch);
 
+// ==================== NEW WORKFLOW ROUTES ====================
+
+// Create initial parent card when sub-batch arrives at department
+router.post("/receive", departmentSubBatchController.createParentCardController);
+
+// Assign pieces from parent to worker (create child)
+router.post("/:parentId/assign", departmentSubBatchController.assignPiecesToWorkerController);
+
+// Update child work (worked and altered)
+router.patch("/child/:childId/work", departmentSubBatchController.updateChildWorkController);
+
+// Forward child to next department
+router.post("/child/:childId/forward", departmentSubBatchController.forwardChildController);
+
+// Delete child and restore parent
+router.delete("/child/:childId", departmentSubBatchController.deleteChildController);
+
+// Get department cards (parent and children)
+router.get("/department/:deptId/sub-batch/:subBatchId/cards", departmentSubBatchController.getDepartmentCardsController);
+
 export default router;
