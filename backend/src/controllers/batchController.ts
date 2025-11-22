@@ -50,3 +50,29 @@ export const deleteBatch = async (req: Request, res: Response) => {
     res.status(400).json({ message: "Error deleting batch", error: err });
   }
 };
+
+export const checkDependencies = async (req: Request, res: Response) => {
+  try {
+    const { batchIds } = req.body;
+
+    // Validation
+    if (!batchIds || !Array.isArray(batchIds) || batchIds.length === 0) {
+      return res.status(400).json({
+        message: "Invalid request. batchIds must be a non-empty array.",
+      });
+    }
+
+    // Ensure all IDs are numbers
+    const validIds = batchIds.filter((id) => typeof id === "number" && id > 0);
+    if (validIds.length !== batchIds.length) {
+      return res.status(400).json({
+        message: "All batch IDs must be valid positive numbers.",
+      });
+    }
+
+    const result = await batchService.checkBatchDependencies(validIds);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ message: "Error checking dependencies", error: err });
+  }
+};

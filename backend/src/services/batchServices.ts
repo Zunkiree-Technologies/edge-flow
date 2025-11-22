@@ -65,3 +65,31 @@ export const deleteBatch = async (id: number) => {
     where: { id },
   });
 };
+
+/**
+ * Check which batches have sub-batches and which don't
+ * @param batchIds - Array of batch IDs to check
+ * @returns Object with arrays of batch IDs categorized by sub-batch presence
+ */
+export const checkBatchDependencies = async (batchIds: number[]) => {
+  const batchesWithSubBatches: number[] = [];
+  const cleanBatches: number[] = [];
+
+  // Check each batch for sub-batches
+  for (const batchId of batchIds) {
+    const subBatchCount = await prisma.sub_batches.count({
+      where: { batch_id: batchId },
+    });
+
+    if (subBatchCount > 0) {
+      batchesWithSubBatches.push(batchId);
+    } else {
+      cleanBatches.push(batchId);
+    }
+  }
+
+  return {
+    batchesWithSubBatches,
+    cleanBatches,
+  };
+};
