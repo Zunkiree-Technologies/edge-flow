@@ -1,0 +1,164 @@
+import prisma from "../config/db";
+
+interface BatchData {
+  name: string;
+  quantity: number;
+  unit?: string; // optional
+  color?: string; // optional
+  roll_id?: number; // optional
+  vendor_id?: number; // optional
+}
+
+export const createBatch = async (data: BatchData) => {
+  const batchData: any = {
+    name: data.name,
+    quantity: data.quantity,
+  };
+
+  if (data.unit) batchData.unit = data.unit;
+  if (data.color) batchData.color = data.color;
+  if (data.roll_id) batchData.roll = { connect: { id: data.roll_id } };
+   if (data.vendor_id) batchData.vendor = { connect: { id: data.vendor_id } };
+
+  return await prisma.batches.create({
+    data: batchData,
+    include: { roll: true, vendor:true }, // include roll info if connected
+  });
+};
+
+export const getAllBatches = async () => {
+  return await prisma.batches.findMany({
+    include: { roll: true, vendor:true },
+  });
+};
+
+export const getBatchById = async (id: number) => {
+  const batch = await prisma.batches.findUnique({
+    where: { id },
+    include: { roll: true, vendor:true },
+  });
+  if (!batch) throw new Error("Batch not found");
+  return batch;
+};
+
+export const updateBatch = async (id: number, data: Partial<BatchData>) => {
+  const updateData: any = { ...data };
+
+  if (data.roll_id) {
+    updateData.roll = { connect: { id: data.roll_id } };
+    delete updateData.roll_id; // remove to avoid conflict
+  }
+  if (data.vendor_id) {
+    updateData.vendor = { connect: { id: data.vendor_id } };
+    delete updateData.vendor_id;
+  }
+
+  return await prisma.batches.update({
+    where: { id },
+    data: updateData,
+    include: { roll: true, vendor: true },
+  });
+};
+
+/**
+ * Delete a batch and all its related sub-batches and their dependencies
+ * Cascade delete order:
+ * 1. Get all sub-batches for this batch
+ * 2. For each sub-batch, delete all related records:
+ *    - worker_logs
+ *    - sub_batch_size_details
+ *    - sub_batch_attachments
+ *    - sub_batch_altered
+ *    - sub_batch_rejected
+ *    - sub_batch_workflows
+ *    - department_sub_batches
+ * 3. Delete all sub-batches
+ * 4. Delete the batch
+ */
+export const deleteBatch = async (id: number) => {
+  // Get all sub-batches for this batch
+  const subBatches = await prisma.sub_batches.findMany({
+    where: { batch_id: id },
+    select: { id: true },
+  });
+
+  const subBatchIds = subBatches.map((sb) => sb.id);
+
+  if (subBatchIds.length > 0) {
+    // Delete all related records for these sub-batches
+    // Order matters: delete child records first
+
+    // 1. Delete worker logs
+    await prisma.worker_logs.deleteMany({
+      where: { sub_batch_id: { in: subBatchIds } },
+    });
+
+    // 2. Delete size details
+    await prisma.sub_batch_size_details.deleteMany({
+      where: { sub_batch_id: { in: subBatchIds } },
+    });
+
+    // 3. Delete attachments
+    await prisma.sub_batch_attachments.deleteMany({
+      where: { sub_batch_id: { in: subBatchIds } },
+    });
+
+    // 4. Delete altered records
+    await prisma.sub_batch_altered.deleteMany({
+      where: { sub_batch_id: { in: subBatchIds } },
+    });
+
+    // 5. Delete rejected records
+    await prisma.sub_batch_rejected.deleteMany({
+      where: { sub_batch_id: { in: subBatchIds } },
+    });
+
+    // 6. Delete workflows
+    await prisma.sub_batch_workflows.deleteMany({
+      where: { sub_batch_id: { in: subBatchIds } },
+    });
+
+    // 7. Delete department sub-batches
+    await prisma.department_sub_batches.deleteMany({
+      where: { sub_batch_id: { in: subBatchIds } },
+    });
+
+    // 8. Delete all sub-batches
+    await prisma.sub_batches.deleteMany({
+      where: { batch_id: id },
+    });
+  }
+
+  // Finally, delete the batch itself
+  return await prisma.batches.delete({
+    where: { id },
+  });
+};
+
+/**
+ * Check which batches have sub-batches and which don't
+ * @param batchIds - Array of batch IDs to check
+ * @returns Object with arrays of batch IDs categorized by sub-batch presence
+ */
+export const checkBatchDependencies = async (batchIds: number[]) => {
+  const batchesWithSubBatches: number[] = [];
+  const cleanBatches: number[] = [];
+
+  // Check each batch for sub-batches
+  for (const batchId of batchIds) {
+    const subBatchCount = await prisma.sub_batches.count({
+      where: { batch_id: batchId },
+    });
+
+    if (subBatchCount > 0) {
+      batchesWithSubBatches.push(batchId);
+    } else {
+      cleanBatches.push(batchId);
+    }
+  }
+
+  return {
+    batchesWithSubBatches,
+    cleanBatches,
+  };
+};

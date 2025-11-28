@@ -1,0 +1,25 @@
+# Node modules
+/node_modules
+node_modules/
+
+
+
+
+# Prisma generated files
+src/generated/prisma/*.js
+src/generated/prisma/*.d.ts
+src/generated/prisma/*.wasm
+src/generated/prisma/*.tmp*
+
+# Prisma migrations (optional: include if you want to share migrations, else ignore)
+prisma/migrations/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
