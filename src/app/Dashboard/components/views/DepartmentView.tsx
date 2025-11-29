@@ -149,7 +149,8 @@ export default function DepartmentWorkloadView() {
           const kanbanData = response.data.data;
 
           // Helper function to transform department_sub_batch to Task format
-          const transformToTask = (dsb: Record<string, unknown>): Task => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const transformToTask = (dsb: any): Task => {
             const subBatch = dsb.sub_batch;
 
             // Determine priority based on due date
