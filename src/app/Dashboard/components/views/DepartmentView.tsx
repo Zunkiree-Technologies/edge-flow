@@ -149,7 +149,7 @@ export default function DepartmentWorkloadView() {
           const kanbanData = response.data.data;
 
           // Helper function to transform department_sub_batch to Task format
-          const transformToTask = (dsb: any): Task => {
+          const transformToTask = (dsb: Record<string, unknown>): Task => {
             const subBatch = dsb.sub_batch;
 
             // Determine priority based on due date
@@ -248,7 +248,7 @@ export default function DepartmentWorkloadView() {
         } else if (column.id === targetColumnId) {
           return {
             ...column,
-            tasks: [...column.tasks, { ...draggedTask, status: targetColumnId as any }]
+            tasks: [...column.tasks, { ...draggedTask, status: targetColumnId as Task['status'] }]
           };
         }
         return column;

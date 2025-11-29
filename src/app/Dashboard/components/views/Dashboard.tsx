@@ -252,7 +252,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
       {/* Header */}
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">Dashboard Overview</h2>
-        <p className="text-gray-600">Welcome back! Here's what's happening with your production today.</p>
+        <p className="text-gray-600">Welcome back! Here&apos;s what&apos;s happening with your production today.</p>
       </div>
 
       {/* Stats Grid */}
