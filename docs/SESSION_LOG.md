@@ -14,7 +14,7 @@
 
 ---
 
-## Current State (Updated: 2025-11-29 23:15 NPT)
+## Current State (Updated: 2025-11-30 00:15 NPT)
 
 ### What's Working
 - ✅ Production frontend live at edge-flow-gamma.vercel.app
@@ -24,8 +24,9 @@
 - ✅ All UI updates deployed to production
 - ✅ **Dev frontend live at edge-flow-git-dev-sthasadins-projects.vercel.app**
 - ✅ **Dev backend live at edge-flow-backend-dev.onrender.com**
+- ✅ **Dev database working with reset from production**
+- ✅ **Dev login working (admin@gmail.com / admin)**
 - ✅ **Branch structure cleaned: main (prod) + dev (development)**
-- ✅ **Dev database seeded with schema and admin user**
 - ✅ **GitHub Actions PR checks workflow added**
 - ✅ **.env.example templates created for frontend and backend**
 
@@ -33,7 +34,7 @@
 - 🔄 Ready for feature development
 
 ### What's Not Working / Known Issues
-- None currently - all environments operational
+- ⚠️ Neon free tier: databases auto-suspend after 5 min inactivity (first request may be slow)
 
 ### Credentials & Access
 | Service | Credential | Notes |
@@ -358,6 +359,81 @@ The dev deployment was failing due to strict TypeScript checking. Fixed in 5 com
 #### Next Steps
 1. Continue with planned roadmap phases
 2. Start feature development as needed
+
+---
+
+### Session: 2025-11-30 (Dev Database Fix)
+
+**Duration:** ~1.5 hours
+**Focus:** Fix dev environment database connection issues
+
+#### Goals
+1. Get dev frontend login working
+2. Debug and fix Neon database connection issues
+
+#### What Was Done
+
+**1. Initial Issue: Database Connection Failed**
+- Dev backend couldn't connect to Neon dev database
+- Error: "Can't reach database server"
+- Cause: Neon dev branch was suspended (auto-suspends after 5 min inactivity)
+
+**2. Second Issue: Database Does Not Exist**
+- After waking up database, new error: "Database 'neondb' does not exist"
+- Cause: Dev branch was created but never synced from production
+- Fix: Used "Reset from parent" in Neon to copy production data to dev
+
+**3. Third Issue: Still "Database Does Not Exist"**
+- Reset was successful but error persisted
+- Tried: Clear cache and redeploy on Render
+- Still failed
+
+**4. Root Cause Found: Invalid Connection String Format**
+- User copied `psql 'postgresql://...'` from Neon (with psql prefix and quotes)
+- DATABASE_URL should be just `postgresql://...` without prefix/quotes
+- Fix: Removed `psql '` prefix and trailing `'` quote
+
+**5. Final Working DATABASE_URL for Dev:**
+```
+postgresql://neondb_owner:npg_gIGe4vrTFCN1@ep-orange-rice-a1w8omkg-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+```
+
+#### Issues Encountered & Solutions
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Can't reach database | Neon branch suspended | Wake up by clicking Connect or running SQL query |
+| Database 'neondb' does not exist | Dev branch not synced | Reset from parent in Neon |
+| Still database not exist | Wrong connection string format | Remove `psql '...'` wrapper, use raw URL |
+
+#### Key Learnings
+
+1. **Neon Free Tier Auto-Suspend**: Databases suspend after 5 min inactivity. Add `connect_timeout=30` to handle cold starts.
+
+2. **Neon Branch Reset**: Child branches need "Reset from parent" to get production data.
+
+3. **Connection String Format**: When copying from Neon, use "Copy snippet" but remove the `psql '...'` wrapper - just the raw postgresql:// URL.
+
+4. **Neon Connection Pooling**: Use the `-pooler` endpoint with `channel_binding=require` parameter.
+
+#### Environment Configuration (Final)
+
+**Dev Backend (Render) - edge-flow-backend-dev:**
+```
+DATABASE_URL=postgresql://neondb_owner:npg_gIGe4vrTFCN1@ep-orange-rice-a1w8omkg-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+JWT_SECRET=vR7#p9Lq8&Xz$2Bf!dT6wKm4aNjQ1sYx
+NODE_ENV=development
+```
+
+**Production Backend (Render) - edge-flow-backend:**
+```
+DATABASE_URL=postgresql://neondb_owner:npg_gIGe4vrTFCN1@ep-odd-sunset-a15pegww-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+```
+
+#### Time Spent
+- Debugging database connection: 1 hour
+- Trying various fixes: 30 min
+- Total: ~1.5 hours
 
 ---
 
