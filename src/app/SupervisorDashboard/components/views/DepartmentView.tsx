@@ -92,6 +92,7 @@ interface WorkItem {
   quantity_received?: number | null;
   quantity_assigned?: number | null; // NEW: For "Assigned" cards
   sent_from_department?: number | null;
+  sent_from_department_name?: string | null;
   alter_reason?: string | null;
   reject_reason?: string | null;
   rejection_source?: RejectionSource | null;
