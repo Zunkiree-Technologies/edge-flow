@@ -8,7 +8,6 @@ import {
   X,
   Trash2,
   Edit2,
-  MoreVertical,
   Eye,
   Users,
   User,
@@ -65,7 +64,6 @@ const DepartmentForm = () => {
   const [saveLoading, setSaveLoading] = useState(false);
   const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
   const [workers, setWorkers] = useState<Worker[]>([]);
-  const [openMenuId, setOpenMenuId] = useState<number | string | null>(null);
 
   const [formData, setFormData] = useState({
     id: "",
@@ -301,7 +299,6 @@ const DepartmentForm = () => {
   const closeDrawer = () => {
     setIsDrawerOpen(false);
     setEditingDept(null);
-    setOpenMenuId(null);
     setIsPreview(false);
     resetFormData();
   };
@@ -315,7 +312,7 @@ const DepartmentForm = () => {
           <p className="text-gray-500">Manage departments, supervisors, and workers</p>
         </div>
         <button
-          className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md hover:bg-blue-700 hover:shadow-lg transition-all duration-200 hover:scale-105"
+          className="flex items-center gap-2 bg-[#2272B4] text-white px-5 py-2.5 rounded font-semibold shadow-md hover:bg-[#0E538B] hover:shadow-lg transition-all duration-200 hover:scale-105"
           onClick={() => {
             resetFormData();
             setIsDrawerOpen(true);
@@ -328,79 +325,69 @@ const DepartmentForm = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-lg shadow border-gray-200 p-6 flex flex-col gap-4 mb-8">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         {loading ? (
-          <Loader loading={true} message="Loading Departments..." />
+          <div className="p-6">
+            <Loader loading={true} message="Loading Departments..." />
+          </div>
         ) : departments.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12">
             <FileText size={48} className="text-gray-300 mb-4" />
-            <p className="text-black mb-2 font-medium">No Departments found</p>
-            <p className="text-gray-500 mb-2 font-medium">
-              Get started by creating your first Department. Click the Add Department button to begin make your Department.
+            <p className="text-gray-900 mb-2 font-medium">No Departments found</p>
+            <p className="text-gray-500 text-sm">
+              Get started by creating your first department.
             </p>
           </div>
         ) : (
           <table className="w-full table-auto border-collapse">
             <thead>
-              <tr className="bg-gray-200">
-                <th className="p-2 text-left">S.N.</th>
-                <th className="p-2 text-left">ID</th>
-                <th className="p-2 text-left">Department Name</th>
-                <th className="p-2 text-left">Supervisor</th>
-                <th className="p-2 text-left">Workers Assigned</th>
-                <th className="p-2 text-left">Remarks</th>
-                <th className="p-2 text-left">Actions</th>
+              <tr className="border-b border-gray-200">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">S.N.</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">ID</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Department Name</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Supervisor</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Workers</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Remarks</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-gray-100">
               {departments.map((dept, index) => (
-                <tr key={dept.id} className="border-b border-gray-200">
-                  <td className="p-2">{index + 1}</td>
-                  <td className="p-2">D00{dept.id}</td>
-                  <td className="p-2">{dept.name}</td>
-                  <td className="p-2">{getSupervisorName(dept.supervisor)}</td>
-                  <td className="p-2">{dept.workers?.length || 0} Workers</td>
-                  <td className="p-2">{dept.remarks || 'N/A'}</td>
-                  <td className="p-2 flex justify-center relative">
-                    <button
-                      className="p-1 rounded hover:bg-gray-100"
-                      onClick={() =>
-                        setOpenMenuId(openMenuId === dept.id ? null : dept.id)
-                      }
-                    >
-                      <MoreVertical size={20} />
-                    </button>
-                    {openMenuId === dept.id && (
-                      <div className="absolute right-0 top-full mt-2 w-32 bg-white rounded shadow-lg z-50">
-                        <button
-                          className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
-                          onClick={() => {
-                            setOpenMenuId(null);
-                            handlePreview(dept);
-                          }}
-                        >
-                          <Eye size={14} /> Preview
-                        </button>
-                        <button
-                          className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
-                          onClick={() => {
-                            setOpenMenuId(null);
-                            handleEdit(dept);
-                          }}
-                        >
-                          <Edit2 size={14} /> Edit
-                        </button>
-                        <button
-                          className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2 text-red-500"
-                          onClick={() => {
-                            setOpenMenuId(null);
-                            handleDelete(dept.id);
-                          }}
-                        >
-                          <Trash2 size={14} /> Delete
-                        </button>
-                      </div>
-                    )}
+                <tr key={dept.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-4 py-3 text-sm text-gray-600">{index + 1}</td>
+                  <td className="px-4 py-3 text-sm font-medium text-gray-900">D00{dept.id}</td>
+                  <td className="px-4 py-3 text-sm text-gray-900">{dept.name}</td>
+                  <td className="px-4 py-3 text-sm text-gray-600">{getSupervisorName(dept.supervisor)}</td>
+                  <td className="px-4 py-3 text-sm text-gray-600">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      {dept.workers?.length || 0} Workers
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-600">{dept.remarks || 'N/A'}</td>
+                  <td className="px-4 py-3 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => handlePreview(dept)}
+                        className="p-1.5 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                        title="Preview"
+                      >
+                        <Eye size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleEdit(dept)}
+                        className="p-1.5 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                        title="Edit"
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(dept.id)}
+                        className="p-1.5 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                        title="Delete"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -424,37 +411,41 @@ const DepartmentForm = () => {
             >
               <X size={20} />
             </button>
-            <h3 className="text-lg font-semibold mb-3">
-              {isPreview
-                ? "Department Preview"
-                : editingDept
-                  ? "Edit Department"
-                  : "Add New Department"}
-            </h3>
+            {/* Header */}
+            <div className="border-b border-gray-200 pb-3 mb-4">
+              <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <Users size={20} className="text-blue-600" />
+                {isPreview
+                  ? "Department Details"
+                  : editingDept
+                    ? "Edit Department"
+                    : "Add New Department"}
+              </h3>
+            </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {/* Department Name */}
               <div>
-                <label className="flex items-center gap-2 font-semibold">
-                  <Users size={18} /> Department Name
+                <label className="block text-sm font-semibold text-gray-900 mb-1.5">
+                  Department Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   name="name"
-                  placeholder="Department Name"
+                  placeholder="Enter department name"
                   value={formData.name}
                   onChange={(e) =>
                     setFormData((p) => ({ ...p, name: e.target.value }))
                   }
                   readOnly={isPreview}
-                  className="w-full border border-gray-300 rounded-[10px] px-3 py-2"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 />
               </div>
 
               {/* Supervisor */}
               <div>
-                <label className="flex items-center gap-2 font-semibold">
-                  <User size={18} /> Supervisor
+                <label className="block text-sm font-semibold text-gray-900 mb-1.5">
+                  Supervisor <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="supervisor"
@@ -463,7 +454,7 @@ const DepartmentForm = () => {
                     setFormData((p) => ({ ...p, supervisor: e.target.value }))
                   }
                   disabled={isPreview}
-                  className="w-full border border-gray-300 rounded-[10px] px-3 py-2"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-white"
                 >
                   <option value="">Select Supervisor</option>
                   {supervisors.map((sup) => (
@@ -476,8 +467,8 @@ const DepartmentForm = () => {
 
               {/* Workers */}
               <div>
-                <label className="flex items-center gap-2 font-semibold">
-                  <Users size={18} /> Assign Workers
+                <label className="block text-sm font-semibold text-gray-900 mb-1.5">
+                  Assign Workers
                 </label>
 
                 {!isPreview && (
@@ -488,13 +479,12 @@ const DepartmentForm = () => {
                           value={w.id}
                           onChange={(e) => {
                             const newWorkers = [...formData.workers];
-                            // Convert the value to number and find worker name
                             const workerId = Number(e.target.value);
                             const workerName = workers.find(worker => worker.id == workerId)?.name || '';
                             newWorkers[index] = { ...newWorkers[index], id: workerId, name: workerName };
                             setFormData((p) => ({ ...p, workers: newWorkers }));
                           }}
-                          className="flex-1 border border-gray-300 rounded-[10px] px-3 py-2"
+                          className="flex-1 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-white"
                         >
                           <option value="">Select Worker</option>
                           {workers.map((worker) => (
@@ -511,7 +501,7 @@ const DepartmentForm = () => {
                             newWorkers[index].date = value;
                             setFormData((p) => ({ ...p, workers: newWorkers }));
                           }}
-                          className="rounded-[10px]"
+                          className="rounded-lg"
                           placeholder="Select Date"
                         />
 
@@ -522,7 +512,7 @@ const DepartmentForm = () => {
                             newWorkers.splice(index, 1);
                             setFormData((p) => ({ ...p, workers: newWorkers }));
                           }}
-                          className="px-3 py-2 bg-red-500 text-white rounded-[10px]"
+                          className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
                         >
                           -
                         </button>
@@ -537,7 +527,7 @@ const DepartmentForm = () => {
                           workers: [...p.workers, { id: "", date: "", name: "" }],
                         }))
                       }
-                      className="px-3 py-2 bg-blue-500 text-white rounded-[10px]"
+                      className="px-4 py-2 bg-[#2272B4] text-white rounded hover:bg-[#0E538B] transition-colors text-sm font-medium"
                     >
                       + Add Worker
                     </button>
@@ -546,18 +536,19 @@ const DepartmentForm = () => {
 
                 {/* Preview Mode */}
                 {isPreview && (
-                  <ul className="space-y-2">
+                  <ul className="space-y-2 mt-2">
                     {formData.workers.length > 0 ? (
                       formData.workers.map((w, index) => {
                         const workerName = w.name || workers.find((worker) => worker.id == w.id)?.name || "Unknown";
                         return (
-                          <li key={index} className="flex items-center justify-between border border-gray-200 rounded-lg p-2">
-                            <span>{workerName} - <span className="text-gray-500">{w.date}</span></span>
+                          <li key={index} className="flex items-center justify-between border border-gray-200 rounded-lg p-3 bg-gray-50">
+                            <span className="text-sm text-gray-900">{workerName}</span>
+                            <span className="text-xs text-gray-500">{w.date}</span>
                           </li>
                         );
                       })
                     ) : (
-                      <li className="text-gray-500">No workers assigned</li>
+                      <li className="text-sm text-gray-500">No workers assigned</li>
                     )}
                   </ul>
                 )}
@@ -565,18 +556,19 @@ const DepartmentForm = () => {
 
               {/* Remarks */}
               <div>
-                <label className="flex items-center gap-2 font-semibold">
-                  <MessageSquare size={18} /> Remarks
+                <label className="block text-sm font-semibold text-gray-900 mb-1.5">
+                  Remarks
                 </label>
                 <textarea
                   name="remarks"
-                  placeholder="Add remarks"
+                  placeholder="Add remarks (optional)"
                   value={formData.remarks}
                   onChange={(e) =>
                     setFormData((p) => ({ ...p, remarks: e.target.value }))
                   }
                   readOnly={isPreview}
-                  className="w-full border border-gray-300 rounded-[10px] px-3 py-2"
+                  rows={3}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
                 />
               </div>
             </div>
@@ -591,7 +583,7 @@ const DepartmentForm = () => {
               </button>
               {!isPreview && (
                 <button
-                  className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 font-medium transition-colors shadow-sm"
+                  className="px-6 py-2 rounded bg-[#2272B4] text-white hover:bg-[#0E538B] disabled:opacity-50 font-medium transition-colors shadow-sm"
                   onClick={handleSave}
                   disabled={saveLoading}
                 >

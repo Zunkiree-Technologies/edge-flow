@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { Plus, Edit2, Trash2, X, MoreVertical, Eye, Shell, Users, MapPin, Scale, CircleDollarSign, FileText } from "lucide-react";
+import { Plus, Edit2, Trash2, X, Eye, Shell, Users, MapPin, Scale, CircleDollarSign, FileText } from "lucide-react";
 import Loader from "@/app/Components/Loader";
 
 interface Worker {
@@ -27,7 +27,6 @@ const WorkerPage = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [editingWorker, setEditingWorker] = useState<Worker | null>(null);
     const [isPreview, setIsPreview] = useState(false);
-    const [openMenuId, setOpenMenuId] = useState<number | null>(null);
     const [saveLoading, setSaveLoading] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -148,7 +147,6 @@ const WorkerPage = () => {
             wage_type: "HOURLY",
             wage_rate_input: "",
         });
-        setOpenMenuId(null);
     };
 
     return (
@@ -160,7 +158,7 @@ const WorkerPage = () => {
                     <p className="text-sm text-gray-600">Manage workers, wages and details</p>
                 </div>
                 <button
-                    className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md hover:bg-blue-700 hover:shadow-lg transition-all duration-200 hover:scale-105"
+                    className="flex items-center gap-2 bg-[#2272B4] text-white px-5 py-2.5 rounded font-semibold shadow-md hover:bg-[#0E538B] hover:shadow-lg transition-all duration-200 hover:scale-105"
                     onClick={() => { closeDrawer(); setIsDrawerOpen(true); }}
                 >
                     <Plus className="w-4 h-4" /> Add Worker
@@ -168,59 +166,69 @@ const WorkerPage = () => {
             </div>
 
             {/* Main Table */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col gap-4 mb-8">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 {loading ? (
-                   <Loader loading={true} message="Loading Workers..." />
+                   <div className="p-6">
+                     <Loader loading={true} message="Loading Workers..." />
+                   </div>
                 ) : workers.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12">
                         <FileText size={48} className="text-gray-300 mb-4" />
                         <p className="text-gray-900 mb-2 font-medium">No workers found</p>
-                        <p className="text-gray-600 text-sm">Click Add Worker to get started</p>
+                        <p className="text-gray-500 text-sm">Click Add Worker to get started</p>
                     </div>
                 ) : (
                     <table className="w-full table-auto border-collapse">
                         <thead>
-                            <tr className="bg-gray-50 border-b border-gray-200">
-                                <th className="p-3 text-left text-sm font-medium text-gray-900">S.N.</th>
-                                <th className="p-3 text-left text-sm font-medium text-gray-900">ID</th>
-                                <th className="p-3 text-left text-sm font-medium text-gray-900">Name</th>
-                                <th className="p-3 text-left text-sm font-medium text-gray-900">PAN</th>
-                                <th className="p-3 text-left text-sm font-medium text-gray-900">Address</th>
-                                <th className="p-3 text-left text-sm font-medium text-gray-900">Wage Type</th>
-                                <th className="p-3 text-left text-sm font-medium text-gray-900">Wage Rate</th>
-                                <th className="p-3 text-left text-sm font-medium text-gray-900">Actions</th>
+                            <tr className="border-b border-gray-200">
+                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">S.N.</th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">ID</th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Name</th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">PAN</th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Address</th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Wage Type</th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Wage Rate</th>
+                                <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="divide-y divide-gray-100">
                             {workers.map((worker, index) => (
-                                <tr key={worker.id} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                                    <td className="p-3 text-sm text-gray-600">{index + 1}</td>
-                                    <td className="p-3 text-sm text-gray-900 font-medium">WR{worker.id}</td>
-                                    <td className="p-3 text-sm text-gray-900">{worker.name}</td>
-                                    <td className="p-3 text-sm text-gray-600">{worker.pan}</td>
-                                    <td className="p-3 text-sm text-gray-600">{worker.address}</td>
-                                    <td className="p-3 text-sm text-gray-600">{worker.wage_type}</td>
-                                    <td className="p-3 text-sm text-gray-900 font-medium">{worker.wage_rate}</td>
-                                    <td className="p-3 flex justify-center relative">
-                                        <button
-                                            className="p-1 rounded hover:bg-gray-100 transition-colors"
-                                            onClick={() => setOpenMenuId(openMenuId === worker.id ? null : worker.id)}
-                                        >
-                                            <MoreVertical size={20} className="text-gray-600" />
-                                        </button>
-                                        {openMenuId === worker.id && (
-                                            <div className="absolute right-0 top-full mt-2 w-36 bg-white rounded-md shadow-sm border border-gray-200 z-50">
-                                                <button className="w-full px-4 py-2 hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-700 transition-colors" onClick={() => { setOpenMenuId(null); handlePreview(worker); }}>
-                                                    <Eye size={14} /> Preview
-                                                </button>
-                                                <button className="w-full px-4 py-2 hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-700 transition-colors" onClick={() => { setOpenMenuId(null); handleEdit(worker); }}>
-                                                    <Edit2 size={14} /> Edit
-                                                </button>
-                                                <button className="w-full px-4 py-2 hover:bg-gray-50 flex items-center gap-2 text-sm text-red-600 transition-colors" onClick={() => { setOpenMenuId(null); handleDelete(worker.id); }}>
-                                                    <Trash2 size={14} /> Delete
-                                                </button>
-                                            </div>
-                                        )}
+                                <tr key={worker.id} className="hover:bg-gray-50 transition-colors">
+                                    <td className="px-4 py-3 text-sm text-gray-600">{index + 1}</td>
+                                    <td className="px-4 py-3 text-sm text-gray-900 font-medium">WR{worker.id}</td>
+                                    <td className="px-4 py-3 text-sm text-gray-900">{worker.name}</td>
+                                    <td className="px-4 py-3 text-sm text-gray-600">{worker.pan}</td>
+                                    <td className="px-4 py-3 text-sm text-gray-600">{worker.address}</td>
+                                    <td className="px-4 py-3 text-sm text-gray-600">
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        {worker.wage_type}
+                                      </span>
+                                    </td>
+                                    <td className="px-4 py-3 text-sm text-gray-900 font-medium">{worker.wage_rate}</td>
+                                    <td className="px-4 py-3 text-right">
+                                        <div className="flex items-center justify-end gap-2">
+                                            <button
+                                                onClick={() => handlePreview(worker)}
+                                                className="p-1.5 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                                                title="Preview"
+                                            >
+                                                <Eye size={16} />
+                                            </button>
+                                            <button
+                                                onClick={() => handleEdit(worker)}
+                                                className="p-1.5 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                                                title="Edit"
+                                            >
+                                                <Edit2 size={16} />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(worker.id)}
+                                                className="p-1.5 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                                                title="Delete"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -248,79 +256,90 @@ const WorkerPage = () => {
                             <X size={20} />
                         </button>
 
-                        <h3 className="text-lg font-medium text-gray-900 mb-3 flex gap-2 items-center">
-                            <Shell size={20} />
-                            {isPreview ? "Worker Preview" : editingWorker ? "Edit Worker" : "Add New Worker"}
-                        </h3>
+                        {/* Header */}
+                        <div className="border-b border-gray-200 pb-3 mb-4">
+                            <h3 className="text-xl font-bold text-gray-900 flex gap-2 items-center">
+                                <Shell size={20} className="text-blue-600" />
+                                {isPreview ? "Worker Details" : editingWorker ? "Edit Worker" : "Add New Worker"}
+                            </h3>
+                        </div>
 
                         {/* Worker ID */}
                         {editingWorker && (
-                            <input
-                                type="text"
-                                value={`WR${editingWorker.id}`}
-                                readOnly
-                                className="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-50 cursor-not-allowed mb-6 text-sm text-gray-600"
-                            />
+                            <div className="mb-4">
+                                <label className="block text-sm font-semibold text-gray-900 mb-1.5">
+                                    Worker ID
+                                </label>
+                                <input
+                                    type="text"
+                                    value={`WR${editingWorker.id}`}
+                                    readOnly
+                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 cursor-not-allowed text-sm text-gray-600"
+                                />
+                            </div>
                         )}
 
                         {/* Flex grid for inputs */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {/* Name */}
-                            <div className="flex flex-col gap-2">
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                                    <Users size={16} /> Name *
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-900 mb-1.5">
+                                    Name <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     name="name"
+                                    placeholder="Enter worker name"
                                     value={formData.name}
                                     onChange={handleChange}
                                     readOnly={isPreview}
-                                    className="border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                             </div>
 
                             {/* PAN */}
-                            <div className="flex flex-col gap-2">
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                                    <FileText size={16} /> PAN *
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-900 mb-1.5">
+                                    PAN <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     name="pan"
+                                    placeholder="Enter PAN number"
                                     value={formData.pan}
                                     onChange={handleChange}
                                     readOnly={isPreview}
-                                    className="border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                             </div>
 
                             {/* Address */}
-                            <div className="flex flex-col gap-2 sm:col-span-2">
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                                    <MapPin size={16} /> Address *
+                            <div className="sm:col-span-2">
+                                <label className="block text-sm font-semibold text-gray-900 mb-1.5">
+                                    Address <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     name="address"
+                                    placeholder="Enter address"
                                     value={formData.address}
                                     onChange={handleChange}
                                     readOnly={isPreview}
-                                    className="border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                             </div>
 
                             {/* Wage Type */}
-                            <div className="flex flex-col gap-2">
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                                    <Scale size={16} /> Wage Type <span className="text-gray-500 font-normal">(optional)</span>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-900 mb-1.5">
+                                    Wage Type
                                 </label>
                                 <select
                                     name="wage_type"
                                     value={formData.wage_type}
                                     onChange={handleChange}
                                     disabled={isPreview}
-                                    className="border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 >
                                     <option value="HOURLY">HOURLY</option>
                                     <option value="SALARY">SALARY</option>
@@ -328,17 +347,18 @@ const WorkerPage = () => {
                             </div>
 
                             {/* Wage Rate */}
-                            <div className="flex flex-col gap-2">
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                                    <CircleDollarSign size={16} /> Wage Rate *
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-900 mb-1.5">
+                                    Wage Rate <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="number"
                                     name="wage_rate_input"
+                                    placeholder="Enter wage rate"
                                     value={formData.wage_rate_input}
                                     onChange={handleChange}
                                     readOnly={isPreview}
-                                    className="border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                             </div>
                         </div>
@@ -353,7 +373,7 @@ const WorkerPage = () => {
                             </button>
                             {!isPreview && (
                                 <button
-                                    className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 font-medium transition-colors shadow-sm"
+                                    className="px-6 py-2 rounded bg-[#2272B4] text-white hover:bg-[#0E538B] disabled:opacity-50 font-medium transition-colors shadow-sm"
                                     onClick={handleSave}
                                     disabled={saveLoading}
                                 >

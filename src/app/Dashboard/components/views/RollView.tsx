@@ -374,64 +374,64 @@ const RollView = () => {
           }}
         >
             {/* Filters Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-100">
-              <h3 className="text-2xl font-bold text-gray-900">Filters</h3>
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+              <h3 className="text-base font-semibold text-gray-900">Filters</h3>
               <button
                 onClick={() => setFilterSidebarOpen(false)}
-                className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+                className="p-1 hover:bg-gray-100 rounded transition-colors"
                 title="Collapse filters"
               >
-                <ChevronLeft className="w-5 h-5 text-gray-600" />
+                <ChevronLeft className="w-4 h-4 text-gray-500" />
               </button>
             </div>
 
-            <div className="px-6">
+            <div className="px-3">
               {/* Saved Views */}
-              <div className="py-4 border-b border-gray-100">
-                <h4 className="text-lg font-semibold text-gray-900 mb-3" style={{ letterSpacing: '-0.01em' }}>Saved Views</h4>
-                <div className="space-y-1.5">
+              <div className="py-3 border-b border-gray-100">
+                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 px-1">Saved Views</h4>
+                <div className="space-y-0.5">
                   <button
                     onClick={() => setSelectedView("all")}
-                    className={`w-full flex items-center justify-between text-left py-1.5 px-4 rounded-xl transition-all ${
+                    className={`w-full flex items-center justify-between text-left py-2 px-3 rounded-sm transition-all ${
                       selectedView === "all"
-                        ? "bg-blue-600 text-white shadow-sm"
-                        : "hover:bg-gray-50 text-gray-700"
+                        ? "bg-blue-50 border-l-2 border-blue-600"
+                        : "hover:bg-gray-50 border-l-2 border-transparent"
                     }`}
                   >
-                    <span className={`text-[15px] font-medium ${selectedView === "all" ? "text-white" : "text-gray-800"}`} style={{ letterSpacing: '-0.01em' }}>
+                    <span className={`text-sm ${selectedView === "all" ? "font-medium text-gray-900" : "text-gray-600"}`}>
                       All Rolls
                     </span>
-                    <span className={`text-[15px] font-semibold ${selectedView === "all" ? "text-white" : "text-gray-500"}`}>
+                    <span className={`text-sm ${selectedView === "all" ? "font-medium text-gray-900" : "text-gray-400"}`}>
                       {rolls.length}
                     </span>
                   </button>
                   <button
                     onClick={() => setSelectedView("high-quantity")}
-                    className={`w-full flex items-center justify-between text-left py-1.5 px-4 rounded-xl transition-all ${
+                    className={`w-full flex items-center justify-between text-left py-2 px-3 rounded-sm transition-all ${
                       selectedView === "high-quantity"
-                        ? "bg-blue-600 text-white shadow-sm"
-                        : "hover:bg-gray-50 text-gray-700"
+                        ? "bg-blue-50 border-l-2 border-blue-600"
+                        : "hover:bg-gray-50 border-l-2 border-transparent"
                     }`}
                   >
-                    <span className={`text-[15px] font-medium ${selectedView === "high-quantity" ? "text-white" : "text-gray-800"}`} style={{ letterSpacing: '-0.01em' }}>
+                    <span className={`text-sm ${selectedView === "high-quantity" ? "font-medium text-gray-900" : "text-gray-600"}`}>
                       High Quantity
                     </span>
-                    <span className={`text-[15px] font-semibold ${selectedView === "high-quantity" ? "text-white" : "text-gray-500"}`}>
+                    <span className={`text-sm ${selectedView === "high-quantity" ? "font-medium text-gray-900" : "text-gray-400"}`}>
                       {rolls.filter(r => r.quantity > 500).length}
                     </span>
                   </button>
                   <button
                     onClick={() => setSelectedView("low-stock")}
-                    className={`w-full flex items-center justify-between text-left py-1.5 px-4 rounded-xl transition-all ${
+                    className={`w-full flex items-center justify-between text-left py-2 px-3 rounded-sm transition-all ${
                       selectedView === "low-stock"
-                        ? "bg-blue-600 text-white shadow-sm"
-                        : "hover:bg-gray-50 text-gray-700"
+                        ? "bg-blue-50 border-l-2 border-blue-600"
+                        : "hover:bg-gray-50 border-l-2 border-transparent"
                     }`}
                   >
-                    <span className={`text-[15px] font-medium ${selectedView === "low-stock" ? "text-white" : "text-gray-800"}`} style={{ letterSpacing: '-0.01em' }}>
+                    <span className={`text-sm ${selectedView === "low-stock" ? "font-medium text-gray-900" : "text-gray-600"}`}>
                       Low Stock
                     </span>
-                    <span className={`text-[15px] font-semibold ${selectedView === "low-stock" ? "text-white" : "text-gray-500"}`}>
+                    <span className={`text-sm ${selectedView === "low-stock" ? "font-medium text-gray-900" : "text-gray-400"}`}>
                       {rolls.filter(r => r.quantity < 100).length}
                     </span>
                   </button>
@@ -439,11 +439,11 @@ const RollView = () => {
               </div>
 
               {/* Unit Filter */}
-              <div className="py-4 border-b border-gray-100">
-                <h4 className="text-lg font-semibold text-gray-900 mb-3" style={{ letterSpacing: '-0.01em' }}>Unit</h4>
-                <div className="space-y-2">
+              <div className="py-3 border-b border-gray-100">
+                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 px-1">Unit</h4>
+                <div className="space-y-1">
                   {uniqueUnits.map(unit => (
-                    <label key={unit} className="flex items-center gap-3 cursor-pointer group">
+                    <label key={unit} className="flex items-center gap-2.5 cursor-pointer group py-1.5 px-1 rounded-sm hover:bg-gray-50 transition-colors">
                       <input
                         type="checkbox"
                         checked={selectedUnits.includes(unit)}
@@ -454,20 +454,20 @@ const RollView = () => {
                             setSelectedUnits(selectedUnits.filter(u => u !== unit));
                           }
                         }}
-                        className="w-5 h-5 rounded border-2 border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer"
+                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-1 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer"
                       />
-                      <span className="text-[15px] text-gray-800 group-hover:text-gray-900" style={{ letterSpacing: '-0.01em' }}>{unit}</span>
+                      <span className="text-sm text-gray-600 group-hover:text-gray-900">{unit}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               {/* Color Filter */}
-              <div className="py-4 border-b border-gray-100">
-                <h4 className="text-lg font-semibold text-gray-900 mb-3" style={{ letterSpacing: '-0.01em' }}>Color</h4>
-                <div className="space-y-2">
+              <div className="py-3 border-b border-gray-100">
+                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 px-1">Color</h4>
+                <div className="space-y-1">
                   {uniqueColors.map(color => (
-                    <label key={color} className="flex items-center gap-3 cursor-pointer group">
+                    <label key={color} className="flex items-center gap-2.5 cursor-pointer group py-1.5 px-1 rounded-sm hover:bg-gray-50 transition-colors">
                       <input
                         type="checkbox"
                         checked={selectedColors.includes(color)}
@@ -478,20 +478,20 @@ const RollView = () => {
                             setSelectedColors(selectedColors.filter(c => c !== color));
                           }
                         }}
-                        className="w-5 h-5 rounded border-2 border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer"
+                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-1 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer"
                       />
-                      <span className="text-[15px] text-gray-800 capitalize group-hover:text-gray-900" style={{ letterSpacing: '-0.01em' }}>{color}</span>
+                      <span className="text-sm text-gray-600 capitalize group-hover:text-gray-900">{color}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               {/* Vendor Filter */}
-              <div className="py-4 border-b border-gray-100">
-                <h4 className="text-lg font-semibold text-gray-900 mb-3" style={{ letterSpacing: '-0.01em' }}>Vendor</h4>
-                <div className="space-y-2">
+              <div className="py-3 border-b border-gray-100">
+                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 px-1">Vendor</h4>
+                <div className="space-y-1">
                   {uniqueVendors.map(vendor => vendor && (
-                    <label key={vendor.id} className="flex items-center gap-3 cursor-pointer group">
+                    <label key={vendor.id} className="flex items-center gap-2.5 cursor-pointer group py-1.5 px-1 rounded-sm hover:bg-gray-50 transition-colors">
                       <input
                         type="checkbox"
                         checked={selectedVendors.includes(vendor.id.toString())}
@@ -503,14 +503,9 @@ const RollView = () => {
                             setSelectedVendors(selectedVendors.filter(v => v !== vendorId));
                           }
                         }}
-                        className="w-5 h-5 rounded border-2 border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer"
+                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-1 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer"
                       />
-                      <div className="flex items-center gap-2.5 flex-1">
-                        <div className={`w-8 h-8 rounded-full ${getAvatarColor(vendor.name)} flex items-center justify-center text-white text-xs font-semibold`}>
-                          {getVendorInitials(vendor.name)}
-                        </div>
-                        <span className="text-[15px] text-gray-800 group-hover:text-gray-900" style={{ letterSpacing: '-0.01em' }}>{vendor.name}</span>
-                      </div>
+                      <span className="text-sm text-gray-600 group-hover:text-gray-900">{vendor.name}</span>
                     </label>
                   ))}
                 </div>
@@ -550,7 +545,7 @@ const RollView = () => {
               </div>
             </div>
             <button
-              className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md hover:bg-blue-700 hover:shadow-lg transition-all duration-200 hover:scale-105"
+              className="flex items-center gap-2 bg-[#2272B4] text-white px-5 py-2.5 rounded font-semibold shadow-md hover:bg-[#0E538B] hover:shadow-lg transition-all duration-200 hover:scale-105"
               onClick={() => {
                 resetFormData();
                 setIsDrawerOpen(true);
@@ -875,7 +870,7 @@ const RollView = () => {
                 Cancel
               </button>
               <button
-                className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 font-medium transition-colors shadow-sm"
+                className="px-6 py-2 rounded bg-[#2272B4] text-white hover:bg-[#0E538B] disabled:opacity-50 font-medium transition-colors shadow-sm"
                 onClick={handleSave}
                 disabled={saveLoading}
               >

@@ -17,6 +17,7 @@
 ### Development & Architecture
 | Document | Purpose | Location |
 |----------|---------|----------|
+| **Design System** | UI design language & patterns | [`DESIGN_SYSTEM.md`](../DESIGN_SYSTEM.md) |
 | **Developer Workflow** | Local → Dev → Prod workflow guide | [`DEVELOPER_WORKFLOW.md`](./DEVELOPER_WORKFLOW.md) |
 | **Roadmap** | Phase-by-phase development plan | [`ROADMAP.md`](./ROADMAP.md) |
 | **System Architecture** | Technical architecture overview | [`technical/SYSTEM_ARCHITECTURE.md`](./technical/SYSTEM_ARCHITECTURE.md) |
@@ -68,6 +69,7 @@
 ### Immediate (Current Sprint)
 - [x] ~~**Deploy Phase 2 changes**~~ - ✅ Pushed to dev (commit f88e4ee)
 - [x] ~~**Login Page Design**~~ - ✅ Redesigned with BlueShark branding
+- [x] ~~**Enterprise UI Overhaul**~~ - ✅ Databricks-inspired design (commit 81d27e2)
 - [ ] **Fix Worker Assignment Splitting Bug** - See [`quality/CRITICAL_ISSUE_ANALYSIS.md`](./quality/CRITICAL_ISSUE_ANALYSIS.md)
 
 ### Short-term (This Week)
@@ -90,6 +92,7 @@
 ## Current State (Updated: 2025-11-30)
 
 ### What's Working
+- ✅ **Enterprise UI Overhaul** - Databricks-inspired design system implemented
 - ✅ Production frontend live at edge-flow-gamma.vercel.app
 - ✅ Production backend live at edge-flow-backend.onrender.com
 - ✅ Production database with tables and admin user
@@ -123,6 +126,140 @@
 ---
 
 ## Session Entries
+
+---
+
+### Session: 2025-11-30 (Enterprise UI Overhaul - Databricks-Inspired Design)
+
+**Duration:** ~2 hours
+**Focus:** Comprehensive UI redesign implementing Databricks-inspired enterprise design system
+
+#### Goals
+1. Redesign UI to match Databricks enterprise aesthetic
+2. Keep same layouts and elements, just restyle visually
+3. Create a design system documentation file
+
+#### What Was Done
+
+**1. Color Palette & Background Updates**
+
+| Element | Before | After |
+|---------|--------|-------|
+| Sidebar background | `white` | `#f7f7f7` |
+| Header background | `white` | `#f7f7f7` |
+| Content container | No distinct container | White with rounded-l-xl |
+| Page background | N/A | `#f7f7f7` |
+
+**2. Container Architecture**
+
+Restructured `RightContent.tsx` to create the signature Databricks container look:
+- Header OUTSIDE the rounded container
+- Main content wrapped in white container with `rounded-l-xl` (left corners only)
+- Container extends to full viewport bottom (no gap)
+- Reduced gap between sidebar and content (`pl-4` → `pl-2`)
+
+```tsx
+<div className="flex flex-col flex-1 h-full bg-[#f7f7f7] pl-2">
+  <Header />
+  <main className="flex-1 overflow-hidden">
+    <div className="bg-[#ffffff] rounded-l-xl h-full border border-gray-200 overflow-auto">
+      <ContentRouter />
+    </div>
+  </main>
+</div>
+```
+
+**3. Search Bar Redesign**
+
+| Aspect | Before | After |
+|--------|--------|-------|
+| Shape | `rounded-full` (pill) | `rounded-xl` (softer) |
+| Position | Left aligned | Centered with flexbox spacers |
+| Background | Transparent/gray | `white` |
+| Border | Light gray | `border-gray-300` |
+| Focus state | Basic | Blue ring + border color change |
+| Text color | `text-gray-400` (too light) | `text-gray-500`/`text-gray-700` |
+
+**4. Sidebar Styling**
+
+| Element | Before | After |
+|---------|--------|-------|
+| Border-right | `border-r border-gray-200` | Removed (no vertical line) |
+| Item hover | `hover:bg-gray-50` | `hover:bg-blue-50` |
+| Active state | Gray background | `bg-blue-50 text-blue-600` |
+| Icon size | Various | Standardized to `w-[18px] h-[18px]` |
+
+**5. Files Modified**
+
+**Dashboard Components:**
+- `src/app/Dashboard/page.tsx` - Sidebar wrapper bg color
+- `src/app/Dashboard/components/navigation/Navigation.tsx` - Removed border-r
+- `src/app/Dashboard/components/navigation/SidebarItem.tsx` - Hover/active states
+- `src/app/Dashboard/components/layout/Header.tsx` - Search bar redesign
+- `src/app/Dashboard/components/layout/RightContent.tsx` - Container restructure
+- `src/app/Dashboard/components/views/Dashboard.tsx` - Content bg color
+
+**SupervisorDashboard Components:**
+- `src/app/SupervisorDashboard/page.tsx`
+- `src/app/SupervisorDashboard/components/navigation/Navigation.tsx`
+- `src/app/SupervisorDashboard/components/navigation/SidebarItem.tsx`
+- `src/app/SupervisorDashboard/components/layout/Header.tsx`
+- `src/app/SupervisorDashboard/components/layout/RightContent.tsx`
+
+**6. Created Design System Documentation**
+
+Created `DESIGN_SYSTEM.md` at project root documenting:
+- Color palette (backgrounds, text, borders)
+- Typography (font sizes, weights)
+- Spacing (padding, gaps, margins)
+- Border radius values
+- Component patterns (sidebar, header, cards)
+- Shadows & effects
+- Icon sizes
+- Layout dimensions
+- Key design principles
+
+#### Key Design Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| `#f7f7f7` for chrome | Databricks uses this exact shade |
+| Left-only rounded corners | Creates visual connection to sidebar |
+| Removed sidebar border | Cleaner, modern look |
+| `rounded-xl` not `rounded-full` | Softer corners match Databricks |
+| Blue hover states | Consistent with BlueShark brand |
+| Header outside container | Matches Databricks layout pattern |
+
+#### Issues Encountered & Solutions
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Container border visible at top | `border border-gray-200` | Kept border, fixed with proper overflow handling |
+| Header inside container | Wrong structure | Moved Header outside, restructured RightContent |
+| Gap too wide | `pl-4` | Reduced to `pl-2` |
+| Search text too light | `text-gray-400` | Changed to `text-gray-500`/`text-gray-700` |
+| Wrong border radius | `rounded-full` | Changed to `rounded-xl` |
+| Sidebar hover not visible | `hover:bg-gray-50` | Changed to `hover:bg-blue-50` |
+
+#### Commit
+
+**Commit:** `81d27e2`
+**Message:** "Enterprise UI overhaul: Databricks-inspired design system"
+
+#### Files Created
+- `DESIGN_SYSTEM.md` - Comprehensive design language documentation
+
+#### Key Learnings
+
+1. **Design iteration**: Multiple refinements needed based on screenshot comparisons
+2. **Container architecture**: Header placement matters for the overall look
+3. **Subtle differences**: `rounded-full` vs `rounded-xl` makes significant visual difference
+4. **Color consistency**: Using exact Databricks colors creates cohesive enterprise feel
+5. **Documentation**: Design system file prevents future inconsistencies
+
+#### Next Steps
+1. Fix Worker Assignment Splitting Bug (deferred from previous session)
+2. Continue with any remaining UI refinements as needed
 
 ---
 

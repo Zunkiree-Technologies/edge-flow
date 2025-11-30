@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Plus, X, Trash2, Edit2, Users, Mail, KeyRound, MoreVertical } from "lucide-react";
+import { Plus, X, Trash2, Edit2, Users, Mail, KeyRound } from "lucide-react";
 import Loader from "@/app/Components/Loader";
 
 // Supervisor interface
@@ -27,7 +27,6 @@ const CreateSupervisor = () => {
   const [loading, setLoading] = useState(true);
   const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [menuOpenId, setMenuOpenId] = useState<number | null>(null);
 
   const [formData, setFormData] = useState<SupervisorFormData>({
     name: "",
@@ -179,7 +178,7 @@ const CreateSupervisor = () => {
         </div>
 
         <button
-          className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md hover:bg-blue-700 hover:shadow-lg transition-all duration-200 hover:scale-105"
+          className="flex items-center gap-2 bg-[#2272B4] text-white px-5 py-2.5 rounded font-semibold shadow-md hover:bg-[#0E538B] hover:shadow-lg transition-all duration-200 hover:scale-105"
           onClick={() => {
             resetForm();
             setIsDrawerOpen(true);
@@ -189,60 +188,52 @@ const CreateSupervisor = () => {
         </button>
       </div>
 
-      <div className="mt-6 bg-white shadow rounded-lg p-4">
-        <h3 className="text-lg font-semibold mb-4">Supervisors</h3>
-
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         {loading ? (
-          <Loader loading={true} message="Loading Supervisors..." />
+          <div className="p-6">
+            <Loader loading={true} message="Loading Supervisors..." />
+          </div>
         ) : supervisors.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12">
             <Users size={48} className="text-gray-300 mb-4" />
-            <p className="text-black mb-2 font-medium">No Supervisor Found</p>
-            <p className="text-gray-500 mb-2 font-medium">
-              Get started by creating your first Supervisor. Click the Add Supervisor button to begin.
+            <p className="text-gray-900 mb-2 font-medium">No Supervisor Found</p>
+            <p className="text-gray-500 text-sm">
+              Get started by creating your first supervisor.
             </p>
           </div>
         ) : (
           <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-gray-200">
-                <th className="p-2 text-left">ID</th>
-                <th className="p-2 text-left">Name</th>
-                <th className="p-2 text-left">Email</th>
-                <th className="p-2 text-left">Actions</th>
+              <tr className="border-b border-gray-200">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">ID</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Name</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Email</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-gray-100">
               {supervisors.map((sup) => (
-                <tr key={sup.id}>
-                  <td className="p-2">{sup.id}</td>
-                  <td className="p-2">{sup.name}</td>
-                  <td className="p-2">{sup.email}</td>
-                  <td className="p-2 relative">
-                    <button
-                      className="p-2 rounded hover:bg-gray-200"
-                      onClick={() => setMenuOpenId(menuOpenId === sup.id ? null : sup.id)}
-                    >
-                      <MoreVertical size={18} />
-                    </button>
-
-                    {menuOpenId === sup.id && (
-                      <div className="absolute right-0 mt-2 w-36 bg-white border rounded shadow-md z-10">
-
-                        <button
-                          onClick={() => { handleEdit(sup); setMenuOpenId(null); }}
-                          className="flex items-center gap-2 w-full px-3 py-2 text-left hover:bg-gray-100"
-                        >
-                          <Edit2 size={16} /> Edit
-                        </button>
-                        <button
-                          onClick={() => { handleDelete(sup.id); setMenuOpenId(null); }}
-                          className="flex items-center gap-2 w-full px-3 py-2 text-left hover:bg-red-100 text-red-600"
-                        >
-                          <Trash2 size={16} /> Delete
-                        </button>
-                      </div>
-                    )}
+                <tr key={sup.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-4 py-3 text-sm font-medium text-gray-900">SU{sup.id}</td>
+                  <td className="px-4 py-3 text-sm text-gray-900">{sup.name}</td>
+                  <td className="px-4 py-3 text-sm text-gray-600">{sup.email}</td>
+                  <td className="px-4 py-3 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => handleEdit(sup)}
+                        className="p-1.5 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                        title="Edit"
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(sup.id)}
+                        className="p-1.5 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                        title="Delete"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -266,40 +257,46 @@ const CreateSupervisor = () => {
             >
               <X size={20} />
             </button>
-            <h3 className="text-lg font-semibold mb-3">
-              {editingId ? "Edit Supervisor" : "Add New Supervisor"}
-            </h3>
+            {/* Header */}
+            <div className="border-b border-gray-200 pb-3 mb-4">
+              <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <Users size={20} className="text-blue-600" />
+                {editingId ? "Edit Supervisor" : "Add New Supervisor"}
+              </h3>
+            </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div>
-                <label className="flex items-center gap-2 font-semibold">
-                  <Users size={16} /> Name *
+                <label className="block text-sm font-semibold text-gray-900 mb-1.5">
+                  Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter supervisor name"
                   value={formData.name}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-[10px] px-3 py-2"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 />
               </div>
               <div>
-                <label className="flex items-center gap-2 font-semibold">
-                  <Mail size={16} /> Email *
+                <label className="block text-sm font-semibold text-gray-900 mb-1.5">
+                  Email <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="email"
+                  placeholder="Enter email address"
                   value={formData.email}
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-[10px] px-3 py-2"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 />
               </div>
               <div>
-                <label className="flex items-center gap-2 font-semibold">
-                  <KeyRound size={16} /> Password {editingId && "(Leave blank to keep current password)"}
+                <label className="block text-sm font-semibold text-gray-900 mb-1.5">
+                  Password {editingId ? <span className="text-gray-500 font-normal">(Leave blank to keep current)</span> : <span className="text-red-500">*</span>}
                 </label>
                 <input
                   type="password"
@@ -307,7 +304,7 @@ const CreateSupervisor = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-[10px] px-3 py-2"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   placeholder={editingId ? "Enter new password to change" : "Enter password"}
                 />
               </div>
@@ -322,7 +319,7 @@ const CreateSupervisor = () => {
                 Cancel
               </button>
               <button
-                className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 font-medium transition-colors shadow-sm"
+                className="px-6 py-2 rounded bg-[#2272B4] text-white hover:bg-[#0E538B] disabled:opacity-50 font-medium transition-colors shadow-sm"
                 onClick={handleSave}
                 disabled={saveLoading}
               >

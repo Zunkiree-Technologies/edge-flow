@@ -33,6 +33,15 @@
 | Search bar border | `border-gray-300` |
 | Focus border | `focus-within:border-blue-400` |
 
+### Button Colors (CTA)
+| State | Color | Tailwind Class |
+|-------|-------|----------------|
+| Primary default | `#2272B4` (rgb 34, 114, 180) | `bg-[#2272B4]` |
+| Primary hover | `#0E538B` (rgb 14, 83, 139) | `hover:bg-[#0E538B]` |
+| Secondary default | White | `bg-white` |
+| Secondary hover | Light gray | `hover:bg-gray-50` |
+| Disabled | 50% opacity | `disabled:opacity-50` |
+
 ---
 
 ## Typography
@@ -92,7 +101,7 @@
 | Search bar | xl | `rounded-xl` |
 | Sidebar items | md | `rounded-md` |
 | Cards | lg | `rounded-lg` |
-| Buttons | lg/xl | `rounded-lg` or `rounded-xl` |
+| Buttons (CTA) | 4px | `rounded` |
 | Avatar | full | `rounded-full` |
 | Logo icon | md | `rounded-md` |
 
@@ -204,6 +213,64 @@
 </div>
 ```
 
+### Primary Button (CTA)
+```tsx
+// Add/Create button - full styling with animation
+<button className="flex items-center gap-2 bg-[#2272B4] text-white px-5 py-2.5 rounded font-semibold shadow-md hover:bg-[#0E538B] hover:shadow-lg transition-all duration-200 hover:scale-105">
+  <Plus className="w-4 h-4" />
+  Add Item
+</button>
+
+// Save/Submit button - simpler styling
+<button className="px-6 py-2 rounded bg-[#2272B4] text-white hover:bg-[#0E538B] disabled:opacity-50 font-medium transition-colors shadow-sm">
+  Save
+</button>
+
+// Secondary/Cancel button
+<button className="px-6 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium transition-colors">
+  Cancel
+</button>
+```
+
+### Filter Sidebar
+```tsx
+// Filter Header
+<div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+  <h3 className="text-base font-semibold text-gray-900">Filters</h3>
+  <button className="p-1 hover:bg-gray-100 rounded transition-colors">
+    <ChevronLeft className="w-4 h-4 text-gray-500" />
+  </button>
+</div>
+
+// Section Header (uppercase, muted)
+<h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 px-1">
+  Section Name
+</h4>
+
+// Saved View Item - Active (with left border indicator)
+<button className="w-full flex items-center justify-between text-left py-2 px-3 rounded-sm transition-all bg-blue-50 border-l-2 border-blue-600">
+  <span className="text-sm font-medium text-gray-900">Item Name</span>
+  <span className="text-sm font-medium text-gray-900">5</span>
+</button>
+
+// Saved View Item - Inactive
+<button className="w-full flex items-center justify-between text-left py-2 px-3 rounded-sm transition-all hover:bg-gray-50 border-l-2 border-transparent">
+  <span className="text-sm text-gray-600">Item Name</span>
+  <span className="text-sm text-gray-400">5</span>
+</button>
+
+// Checkbox Filter Item
+<label className="flex items-center gap-2.5 cursor-pointer group py-1.5 px-1 rounded-sm hover:bg-gray-50 transition-colors">
+  <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-1 focus:ring-blue-500" />
+  <span className="text-sm text-gray-600 group-hover:text-gray-900">Filter Option</span>
+</label>
+
+// Clear Filters Button
+<button className="w-full px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-sm transition-colors font-medium">
+  Clear All Filters
+</button>
+```
+
 ---
 
 ## Shadows & Effects
@@ -214,6 +281,21 @@
 | Cards (hover) | `hover:shadow-sm` |
 | Dropdowns | `shadow-lg` |
 | Focus ring | `focus-within:ring-2 focus-within:ring-blue-100` |
+
+---
+
+## Cursor Behavior
+
+All interactive elements automatically show `cursor: pointer` via global CSS in `globals.css`.
+
+| Element | Cursor |
+|---------|--------|
+| `button`, `a`, `select` | `pointer` (automatic) |
+| `[role="button"]` | `pointer` (automatic) |
+| `label[for]` | `pointer` (automatic) |
+| `button:disabled`, `[disabled]` | `not-allowed` (automatic) |
+
+> **Note:** No need to add `cursor-pointer` class to buttons - it's applied globally.
 
 ---
 

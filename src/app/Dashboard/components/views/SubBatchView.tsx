@@ -728,64 +728,64 @@ const SubBatchView = () => {
           }}
         >
             {/* Filters Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-100">
-              <h3 className="text-2xl font-bold text-gray-900">Filters</h3>
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+              <h3 className="text-base font-semibold text-gray-900">Filters</h3>
               <button
                 onClick={() => setFilterSidebarOpen(false)}
-                className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+                className="p-1 hover:bg-gray-100 rounded transition-colors"
                 title="Collapse filters"
               >
-                <ChevronLeft className="w-5 h-5 text-gray-600" />
+                <ChevronLeft className="w-4 h-4 text-gray-500" />
               </button>
             </div>
 
-            <div className="px-6">
+            <div className="px-3">
               {/* Saved Views */}
-              <div className="py-4 border-b border-gray-100">
-                <h4 className="text-lg font-semibold text-gray-900 mb-3" style={{ letterSpacing: '-0.01em' }}>Saved Views</h4>
-                <div className="space-y-1.5">
+              <div className="py-3 border-b border-gray-100">
+                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 px-1">Saved Views</h4>
+                <div className="space-y-0.5">
                   <button
                     onClick={() => setSelectedView("all")}
-                    className={`w-full flex items-center justify-between text-left py-1.5 px-4 rounded-xl transition-all ${
+                    className={`w-full flex items-center justify-between text-left py-2 px-3 rounded-sm transition-all ${
                       selectedView === "all"
-                        ? "bg-blue-600 text-white shadow-sm"
-                        : "hover:bg-gray-50 text-gray-700"
+                        ? "bg-blue-50 border-l-2 border-blue-600"
+                        : "hover:bg-gray-50 border-l-2 border-transparent"
                     }`}
                   >
-                    <span className={`text-[15px] font-medium ${selectedView === "all" ? "text-white" : "text-gray-800"}`} style={{ letterSpacing: '-0.01em' }}>
+                    <span className={`text-sm ${selectedView === "all" ? "font-medium text-gray-900" : "text-gray-600"}`}>
                       All Sub Batches
                     </span>
-                    <span className={`text-[15px] font-semibold ${selectedView === "all" ? "text-white" : "text-gray-500"}`}>
+                    <span className={`text-sm ${selectedView === "all" ? "font-medium text-gray-900" : "text-gray-400"}`}>
                       {subBatches.length}
                     </span>
                   </button>
                   <button
                     onClick={() => setSelectedView("in-production")}
-                    className={`w-full flex items-center justify-between text-left py-1.5 px-4 rounded-xl transition-all ${
+                    className={`w-full flex items-center justify-between text-left py-2 px-3 rounded-sm transition-all ${
                       selectedView === "in-production"
-                        ? "bg-blue-600 text-white shadow-sm"
-                        : "hover:bg-gray-50 text-gray-700"
+                        ? "bg-blue-50 border-l-2 border-blue-600"
+                        : "hover:bg-gray-50 border-l-2 border-transparent"
                     }`}
                   >
-                    <span className={`text-[15px] font-medium ${selectedView === "in-production" ? "text-white" : "text-gray-800"}`} style={{ letterSpacing: '-0.01em' }}>
+                    <span className={`text-sm ${selectedView === "in-production" ? "font-medium text-gray-900" : "text-gray-600"}`}>
                       In Production
                     </span>
-                    <span className={`text-[15px] font-semibold ${selectedView === "in-production" ? "text-white" : "text-gray-500"}`}>
+                    <span className={`text-sm ${selectedView === "in-production" ? "font-medium text-gray-900" : "text-gray-400"}`}>
                       {subBatches.filter(sb => sb.status === "IN_PRODUCTION").length}
                     </span>
                   </button>
                   <button
                     onClick={() => setSelectedView("completed")}
-                    className={`w-full flex items-center justify-between text-left py-1.5 px-4 rounded-xl transition-all ${
+                    className={`w-full flex items-center justify-between text-left py-2 px-3 rounded-sm transition-all ${
                       selectedView === "completed"
-                        ? "bg-blue-600 text-white shadow-sm"
-                        : "hover:bg-gray-50 text-gray-700"
+                        ? "bg-blue-50 border-l-2 border-blue-600"
+                        : "hover:bg-gray-50 border-l-2 border-transparent"
                     }`}
                   >
-                    <span className={`text-[15px] font-medium ${selectedView === "completed" ? "text-white" : "text-gray-800"}`} style={{ letterSpacing: '-0.01em' }}>
+                    <span className={`text-sm ${selectedView === "completed" ? "font-medium text-gray-900" : "text-gray-600"}`}>
                       Completed
                     </span>
-                    <span className={`text-[15px] font-semibold ${selectedView === "completed" ? "text-white" : "text-gray-500"}`}>
+                    <span className={`text-sm ${selectedView === "completed" ? "font-medium text-gray-900" : "text-gray-400"}`}>
                       {subBatches.filter(sb => sb.status === "COMPLETED").length}
                     </span>
                   </button>
@@ -793,11 +793,11 @@ const SubBatchView = () => {
               </div>
 
               {/* Status Filter */}
-              <div className="py-4 border-b border-gray-100">
-                <h4 className="text-lg font-semibold text-gray-900 mb-3" style={{ letterSpacing: '-0.01em' }}>Status</h4>
-                <div className="space-y-2">
+              <div className="py-3 border-b border-gray-100">
+                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 px-1">Status</h4>
+                <div className="space-y-1">
                   {["DRAFT", "IN_PRODUCTION", "COMPLETED", "CANCELLED"].map(status => (
-                    <label key={status} className="flex items-center gap-3 cursor-pointer group">
+                    <label key={status} className="flex items-center gap-2.5 cursor-pointer group py-1.5 px-1 rounded-sm hover:bg-gray-50 transition-colors">
                       <input
                         type="checkbox"
                         checked={selectedStatuses.includes(status)}
@@ -808,9 +808,9 @@ const SubBatchView = () => {
                             setSelectedStatuses(selectedStatuses.filter(s => s !== status));
                           }
                         }}
-                        className="w-5 h-5 rounded border-2 border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer"
+                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-1 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer"
                       />
-                      <span className="text-[15px] text-gray-800 capitalize group-hover:text-gray-900" style={{ letterSpacing: '-0.01em' }}>
+                      <span className="text-sm text-gray-600 capitalize group-hover:text-gray-900">
                         {status.toLowerCase().replace('_', ' ')}
                       </span>
                     </label>
@@ -820,10 +820,10 @@ const SubBatchView = () => {
 
               {/* Clear Filters */}
               {(selectedStatuses.length > 0 || selectedView !== "all") && (
-                <div className="py-4">
+                <div className="py-3">
                   <button
                     onClick={clearAllFilters}
-                    className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors font-medium"
+                    className="w-full px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-sm transition-colors font-medium"
                   >
                     Clear All Filters
                   </button>
@@ -868,7 +868,7 @@ const SubBatchView = () => {
                 setIsPreview(false);
                 setIsModalOpen(true);
               }}
-              className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md hover:bg-blue-700 hover:shadow-lg transition-all duration-200 hover:scale-105"
+              className="flex items-center gap-2 bg-[#2272B4] text-white px-5 py-2.5 rounded font-semibold shadow-md hover:bg-[#0E538B] hover:shadow-lg transition-all duration-200 hover:scale-105"
             >
               <Plus className="w-4 h-4 " />
               Add Sub Batch
@@ -1905,7 +1905,7 @@ const SubBatchView = () => {
                             handleSaveSubBatch();
                           }
                         }}
-                        className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 font-medium transition-colors shadow-sm"
+                        className="px-6 py-2 rounded bg-[#2272B4] text-white hover:bg-[#0E538B] font-medium transition-colors shadow-sm"
                       >
                         {editingSubBatch ? "Update Sub Batch" : "Save Sub Batch"}
                       </button>
