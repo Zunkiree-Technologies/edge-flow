@@ -13,7 +13,7 @@ const AdminPage = () => {
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
       {sidebarOpen && (
-        <div className="w-64 bg-white shadow-lg relative">
+        <div className="w-60 bg-white border-r border-gray-200 relative">
           {/* Collapse button inside sidebar - ChevronLeft when open */}
           <button
             onClick={() => setSidebarOpen(false)}
