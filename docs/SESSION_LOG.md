@@ -14,7 +14,7 @@
 
 ---
 
-## Current State (Updated: 2025-11-30 00:15 NPT)
+## Current State (Updated: 2025-11-30)
 
 ### What's Working
 - ✅ Production frontend live at edge-flow-gamma.vercel.app
@@ -29,12 +29,14 @@
 - ✅ **Branch structure cleaned: main (prod) + dev (development)**
 - ✅ **GitHub Actions PR checks workflow added**
 - ✅ **.env.example templates created for frontend and backend**
+- ✅ **Phase 2 Database Optimization started**
+- ✅ **Developer Workflow documentation created**
 
 ### What's In Progress
-- 🔄 Ready for feature development
+- 🔄 Phase 2: Database Optimization (indexes added, N+1 fixed, pending deployment)
 
 ### What's Not Working / Known Issues
-- ⚠️ Neon free tier: databases auto-suspend after 5 min inactivity (first request may be slow)
+- ⚠️ Neon free tier: databases auto-suspend after 5 min inactivity (mitigated with 30s connection timeout)
 
 ### Credentials & Access
 | Service | Credential | Notes |
@@ -46,6 +48,94 @@
 ---
 
 ## Session Entries
+
+---
+
+### Session: 2025-11-30 (Phase 2 Database Optimization)
+
+**Duration:** ~1 hour
+**Focus:** Database performance optimization and developer workflow
+
+#### Goals
+1. Set up local development environment
+2. Create developer workflow documentation
+3. Start Phase 2: Database Optimization
+
+#### What Was Done
+
+**1. Local Environment Verification**
+- Verified frontend `.env` points to `localhost:5000/api`
+- Updated backend `.env` with PORT=5000 and NODE_ENV=development
+- Confirmed dev database connection working
+
+**2. Developer Workflow Documentation**
+- Created `docs/DEVELOPER_WORKFLOW.md`
+- Documented Local → Dev → Prod workflow
+- Added git branch strategy, commit conventions
+- Added troubleshooting guide
+
+**3. Database Index Optimization**
+Added 40+ indexes to Prisma schema for critical tables:
+
+| Table | Indexes Added |
+|-------|---------------|
+| `department_sub_batches` | 9 indexes including composites for dashboard queries |
+| `worker_logs` | 7 indexes including composite for history queries |
+| `sub_batches` | 5 indexes (batch_id, roll_id, status, etc.) |
+| `sub_batch_rejected/altered` | 4 indexes each |
+| `batches`, `rolls` | FK indexes |
+| `inventory_*` | FK and date indexes |
+
+**4. N+1 Query Fix**
+- Identified N+1 query in `getSubBatchHistory` function
+- Was: 1 query + N queries (one per department)
+- Fixed: 3 queries total (fetch all at once, group in memory)
+- File: `src/services/departmentSubBatchService.ts`
+
+**5. Connection Pool Optimization**
+- Added pool configuration for Neon serverless
+- `max: 10` connections
+- `connectionTimeoutMillis: 30000` (handles cold starts)
+- `idleTimeoutMillis: 30000`
+
+#### Files Created/Modified
+
+**Created:**
+- `docs/DEVELOPER_WORKFLOW.md` - Complete developer guide
+
+**Modified:**
+- `blueshark-backend-test/backend/prisma/schema.prisma` - Added 40+ indexes
+- `blueshark-backend-test/backend/src/services/departmentSubBatchService.ts` - Fixed N+1
+- `blueshark-backend-test/backend/src/config/db.ts` - Optimized pool settings
+- `blueshark-backend-test/backend/.env` - Added PORT and NODE_ENV
+
+#### Technical Details
+
+**Index Strategy:**
+- All foreign keys indexed
+- Composite indexes for common query patterns:
+  - `department_sub_batches(department_id, is_current)` - supervisor dashboard
+  - `department_sub_batches(department_id, sub_batch_id, is_parent, is_current)` - card lookups
+  - `worker_logs(sub_batch_id, department_id)` - history queries
+
+**N+1 Fix Pattern:**
+```typescript
+// BEFORE: N+1 queries
+completedDepartments.map(async (dept) => {
+  const logs = await prisma.worker_logs.findMany({...}); // N queries!
+});
+
+// AFTER: 2 queries + in-memory grouping
+const allLogs = await prisma.worker_logs.findMany({...}); // 1 query
+const logsByDept = new Map(); // Group in memory
+completedDepartments.map((dept) => logsByDept.get(dept.id));
+```
+
+#### Next Steps
+1. Push schema changes to dev database: `npx prisma db push`
+2. Test locally to verify no regressions
+3. Push to dev branch for team testing
+4. Continue Phase 2: Security or Error Handling
 
 ---
 
