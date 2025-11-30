@@ -70,6 +70,8 @@
 - [x] ~~**Deploy Phase 2 changes**~~ - ✅ Pushed to dev (commit f88e4ee)
 - [x] ~~**Login Page Design**~~ - ✅ Redesigned with BlueShark branding
 - [x] ~~**Enterprise UI Overhaul**~~ - ✅ Databricks-inspired design (commit 81d27e2)
+- [x] ~~**Toast/Confirm System**~~ - ✅ Custom notifications replacing browser alerts (commit c7a9251)
+- [x] ~~**HubSpot-style Data Tables**~~ - ✅ Horizontal filters, sorting, pagination (commit 223702d)
 - [ ] **Fix Worker Assignment Splitting Bug** - See [`quality/CRITICAL_ISSUE_ANALYSIS.md`](./quality/CRITICAL_ISSUE_ANALYSIS.md)
 
 ### Short-term (This Week)
@@ -93,6 +95,8 @@
 
 ### What's Working
 - ✅ **Enterprise UI Overhaul** - Databricks-inspired design system implemented
+- ✅ **Toast/Confirm System** - Custom notifications replacing browser alerts
+- ✅ **HubSpot-style Data Tables** - Horizontal filters, sorting, pagination across all views
 - ✅ Production frontend live at edge-flow-gamma.vercel.app
 - ✅ Production backend live at edge-flow-backend.onrender.com
 - ✅ Production database with tables and admin user
@@ -111,7 +115,7 @@
 - ✅ **Local development environment working** (localhost:3001 + localhost:5000)
 
 ### What's In Progress
-- 🔄 Testing security features locally before deploying to dev
+- 🔄 Ready for next feature development or bug fixes
 
 ### What's Not Working / Known Issues
 - ⚠️ Neon free tier: databases auto-suspend after 5 min inactivity (mitigated with 30s connection timeout)
@@ -126,6 +130,133 @@
 ---
 
 ## Session Entries
+
+---
+
+### Session: 2025-11-30 (HubSpot-style Data Table Layout)
+
+**Duration:** ~2 hours
+**Focus:** Implement HubSpot CRM-style data table layout across all views
+
+#### Goals
+1. Replace left sidebar filters with horizontal filter bar
+2. Create custom FilterDropdown component
+3. Add sortable column headers
+4. Implement pagination
+5. Apply to all 7 view files
+
+#### What Was Done
+
+**1. Created Custom FilterDropdown Component**
+
+Reusable dropdown component with:
+- Custom popover (not native `<select>`)
+- Search input (pill-shaped with search icon)
+- Two-line options: Bold title + gray description
+- Radio-style selection with checkmarks
+- Active state highlighting (BlueShark blue #2272B4)
+- Click outside to close
+- `searchable` prop (default: true, set false for Sort dropdown)
+- `icon` prop (optional, used for Sort dropdown ArrowUpDown icon)
+
+**2. Replaced Sidebar Filters with Horizontal Filter Bar**
+
+| Aspect | Before | After |
+|--------|--------|-------|
+| Layout | Left sidebar with filters | Full-width table |
+| Filters | Checkbox-based multi-select | Dropdown single-select |
+| Sort | No visible sort option | Sort dropdown + clickable headers |
+| Pagination | None | Full pagination with items per page |
+| Results | No count | "X results" displayed |
+
+**3. Added Sortable Column Headers**
+- Click headers to sort (ID, Name, Quantity, Status, etc.)
+- ChevronUp/ChevronDown indicators show direction
+- Sort state syncs with Sort dropdown
+- Resets to page 1 on sort change
+
+**4. Implemented Pagination**
+- "Showing X to Y of Z" count
+- Items per page selector (10, 25, 50, 100)
+- Page navigation: First | Prev | Page X of Y | Next | Last
+- Disabled states at boundaries
+
+#### Files Modified
+
+**All 7 View Files Updated:**
+
+| File | Filters Added |
+|------|---------------|
+| SubBatchView.tsx | Status, Batch, Roll |
+| BatchView.tsx | Unit, Color, Vendor |
+| RollView.tsx | Unit, Color, Vendor |
+| GenericView.tsx (Vendor) | Sort only |
+| Worker.tsx | Wage Type |
+| DepartmentForm.tsx | Sort only |
+| CreateSupervisor.tsx | Sort only |
+
+**Each file received:**
+- FilterDropdown component (copy included)
+- New state variables (filters, sort, pagination)
+- useMemo for filter/sort/paginate logic
+- handleSort function
+- Updated table with sortable headers
+- Pagination bar at bottom
+
+#### Technical Implementation
+
+**State Variables Added (per view):**
+```typescript
+// Filter states (varies by view)
+const [selectedStatus, setSelectedStatus] = useState<string>("all");
+
+// Sorting states
+const [sortColumn, setSortColumn] = useState<string>("id");
+const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+
+// Pagination states
+const [currentPage, setCurrentPage] = useState(1);
+const [itemsPerPage, setItemsPerPage] = useState(25);
+```
+
+**useMemo Pattern:**
+```typescript
+const { paginatedData, totalPages, totalFiltered } = useMemo(() => {
+  // 1. Filter by dropdown selections
+  // 2. Sort by sortColumn + sortDirection
+  // 3. Paginate with currentPage + itemsPerPage
+  return { paginatedData, totalPages, totalFiltered };
+}, [dependencies]);
+```
+
+#### Design Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| HubSpot as reference | Professional CRM with similar data management needs |
+| Single-select dropdowns | Simpler UX than multi-select checkboxes |
+| Search in filter dropdowns | Helps when many options (batches, rolls, vendors) |
+| No search in Sort dropdown | Only 6-12 fixed options, search unnecessary |
+| Default sort: ID desc | Shows newest items first |
+| Default page size: 25 | Balance between overview and performance |
+
+#### Commits
+
+1. **c7a9251** - "feat: Custom Toast notification and Confirmation Modal system"
+2. **223702d** - "feat: HubSpot-style data table layout across all views"
+   - 8 files changed, 3162 insertions, 1180 deletions
+
+#### Key Learnings
+
+1. **Component reuse**: FilterDropdown copied to each file (could be extracted to shared component later)
+2. **useMemo for performance**: Filter/sort/paginate in one efficient memo
+3. **Consistent patterns**: Same structure across all views makes maintenance easier
+4. **Design reference**: Using established products (HubSpot) ensures professional result
+
+#### Next Steps
+1. Fix Worker Assignment Splitting Bug
+2. Consider extracting FilterDropdown to shared component
+3. Add more filters to views as needed
 
 ---
 
