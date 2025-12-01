@@ -1,0 +1,169 @@
+Issue Key,Summary,Issue Type,Epic,Priority,Story Points,Assignee,Sprint,Status,Description,Acceptance Criteria,Notes
+BSK-1,Fix local development environment (.env configuration),Task,Infrastructure,Critical,2,Sadin,Sprint 1,To Do,"Configure .env files to point to correct backend URLs for local development","- Local frontend connects to localhost:5000
+- Local backend connects to Neon dev database
+- All API calls work locally","CRITICAL: Must fix first. Check .env and .env.example files"
+BSK-2,Verify production database tables exist,Task,Infrastructure,Critical,3,Sadin,Sprint 1,To Do,"Verify all Prisma schema tables exist in production Neon database","- All tables from schema.prisma exist
+- No missing columns
+- Admin user exists","Run: npx prisma db pull to verify"
+BSK-3,Database cleanup - merge duplicate department_sub_batches,Task,Infrastructure,High,2,Sadin,Sprint 1,To Do,"Merge duplicate Kanban cards created by worker assignment bug","- No duplicate cards for same sub-batch
+- Worker logs point to correct records
+- Data integrity verified","Run SQL cleanup script after BSK-10 is fixed"
+BSK-4,Setup Jest testing framework,Task,Infrastructure,High,3,Khum,Sprint 1,To Do,"Install and configure Jest + React Testing Library for frontend testing","- Jest installed and configured
+- Sample test passes
+- npm test command works","Install: npm install -D jest @testing-library/react @testing-library/jest-dom"
+BSK-5,Add GitHub Actions for test coverage,Task,Infrastructure,Medium,3,Sadin,Sprint 2,To Do,"Add test coverage reporting to CI/CD pipeline","- Tests run on PR
+- Coverage report generated
+- Minimum coverage threshold set","Add to existing .github/workflows"
+BSK-6,Configure staging environment,Task,Infrastructure,Low,5,Sadin,Sprint 3,To Do,"Create separate staging environment for QA testing","- Staging URLs configured
+- Separate database branch
+- Auto-deploy from staging branch","Optional: Can defer if not needed"
+BSK-7,Setup error monitoring (Sentry),Task,Infrastructure,Low,3,Khum,Sprint 4,To Do,"Integrate Sentry for production error tracking","- Sentry account created
+- Frontend errors captured
+- Backend errors captured","Free tier available at sentry.io"
+BSK-10,Fix worker assignment splitting bug (creates duplicate cards),Bug,Bug Fixes,Critical,5,Sadin,Sprint 1,To Do,"Fix bug where partial worker assignment creates duplicate Kanban cards instead of single card with multiple workers","- Assigning 20/50 pieces creates ONE card
+- Multiple workers show on same card
+- No duplicate department_sub_batches created","CRITICAL: Root cause in workerLogService.ts lines 78-124. See CRITICAL_ISSUE_ANALYSIS.md"
+BSK-11,Add quantity conservation validation,Bug,Bug Fixes,Critical,3,Sadin,Sprint 1,To Do,"Validate that Received = Worked + Altered + Rejected + Remaining at all times","- API rejects invalid quantities
+- Frontend shows validation errors
+- Data integrity maintained","Add validation in backend API endpoints"
+BSK-12,Fix login URL configuration in Vercel,Bug,Bug Fixes,High,2,Sadin,Sprint 1,To Do,"Fix hardcoded or misconfigured login redirect URLs in Vercel deployment","- Login redirects to correct dashboard
+- No hardcoded localhost URLs
+- Works in all environments","Check environment variables in Vercel dashboard"
+BSK-13,Fix NepaliDatePicker props not being applied,Bug,Bug Fixes,Medium,2,Khum,Sprint 2,To Do,"Fix NepaliDatePicker component to properly apply all passed props (className disabled required)","- All props work correctly
+- Styling matches other inputs
+- Disabled state works","Component at src/app/Components/NepaliDatePicker.tsx"
+BSK-14,Fix mobile responsive issues on dashboards,Bug,Bug Fixes,Medium,5,Khum,Sprint 3,To Do,"Fix layout issues on mobile devices for Admin and Supervisor dashboards","- Dashboards usable on mobile
+- No horizontal scroll
+- Touch-friendly buttons","Test on iPhone and Android devices"
+BSK-20,Add roll search/filter functionality,Story,Raw Material,Medium,3,Khum,Sprint 2,To Do,"Add search box and filters to Roll management view","- Search by roll name
+- Filter by vendor
+- Filter by color","Add to RollView.tsx"
+BSK-21,Add roll quantity tracking (used vs remaining),Story,Raw Material,Medium,5,Sadin,Sprint 3,To Do,"Track how much of each roll has been used in batches vs remaining","- Show used quantity
+- Show remaining quantity
+- Update when batches created","Requires backend calculation"
+BSK-22,Add roll history/audit log,Story,Raw Material,Low,5,Khum,Sprint 4,To Do,"Show history of all changes made to a roll","- Show creation date
+- Show all updates
+- Show batches using this roll","Create audit_logs table or use existing"
+BSK-30,Add batch search/filter functionality,Story,Batch Management,Medium,3,Khum,Sprint 2,To Do,"Add search box and filters to Batch management view","- Search by batch name
+- Filter by roll
+- Filter by status","Add to BatchView.tsx"
+BSK-31,Add batch status overview dashboard,Story,Batch Management,Low,5,Khum,Sprint 4,To Do,"Create dashboard showing batch statuses at a glance","- Show counts by status
+- Visual progress indicators
+- Click to filter","Add chart/stats component"
+BSK-32,Add batch deletion with cascade handling,Story,Batch Management,Low,3,Sadin,Sprint 4,To Do,"Allow deleting batches with proper handling of related sub-batches","- Confirmation dialog
+- Handle or prevent if sub-batches exist
+- Cascade or block as appropriate","Backend cascade logic needed"
+BSK-40,Add sub-batch search/filter functionality,Story,Sub-Batch Management,Medium,3,Khum,Sprint 2,To Do,"Add search box and filters to Sub-Batch management view","- Search by sub-batch name
+- Filter by batch
+- Filter by status","Add to SubBatchView.tsx"
+BSK-41,Add sub-batch duplication feature,Story,Sub-Batch Management,Low,3,Khum,Sprint 4,To Do,"Allow duplicating a sub-batch with same settings","- One-click duplicate
+- New name generated
+- All settings copied","Useful for similar production orders"
+BSK-42,Add sub-batch timeline view,Story,Sub-Batch Management,Low,8,Sadin,Sprint 5,To Do,"Show visual timeline of sub-batch journey through departments","- Timeline visualization
+- Show time in each department
+- Show current location","Complex UI component - may use library"
+BSK-50,Write tests for worker assignment flow,Task,Production Workflow,High,5,Sadin,Sprint 1,To Do,"Write automated tests for the worker assignment functionality","- Test single worker assignment
+- Test multiple workers
+- Test quantity validation","Priority after BSK-10 fix"
+BSK-51,Write tests for department advancement,Task,Production Workflow,High,3,Sadin,Sprint 2,To Do,"Write automated tests for advancing sub-batches between departments","- Test full advancement
+- Test partial advancement
+- Test validation","Test the send-to-department API"
+BSK-52,Add drag-and-drop on Kanban boards,Story,Production Workflow,Medium,8,Khum,Sprint 3,To Do,"Enable drag-and-drop to move cards between columns on Kanban boards","- Drag cards between columns
+- Update status on drop
+- Visual feedback","Already have @hello-pangea/dnd installed"
+BSK-53,Add Kanban card quick actions menu,Story,Production Workflow,Low,3,Khum,Sprint 4,To Do,"Add right-click or three-dot menu for quick actions on Kanban cards","- Quick assign worker
+- Quick reject/alter
+- Quick advance","Similar to existing three-dot menus"
+BSK-54,Add production timeline/Gantt view,Story,Production Workflow,Low,13,Sadin,Sprint 5,To Do,"Create Gantt chart view showing all production across departments","- Visual Gantt chart
+- Show all sub-batches
+- Filter by date range","Large feature - consider library like react-gantt"
+BSK-60,Add bulk worker assignment feature,Story,Worker Management,Medium,5,Sadin,Sprint 3,To Do,"Allow assigning multiple workers to a task at once","- Multi-select workers
+- Distribute quantity
+- Single submit","Improves efficiency for supervisors"
+BSK-61,Add worker search/filter in modals,Story,Worker Management,Medium,3,Khum,Sprint 2,To Do,"Add search functionality in worker selection dropdowns","- Search by name
+- Filter by department
+- Quick selection","Add to worker assignment modals"
+BSK-62,Add worker performance metrics,Story,Worker Management,Low,8,Sadin,Sprint 4,To Do,"Show performance statistics for each worker","- Pieces completed
+- Average per day
+- Comparison to average","Dashboard for worker stats"
+BSK-63,Add worker import from CSV,Story,Worker Management,Low,5,Khum,Sprint 5,To Do,"Allow bulk importing workers from CSV file","- Upload CSV file
+- Validate data
+- Show import results","Useful for initial setup"
+BSK-70,Write tests for rejection workflow,Task,Quality Control,High,3,Sadin,Sprint 2,To Do,"Write automated tests for the rejection workflow","- Test creating rejection
+- Test rejection card appears
+- Test quantity updates","Test the rejection API and UI"
+BSK-71,Write tests for alteration workflow,Task,Quality Control,High,3,Sadin,Sprint 2,To Do,"Write automated tests for the alteration workflow","- Test creating alteration
+- Test alteration card appears
+- Test quantity updates","Test the alteration API and UI"
+BSK-72,Add QC dashboard with defect rates,Story,Quality Control,Medium,8,Khum,Sprint 3,To Do,"Create dashboard showing quality control metrics","- Rejection rate %
+- Alteration rate %
+- Trends over time","Useful for identifying quality issues"
+BSK-73,Add rejection reason categories,Story,Quality Control,Low,3,Khum,Sprint 4,To Do,"Add predefined categories for rejection reasons","- Dropdown with reasons
+- Custom reason option
+- Report by reason","Helps analyze quality issues"
+BSK-80,Add daily work completion tracking,Story,Wage Calculation,High,5,Khum,Sprint 2,To Do,"Track and display daily work completion for workers","- Daily summary view
+- Filter by date
+- Show all workers","High priority feature request"
+BSK-81,Add wage export to CSV,Story,Wage Calculation,High,3,Khum,Sprint 2,To Do,"Export wage calculation results to CSV file","- Export button
+- Include all details
+- Proper formatting","Use browser download API"
+BSK-82,Add wage export to PDF,Story,Wage Calculation,Medium,5,Sadin,Sprint 3,To Do,"Export wage calculation results to PDF file","- Formatted PDF report
+- Company header
+- Print-friendly","Use library like jsPDF or react-pdf"
+BSK-83,Add wage summary dashboard,Story,Wage Calculation,Medium,5,Khum,Sprint 3,To Do,"Create dashboard showing wage summaries and totals","- Total wages by period
+- By department breakdown
+- By worker breakdown","Visual charts helpful"
+BSK-84,Add bulk wage calculation,Story,Wage Calculation,Low,5,Sadin,Sprint 4,To Do,"Calculate wages for multiple workers at once","- Select multiple workers
+- Date range selection
+- Combined report","Saves time for payroll"
+BSK-90,Add production stats dashboard (Admin),Story,Reporting,High,8,Sadin,Sprint 2,To Do,"Create admin dashboard showing production statistics","- Total pieces produced
+- Completion rates
+- Department throughput","Main analytics feature"
+BSK-91,Add department performance metrics,Story,Reporting,Medium,5,Khum,Sprint 3,To Do,"Show performance metrics for each department","- Throughput rate
+- Average time in department
+- Bottleneck identification","Helps optimize workflow"
+BSK-92,Add batch completion reports,Story,Reporting,Medium,5,Sadin,Sprint 3,To Do,"Generate reports showing batch completion status","- Completion percentage
+- Time to complete
+- Department breakdown","Useful for management"
+BSK-93,Add inventory usage reports,Story,Reporting,Low,5,Khum,Sprint 4,To Do,"Generate reports on inventory consumption","- Usage by item
+- Usage over time
+- Low stock warnings","Links to inventory module"
+BSK-94,Add export all data to CSV,Story,Reporting,Low,5,Sadin,Sprint 4,To Do,"Allow exporting all system data to CSV files","- Export rolls batches sub-batches
+- Export workers and logs
+- Backup functionality","Useful for data backup"
+BSK-100,Replace alert() with toast notifications,Task,User Experience,High,5,Khum,Sprint 1,To Do,"Replace all JavaScript alert() calls with toast notification library","- Install toast library
+- Replace all alerts
+- Consistent styling","Use react-hot-toast or similar"
+BSK-101,Add error boundaries (React),Task,User Experience,High,3,Khum,Sprint 1,To Do,"Add React error boundaries to catch and display errors gracefully","- Error boundary components
+- Fallback UI
+- Error logging","Prevents white screen of death"
+BSK-102,Add loading skeletons,Task,User Experience,Medium,3,Khum,Sprint 2,To Do,"Add skeleton loading states for better UX during data fetching","- Skeleton components
+- Apply to main views
+- Smooth transitions","Better than spinner for tables"
+BSK-103,Add empty state illustrations,Task,User Experience,Low,2,Khum,Sprint 3,To Do,"Add illustrations and helpful text for empty states","- Empty table states
+- No results found
+- First-time user guidance","Improves user experience"
+BSK-104,Accessibility audit and fixes,Task,User Experience,Low,5,Khum,Sprint 5,To Do,"Audit and fix accessibility issues","- Keyboard navigation
+- Screen reader support
+- Color contrast","Use axe or Lighthouse audit"
+BSK-110,Migrate JWT from localStorage to httpOnly cookies,Task,User Management,Medium,8,Sadin,Sprint 3,To Do,"Move JWT token storage from localStorage to httpOnly cookies for security","- Backend sets httpOnly cookie
+- Frontend removes localStorage
+- CSRF protection added","Security improvement - prevents XSS token theft"
+BSK-111,Add password reset functionality,Story,User Management,Medium,5,Sadin,Sprint 3,To Do,"Allow users to reset forgotten passwords","- Forgot password link
+- Email with reset link
+- Reset form","Requires email service setup"
+BSK-112,Add supervisor department reassignment,Story,User Management,Low,3,Khum,Sprint 4,To Do,"Allow admins to reassign supervisors to different departments","- Edit supervisor form
+- Department dropdown
+- Validation","Admin-only feature"
+BSK-113,Add audit log for user actions,Story,User Management,Low,8,Sadin,Sprint 5,To Do,"Log all important user actions for audit trail","- Log login/logout
+- Log CRUD operations
+- View audit log","Security and compliance feature"
+BSK-120,Add low stock alerts,Story,Inventory,Medium,3,Khum,Sprint 3,To Do,"Show alerts when inventory items are running low","- Set minimum threshold
+- Visual warning
+- Dashboard notification","Prevents running out of supplies"
+BSK-121,Add inventory search/filter,Story,Inventory,Medium,3,Khum,Sprint 2,To Do,"Add search and filter to inventory view","- Search by name
+- Filter by category
+- Filter by vendor","Add to Inventory.tsx"
+BSK-122,Add inventory import from CSV,Story,Inventory,Low,5,Khum,Sprint 5,To Do,"Allow bulk importing inventory items from CSV","- Upload CSV
+- Validate data
+- Show results","Useful for initial setup"
