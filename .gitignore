@@ -38,6 +38,12 @@ claude.md
 # Backend environment (contains secrets)
 blueshark-backend-test/backend/.env
 
+# Local environment (localhost URLs - don't deploy this)
+.env
+.env.local
+
+# Production environment IS tracked (.env.production) - it has public URLs only
+
 # Temporary files and backups
 temp_ss/
 *.BACKUP
