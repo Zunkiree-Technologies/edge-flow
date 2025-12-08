@@ -35,13 +35,14 @@ claude.md
 # BlueShark-Stark brain (DO NOT IGNORE - this is shared context)
 # .brain/ is tracked in git for context sharing
 
-# Environment files
-.env
-.env.local
+# Backend environment (contains secrets)
 blueshark-backend-test/backend/.env
 
-# Keep .env.production tracked (contains public URLs only)
-!.env.production
+# Local environment (localhost URLs - don't deploy this)
+.env
+.env.local
+
+# Production environment IS tracked (.env.production) - it has public URLs only
 
 # Temporary files and backups
 temp_ss/
