@@ -1,5 +1,6 @@
 // src/services/workerLogService.ts
 import prisma, { Prisma } from "../config/db";
+import { parseWorkDate } from "../utils/dateUtils";
 
 export enum DepartmentStage {
   NEW_ARRIVAL = "NEW_ARRIVAL",
@@ -109,7 +110,7 @@ export const createWorkerLog = async (data: WorkerLogInput) => {
         department_id: data.department_id,
         department_sub_batch_id: departmentSubBatchId,  // ✅ Link to the new split sub-batch
         worker_name: data.worker_name,
-        work_date: data.work_date ? new Date(data.work_date) : undefined,
+        work_date: parseWorkDate(data.work_date),  // ✅ Converts Nepali dates to Gregorian
         size_category: data.size_category,
         particulars: data.particulars,
         quantity_received: data.quantity_received,
@@ -366,7 +367,7 @@ export const updateWorkerLog = async (id: number, data: WorkerLogInput) => {
         sub_batch_id: data.sub_batch_id,
         department_id: data.department_id,
         worker_name: data.worker_name,
-        work_date: data.work_date ? new Date(data.work_date) : undefined,
+        work_date: parseWorkDate(data.work_date),  // ✅ Converts Nepali dates to Gregorian
         size_category: data.size_category,
         particulars: data.particulars,
         quantity_received: data.quantity_received,
