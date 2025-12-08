@@ -261,11 +261,12 @@ const BatchView = () => {
 
     // Step 2: Sort
     filtered = [...filtered].sort((a, b) => {
-      const aVal = a[sortColumn as keyof Batch];
-      const bVal = b[sortColumn as keyof Batch];
-      if (aVal == null && bVal == null) return 0;
-      if (aVal == null) return sortDirection === "asc" ? -1 : 1;
-      if (bVal == null) return sortDirection === "asc" ? 1 : -1;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let aVal: any = a[sortColumn as keyof Batch];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let bVal: any = b[sortColumn as keyof Batch];
+      if (aVal == null) aVal = "";
+      if (bVal == null) bVal = "";
       if (typeof aVal === "string" && typeof bVal === "string") {
         return sortDirection === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
       }

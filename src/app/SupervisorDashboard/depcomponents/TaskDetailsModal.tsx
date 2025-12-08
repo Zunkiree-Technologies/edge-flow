@@ -6,6 +6,7 @@ import WorkerAssignmentTable from './WorkerAssignmentTable';
 import PreviewModal from './PreviewModal';
 import AlterationModal from './AlterationModal';
 import RejectionModal from './RejectionModal';
+import { useToast } from '@/app/Components/ToastContext';
 
 interface TaskDetailsModalProps {
     isOpen: boolean;
@@ -16,6 +17,8 @@ interface TaskDetailsModalProps {
 }
 
 const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, taskData, onStageChange }) => {
+    const { showToast } = useToast();
+
     // Debug logging to see taskData structure
     useEffect(() => {
         if (isOpen && taskData) {
@@ -254,12 +257,12 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
     const handleSave = async () => {
         // Check if sub-batch is already marked as COMPLETED (status level)
         if (taskData?.sub_batch?.status === 'COMPLETED') {
-            alert('This sub-batch has been marked as COMPLETED and can no longer be moved or modified.');
+            showToast('error', 'This sub-batch has been marked as COMPLETED and can no longer be moved or modified.');
             return;
         }
 
         if (!taskData?.id) {
-            alert('Invalid task data - missing task ID');
+            showToast('error', 'Invalid task data - missing task ID');
             return;
         }
 
@@ -267,7 +270,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
         const subBatchId = taskData.sub_batch?.id || taskData.sub_batch_id;
 
         if (!subBatchId) {
-            alert('Cannot send to department: Sub-batch ID is missing');
+            showToast('error', 'Cannot send to department: Sub-batch ID is missing');
             return;
         }
 
@@ -302,7 +305,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
 
             // Prevent moving if there's remaining work
             if (remainingWork > 0) {
-                alert(`Cannot send to another department. You must complete all work first`);
+                showToast('warning', 'Cannot send to another department. You must complete all work first');
                 return;
             }
 
@@ -311,7 +314,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                 const token = localStorage.getItem('token');
 
                 if (!token) {
-                    alert('Authentication required. Please login again.');
+                    showToast('error', 'Authentication required. Please login again.');
                     return;
                 }
 
@@ -346,8 +349,8 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                     // Close modal immediately
                     onClose();
 
-                    // Show success alert
-                    alert(`Successfully sent to department!`);
+                    // Show success toast
+                    showToast('success', 'Successfully sent to department!');
 
                     // Clear the selected department
                     setSendToDepartment('');
@@ -365,7 +368,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                 }
             } catch (error: any) {
                 console.error('Error:', error);
-                alert(`Failed to send to department: ${error.message}`);
+                showToast('error', `Failed to send to department: ${error.message}`);
             } finally {
                 setSaving(false);
             }
@@ -376,7 +379,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                 const token = localStorage.getItem('token');
 
                 if (!token) {
-                    alert('Authentication required. Please login again.');
+                    showToast('error', 'Authentication required. Please login again.');
                     return;
                 }
 
@@ -403,7 +406,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                 const result = await response.json();
 
                 if (result.success) {
-                    alert('Stage updated successfully!');
+                    showToast('success', 'Stage updated successfully!');
                     onClose();
                     // Refresh the kanban board
                     if (onStageChange) {
@@ -414,7 +417,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                 }
             } catch (error: any) {
                 console.error('Error updating stage:', error);
-                alert(`Failed to update stage: ${error.message}`);
+                showToast('error', `Failed to update stage: ${error.message}`);
             } finally {
                 setSaving(false);
             }
@@ -424,7 +427,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
     // Handle marking sub-batch as completed
     const handleMarkAsCompleted = async () => {
         if (confirmationText.toLowerCase() !== 'yes') {
-            alert('Please type "yes" to confirm marking this sub-batch as completed');
+            showToast('warning', 'Please type "yes" to confirm marking this sub-batch as completed');
             return;
         }
 
@@ -433,14 +436,14 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
             const token = localStorage.getItem('token');
 
             if (!token) {
-                alert('Authentication required. Please login again.');
+                showToast('error', 'Authentication required. Please login again.');
                 return;
             }
 
             const subBatchId = taskData.sub_batch?.id || taskData.sub_batch_id;
 
             if (!subBatchId) {
-                alert('Cannot mark as completed: Sub-batch ID is missing');
+                showToast('error', 'Cannot mark as completed: Sub-batch ID is missing');
                 return;
             }
 
@@ -466,7 +469,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
             const result = await response.json();
 
             if (result.success) {
-                alert('Sub-batch has been marked as COMPLETED! It can no longer be moved.');
+                showToast('success', 'Sub-batch has been marked as COMPLETED! It can no longer be moved.');
                 setShowCompletionDialog(false);
                 setConfirmationText('');
                 onClose();
@@ -484,7 +487,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
             }
         } catch (error: any) {
             console.error('Error marking as completed:', error);
-            alert(`Failed to mark as completed: ${error.message}`);
+            showToast('error', `Failed to mark as completed: ${error.message}`);
         } finally {
             setSaving(false);
         }
@@ -576,6 +579,21 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
         };
     }, [currentDepartmentRecords]);
 
+    // Check if current department is the LAST department in the workflow
+    // This is used to determine if "Mark Sub-batch as Completed" button should be shown
+    const isLastDepartment = useMemo(() => {
+        const departmentFlow = subBatchHistory?.department_flow;
+        const currentDeptName = taskData?.department?.name;
+
+        if (!departmentFlow || !currentDeptName) return false;
+
+        // Parse flow: "Dep-1 → Dep-2 → Dep-3"
+        const flow = departmentFlow.split('→').map((d: string) => d.trim());
+        const lastDepartment = flow[flow.length - 1];
+
+        return currentDeptName === lastDepartment;
+    }, [subBatchHistory?.department_flow, taskData?.department?.name]);
+
     // Memoize event handlers
     const handleAddRecord = useCallback(() => {
         setModalMode('add');
@@ -608,7 +626,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
             const token = localStorage.getItem('token');
 
             if (!token) {
-                alert('Authentication required. Please login again.');
+                showToast('error', 'Authentication required. Please login again.');
                 return;
             }
 
@@ -629,12 +647,12 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
 
             // Refresh worker logs after successful deletion
             await fetchWorkerLogs();
-            alert('Worker record deleted successfully!');
+            showToast('success', 'Worker record deleted successfully!');
         } catch (error: any) {
             console.error('Error deleting worker record:', error);
-            alert(`Failed to delete worker record: ${error.message}`);
+            showToast('error', `Failed to delete worker record: ${error.message}`);
         }
-    }, [fetchWorkerLogs]);
+    }, [fetchWorkerLogs, showToast]);
 
     const formatDate = useCallback((dateString: string) =>
         dateString ? new Date(dateString).toLocaleDateString('en-US', {
@@ -1171,7 +1189,12 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                                                             }}
                                                             className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 rounded-t-lg"
                                                         >
-                                                            <span className="text-sm font-medium text-gray-900">{dept.department_name}</span>
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-sm font-medium text-gray-900">{dept.department_name}</span>
+                                                                {dept.entry_type === 'REWORK' && (
+                                                                    <span className="text-xs px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full">Rework</span>
+                                                                )}
+                                                            </div>
                                                             <ChevronRight
                                                                 size={16}
                                                                 className={`text-gray-500 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
@@ -1540,8 +1563,11 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ isOpen, onClose, ta
                                 Cancel
                             </button>
                             <div className="flex gap-2">
-                                {/* Show Mark as Completed button only when stage is COMPLETED and sub-batch is not already completed */}
-                                {taskData.stage === 'COMPLETED' && taskData.sub_batch?.status !== 'COMPLETED' && (
+                                {/* Show Mark as Completed button only when:
+                                    1. Stage is COMPLETED
+                                    2. Sub-batch is not already marked as COMPLETED
+                                    3. Current department is the LAST department in workflow */}
+                                {taskData.stage === 'COMPLETED' && taskData.sub_batch?.status !== 'COMPLETED' && isLastDepartment && (
                                     <button
                                         onClick={() => setShowCompletionDialog(true)}
                                         disabled={saving}
