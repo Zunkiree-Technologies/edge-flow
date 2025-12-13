@@ -1,7 +1,22 @@
 # BlueShark - Technical Decisions Log
 
 **Purpose:** Track major technical decisions and their rationale
-**Last Updated:** December 8, 2025
+**Last Updated:** December 13, 2025
+
+---
+
+## Bug Fixes
+
+### Bug Fix: Supervisor Task Management API using wrong ID
+**Date:** December 13, 2025
+**Issue:** Task Management view showed 0 items for supervisors while Dashboard showed correct count
+**Root Cause:** `supervisorController.ts` was passing `req.user?.userId` (supervisor's user ID) to `getSubBatchesByDepartment()` which expects a `departmentId`
+**Fix:** Changed to use `req.user?.departmentId` from JWT token
+**File:** `blueshark-backend-test/backend/src/controllers/supervisorController.ts`
+**Impact:**
+- Supervisors can now see their tasks in Task Management view
+- Dashboard and Task Management now show consistent data
+- Requires production backend deployment to fix client issue
 
 ---
 

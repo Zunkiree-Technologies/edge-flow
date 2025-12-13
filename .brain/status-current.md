@@ -1,8 +1,8 @@
 # BlueShark - Current Status
 
-**Last Updated:** December 8, 2025
-**Phase:** Production v1.0 - Client Validation
-**Overall Health:** Production Live - Ready for Client Use
+**Last Updated:** December 13, 2025
+**Phase:** Production v1.0 - Bug Fix Deployed
+**Overall Health:** Production Live - Critical Fix Applied
 
 ---
 
@@ -11,10 +11,22 @@
 | Area | Status | Notes |
 |------|--------|-------|
 | Frontend | Live | https://edge-flow-gamma.vercel.app |
-| Backend | Live | https://edge-flow-backend.onrender.com |
+| Backend | Fixed | Critical bug fix deployed |
 | Database | Clean | Production Neon - ready for real data |
-| Deployment | Complete | v1.0 Production Release |
+| Deployment | Complete | v1.0 + Bug Fix |
 | Client | Active | Using production system |
+
+---
+
+## Recent Work (Dec 13, 2025)
+
+### Deployed Today
+- **CRITICAL BUG FIX**: Task Management view failing for supervisors
+  - **Issue**: `/api/supervisors/sub-batches` endpoint was using `userId` instead of `departmentId`
+  - **Symptom**: Dashboard showed data (1 New Arrival) but Task Management showed 0 items + error
+  - **Root Cause**: `supervisorController.ts` passed `req.user?.userId` to `getSubBatchesByDepartment()` which expects `departmentId`
+  - **Fix**: Changed to use `req.user?.departmentId` from JWT token
+  - **File**: `blueshark-backend-test/backend/src/controllers/supervisorController.ts`
 
 ---
 
@@ -36,6 +48,7 @@ Admin: admin@gmail.com / admin
 ```
 
 ### Key Commits
+- `0e7dbd8` - fix(api): Use departmentId instead of userId in supervisor sub-batches endpoint
 - `8ff0477` - Branding update to Zunkireelabs
 - `39ed843` - Production environment variables fix
 - `48b8936` - Merge dev to main: Production Release v1.0
@@ -95,15 +108,20 @@ Admin: admin@gmail.com / admin
 ## Known Issues
 
 ### Resolved
-- Production environment variables fixed (.env.production)
-- Branding updated to Zunkireelabs
-- Database cleaned for production use
-- Admin user created
-- All TypeScript/ESLint errors fixed
+- ✅ Production environment variables fixed (.env.production)
+- ✅ Branding updated to Zunkireelabs
+- ✅ Database cleaned for production use
+- ✅ Admin user created
+- ✅ All TypeScript/ESLint errors fixed
+- ✅ Alteration data not showing (fixed worker_log_id linkage)
+- ✅ Activity History missing alteration events (now displays correctly)
+- ✅ Kanban cards missing Altered/Rejected info (now shows counts)
+- ✅ **Task Management showing 0 items for supervisors** (fixed userId→departmentId bug)
 
 ### Minor (Non-blocking)
 - Neon free tier: databases auto-suspend after 5 min inactivity
 - UI-S2-001: Data doesn't auto-refresh after worker assignment
+- Date picker shows "Jan 1, 1970" (needs proper date handling)
 
 ---
 
@@ -111,7 +129,21 @@ Admin: admin@gmail.com / admin
 
 | Date | Feedback | Status | Priority |
 |------|----------|--------|----------|
-| - | Awaiting first client feedback | - | - |
+| Dec 13, 2025 | Task Management shows 0 items | ✅ Fixed | Critical |
+
+---
+
+## Key Files Modified
+
+### Backend (Dec 13, 2025)
+- `blueshark-backend-test/backend/src/controllers/supervisorController.ts`
+  - **BUG FIX**: Changed `req.user?.userId` to `req.user?.departmentId`
+  - This fixes the Task Management view failing for supervisors
+
+### Backend (Dec 1, 2025)
+- `blueshark-backend-test/backend/src/services/departmentService.ts`
+  - Added `altered_source`, `rejected_source` includes
+  - Added `total_altered`, `total_rejected` calculations
 
 ---
 
@@ -127,7 +159,7 @@ Admin: admin@gmail.com / admin
 | Environment | Frontend | Backend |
 |-------------|----------|---------|
 | Production | edge-flow-gamma.vercel.app | edge-flow-backend.onrender.com |
-| Development | edge-flow-git-dev-*.vercel.app | edge-flow-backend-dev.onrender.com |
+| Development | edge-flow-git-dev-*.vercel.app | localhost:5000 |
 | Local | localhost:3000 | localhost:5000 |
 
 ---
@@ -141,24 +173,13 @@ Admin: admin@gmail.com / admin
 
 ---
 
-## Next Phase: Product Maturity
+## Next Actions
 
-### Immediate (Feedback-Driven)
-- Bug fixes from client usage
-- UX improvements based on real workflows
-- Performance tuning under real data load
-
-### Short-term
-- API documentation
-- Audit logging
-- Reports & Analytics
-
-### Medium-term (Market Readiness)
-- Multi-tenant support
-- Advanced role-based access
-- Mobile optimization
-- Data export/import
+1. ✅ Deploy backend fix to production (Render)
+2. Test Task Management view on production after deploy
+3. Monitor client feedback
+4. Continue with backlog items
 
 ---
 
-**Status updated: December 8, 2025 - Production v1.0 Release**
+**Status updated: December 13, 2025 - Bug Fix Deployed**
