@@ -1,8 +1,8 @@
 # BlueShark - Current Status
 
-**Last Updated:** December 1, 2025
+**Last Updated:** December 13, 2025
 **Sprint:** Active Development
-**Overall Health:** Stable (QC Testing Complete)
+**Overall Health:** Stable (Bug Fix Applied)
 
 ---
 
@@ -11,26 +11,29 @@
 | Area | Status | Notes |
 |------|--------|-------|
 | Frontend | Active | Next.js 15.5, Kanban cards enhanced |
-| Backend | Stable | Local backend running on port 5000 |
+| Backend | Fixed | Critical bug fix for supervisor endpoint |
 | Database | Configured | Neon PostgreSQL (dev/prod branches) |
-| Deployment | Ready | Vercel + Render configured |
+| Deployment | Pending | Backend fix needs production deploy |
 
 ---
 
-## Recent Work (Dec 1, 2025)
+## Recent Work (Dec 13, 2025)
 
 ### Completed Today
+- **CRITICAL BUG FIX**: Task Management view failing for supervisors
+  - **Issue**: `/api/supervisors/sub-batches` endpoint was using `userId` instead of `departmentId`
+  - **Symptom**: Dashboard showed data (1 New Arrival) but Task Management showed 0 items + error
+  - **Root Cause**: `supervisorController.ts` passed `req.user?.userId` to `getSubBatchesByDepartment()` which expects `departmentId`
+  - **Fix**: Changed to use `req.user?.departmentId` from JWT token
+  - **File**: `blueshark-backend-test/backend/src/controllers/supervisorController.ts`
+
+### Previous Work (Dec 1, 2025)
 - **Kanban Card Enhancement**: Added Altered/Rejected counts display
   - Amber color for Altered with RefreshCw icon
   - Red color for Rejected with XCircle icon
   - Only shown when counts > 0
   - Processed count now excludes altered/rejected from calculation
 - **Backend API Update**: `departmentService.ts` now includes `total_altered` and `total_rejected`
-  - Added `altered_source` and `rejected_source` Prisma includes
-  - Calculated totals returned in API response
-- **Database Fix**: Fixed `worker_log_id: null` in `sub_batch_altered` record
-  - Alteration data now properly linked to worker logs
-  - Activity History shows alteration events correctly
 
 ### Previous Session (Nov 30, 2025)
 - Toast notification system implementation
@@ -62,10 +65,10 @@
 - ✅ Alteration data not showing (fixed worker_log_id linkage)
 - ✅ Activity History missing alteration events (now displays correctly)
 - ✅ Kanban cards missing Altered/Rejected info (now shows counts)
+- ✅ **Task Management showing 0 items for supervisors** (fixed userId→departmentId bug in supervisorController.ts)
 
 ### Medium
 - Date picker shows "Jan 1, 1970" (needs proper date handling)
-- Some API endpoints require supervisor role for testing
 
 ### Low
 - UI polish items pending
@@ -75,7 +78,12 @@
 
 ## Key Files Modified Today
 
-### Backend
+### Backend (Dec 13, 2025)
+- `blueshark-backend-test/backend/src/controllers/supervisorController.ts`
+  - **BUG FIX**: Changed `req.user?.userId` to `req.user?.departmentId`
+  - This fixes the Task Management view failing for supervisors
+
+### Backend (Dec 1, 2025)
 - `blueshark-backend-test/backend/src/services/departmentService.ts`
   - Added `altered_source`, `rejected_source` includes
   - Added `total_altered`, `total_rejected` calculations
@@ -128,12 +136,12 @@ Database: Neon production branch
 
 ## Next Session Action Items
 
-1. Test rejection flow with multiple workers
-2. Verify Kanban card displays in all edge cases
-3. Consider adding rejected count display in Dep-1 card
-4. Test full QC scenario end-to-end
-5. Deploy changes to production
+1. **Deploy backend fix to production** (Render) - Critical for client
+2. Test Task Management view on production after deploy
+3. Test rejection flow with multiple workers
+4. Verify Kanban card displays in all edge cases
+5. Test full QC scenario end-to-end
 
 ---
 
-**Status updated by BlueShark-Stark on memorize.**
+**Status updated by BlueShark-Stark on Dec 13, 2025.**

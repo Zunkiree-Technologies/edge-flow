@@ -100,14 +100,18 @@ export const getSupervisorSubBatches = async (
   res: Response
 ) => {
   try {
-    const supervisorId = req.user?.userId; // get supervisorId from auth middleware
+    // Get departmentId from JWT token (set during supervisor login)
+    const departmentId = req.user?.departmentId;
 
-    if (!supervisorId) {
-      return res.status(400).json({ message: "Supervisor ID is required" });
+    if (!departmentId) {
+      return res.status(400).json({
+        success: false,
+        message: "Supervisor is not assigned to any department"
+      });
     }
 
     const subBatches = await departmentService.getSubBatchesByDepartment(
-      supervisorId
+      departmentId
     );
 
     return res.status(200).json({
