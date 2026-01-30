@@ -257,7 +257,7 @@ const DepartmentForm = () => {
   // Filter, sort and paginate departments using useMemo
   const { paginatedDepartments, totalPages, totalFiltered } = useMemo(() => {
     // Step 1: Filter
-    let filtered = departments.filter(dept => {
+    const filtered = departments.filter(dept => {
       // Search filter
       if (tableSearchQuery.trim()) {
         const query = tableSearchQuery.toLowerCase();
