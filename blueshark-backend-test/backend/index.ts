@@ -1,7 +1,12 @@
+// Load environment variables FIRST, before any other imports.
+// db.ts creates a PostgreSQL connection pool at import time using process.env.DATABASE_URL,
+// so dotenv must run before any module that imports db.ts (directly or indirectly).
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
 import authRoutes from "./src/routes/auth";
-import dotenv from "dotenv";
 import rollRoutes from "./src/routes/roll";
 import batchRoutes from "./src/routes/batch";
 import subBatchRoutes from "./src/routes/subBatch";
@@ -16,6 +21,7 @@ import subBatchRejectedRoutes from "./src/routes/subBatchRejected";
 import subBatchAlteredRoutes from "./src/routes/subBatchAltered";
 import subBatchWorkflowRoutes from "./src/routes/subBatchWorkflow";
 import wageRoutes from "./src/routes/wage";
+import paymentRoutes from "./src/routes/payment";
 import productionViewRoutes from "./src/routes/productionView";
 import inventoryRoutes from "./src/routes/inventory";
 import inventorySubtractionRoutes from "./src/routes/inventorySubtraction";
@@ -31,8 +37,6 @@ import {
   sanitizeInput,
 } from "./src/middleware/securityMiddleware";
 import errorMiddleware, { notFoundHandler } from "./src/middleware/errorMiddleware";
-
-dotenv.config();
 
 const app = express();
 
@@ -105,6 +109,9 @@ app.use("/api/sub-batches/workflow", subBatchWorkflowRoutes);
 
 // Wage Calculation Routes
 app.use("/api/wages", wageRoutes);
+
+// Payment Tracking Routes
+app.use("/api/payments", paymentRoutes);
 
 // Production View Routes
 app.use("/api/production-view", productionViewRoutes);

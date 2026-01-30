@@ -107,6 +107,7 @@ model sub_batches {
   rejected         sub_batch_rejected[]
   size_details     sub_batch_size_details[]
   workflows        sub_batch_workflows?
+  wage_payments    wage_payments[]
   batch            batches?                 @relation(fields: [batch_id], references: [id])
   department       departments?             @relation(fields: [department_id], references: [id])
   roll             rolls?                   @relation(fields: [roll_id], references: [id])
@@ -293,6 +294,7 @@ model workers {
   department_assignments department_sub_batches[]
   dept_workers           department_workers[]
   worker_logs            worker_logs[]
+  wage_payments          wage_payments[]
   department             departments?             @relation(fields: [department_id], references: [id])
 
   @@index([department_id])
@@ -479,4 +481,54 @@ enum SubBatchStatus {
   IN_PRODUCTION
   COMPLETED
   CANCELLED
+}
+
+// Payment Method - How the payment was made
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  CHECK
+  MOBILE_WALLET
+}
+
+// Payment Type - How the payment amount was determined
+enum PaymentType {
+  DATE_RANGE    // Pay for work done in a date range
+  SUB_BATCH     // Pay for specific sub-batch work
+  DIRECT        // Direct payment (advance, bonus, ad-hoc)
+}
+
+// Wage Payments - Tracks all payment transactions to workers
+model wage_payments {
+  id               Int           @id @default(autoincrement())
+  worker_id        Int
+  amount           Float
+  payment_type     PaymentType   // How payment is tracked
+  payment_method   PaymentMethod
+  payment_date     DateTime      @default(now())
+  reference_number String?       // Transaction ID, check number
+  remarks          String?
+
+  // Optional references based on payment_type
+  start_date       DateTime?     // For DATE_RANGE type
+  end_date         DateTime?     // For DATE_RANGE type
+  sub_batch_id     Int?          // For SUB_BATCH type
+
+  recorded_by      Int?          // User who recorded payment
+  created_at       DateTime      @default(now())
+
+  // Void fields - payments cannot be deleted, only voided
+  is_voided        Boolean       @default(false)
+  void_reason      String?       // Reason for voiding
+  voided_by        Int?          // User who voided the payment
+  voided_at        DateTime?     // When the payment was voided
+
+  worker           workers       @relation(fields: [worker_id], references: [id])
+  sub_batch        sub_batches?  @relation(fields: [sub_batch_id], references: [id])
+
+  @@index([worker_id])
+  @@index([payment_date])
+  @@index([payment_type])
+  @@index([sub_batch_id])
+  @@index([is_voided])
 }

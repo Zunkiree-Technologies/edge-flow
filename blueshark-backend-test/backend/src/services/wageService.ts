@@ -4,6 +4,14 @@ import prisma, { Prisma } from "../config/db";
 export interface WageCalculation {
   worker_id: number;
   worker_name: string;
+  // Gross wages (before deductions)
+  gross_billable_wages: number;
+  // Deductions from altered/rejected items
+  altered_deduction: number;
+  altered_quantity: number;
+  rejected_deduction: number;
+  rejected_quantity: number;
+  // Net wages (after deductions)
   total_billable_wages: number;
   total_non_billable_wages: number;
   total_quantity_worked: number;
@@ -33,6 +41,7 @@ export interface WageReport {
 
 /**
  * Calculate wages for a specific worker within a date range
+ * Now includes auto-deduction for altered/rejected items linked to worker's logs
  */
 export const calculateWorkerWages = async (
   workerId: number,
@@ -50,7 +59,7 @@ export const calculateWorkerWages = async (
     if (endDate) whereClause.work_date.lte = endDate;
   }
 
-  // Get all logs for this worker
+  // Get all logs for this worker with altered/rejected entries
   const logs = await prisma.worker_logs.findMany({
     where: whereClause,
     include: {
@@ -64,6 +73,8 @@ export const calculateWorkerWages = async (
           name: true,
         },
       },
+      altered_entry: true,
+      rejected_entry: true,
     },
     orderBy: {
       work_date: "desc",
@@ -75,13 +86,17 @@ export const calculateWorkerWages = async (
   }
 
   // Calculate summary
-  let totalBillableWages = 0;
+  let grossBillableWages = 0;
   let totalNonBillableWages = 0;
   let totalQuantityWorked = 0;
   let billableQuantity = 0;
   let nonBillableQuantity = 0;
   let billableEntries = 0;
   let nonBillableEntries = 0;
+  let alteredDeduction = 0;
+  let alteredQuantity = 0;
+  let rejectedDeduction = 0;
+  let rejectedQuantity = 0;
 
   const detailedLogs: DetailedWorkLog[] = logs.map((log) => {
     const qtyWorked = log.quantity_worked || 0;
@@ -91,9 +106,28 @@ export const calculateWorkerWages = async (
     totalQuantityWorked += qtyWorked;
 
     if (log.is_billable) {
-      totalBillableWages += amount;
+      grossBillableWages += amount;
       billableQuantity += qtyWorked;
       billableEntries++;
+
+      // Calculate deductions from altered/rejected items linked to this billable log
+      if (log.altered_entry && log.altered_entry.length > 0) {
+        log.altered_entry.forEach((altered) => {
+          const alteredQty = altered.quantity || 0;
+          const deduction = alteredQty * unitPrice;
+          alteredDeduction += deduction;
+          alteredQuantity += alteredQty;
+        });
+      }
+
+      if (log.rejected_entry && log.rejected_entry.length > 0) {
+        log.rejected_entry.forEach((rejected) => {
+          const rejectedQty = rejected.quantity || 0;
+          const deduction = rejectedQty * unitPrice;
+          rejectedDeduction += deduction;
+          rejectedQuantity += rejectedQty;
+        });
+      }
     } else {
       totalNonBillableWages += amount;
       nonBillableQuantity += qtyWorked;
@@ -113,10 +147,20 @@ export const calculateWorkerWages = async (
     };
   });
 
+  // Calculate net billable wages (gross - deductions)
+  // Ensure we don't go negative
+  const totalDeductions = alteredDeduction + rejectedDeduction;
+  const netBillableWages = Math.max(0, grossBillableWages - totalDeductions);
+
   const summary: WageCalculation = {
     worker_id: workerId,
     worker_name: logs[0].worker.name,
-    total_billable_wages: totalBillableWages,
+    gross_billable_wages: grossBillableWages,
+    altered_deduction: alteredDeduction,
+    altered_quantity: alteredQuantity,
+    rejected_deduction: rejectedDeduction,
+    rejected_quantity: rejectedQuantity,
+    total_billable_wages: netBillableWages,
     total_non_billable_wages: totalNonBillableWages,
     total_quantity_worked: totalQuantityWorked,
     billable_quantity: billableQuantity,
@@ -134,6 +178,7 @@ export const calculateWorkerWages = async (
 
 /**
  * Calculate wages for all workers in a date range
+ * Now includes auto-deduction for altered/rejected items linked to worker's logs
  */
 export const calculateAllWorkersWages = async (
   startDate?: Date,
@@ -149,7 +194,7 @@ export const calculateAllWorkersWages = async (
     if (endDate) whereClause.work_date.lte = endDate;
   }
 
-  // Get all logs
+  // Get all logs with altered/rejected entries
   const logs = await prisma.worker_logs.findMany({
     where: whereClause,
     include: {
@@ -160,12 +205,14 @@ export const calculateAllWorkersWages = async (
           department_id: true,
         },
       },
+      altered_entry: true,
+      rejected_entry: true,
     },
   });
 
   // Filter by department if specified
   const filteredLogs = departmentId
-    ? logs.filter((log) => log.worker.department_id === departmentId)
+    ? logs.filter((log) => log.department_id === departmentId)
     : logs;
 
   // Group by worker
@@ -182,13 +229,17 @@ export const calculateAllWorkersWages = async (
   const results: WageCalculation[] = [];
 
   for (const [workerId, workerLogs] of workerMap.entries()) {
-    let totalBillableWages = 0;
+    let grossBillableWages = 0;
     let totalNonBillableWages = 0;
     let totalQuantityWorked = 0;
     let billableQuantity = 0;
     let nonBillableQuantity = 0;
     let billableEntries = 0;
     let nonBillableEntries = 0;
+    let alteredDeduction = 0;
+    let alteredQuantity = 0;
+    let rejectedDeduction = 0;
+    let rejectedQuantity = 0;
 
     workerLogs.forEach((log) => {
       const qtyWorked = log.quantity_worked || 0;
@@ -198,9 +249,28 @@ export const calculateAllWorkersWages = async (
       totalQuantityWorked += qtyWorked;
 
       if (log.is_billable) {
-        totalBillableWages += amount;
+        grossBillableWages += amount;
         billableQuantity += qtyWorked;
         billableEntries++;
+
+        // Calculate deductions from altered/rejected items linked to this billable log
+        if (log.altered_entry && log.altered_entry.length > 0) {
+          log.altered_entry.forEach((altered) => {
+            const alteredQty = altered.quantity || 0;
+            const deduction = alteredQty * unitPrice;
+            alteredDeduction += deduction;
+            alteredQuantity += alteredQty;
+          });
+        }
+
+        if (log.rejected_entry && log.rejected_entry.length > 0) {
+          log.rejected_entry.forEach((rejected) => {
+            const rejectedQty = rejected.quantity || 0;
+            const deduction = rejectedQty * unitPrice;
+            rejectedDeduction += deduction;
+            rejectedQuantity += rejectedQty;
+          });
+        }
       } else {
         totalNonBillableWages += amount;
         nonBillableQuantity += qtyWorked;
@@ -208,10 +278,20 @@ export const calculateAllWorkersWages = async (
       }
     });
 
+    // Calculate net billable wages (gross - deductions)
+    // Ensure we don't go negative
+    const totalDeductions = alteredDeduction + rejectedDeduction;
+    const netBillableWages = Math.max(0, grossBillableWages - totalDeductions);
+
     results.push({
       worker_id: workerId,
       worker_name: workerLogs[0].worker.name,
-      total_billable_wages: totalBillableWages,
+      gross_billable_wages: grossBillableWages,
+      altered_deduction: alteredDeduction,
+      altered_quantity: alteredQuantity,
+      rejected_deduction: rejectedDeduction,
+      rejected_quantity: rejectedQuantity,
+      total_billable_wages: netBillableWages,
       total_non_billable_wages: totalNonBillableWages,
       total_quantity_worked: totalQuantityWorked,
       billable_quantity: billableQuantity,

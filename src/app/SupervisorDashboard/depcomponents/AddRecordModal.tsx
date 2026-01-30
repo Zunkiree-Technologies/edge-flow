@@ -98,6 +98,18 @@ const AddWorkerRecordModal: React.FC<AddWorkerRecordModalProps> = ({
   };
 
   const handleChange = (field: string, value: any) => {
+    // Auto-fill unit_price when worker is selected
+    if (field === 'workerId' && value) {
+      const selectedWorker = workers.find(w => w.id === parseInt(value));
+      if (selectedWorker && selectedWorker.wage_rate > 0) {
+        setFormData(prev => ({
+          ...prev,
+          [field]: value,
+          unitPrice: selectedWorker.wage_rate.toString()
+        }));
+        return;
+      }
+    }
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -288,7 +300,7 @@ const AddWorkerRecordModal: React.FC<AddWorkerRecordModalProps> = ({
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
             <p className="text-xs text-gray-500 mt-1">
-              Can be filled by admin later in wage calculation
+              {formData.unitPrice ? 'Auto-filled from worker\'s default rate. Can be adjusted if needed.' : 'Select a worker to auto-fill, or enter manually.'}
             </p>
           </div>
 
@@ -339,11 +351,15 @@ const AddWorkerRecordModal: React.FC<AddWorkerRecordModalProps> = ({
               <div className="text-xs space-y-1">
                 <div className="flex justify-between">
                   <span className="text-gray-600">PAN:</span>
-                  <span className="font-medium">{selectedWorker.pan}</span>
+                  <span className="font-medium">{selectedWorker.pan || '-'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Wage Type:</span>
                   <span className="font-medium capitalize">{selectedWorker.wage_type}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Default Rate:</span>
+                  <span className="font-medium text-green-600">₹{selectedWorker.wage_rate > 0 ? selectedWorker.wage_rate.toFixed(2) : '0.00'}</span>
                 </div>
               </div>
             </div>

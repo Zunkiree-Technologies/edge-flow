@@ -346,8 +346,20 @@ const WorkerPage = () => {
         try {
             setSaveLoading(true);
 
-            // Validation - only name is required
+            // Validation - name and wage_rate are required
             if (!formData.name.trim()) { showToast("warning", "Name is required"); return; }
+
+            // Validate wage_rate is required and > 0
+            if (!formData.wage_rate_input || formData.wage_rate_input.trim() === "") {
+                showToast("warning", "Wage rate is required");
+                return;
+            }
+
+            const wageRate = Number(formData.wage_rate_input);
+            if (isNaN(wageRate) || wageRate <= 0) {
+                showToast("warning", "Wage rate must be greater than 0");
+                return;
+            }
 
             const payload = {
                 name: formData.name.trim(),
@@ -355,7 +367,7 @@ const WorkerPage = () => {
                 ...(formData.pan.trim() ? { pan: formData.pan.trim() } : { pan: "" }),
                 ...(formData.address.trim() ? { address: formData.address.trim() } : { address: "" }),
                 wage_type: formData.wage_type || "HOURLY",
-                wage_rate: formData.wage_rate_input ? Number(formData.wage_rate_input) : 0,
+                wage_rate: wageRate,
             };
 
             if (editingWorker) {
@@ -737,7 +749,7 @@ const WorkerPage = () => {
                             {/* Wage Rate */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                                    Wage Rate <span className="text-gray-400 text-xs font-normal">(Optional)</span>
+                                    Wage Rate <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="number"
