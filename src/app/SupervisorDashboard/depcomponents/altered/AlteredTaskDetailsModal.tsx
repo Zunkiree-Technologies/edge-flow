@@ -275,10 +275,10 @@ const AlteredTaskDetailsModal: React.FC<AlteredTaskDetailsModalProps> = ({
             return;
         }
 
-        // Unit price is optional - default to 0 if not provided
+        // Unit price is required - must be greater than 0 to calculate wages
         const parsedUnitPrice = unitPrice && unitPrice.trim() ? parseFloat(unitPrice) : 0;
-        if (isNaN(parsedUnitPrice) || parsedUnitPrice < 0) {
-            showToast('error', 'Please enter a valid unit price (0 or greater)');
+        if (isNaN(parsedUnitPrice) || parsedUnitPrice <= 0) {
+            showToast('error', 'Please enter a valid unit price greater than 0');
             return;
         }
 

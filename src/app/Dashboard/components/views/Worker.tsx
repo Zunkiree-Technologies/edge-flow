@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import axios from "axios";
-import { Plus, Edit2, Trash2, X, Eye, Shell, FileText, ChevronDown, ChevronUp, SlidersHorizontal, ChevronLeft, ChevronRight, ArrowUpDown, Search, Check } from "lucide-react";
+import { Plus, Edit2, Trash2, X, Eye, Shell, FileText, ChevronDown, ChevronUp, SlidersHorizontal, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ArrowUpDown, Search, Check } from "lucide-react";
 import Loader from "@/app/Components/Loader";
 import { useToast } from "@/app/Components/ToastContext";
 
@@ -346,8 +346,20 @@ const WorkerPage = () => {
         try {
             setSaveLoading(true);
 
-            // Validation - only name is required
+            // Validation - name and wage_rate are required
             if (!formData.name.trim()) { showToast("warning", "Name is required"); return; }
+
+            // Validate wage_rate is required and > 0
+            if (!formData.wage_rate_input || formData.wage_rate_input.trim() === "") {
+                showToast("warning", "Wage rate is required");
+                return;
+            }
+
+            const wageRate = Number(formData.wage_rate_input);
+            if (isNaN(wageRate) || wageRate <= 0) {
+                showToast("warning", "Wage rate must be greater than 0");
+                return;
+            }
 
             const payload = {
                 name: formData.name.trim(),
@@ -355,7 +367,7 @@ const WorkerPage = () => {
                 ...(formData.pan.trim() ? { pan: formData.pan.trim() } : { pan: "" }),
                 ...(formData.address.trim() ? { address: formData.address.trim() } : { address: "" }),
                 wage_type: formData.wage_type || "HOURLY",
-                wage_rate: formData.wage_rate_input ? Number(formData.wage_rate_input) : 0,
+                wage_rate: wageRate,
             };
 
             if (editingWorker) {
@@ -580,11 +592,11 @@ const WorkerPage = () => {
                                     </select>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                    <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronLeft className="w-4 h-4" /><ChevronLeft className="w-4 h-4 -ml-3" /></button>
+                                    <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronsLeft className="w-4 h-4" /></button>
                                     <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronLeft className="w-4 h-4" /></button>
                                     <span className="px-3 py-1 text-sm text-gray-700">Page {currentPage} of {totalPages || 1}</span>
                                     <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage >= totalPages} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronRight className="w-4 h-4" /></button>
-                                    <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage >= totalPages} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronRight className="w-4 h-4" /><ChevronRight className="w-4 h-4 -ml-3" /></button>
+                                    <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage >= totalPages} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronsRight className="w-4 h-4" /></button>
                                 </div>
                             </div>
                         </div>
@@ -737,7 +749,7 @@ const WorkerPage = () => {
                             {/* Wage Rate */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                                    Wage Rate <span className="text-gray-400 text-xs font-normal">(Optional)</span>
+                                    Wage Rate <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="number"

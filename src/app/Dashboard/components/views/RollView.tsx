@@ -10,6 +10,8 @@ import {
   Eye,
   ChevronLeft,
   ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
   ChevronDown,
   ChevronUp,
   SlidersHorizontal,
@@ -21,6 +23,7 @@ import {
 import Loader from "@/app/Components/Loader";
 import { useToast } from "@/app/Components/ToastContext";
 import { formatNepaliDate } from "@/app/utils/dateUtils";
+import { formatUnitShort } from "@/app/utils/formatUtils";
 
 // Helper function to get background color from color name
 const getColorBg = (colorName: string): string => {
@@ -950,11 +953,11 @@ const RollView = () => {
                       <div className="flex items-center gap-1">Total Qty {sortColumn === "quantity" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
                     </th>
                     <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>
-                      <div className="flex items-center gap-1">Remaining</div>
+                      <div className="flex items-center gap-1">Rem. Qty</div>
                     </th>
                     <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>Unit</th>
                     <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>Roll Units</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>Remaining Units</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>Rem. Units</th>
                     <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>Color</th>
                     <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>Vendor</th>
                     <th className="px-4 py-2 text-right text-xs font-medium whitespace-nowrap" style={{ color: '#141414', fontWeight: 500 }}>Actions</th>
@@ -984,7 +987,7 @@ const RollView = () => {
                           );
                         })()}
                       </td>
-                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">{roll.unit}</td>
+                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">{formatUnitShort(roll.unit)}</td>
                       <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">{roll.roll_unit_count || <span className="text-gray-400">-</span>}</td>
                       <td className="px-4 py-1.5 text-sm whitespace-nowrap border-r border-gray-200">
                         {(() => {
@@ -1047,11 +1050,11 @@ const RollView = () => {
                   </select>
                 </div>
                 <div className="flex items-center gap-1">
-                  <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronLeft className="w-4 h-4" /><ChevronLeft className="w-4 h-4 -ml-3" /></button>
+                  <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronsLeft className="w-4 h-4" /></button>
                   <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronLeft className="w-4 h-4" /></button>
                   <span className="px-3 py-1 text-sm text-gray-700">Page {currentPage} of {totalPages || 1}</span>
                   <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage >= totalPages} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronRight className="w-4 h-4" /></button>
-                  <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage >= totalPages} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronRight className="w-4 h-4" /><ChevronRight className="w-4 h-4 -ml-3" /></button>
+                  <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage >= totalPages} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronsRight className="w-4 h-4" /></button>
                 </div>
               </div>
             </div>

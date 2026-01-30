@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import axios from "axios";
-import { Plus, X, Edit2, Trash2, Package, Eye, ChevronDown, ChevronUp, SlidersHorizontal, ChevronLeft, ChevronRight, ArrowUpDown, Search, Check } from "lucide-react";
+import { Plus, X, Edit2, Trash2, Package, Eye, ChevronDown, ChevronUp, SlidersHorizontal, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ArrowUpDown, Search, Check } from "lucide-react";
 import Loader from "@/app/Components/Loader";
 import { useToast } from "@/app/Components/ToastContext";
 import { formatNepaliDate } from "@/app/utils/dateUtils";
+import { formatUnitShort } from "@/app/utils/formatUtils";
 
 // Helper function to get background color from color name
 const getColorBg = (colorName: string): string => {
@@ -1506,6 +1507,9 @@ const BatchView = () => {
                     <th className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }} onClick={() => handleSort("name")}>
                       <div className="flex items-center gap-1">Name {sortColumn === "name" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
                     </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }} onClick={() => handleSort("order_name")}>
+                      <div className="flex items-center gap-1">Order Name {sortColumn === "order_name" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
+                    </th>
                     <th className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }} onClick={() => handleSort("quantity")}>
                       <div className="flex items-center gap-1">Quantity {sortColumn === "quantity" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
                     </th>
@@ -1533,8 +1537,9 @@ const BatchView = () => {
                         {formatNepaliDate(batch.created_at)}
                       </td>
                       <td className="px-4 py-1.5 whitespace-nowrap border-r border-gray-200"><span className="text-sm font-medium text-[#2272B4] hover:underline cursor-pointer" onClick={() => handlePreview(batch)}>{batch.name}</span></td>
+                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">{batch.order_name || <span className="text-gray-400">-</span>}</td>
                       <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">{batch.quantity}</td>
-                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">{batch.unit}</td>
+                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">{formatUnitShort(batch.unit)}</td>
                       <td className="px-4 py-1.5 text-sm whitespace-nowrap border-r border-gray-200">
                         {(() => {
                           const colors = getBatchColors(batch);
@@ -1712,11 +1717,11 @@ const BatchView = () => {
                   </select>
                 </div>
                 <div className="flex items-center gap-1">
-                  <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronLeft className="w-4 h-4" /><ChevronLeft className="w-4 h-4 -ml-3" /></button>
+                  <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronsLeft className="w-4 h-4" /></button>
                   <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronLeft className="w-4 h-4" /></button>
                   <span className="px-3 py-1 text-sm text-gray-700">Page {currentPage} of {totalPages || 1}</span>
                   <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage >= totalPages} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronRight className="w-4 h-4" /></button>
-                  <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage >= totalPages} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronRight className="w-4 h-4" /><ChevronRight className="w-4 h-4 -ml-3" /></button>
+                  <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage >= totalPages} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronsRight className="w-4 h-4" /></button>
                 </div>
               </div>
             </div>
