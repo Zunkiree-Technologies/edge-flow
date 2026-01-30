@@ -478,7 +478,6 @@ export const voidPayment = async (
 
   // Void the payment (not delete)
   // Note: After running `npx prisma generate`, the type assertion can be removed
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const voidedPayment = await prisma.wage_payments.update({
     where: { id: paymentId },
     data: {
@@ -486,6 +485,7 @@ export const voidPayment = async (
       void_reason: voidReason.trim(),
       voided_by: voidedBy,
       voided_at: new Date(),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any,
     include: {
       worker: {
@@ -508,6 +508,7 @@ export const voidPayment = async (
  * @deprecated Use voidPayment instead - payments should not be deleted
  * Kept for backward compatibility but throws an error
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const deletePayment = async (_paymentId: number) => {
   throw new Error(
     "Payment deletion is not allowed. Use voidPayment() instead to maintain audit trail."

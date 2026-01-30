@@ -74,8 +74,9 @@ export const createPayment = async (req: Request, res: Response) => {
     });
 
     res.status(201).json(payment);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message || "Failed to record payment" });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Failed to record payment";
+    res.status(500).json({ error: message });
   }
 };
 
@@ -103,8 +104,9 @@ export const listPayments = async (req: Request, res: Response) => {
     });
 
     res.json(payments);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message || "Failed to fetch payments" });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Failed to fetch payments";
+    res.status(500).json({ error: message });
   }
 };
 
@@ -122,8 +124,8 @@ export const getPayment = async (req: Request, res: Response) => {
 
     const payment = await getPaymentById(paymentId);
     res.json(payment);
-  } catch (error: any) {
-    res.status(404).json({ error: error.message || "Payment not found" });
+  } catch (error: unknown) {
+    res.status(404).json({ error: error instanceof Error ? error.message : "Payment not found" });
   }
 };
 
@@ -141,8 +143,8 @@ export const getWorkerPayments = async (req: Request, res: Response) => {
 
     const result = await getPaymentsByWorker(workerId);
     res.json(result);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message || "Failed to fetch worker payments" });
+  } catch (error: unknown) {
+    res.status(500).json({ error: error instanceof Error ? error.message : "Failed to fetch worker payments" });
   }
 };
 
@@ -162,8 +164,8 @@ export const getSummary = async (req: Request, res: Response) => {
     );
 
     res.json(summary);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message || "Failed to get payment summary" });
+  } catch (error: unknown) {
+    res.status(500).json({ error: error instanceof Error ? error.message : "Failed to get payment summary" });
   }
 };
 
@@ -183,8 +185,8 @@ export const getUnpaid = async (req: Request, res: Response) => {
     );
 
     res.json(unpaidList);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message || "Failed to get unpaid wages" });
+  } catch (error: unknown) {
+    res.status(500).json({ error: error instanceof Error ? error.message : "Failed to get unpaid wages" });
   }
 };
 
@@ -209,8 +211,8 @@ export const getWorkerUnpaid = async (req: Request, res: Response) => {
     );
 
     res.json(unpaid);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message || "Failed to get unpaid wages" });
+  } catch (error: unknown) {
+    res.status(500).json({ error: error instanceof Error ? error.message : "Failed to get unpaid wages" });
   }
 };
 
@@ -238,8 +240,8 @@ export const voidPaymentHandler = async (req: Request, res: Response) => {
       voided_by ? parseInt(voided_by) : undefined
     );
     res.json(result);
-  } catch (error: any) {
-    res.status(400).json({ error: error.message || "Failed to void payment" });
+  } catch (error: unknown) {
+    res.status(400).json({ error: error instanceof Error ? error.message : "Failed to void payment" });
   }
 };
 
@@ -280,8 +282,8 @@ export const calculateDateRange = async (req: Request, res: Response) => {
     );
 
     res.json(result);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message || "Failed to calculate wages" });
+  } catch (error: unknown) {
+    res.status(500).json({ error: error instanceof Error ? error.message : "Failed to calculate wages" });
   }
 };
 
@@ -312,8 +314,8 @@ export const calculateSubBatch = async (req: Request, res: Response) => {
 
     const result = await calculateWagesForSubBatch(workerId, subBatchId);
     res.json(result);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message || "Failed to calculate wages" });
+  } catch (error: unknown) {
+    res.status(500).json({ error: error instanceof Error ? error.message : "Failed to calculate wages" });
   }
 };
 
@@ -331,7 +333,7 @@ export const getWorkerSubBatchList = async (req: Request, res: Response) => {
 
     const subBatches = await getWorkerSubBatches(workerId);
     res.json(subBatches);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message || "Failed to fetch sub-batches" });
+  } catch (error: unknown) {
+    res.status(500).json({ error: error instanceof Error ? error.message : "Failed to fetch sub-batches" });
   }
 };

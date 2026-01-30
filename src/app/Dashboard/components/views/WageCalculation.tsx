@@ -210,7 +210,7 @@ const FilterDropdown = ({
 };
 
 const WageCalculation = () => {
-  const { showToast, showConfirm } = useToast();
+  const { showToast } = useToast();
 
   // View state
   const [activeView, setActiveView] = useState<'all' | 'detail'>('all');
@@ -498,8 +498,9 @@ const WageCalculation = () => {
       resetPaymentForm();
       fetchWorkerPayments(selectedWorkerForDetail.worker_id);
       fetchPaymentSummary();
-    } catch (error: any) {
-      showToast("error", error.response?.data?.error || "Failed to record payment");
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { error?: string } } };
+      showToast("error", axiosError.response?.data?.error || "Failed to record payment");
     } finally {
       setPaymentLoading(false);
     }
@@ -534,8 +535,9 @@ const WageCalculation = () => {
         fetchWorkerPayments(selectedWorkerForDetail.worker_id);
       }
       fetchPaymentSummary();
-    } catch (error: any) {
-      showToast("error", error.response?.data?.error || "Failed to void payment");
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { error?: string } } };
+      showToast("error", axiosError.response?.data?.error || "Failed to void payment");
     } finally {
       setVoidLoading(false);
     }
