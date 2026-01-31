@@ -34,7 +34,7 @@
     "lucide-react": "^0.542.0",
     "nepali-date-converter": "^3.4.0",
     "nepali-datepicker-reactjs": "^1.1.9",
-    "next": "^16.0.7",
+    "next": "^16.1.6",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "react-select": "^5.10.2"
