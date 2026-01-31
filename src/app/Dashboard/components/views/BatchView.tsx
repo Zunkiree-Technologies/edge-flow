@@ -22,7 +22,8 @@ import {
 } from "lucide-react";
 import Loader from "@/app/Components/Loader";
 import { useToast } from "@/app/Components/ToastContext";
-import { formatNepaliDate } from "@/app/utils/dateUtils";
+import NepaliDatePicker from "@/app/Components/NepaliDatePicker";
+import { formatNepaliDate, getTodayNepali, nepaliToGregorian } from "@/app/utils/dateUtils";
 import { formatUnitShort } from "@/app/utils/formatUtils";
 
 // Helper function to get background color from color name
@@ -329,6 +330,7 @@ const BatchView = () => {
     color: "",
     roll_id: null as number | null,
     vendor_id: null as number | null,
+    created_at: "",
   });
 
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
@@ -507,6 +509,19 @@ const BatchView = () => {
       let aVal: any = a[sortColumn as keyof Batch];
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let bVal: any = b[sortColumn as keyof Batch];
+
+      // Handle date column specially
+      if (sortColumn === "created_at") {
+        const aDate = aVal ? new Date(aVal).getTime() : 0;
+        const bDate = bVal ? new Date(bVal).getTime() : 0;
+        const dateCompare = sortDirection === "asc" ? aDate - bDate : bDate - aDate;
+        // Secondary sort by ID when dates are equal
+        if (dateCompare === 0) {
+          return sortDirection === "asc" ? a.id - b.id : b.id - a.id;
+        }
+        return dateCompare;
+      }
+
       if (aVal == null) aVal = "";
       if (bVal == null) bVal = "";
       if (typeof aVal === "string" && typeof bVal === "string") {
@@ -591,6 +606,7 @@ const BatchView = () => {
       color: "",
       roll_id: null,
       vendor_id: null,
+      created_at: getTodayNepali(), // Default to today's Nepali date for new batches
     });
   };
 
@@ -786,6 +802,14 @@ const BatchView = () => {
         payload.vendor_id = formData.vendor_id;
       }
 
+      // Add created_at if provided (convert Nepali to Gregorian ISO)
+      if (formData.created_at) {
+        const gregorianDate = nepaliToGregorian(formData.created_at);
+        if (gregorianDate) {
+          payload.created_at = gregorianDate;
+        }
+      }
+
       if (editingBatch) {
         await axios.put(`${API}/batches/${editingBatch.id}`, payload);
         showToast("success", "Batch updated successfully!");
@@ -834,6 +858,7 @@ const BatchView = () => {
         color: fullBatch.color,
         roll_id: fullBatch.roll_id,
         vendor_id: fullBatch.vendor_id,
+        created_at: fullBatch.created_at ? fullBatch.created_at.split("T")[0] : "",
       });
 
       // Load multi-roll data for editing
@@ -868,6 +893,7 @@ const BatchView = () => {
         color: fullBatch.color,
         roll_id: fullBatch.roll_id,
         vendor_id: fullBatch.vendor_id,
+        created_at: fullBatch.created_at ? fullBatch.created_at.split("T")[0] : "",
       });
 
       // Store batch_rolls for preview display
@@ -1533,28 +1559,38 @@ const BatchView = () => {
           searchable={false}
           icon={<ArrowUpDown className="w-4 h-4" />}
           options={[
-            { value: "id-desc", label: "Newest first", description: "Most recently created" },
-            { value: "id-asc", label: "Oldest first", description: "First created batches" },
+            { value: "id-desc", label: "Recently Added", description: "Last entered into system" },
+            { value: "id-asc", label: "First Added", description: "First entered into system" },
+            {
+              value: "created_at-desc",
+              label: "Date: Newest",
+              description: "Latest business date",
+            },
+            {
+              value: "created_at-asc",
+              label: "Date: Oldest",
+              description: "Earliest business date",
+            },
             { value: "name-asc", label: "Name A-Z", description: "Alphabetical order" },
             { value: "name-desc", label: "Name Z-A", description: "Reverse alphabetical" },
             {
               value: "quantity-desc",
-              label: "Quantity (High to Low)",
+              label: "Qty: High-Low",
               description: "Largest quantities first",
             },
             {
               value: "quantity-asc",
-              label: "Quantity (Low to High)",
+              label: "Qty: Low-High",
               description: "Smallest quantities first",
             },
             {
               value: "unit_count-desc",
-              label: "No of Unit (High to Low)",
+              label: "Units: High-Low",
               description: "Most pieces first",
             },
             {
               value: "unit_count-asc",
-              label: "No of Unit (Low to High)",
+              label: "Units: Low-High",
               description: "Fewest pieces first",
             },
           ]}
@@ -2157,13 +2193,7 @@ const BatchView = () => {
                   <div className="flex justify-between items-center py-1.5 border-b border-gray-100">
                     <span className="text-sm font-medium text-gray-700">Created Date</span>
                     <span className="text-sm text-gray-500">
-                      {editingBatch?.created_at
-                        ? new Date(editingBatch.created_at).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })
-                        : "-"}
+                      {editingBatch?.created_at ? formatNepaliDate(editingBatch.created_at) : "-"}
                     </span>
                   </div>
 
@@ -2371,6 +2401,23 @@ const BatchView = () => {
                       value={formData.order_name}
                       onChange={handleChange}
                       className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    />
+                  </div>
+
+                  {/* Created Date */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                      Created Date
+                    </label>
+                    <NepaliDatePicker
+                      value={formData.created_at || ""}
+                      onChange={(value) =>
+                        setFormData({
+                          ...formData,
+                          created_at: value || "",
+                        })
+                      }
+                      placeholder="Select Created Date"
                     />
                   </div>
 

@@ -32,7 +32,7 @@ import {
 import Loader from "@/app/Components/Loader";
 import NepaliDatePicker from "@/app/Components/NepaliDatePicker";
 import { useToast } from "@/app/Components/ToastContext";
-import { formatNepaliDate } from "@/app/utils/dateUtils";
+import { formatNepaliDate, getTodayNepali, nepaliToGregorian } from "@/app/utils/dateUtils";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -120,6 +120,7 @@ interface SubBatchForm {
   dueDate: string;
   attachmentName: string;
   quantity: string;
+  created_at: string;
 }
 
 interface WorkflowStep {
@@ -342,6 +343,7 @@ const SubBatchView = () => {
     dueDate: "",
     attachmentName: "",
     quantity: "",
+    created_at: "",
   });
 
   // Categories & Sizes
@@ -485,10 +487,16 @@ const SubBatchView = () => {
       if (aVal == null) aVal = "";
       if (bVal == null) bVal = "";
 
-      // Handle dates
-      if (sortColumn === "start_date" || sortColumn === "due_date") {
-        aVal = aVal ? new Date(aVal).getTime() : 0;
-        bVal = bVal ? new Date(bVal).getTime() : 0;
+      // Handle dates (including created_at)
+      if (sortColumn === "start_date" || sortColumn === "due_date" || sortColumn === "created_at") {
+        const aDate = aVal ? new Date(aVal).getTime() : 0;
+        const bDate = bVal ? new Date(bVal).getTime() : 0;
+        const dateCompare = sortDirection === "asc" ? aDate - bDate : bDate - aDate;
+        // Secondary sort by ID when dates are equal
+        if (dateCompare === 0) {
+          return sortDirection === "asc" ? a.id - b.id : b.id - a.id;
+        }
+        return dateCompare;
       }
 
       // Handle strings
@@ -785,6 +793,7 @@ const SubBatchView = () => {
       dueDate: "",
       attachmentName: "",
       quantity: "",
+      created_at: getTodayNepali(), // Default to today's Nepali date for new sub-batches
     });
     setCustomCategories([]);
     setSizesList([]);
@@ -1007,7 +1016,7 @@ const SubBatchView = () => {
               pieces: Number(s.number_of_pieces),
             }));
 
-      const payload = {
+      const payload: any = {
         rollId: rollIdToUse,
         batchId: formData.batch_id ? Number(formData.batch_id) : null,
         name: formData.name || "",
@@ -1023,6 +1032,14 @@ const SubBatchView = () => {
             quantity: Number(a.quantity),
           })),
       };
+
+      // Add created_at if provided (convert Nepali to Gregorian ISO)
+      if (formData.created_at) {
+        const gregorianDate = nepaliToGregorian(formData.created_at);
+        if (gregorianDate) {
+          payload.created_at = gregorianDate;
+        }
+      }
 
       const isEditing = !!editingSubBatch;
       if (isEditing) {
@@ -1119,6 +1136,7 @@ const SubBatchView = () => {
       dueDate: subBatch.due_date ? subBatch.due_date.split("T")[0] : "",
       attachmentName: "",
       quantity: "",
+      created_at: subBatch.created_at ? subBatch.created_at.split("T")[0] : "",
     });
 
     setIsPreview(preview);
@@ -1363,6 +1381,7 @@ const SubBatchView = () => {
               dueDate: "",
               attachmentName: "",
               quantity: "",
+              created_at: getTodayNepali(), // Default to today's Nepali date
             });
             setCustomCategories([]);
             setSizesList([]);
@@ -1508,40 +1527,50 @@ const SubBatchView = () => {
           searchable={false}
           icon={<ArrowUpDown className="w-4 h-4" />}
           options={[
-            { value: "id-desc", label: "Newest first", description: "Most recently created" },
-            { value: "id-asc", label: "Oldest first", description: "First created sub-batches" },
+            { value: "id-desc", label: "Recently Added", description: "Last entered into system" },
+            { value: "id-asc", label: "First Added", description: "First entered into system" },
+            {
+              value: "created_at-desc",
+              label: "Date: Newest",
+              description: "Latest business date",
+            },
+            {
+              value: "created_at-asc",
+              label: "Date: Oldest",
+              description: "Earliest business date",
+            },
             { value: "name-asc", label: "Name A-Z", description: "Alphabetical order" },
             { value: "name-desc", label: "Name Z-A", description: "Reverse alphabetical" },
             { value: "status-asc", label: "Status A-Z", description: "By status alphabetically" },
             { value: "status-desc", label: "Status Z-A", description: "Status reverse order" },
             {
               value: "estimated_pieces-desc",
-              label: "Pieces (High to Low)",
+              label: "Pieces: High-Low",
               description: "Largest quantities first",
             },
             {
               value: "estimated_pieces-asc",
-              label: "Pieces (Low to High)",
+              label: "Pieces: Low-High",
               description: "Smallest quantities first",
             },
             {
               value: "start_date-desc",
-              label: "Start Date (Latest)",
+              label: "Start: Latest",
               description: "Most recent start dates",
             },
             {
               value: "start_date-asc",
-              label: "Start Date (Earliest)",
+              label: "Start: Earliest",
               description: "Oldest start dates first",
             },
             {
               value: "due_date-desc",
-              label: "Due Date (Latest)",
+              label: "Due: Latest",
               description: "Farthest deadlines first",
             },
             {
               value: "due_date-asc",
-              label: "Due Date (Earliest)",
+              label: "Due: Earliest",
               description: "Soonest deadlines first",
             },
           ]}
@@ -3105,6 +3134,25 @@ const SubBatchView = () => {
                         placeholder="Select Due Date"
                       />
                     </div>
+                  </div>
+
+                  {/* Created Date */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                      Created Date
+                    </label>
+                    <NepaliDatePicker
+                      value={formData.created_at || ""}
+                      onChange={(value) =>
+                        setFormData({
+                          ...formData,
+                          created_at: value || "",
+                        })
+                      }
+                      className="rounded-lg"
+                      disabled={isPreview}
+                      placeholder="Select Created Date"
+                    />
                   </div>
                 </div>
 

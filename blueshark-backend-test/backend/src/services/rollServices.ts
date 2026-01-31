@@ -9,6 +9,7 @@ interface RollData {
   vendor_id?: number; // optional: connect existing vendor
   batch_ids?: number[]; // optional: connect existing batches
   sub_batch_ids?: number[]; // optional: connect existing sub_batches
+  created_at?: string; // optional: custom created date
 }
 
 export const createRoll = async (data: RollData) => {
@@ -18,6 +19,7 @@ export const createRoll = async (data: RollData) => {
     roll_unit_count: data.roll_unit_count || null,
     unit: data.unit,
     color: data.color,
+    ...(data.created_at && { created_at: new Date(data.created_at) }),
   };
 
   if (data.vendor_id) {
@@ -133,10 +135,7 @@ export const getRollById = async (id: number) => {
 };
 
 // Get remaining quantity and unit count for a roll (used for batch validation)
-export const getRollRemainingQuantity = async (
-  rollId: number,
-  excludeBatchId?: number
-) => {
+export const getRollRemainingQuantity = async (rollId: number, excludeBatchId?: number) => {
   const roll = await prisma.rolls.findUnique({
     where: { id: rollId },
     include: {
@@ -219,7 +218,7 @@ export const updateRoll = async (id: number, data: Partial<RollData>) => {
         if (data.quantity < totalAllocatedQty) {
           throw new Error(
             `Cannot reduce roll quantity to ${data.quantity}. ` +
-            `${totalAllocatedQty} is already allocated to batches.`
+              `${totalAllocatedQty} is already allocated to batches.`
           );
         }
       }
@@ -239,7 +238,7 @@ export const updateRoll = async (id: number, data: Partial<RollData>) => {
         if (data.roll_unit_count < totalAllocatedUnits) {
           throw new Error(
             `Cannot reduce roll unit count to ${data.roll_unit_count}. ` +
-            `${totalAllocatedUnits} units are already allocated to batches.`
+              `${totalAllocatedUnits} units are already allocated to batches.`
           );
         }
       }
@@ -247,6 +246,11 @@ export const updateRoll = async (id: number, data: Partial<RollData>) => {
   }
 
   const updateData: any = { ...data };
+
+  // Handle created_at date conversion
+  if (data.created_at) {
+    updateData.created_at = new Date(data.created_at);
+  }
 
   if (data.vendor_id) {
     updateData.vendor = { connect: { id: data.vendor_id } };

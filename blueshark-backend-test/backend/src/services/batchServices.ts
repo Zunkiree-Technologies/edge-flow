@@ -3,7 +3,7 @@ import { getRollRemainingQuantity } from "./rollServices";
 
 // Legacy interface for single-roll batches
 interface BatchData {
-  name: string;        // Fabric Name
+  name: string; // Fabric Name
   order_name?: string; // Order Name
   quantity: number;
   unit?: string;
@@ -11,29 +11,30 @@ interface BatchData {
   color?: string;
   roll_id?: number;
   vendor_id?: number;
+  created_at?: string; // Optional: custom created date
 }
 
 // NEW: Multi-roll batch interfaces
 interface BatchRollInput {
   roll_id: number;
-  weight: number;      // Weight to take from this roll
-  units?: number;      // Optional: number of units
+  weight: number; // Weight to take from this roll
+  units?: number; // Optional: number of units
 }
 
 // Size breakdown input for batches
 interface SizeBreakdownInput {
-  size: string;   // Size name (e.g., "M", "L", "XL", "42", "Free Size")
+  size: string; // Size name (e.g., "M", "L", "XL", "42", "Free Size")
   pieces: number; // Number of pieces for this size
 }
 
 interface CreateBatchWithRollsData {
-  name: string;           // Fabric Name
-  order_name?: string;    // Order Name
-  unit: string;           // Unit type (Kilogram, Meter, Piece)
-  color?: string;         // Optional: auto-derived from first roll
-  vendor_id?: number;     // Optional: auto-derived from first roll
+  name: string; // Fabric Name
+  order_name?: string; // Order Name
+  unit: string; // Unit type (Kilogram, Meter, Piece)
+  color?: string; // Optional: auto-derived from first roll
+  vendor_id?: number; // Optional: auto-derived from first roll
   rolls: BatchRollInput[]; // Array of rolls with quantities
-  total_pieces?: number;  // Expected total pieces (for size breakdown)
+  total_pieces?: number; // Expected total pieces (for size breakdown)
   size_breakdown?: SizeBreakdownInput[]; // Size breakdown entries
 }
 
@@ -56,7 +57,7 @@ export const createBatch = async (data: BatchData) => {
     if (data.quantity > rollData.remainingQuantity) {
       throw new Error(
         `Batch quantity (${data.quantity}) exceeds available roll quantity (${rollData.remainingQuantity}). ` +
-        `Roll total: ${rollData.totalQuantity}, Already used: ${rollData.usedQuantity}`
+          `Roll total: ${rollData.totalQuantity}, Already used: ${rollData.usedQuantity}`
       );
     }
 
@@ -65,7 +66,7 @@ export const createBatch = async (data: BatchData) => {
       if (data.unit_count > rollData.remainingUnitCount) {
         throw new Error(
           `Batch unit count (${data.unit_count}) exceeds available roll units (${rollData.remainingUnitCount}). ` +
-          `Roll total: ${rollData.totalUnitCount} units, Already used: ${rollData.usedUnitCount} units`
+            `Roll total: ${rollData.totalUnitCount} units, Already used: ${rollData.usedUnitCount} units`
         );
       }
     }
@@ -74,6 +75,7 @@ export const createBatch = async (data: BatchData) => {
   const batchData: any = {
     name: data.name,
     quantity: data.quantity,
+    ...(data.created_at && { created_at: new Date(data.created_at) }),
   };
 
   if (data.order_name) batchData.order_name = data.order_name;
@@ -137,7 +139,7 @@ export const updateBatch = async (id: number, data: Partial<BatchData>) => {
       if (data.quantity !== undefined && data.quantity > rollData.remainingQuantity) {
         throw new Error(
           `Batch quantity (${data.quantity}) exceeds available roll quantity (${rollData.remainingQuantity}). ` +
-          `Roll total: ${rollData.totalQuantity}, Already used by other batches: ${rollData.usedQuantity}`
+            `Roll total: ${rollData.totalQuantity}, Already used by other batches: ${rollData.usedQuantity}`
         );
       }
 
@@ -146,7 +148,7 @@ export const updateBatch = async (id: number, data: Partial<BatchData>) => {
         if (data.unit_count > rollData.remainingUnitCount) {
           throw new Error(
             `Batch unit count (${data.unit_count}) exceeds available roll units (${rollData.remainingUnitCount}). ` +
-            `Roll total: ${rollData.totalUnitCount} units, Already used by other batches: ${rollData.usedUnitCount} units`
+              `Roll total: ${rollData.totalUnitCount} units, Already used by other batches: ${rollData.usedUnitCount} units`
           );
         }
       }
@@ -154,6 +156,11 @@ export const updateBatch = async (id: number, data: Partial<BatchData>) => {
   }
 
   const updateData: any = { ...data };
+
+  // Handle created_at date conversion
+  if (data.created_at) {
+    updateData.created_at = new Date(data.created_at);
+  }
 
   if (data.roll_id) {
     updateData.roll = { connect: { id: data.roll_id } };
@@ -284,8 +291,8 @@ export const checkBatchDependencies = async (batchIds: number[]) => {
 export const getUniqueFabricNames = async (): Promise<string[]> => {
   const rolls = await prisma.rolls.findMany({
     select: { name: true },
-    distinct: ['name'],
-    orderBy: { name: 'asc' },
+    distinct: ["name"],
+    orderBy: { name: "asc" },
   });
   return rolls.map((r) => r.name);
 };
@@ -298,7 +305,7 @@ export const getRollsByFabricName = async (fabricName: string) => {
     where: {
       name: {
         equals: fabricName,
-        mode: 'insensitive',
+        mode: "insensitive",
       },
     },
     include: {
@@ -329,7 +336,8 @@ export const getRollsByFabricName = async (fabricName: string) => {
       vendor_id: roll.vendor_id,
       vendor: roll.vendor,
       remaining_quantity: roll.quantity - usedFromBatches - usedFromBatchRolls,
-      remaining_unit_count: (roll.roll_unit_count || 0) - usedUnitsFromBatches - usedUnitsFromBatchRolls,
+      remaining_unit_count:
+        (roll.roll_unit_count || 0) - usedUnitsFromBatches - usedUnitsFromBatchRolls,
     };
   });
 };
@@ -356,8 +364,8 @@ export const validateBatchRolls = async (
 
     validations.push({
       roll_id: rollInput.roll_id,
-      roll_name: roll?.name || '',
-      roll_color: roll?.color || '',
+      roll_name: roll?.name || "",
+      roll_color: roll?.color || "",
       requested_weight: rollInput.weight,
       available_weight: rollData.remainingQuantity,
       is_valid: isValid,
@@ -383,7 +391,7 @@ export const createBatchWithRolls = async (data: CreateBatchWithRollsData) => {
     const errors = validation.validations
       .filter((v) => !v.is_valid)
       .map((v) => `${v.roll_color}: ${v.error_message}`)
-      .join('; ');
+      .join("; ");
     throw new Error(`Roll validation failed: ${errors}`);
   }
 
@@ -405,7 +413,7 @@ export const createBatchWithRolls = async (data: CreateBatchWithRollsData) => {
       quantity: totalWeight,
       unit: data.unit,
       unit_count: totalUnits > 0 ? totalUnits : null,
-      color: data.color || firstRoll?.color || '',
+      color: data.color || firstRoll?.color || "",
       total_pieces: data.total_pieces || null,
       vendor: data.vendor_id
         ? { connect: { id: data.vendor_id } }
@@ -420,14 +428,15 @@ export const createBatchWithRolls = async (data: CreateBatchWithRollsData) => {
         })),
       },
       // Create size breakdown if provided
-      batch_sizes: data.size_breakdown && data.size_breakdown.length > 0
-        ? {
-            create: data.size_breakdown.map((s) => ({
-              size: s.size,
-              pieces: s.pieces,
-            })),
-          }
-        : undefined,
+      batch_sizes:
+        data.size_breakdown && data.size_breakdown.length > 0
+          ? {
+              create: data.size_breakdown.map((s) => ({
+                size: s.size,
+                pieces: s.pieces,
+              })),
+            }
+          : undefined,
     },
     include: {
       batch_rolls: {
@@ -453,7 +462,7 @@ export const updateBatchWithRolls = async (
       const errors = validation.validations
         .filter((v) => !v.is_valid)
         .map((v) => `${v.roll_color}: ${v.error_message}`)
-        .join('; ');
+        .join("; ");
       throw new Error(`Roll validation failed: ${errors}`);
     }
   }
