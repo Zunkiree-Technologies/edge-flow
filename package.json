@@ -25,7 +25,7 @@
     ]
   },
   "dependencies": {
-    "@fontsource/inter": "^5.2.6",
+    "@fontsource/inter": "^5.2.8",
     "@hello-pangea/dnd": "^18.0.1",
     "@sentry/nextjs": "^10.29.0",
     "@userback/widget": "^0.3.12",
