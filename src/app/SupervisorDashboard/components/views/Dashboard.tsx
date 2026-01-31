@@ -1,7 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { PackageOpen, Clock, CheckCircle2, Users2, Building2, Zap, ClipboardList, FileBarChart } from "lucide-react";
+import {
+  PackageOpen,
+  Clock,
+  CheckCircle2,
+  Users2,
+  Building2,
+  Zap,
+  ClipboardList,
+  FileBarChart,
+} from "lucide-react";
 import axios from "axios";
 import { useDepartment } from "../../contexts/DepartmentContext";
 
@@ -21,9 +30,7 @@ const StatCard = ({ title, value, description, icon }: StatCardProps) => {
           <p className="text-2xl font-semibold text-gray-900">{value}</p>
           <p className="text-xs text-gray-400 mt-1">{description}</p>
         </div>
-        <div className="text-gray-400">
-          {icon}
-        </div>
+        <div className="text-gray-400">{icon}</div>
       </div>
     </div>
   );
@@ -35,7 +42,7 @@ const Dashboard = () => {
     newArrivals: 0,
     inProgress: 0,
     completed: 0,
-    activeWorkers: 0
+    activeWorkers: 0,
   });
   const [loading, setLoading] = useState(true);
 
@@ -51,7 +58,9 @@ const Dashboard = () => {
 
         // Determine which department(s) to fetch
         const targetDeptId = isSuperSupervisor
-          ? (typeof selectedDepartmentId === 'number' ? selectedDepartmentId : null)
+          ? typeof selectedDepartmentId === "number"
+            ? selectedDepartmentId
+            : null
           : storedDepartmentId;
 
         // For SUPER_SUPERVISOR with "all" selected - aggregate across all departments
@@ -64,23 +73,18 @@ const Dashboard = () => {
           // Fetch stats from all departments
           const departmentPromises = departments.map(async (dept) => {
             try {
-              const kanbanResponse = await axios.get(
-                `${API}/departments/${dept.id}/sub-batches`,
-                {
-                  headers: { Authorization: `Bearer ${token}` },
-                }
-              );
+              const kanbanResponse = await axios.get(`${API}/departments/${dept.id}/sub-batches`, {
+                headers: { Authorization: `Bearer ${token}` },
+              });
               const kanbanData = kanbanResponse.data.data;
 
-              const workersResponse = await axios.get(
-                `${API}/workers/department/${dept.id}`
-              );
+              const workersResponse = await axios.get(`${API}/workers/department/${dept.id}`);
 
               return {
                 newArrivals: kanbanData?.newArrival?.length || 0,
                 inProgress: kanbanData?.inProgress?.length || 0,
                 completed: kanbanData?.completed?.length || 0,
-                workers: workersResponse.data?.length || 0
+                workers: workersResponse.data?.length || 0,
               };
             } catch {
               return { newArrivals: 0, inProgress: 0, completed: 0, workers: 0 };
@@ -88,7 +92,7 @@ const Dashboard = () => {
           });
 
           const results = await Promise.all(departmentPromises);
-          results.forEach(result => {
+          results.forEach((result) => {
             totalNewArrivals += result.newArrivals;
             totalInProgress += result.inProgress;
             totalCompleted += result.completed;
@@ -99,31 +103,26 @@ const Dashboard = () => {
             newArrivals: totalNewArrivals,
             inProgress: totalInProgress,
             completed: totalCompleted,
-            activeWorkers: totalWorkers
+            activeWorkers: totalWorkers,
           });
         } else if (targetDeptId) {
           // Fetch kanban data for specific department
-          const kanbanResponse = await axios.get(
-            `${API}/departments/${targetDeptId}/sub-batches`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
+          const kanbanResponse = await axios.get(`${API}/departments/${targetDeptId}/sub-batches`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
 
           const kanbanData = kanbanResponse.data.data;
 
           // Fetch workers for this department
-          const workersResponse = await axios.get(
-            `${API}/workers/department/${targetDeptId}`
-          );
+          const workersResponse = await axios.get(`${API}/workers/department/${targetDeptId}`);
 
           setStats({
             newArrivals: kanbanData?.newArrival?.length || 0,
             inProgress: kanbanData?.inProgress?.length || 0,
             completed: kanbanData?.completed?.length || 0,
-            activeWorkers: workersResponse.data?.length || 0
+            activeWorkers: workersResponse.data?.length || 0,
           });
         }
       } catch {
@@ -142,7 +141,7 @@ const Dashboard = () => {
       if (selectedDepartmentId === "all") {
         return "All Departments";
       }
-      const dept = departments.find(d => d.id === selectedDepartmentId);
+      const dept = departments.find((d) => d.id === selectedDepartmentId);
       return dept?.name || "Selected Department";
     }
     return "your department";
@@ -170,11 +169,12 @@ const Dashboard = () => {
     {
       title: "Active Workers",
       value: loading ? "..." : stats.activeWorkers,
-      description: isSuperSupervisor && selectedDepartmentId === "all"
-        ? "Workers across all departments"
-        : "Workers in your department",
+      description:
+        isSuperSupervisor && selectedDepartmentId === "all"
+          ? "Workers across all departments"
+          : "Workers in your department",
       icon: <Users2 className="w-6 h-6" />,
-    }
+    },
   ];
 
   const quickActions = [
@@ -205,7 +205,7 @@ const Dashboard = () => {
       icon: <FileBarChart className="w-6 h-6" />,
       gradient: "from-amber-50 to-orange-100",
       iconColor: "text-amber-600",
-    }
+    },
   ];
 
   return (
@@ -216,8 +216,7 @@ const Dashboard = () => {
         <p className="text-sm text-gray-500">
           {isSuperSupervisor && selectedDepartmentId === "all"
             ? "Aggregated production stats across all departments"
-            : `Monitor ${getDepartmentLabel()}'s production progress and team performance`
-          }
+            : `Monitor ${getDepartmentLabel()}'s production progress and team performance`}
         </p>
       </div>
 
@@ -227,7 +226,9 @@ const Dashboard = () => {
           <Building2 className="w-5 h-5 text-blue-600" />
           <div>
             <p className="text-sm font-medium text-blue-900">Viewing All Departments</p>
-            <p className="text-xs text-blue-700">Stats shown are aggregated across {departments.length} departments</p>
+            <p className="text-xs text-blue-700">
+              Stats shown are aggregated across {departments.length} departments
+            </p>
           </div>
         </div>
       )}
@@ -260,9 +261,7 @@ const Dashboard = () => {
               key={index}
               className={`bg-gradient-to-br ${action.gradient} rounded-lg p-4 text-left border border-gray-100 hover:border-gray-200 transition-all hover:shadow-sm`}
             >
-              <div className={`mb-2 ${action.iconColor}`}>
-                {action.icon}
-              </div>
+              <div className={`mb-2 ${action.iconColor}`}>{action.icon}</div>
               <h4 className="font-medium text-sm text-gray-900 mb-0.5">{action.title}</h4>
               <p className="text-xs text-gray-500">{action.description}</p>
             </button>

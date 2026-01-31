@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Search, ChevronDown, Check, ArrowUpDown, Inbox } from 'lucide-react';
-import axios from 'axios';
-import { formatNepaliDate } from '@/app/utils/dateUtils';
+import React, { useState, useEffect, useMemo, useRef } from "react";
+import { Search, ChevronDown, Check, ArrowUpDown, Inbox } from "lucide-react";
+import axios from "axios";
+import { formatNepaliDate } from "@/app/utils/dateUtils";
 
 interface Task {
   id: string;
@@ -11,8 +11,8 @@ interface Task {
   startDate: string;
   dueDate: string;
   batch: string;
-  priority?: 'urgent' | 'at-risk';
-  status: 'new-arrivals' | 'in-progress' | 'completed';
+  priority?: "urgent" | "at-risk";
+  status: "new-arrivals" | "in-progress" | "completed";
 }
 
 interface Department {
@@ -57,12 +57,13 @@ const FilterDropdown = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const selectedOption = options.find(opt => opt.value === value);
+  const selectedOption = options.find((opt) => opt.value === value);
   const displayLabel = selectedOption?.label || label;
 
-  const filteredOptions = options.filter(opt =>
-    opt.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (opt.description && opt.description.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredOptions = options.filter(
+    (opt) =>
+      opt.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (opt.description && opt.description.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   useEffect(() => {
@@ -99,7 +100,9 @@ const FilterDropdown = ({
       >
         {icon && <span className="flex-shrink-0">{icon}</span>}
         <span className="max-w-[120px] truncate">{displayLabel}</span>
-        <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown
+          className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+        />
       </button>
 
       {isOpen && (
@@ -131,13 +134,17 @@ const FilterDropdown = ({
                     value === option.value ? "bg-blue-50" : ""
                   }`}
                 >
-                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                    value === option.value ? "border-[#2272B4] bg-[#2272B4]" : "border-gray-300"
-                  }`}>
+                  <div
+                    className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                      value === option.value ? "border-[#2272B4] bg-[#2272B4]" : "border-gray-300"
+                    }`}
+                  >
                     {value === option.value && <Check className="w-2.5 h-2.5 text-white" />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className={`text-sm font-medium ${value === option.value ? "text-[#2272B4]" : "text-gray-900"}`}>
+                    <div
+                      className={`text-sm font-medium ${value === option.value ? "text-[#2272B4]" : "text-gray-900"}`}
+                    >
                       {option.label}
                     </div>
                     {option.description && (
@@ -155,14 +162,14 @@ const FilterDropdown = ({
 };
 
 const initialColumns: Column[] = [
-  { id: 'new-arrivals', title: 'New Arrivals', tasks: [] },
-  { id: 'in-progress', title: 'In Progress', tasks: [] },
-  { id: 'completed', title: 'Completed', tasks: [] }
+  { id: "new-arrivals", title: "New Arrivals", tasks: [] },
+  { id: "in-progress", title: "In Progress", tasks: [] },
+  { id: "completed", title: "Completed", tasks: [] },
 ];
 
 export default function DepartmentWorkloadView() {
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [selectedDepartmentId, setSelectedDepartmentId] = useState<number | 'all'>('all');
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState<number | "all">("all");
   const [columns, setColumns] = useState<Column[]>(initialColumns);
   const [draggedTask, setDraggedTask] = useState<Task | null>(null);
   const [draggedFrom, setDraggedFrom] = useState<string | null>(null);
@@ -196,64 +203,76 @@ export default function DepartmentWorkloadView() {
   // Load tasks for selected department
   useEffect(() => {
     const fetchDepartmentTasks = async () => {
-      if (selectedDepartmentId === 'all') {
+      if (selectedDepartmentId === "all") {
         // Fetch tasks from all departments
         try {
           const token = localStorage.getItem("token");
-          const allTasks: { newArrival: Task[], inProgress: Task[], completed: Task[] } = {
+          const allTasks: { newArrival: Task[]; inProgress: Task[]; completed: Task[] } = {
             newArrival: [],
             inProgress: [],
-            completed: []
+            completed: [],
           };
 
           // Fetch from each department
-          await Promise.all(departments.map(async (dept) => {
-            try {
-              const response = await axios.get(
-                `${API}/departments/${dept.id}/sub-batches`,
-                { headers: { Authorization: `Bearer ${token}` } }
-              );
-              const kanbanData = response.data.data;
+          await Promise.all(
+            departments.map(async (dept) => {
+              try {
+                const response = await axios.get(`${API}/departments/${dept.id}/sub-batches`, {
+                  headers: { Authorization: `Bearer ${token}` },
+                });
+                const kanbanData = response.data.data;
 
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const transformToTask = (dsb: any): Task => {
-                const subBatch = dsb.sub_batch;
-                let priority: 'urgent' | 'at-risk' | undefined = undefined;
-                if (subBatch?.due_date) {
-                  const dueDate = new Date(subBatch.due_date);
-                  const today = new Date();
-                  const daysUntilDue = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-                  if (daysUntilDue < 0) priority = 'urgent';
-                  else if (daysUntilDue <= 3) priority = 'at-risk';
-                }
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const transformToTask = (dsb: any): Task => {
+                  const subBatch = dsb.sub_batch;
+                  let priority: "urgent" | "at-risk" | undefined = undefined;
+                  if (subBatch?.due_date) {
+                    const dueDate = new Date(subBatch.due_date);
+                    const today = new Date();
+                    const daysUntilDue = Math.ceil(
+                      (dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+                    );
+                    if (daysUntilDue < 0) priority = "urgent";
+                    else if (daysUntilDue <= 3) priority = "at-risk";
+                  }
 
-                let status: 'new-arrivals' | 'in-progress' | 'completed' = 'new-arrivals';
-                if (dsb.stage === 'COMPLETED') status = 'completed';
-                else if (dsb.stage === 'IN_PROGRESS') status = 'in-progress';
+                  let status: "new-arrivals" | "in-progress" | "completed" = "new-arrivals";
+                  if (dsb.stage === "COMPLETED") status = "completed";
+                  else if (dsb.stage === "IN_PROGRESS") status = "in-progress";
 
-                return {
-                  id: `${dept.id}-${dsb.id}`,
-                  title: subBatch?.name || 'Untitled Task',
-                  startDate: formatNepaliDate(subBatch?.start_date),
-                  dueDate: formatNepaliDate(subBatch?.due_date),
-                  batch: subBatch?.batch?.name || 'No Batch',
-                  priority,
-                  status
+                  return {
+                    id: `${dept.id}-${dsb.id}`,
+                    title: subBatch?.name || "Untitled Task",
+                    startDate: formatNepaliDate(subBatch?.start_date),
+                    dueDate: formatNepaliDate(subBatch?.due_date),
+                    batch: subBatch?.batch?.name || "No Batch",
+                    priority,
+                    status,
+                  };
                 };
-              };
 
-              (kanbanData.newArrival || []).forEach((dsb: any) => allTasks.newArrival.push(transformToTask(dsb)));
-              (kanbanData.inProgress || []).forEach((dsb: any) => allTasks.inProgress.push(transformToTask(dsb)));
-              (kanbanData.completed || []).forEach((dsb: any) => allTasks.completed.push(transformToTask(dsb)));
-            } catch {
-              // Failed to fetch tasks for this department
-            }
-          }));
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (kanbanData.newArrival || []).forEach((dsb: any) =>
+                  allTasks.newArrival.push(transformToTask(dsb))
+                );
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (kanbanData.inProgress || []).forEach((dsb: any) =>
+                  allTasks.inProgress.push(transformToTask(dsb))
+                );
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (kanbanData.completed || []).forEach((dsb: any) =>
+                  allTasks.completed.push(transformToTask(dsb))
+                );
+              } catch {
+                // Failed to fetch tasks for this department
+              }
+            })
+          );
 
           setColumns([
-            { id: 'new-arrivals', title: 'New Arrivals', tasks: allTasks.newArrival },
-            { id: 'in-progress', title: 'In Progress', tasks: allTasks.inProgress },
-            { id: 'completed', title: 'Completed', tasks: allTasks.completed }
+            { id: "new-arrivals", title: "New Arrivals", tasks: allTasks.newArrival },
+            { id: "in-progress", title: "In Progress", tasks: allTasks.inProgress },
+            { id: "completed", title: "Completed", tasks: allTasks.completed },
           ]);
         } catch {
           setColumns(initialColumns);
@@ -272,34 +291,48 @@ export default function DepartmentWorkloadView() {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const transformToTask = (dsb: any): Task => {
             const subBatch = dsb.sub_batch;
-            let priority: 'urgent' | 'at-risk' | undefined = undefined;
+            let priority: "urgent" | "at-risk" | undefined = undefined;
             if (subBatch?.due_date) {
               const dueDate = new Date(subBatch.due_date);
               const today = new Date();
-              const daysUntilDue = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-              if (daysUntilDue < 0) priority = 'urgent';
-              else if (daysUntilDue <= 3) priority = 'at-risk';
+              const daysUntilDue = Math.ceil(
+                (dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+              );
+              if (daysUntilDue < 0) priority = "urgent";
+              else if (daysUntilDue <= 3) priority = "at-risk";
             }
 
-            let status: 'new-arrivals' | 'in-progress' | 'completed' = 'new-arrivals';
-            if (dsb.stage === 'COMPLETED') status = 'completed';
-            else if (dsb.stage === 'IN_PROGRESS') status = 'in-progress';
+            let status: "new-arrivals" | "in-progress" | "completed" = "new-arrivals";
+            if (dsb.stage === "COMPLETED") status = "completed";
+            else if (dsb.stage === "IN_PROGRESS") status = "in-progress";
 
             return {
               id: dsb.id.toString(),
-              title: subBatch?.name || 'Untitled Task',
+              title: subBatch?.name || "Untitled Task",
               startDate: formatNepaliDate(subBatch?.start_date),
               dueDate: formatNepaliDate(subBatch?.due_date),
-              batch: subBatch?.batch?.name || 'No Batch',
+              batch: subBatch?.batch?.name || "No Batch",
               priority,
-              status
+              status,
             };
           };
 
           setColumns([
-            { id: 'new-arrivals', title: 'New Arrivals', tasks: (kanbanData.newArrival || []).map(transformToTask) },
-            { id: 'in-progress', title: 'In Progress', tasks: (kanbanData.inProgress || []).map(transformToTask) },
-            { id: 'completed', title: 'Completed', tasks: (kanbanData.completed || []).map(transformToTask) }
+            {
+              id: "new-arrivals",
+              title: "New Arrivals",
+              tasks: (kanbanData.newArrival || []).map(transformToTask),
+            },
+            {
+              id: "in-progress",
+              title: "In Progress",
+              tasks: (kanbanData.inProgress || []).map(transformToTask),
+            },
+            {
+              id: "completed",
+              title: "Completed",
+              tasks: (kanbanData.completed || []).map(transformToTask),
+            },
           ]);
         } catch {
           setColumns(initialColumns);
@@ -307,7 +340,7 @@ export default function DepartmentWorkloadView() {
       }
     };
 
-    if (departments.length > 0 || selectedDepartmentId !== 'all') {
+    if (departments.length > 0 || selectedDepartmentId !== "all") {
       fetchDepartmentTasks();
     }
   }, [selectedDepartmentId, departments, API]);
@@ -315,7 +348,7 @@ export default function DepartmentWorkloadView() {
   // Calculate department task counts
   const departmentTaskCounts = useMemo(() => {
     const counts: Record<number, number> = {};
-    departments.forEach(dept => {
+    departments.forEach((dept) => {
       counts[dept.id] = dept.active_tasks || 0;
     });
     return counts;
@@ -328,35 +361,36 @@ export default function DepartmentWorkloadView() {
 
   // Filter and sort tasks
   const filteredColumns = useMemo(() => {
-    return columns.map(column => {
+    return columns.map((column) => {
       let tasks = [...column.tasks];
 
       // Search filter
       if (searchQuery) {
-        tasks = tasks.filter(task =>
-          task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          task.batch.toLowerCase().includes(searchQuery.toLowerCase())
+        tasks = tasks.filter(
+          (task) =>
+            task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            task.batch.toLowerCase().includes(searchQuery.toLowerCase())
         );
       }
 
       // Priority filter
-      if (priorityFilter !== 'all') {
-        tasks = tasks.filter(task => {
-          if (priorityFilter === 'urgent') return task.priority === 'urgent';
-          if (priorityFilter === 'at-risk') return task.priority === 'at-risk';
-          if (priorityFilter === 'normal') return !task.priority;
+      if (priorityFilter !== "all") {
+        tasks = tasks.filter((task) => {
+          if (priorityFilter === "urgent") return task.priority === "urgent";
+          if (priorityFilter === "at-risk") return task.priority === "at-risk";
+          if (priorityFilter === "normal") return !task.priority;
           return true;
         });
       }
 
       // Sort
-      if (sortBy === 'newest') {
+      if (sortBy === "newest") {
         // Keep original order (newest first from API)
-      } else if (sortBy === 'oldest') {
+      } else if (sortBy === "oldest") {
         tasks = tasks.reverse();
-      } else if (sortBy === 'name-asc') {
+      } else if (sortBy === "name-asc") {
         tasks = tasks.sort((a, b) => a.title.localeCompare(b.title));
-      } else if (sortBy === 'name-desc') {
+      } else if (sortBy === "name-desc") {
         tasks = tasks.sort((a, b) => b.title.localeCompare(a.title));
       }
 
@@ -367,12 +401,12 @@ export default function DepartmentWorkloadView() {
   const handleDragStart = (e: React.DragEvent, task: Task, columnId: string) => {
     setDraggedTask(task);
     setDraggedFrom(columnId);
-    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.effectAllowed = "move";
   };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
+    e.dataTransfer.dropEffect = "move";
   };
 
   const handleDrop = (e: React.DragEvent, targetColumnId: string) => {
@@ -384,12 +418,15 @@ export default function DepartmentWorkloadView() {
       return;
     }
 
-    setColumns(prevColumns => {
-      return prevColumns.map(column => {
+    setColumns((prevColumns) => {
+      return prevColumns.map((column) => {
         if (column.id === draggedFrom) {
-          return { ...column, tasks: column.tasks.filter(task => task.id !== draggedTask.id) };
+          return { ...column, tasks: column.tasks.filter((task) => task.id !== draggedTask.id) };
         } else if (column.id === targetColumnId) {
-          return { ...column, tasks: [...column.tasks, { ...draggedTask, status: targetColumnId as Task['status'] }] };
+          return {
+            ...column,
+            tasks: [...column.tasks, { ...draggedTask, status: targetColumnId as Task["status"] }],
+          };
         }
         return column;
       });
@@ -401,30 +438,30 @@ export default function DepartmentWorkloadView() {
 
   const getColumnStyle = (columnId: string) => {
     switch (columnId) {
-      case 'new-arrivals':
-        return { dotColor: 'bg-gray-400', headerBg: 'bg-gray-50' };
-      case 'in-progress':
-        return { dotColor: 'bg-blue-500', headerBg: 'bg-blue-50' };
-      case 'completed':
-        return { dotColor: 'bg-green-500', headerBg: 'bg-green-50' };
+      case "new-arrivals":
+        return { dotColor: "bg-gray-400", headerBg: "bg-gray-50" };
+      case "in-progress":
+        return { dotColor: "bg-blue-500", headerBg: "bg-blue-50" };
+      case "completed":
+        return { dotColor: "bg-green-500", headerBg: "bg-green-50" };
       default:
-        return { dotColor: 'bg-gray-400', headerBg: 'bg-gray-50' };
+        return { dotColor: "bg-gray-400", headerBg: "bg-gray-50" };
     }
   };
 
   // Filter options
   const priorityOptions: FilterOption[] = [
-    { value: 'all', label: 'All Priorities' },
-    { value: 'urgent', label: 'Urgent', description: 'Overdue tasks' },
-    { value: 'at-risk', label: 'At Risk', description: 'Due within 3 days' },
-    { value: 'normal', label: 'Normal', description: 'On track' },
+    { value: "all", label: "All Priorities" },
+    { value: "urgent", label: "Urgent", description: "Overdue tasks" },
+    { value: "at-risk", label: "At Risk", description: "Due within 3 days" },
+    { value: "normal", label: "Normal", description: "On track" },
   ];
 
   const sortOptions: FilterOption[] = [
-    { value: 'newest', label: 'Newest First' },
-    { value: 'oldest', label: 'Oldest First' },
-    { value: 'name-asc', label: 'Name A-Z' },
-    { value: 'name-desc', label: 'Name Z-A' },
+    { value: "newest", label: "Newest First" },
+    { value: "oldest", label: "Oldest First" },
+    { value: "name-asc", label: "Name A-Z" },
+    { value: "name-desc", label: "Name Z-A" },
   ];
 
   return (
@@ -437,18 +474,21 @@ export default function DepartmentWorkloadView() {
 
         {/* Department Tabs - Jira Style */}
         <div className="px-6">
-          <div className="flex items-center gap-6 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+          <div
+            className="flex items-center gap-6 overflow-x-auto"
+            style={{ scrollbarWidth: "none" }}
+          >
             {/* All Departments Tab */}
             <button
-              onClick={() => setSelectedDepartmentId('all')}
+              onClick={() => setSelectedDepartmentId("all")}
               className={`relative py-3 text-sm font-medium transition-all whitespace-nowrap ${
-                selectedDepartmentId === 'all'
-                  ? 'text-[#2272B4]'
-                  : 'text-gray-600 hover:text-gray-900'
+                selectedDepartmentId === "all"
+                  ? "text-[#2272B4]"
+                  : "text-gray-600 hover:text-gray-900"
               }`}
             >
               All ({totalTaskCount})
-              {selectedDepartmentId === 'all' && (
+              {selectedDepartmentId === "all" && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#2272B4] rounded-full" />
               )}
             </button>
@@ -460,8 +500,8 @@ export default function DepartmentWorkloadView() {
                 onClick={() => setSelectedDepartmentId(dept.id)}
                 className={`relative py-3 text-sm font-medium transition-all whitespace-nowrap ${
                   selectedDepartmentId === dept.id
-                    ? 'text-[#2272B4]'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? "text-[#2272B4]"
+                    : "text-gray-600 hover:text-gray-900"
                 }`}
               >
                 {dept.name} ({departmentTaskCounts[dept.id] || 0})
@@ -570,12 +610,15 @@ export default function DepartmentWorkloadView() {
                               {task.title}
                             </h4>
                             {task.priority && (
-                              <span className={`text-xs font-medium px-2 py-0.5 rounded flex items-center gap-1 flex-shrink-0 ml-2 ${
-                                task.priority === 'urgent'
-                                  ? 'bg-red-100 text-red-700'
-                                  : 'bg-amber-100 text-amber-700'
-                              }`}>
-                                {task.priority === 'urgent' ? '!' : '⚠'} {task.priority === 'urgent' ? 'Overdue' : 'At Risk'}
+                              <span
+                                className={`text-xs font-medium px-2 py-0.5 rounded flex items-center gap-1 flex-shrink-0 ml-2 ${
+                                  task.priority === "urgent"
+                                    ? "bg-red-100 text-red-700"
+                                    : "bg-amber-100 text-amber-700"
+                                }`}
+                              >
+                                {task.priority === "urgent" ? "!" : "⚠"}{" "}
+                                {task.priority === "urgent" ? "Overdue" : "At Risk"}
                               </span>
                             )}
                           </div>

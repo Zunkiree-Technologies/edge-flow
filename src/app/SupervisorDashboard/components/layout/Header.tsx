@@ -41,22 +41,17 @@ const Header: React.FC<HeaderProps> = ({ activeView }) => {
 
         // For regular supervisors, fetch their department name
         if (!isSuperSupervisor && token && departmentId) {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_GET_DEPARTMENTS}`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-              },
-            }
-          );
+          const response = await fetch(`${process.env.NEXT_PUBLIC_GET_DEPARTMENTS}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
 
           if (response.ok) {
             const departments: Department[] = await response.json();
-            const currentDept = departments.find(
-              (dept) => dept.id === parseInt(departmentId)
-            );
+            const currentDept = departments.find((dept) => dept.id === parseInt(departmentId));
             if (currentDept) {
               setDepartmentName(currentDept.name);
             }
@@ -140,7 +135,9 @@ const Header: React.FC<HeaderProps> = ({ activeView }) => {
               <span className="text-white font-semibold text-xs">B</span>
             </div>
             <span className="text-sm font-medium">BlueShark</span>
-            <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${showAccountDropdown ? 'rotate-180' : ''}`} />
+            <ChevronDown
+              className={`w-4 h-4 text-gray-500 transition-transform ${showAccountDropdown ? "rotate-180" : ""}`}
+            />
           </button>
 
           {/* Account Dropdown */}
@@ -149,13 +146,17 @@ const Header: React.FC<HeaderProps> = ({ activeView }) => {
               {/* User Info Section */}
               <div className="px-4 py-3 border-b border-gray-100">
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isSuperSupervisor ? 'bg-purple-600' : 'bg-blue-600'}`}>
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center ${isSuperSupervisor ? "bg-purple-600" : "bg-blue-600"}`}
+                  >
                     <User className="w-5 h-5 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-gray-900 truncate">{supervisorName}</p>
                     {userEmail && <p className="text-xs text-gray-500 truncate">{userEmail}</p>}
-                    <span className={`inline-block mt-1 text-xs px-2 py-0.5 rounded-full font-medium ${isSuperSupervisor ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
+                    <span
+                      className={`inline-block mt-1 text-xs px-2 py-0.5 rounded-full font-medium ${isSuperSupervisor ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"}`}
+                    >
                       {userRole}
                     </span>
                   </div>
@@ -191,10 +192,7 @@ const Header: React.FC<HeaderProps> = ({ activeView }) => {
 
       {/* Click outside to close account dropdown */}
       {showAccountDropdown && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setShowAccountDropdown(false)}
-        />
+        <div className="fixed inset-0 z-40" onClick={() => setShowAccountDropdown(false)} />
       )}
     </header>
   );

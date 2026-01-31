@@ -122,24 +122,27 @@ export default function NepaliDatePicker({
   }, [value]);
 
   // Handle date change from Nepali calendar - convert to Gregorian for storage
-  const handleDateChange = useCallback((nepaliDate: string) => {
-    const gregorianDate = nepaliToGregorianISO(nepaliDate);
+  const handleDateChange = useCallback(
+    (nepaliDate: string) => {
+      const gregorianDate = nepaliToGregorianISO(nepaliDate);
 
-    // Prevent firing onChange if the value hasn't actually changed
-    // This stops the infinite loop / haywire behavior
-    if (gregorianDate === lastEmittedValue.current) {
-      return;
-    }
+      // Prevent firing onChange if the value hasn't actually changed
+      // This stops the infinite loop / haywire behavior
+      if (gregorianDate === lastEmittedValue.current) {
+        return;
+      }
 
-    // Also check if it matches the current value (accounting for format differences)
-    const currentClean = value ? value.split("T")[0] : "";
-    if (gregorianDate === currentClean) {
-      return;
-    }
+      // Also check if it matches the current value (accounting for format differences)
+      const currentClean = value ? value.split("T")[0] : "";
+      if (gregorianDate === currentClean) {
+        return;
+      }
 
-    lastEmittedValue.current = gregorianDate;
-    onChange(gregorianDate);
-  }, [onChange, value]);
+      lastEmittedValue.current = gregorianDate;
+      onChange(gregorianDate);
+    },
+    [onChange, value]
+  );
 
   return (
     <div className={`nepali-datepicker-compact relative ${className}`}>
@@ -165,7 +168,7 @@ export default function NepaliDatePicker({
         }
         .nepali-datepicker-compact .nepali-date-picker input:focus {
           outline: none !important;
-          border-color: #2272B4 !important;
+          border-color: #2272b4 !important;
           box-shadow: 0 0 0 2px rgba(34, 114, 180, 0.15) !important;
         }
         .nepali-datepicker-compact .nepali-date-picker input::placeholder {
@@ -175,7 +178,7 @@ export default function NepaliDatePicker({
         /* Calendar dropdown styling */
         .nepali-datepicker-compact .calender {
           border-radius: 8px !important;
-          box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
           border: 1px solid #e5e7eb !important;
           margin-top: 4px !important;
         }
@@ -193,7 +196,7 @@ export default function NepaliDatePicker({
           background: #dbeafe !important;
         }
         .nepali-datepicker-compact .calender .body .week .day.active {
-          background: #2272B4 !important;
+          background: #2272b4 !important;
           color: white !important;
         }
         /* Remove outer wrapper borders */
@@ -202,9 +205,7 @@ export default function NepaliDatePicker({
           padding: 0 !important;
         }
       `}</style>
-      <CalendarIcon
-        className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none z-10"
-      />
+      <CalendarIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none z-10" />
       <Calendar
         onChange={handleDateChange}
         value={nepaliValue}

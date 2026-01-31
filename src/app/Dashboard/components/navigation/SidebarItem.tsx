@@ -23,9 +23,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   <button
     onClick={onClick}
     className={`w-full flex items-center justify-between px-3 py-2 rounded-md transition-colors group ${
-      active
-        ? "bg-blue-50 text-blue-600"
-        : "text-gray-600 hover:bg-blue-50 hover:text-gray-900"
+      active ? "bg-blue-50 text-blue-600" : "text-gray-600 hover:bg-blue-50 hover:text-gray-900"
     }`}
   >
     {/* Icon + Label */}
@@ -37,11 +35,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     {/* Expand/Collapse Arrow */}
     {hasChildren && (
       <span className="text-gray-400">
-        {isOpen ? (
-          <ChevronDown className="w-4 h-4" />
-        ) : (
-          <ChevronRight className="w-4 h-4" />
-        )}
+        {isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
       </span>
     )}
   </button>

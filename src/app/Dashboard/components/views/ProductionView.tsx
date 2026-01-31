@@ -155,10 +155,8 @@ const ProductionView = () => {
   const getBadgeText = (remarks: string | null | undefined) => {
     if (remarks === "Assigned") return "Assigned";
     if (remarks === "Main") return "Unassigned";
-    if (remarks === "Rejected" || remarks?.toLowerCase().includes("reject"))
-      return "Rejected";
-    if (remarks === "Altered" || remarks?.toLowerCase().includes("alter"))
-      return "Altered";
+    if (remarks === "Rejected" || remarks?.toLowerCase().includes("reject")) return "Rejected";
+    if (remarks === "Altered" || remarks?.toLowerCase().includes("alter")) return "Altered";
     return "Unassigned";
   };
 
@@ -191,9 +189,7 @@ const ProductionView = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/production-view`
-        );
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/production-view`);
 
         if (!response.ok) {
           throw new Error("Failed to fetch production view data");
@@ -253,9 +249,7 @@ const ProductionView = () => {
   // Refresh data after modal actions
   const handleRefresh = async () => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/production-view`
-      );
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/production-view`);
 
       if (!response.ok) {
         throw new Error("Failed to fetch production view data");
@@ -280,20 +274,20 @@ const ProductionView = () => {
     const today = new Date();
     const daysUntilDue = Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
-    if (daysUntilDue < 0) return 'urgent';
-    if (daysUntilDue <= 3) return 'at-risk';
+    if (daysUntilDue < 0) return "urgent";
+    if (daysUntilDue <= 3) return "at-risk";
     return null;
   };
 
   const getPriorityBadge = (priority: string | null) => {
-    if (priority === 'urgent') {
+    if (priority === "urgent") {
       return (
         <span className="text-xs font-medium px-2.5 py-1 rounded-md flex items-center gap-1 bg-red-50 text-red-600 border border-red-200">
           ↑ URGENT
         </span>
       );
     }
-    if (priority === 'at-risk') {
+    if (priority === "at-risk") {
       return (
         <span className="text-xs font-medium px-2.5 py-1 rounded-md flex items-center gap-1 bg-orange-50 text-orange-600 border border-orange-200">
           − At Risk
@@ -309,98 +303,130 @@ const ProductionView = () => {
       <style>{customStyles}</style>
 
       <div className="h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-3">
-        <h1 className="text-sm font-bold text-gray-900">Production Dashboard</h1>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden pt-5 px-5 py-5 bg-gray-50">
-        {/* Left Sidebar - Sub Batch Selector */}
-        <div className="w-80 bg-white flex flex-col rounded-xl border border-gray-200 shadow-sm">
-          <div className="p-5 border-b border-gray-100 bg-white sticky top-0 z-20">
-            <div className="flex items-center justify-between mb-1">
-              <h3 className="text-base font-semibold text-gray-900" style={{ letterSpacing: '-0.01em' }}>Sub Batch Selector</h3>
-              <span className="text-xs text-gray-500 bg-gray-50 px-2.5 py-1 rounded-full font-medium border border-gray-200">
-                {data.total_sub_batches}
-              </span>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">Select a sub-batch to track its progress</p>
-          </div>
-          <div className="flex-1 overflow-y-auto p-4 bg-white" style={{
-            scrollbarWidth: 'thin',
-            scrollbarColor: '#d1d5db #f3f4f6'
-          }}>
-            <div className="space-y-2">
-              {data.all_sub_batches.map((sb) => {
-                const isVisible = visibleSubBatches.includes(sb.id);
-
-                return (
-                  <div key={sb.id} className="relative group/tooltip">
-                    <button
-                      onClick={() => toggleSubBatchVisibility(sb.id)}
-                      className={`w-full px-4 py-3 rounded-lg cursor-pointer transition-all duration-200 flex items-center justify-between ${
-                        isVisible
-                          ? "bg-blue-600 text-white shadow-sm"
-                          : "bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200"
-                      }`}
-                    >
-                      <span className={`text-sm font-medium truncate ${
-                        isVisible ? "text-white" : "text-gray-900"
-                      }`}>
-                        {sb.name}
-                      </span>
-                      <ChevronRight className={`w-4 h-4 flex-shrink-0 ml-2 transition-transform duration-200 ${
-                        isVisible
-                          ? "text-white transform translate-x-0.5"
-                          : "text-gray-400 group-hover/tooltip:text-gray-600"
-                      }`} />
-                    </button>
-                    {/* Hover Tooltip - Shows full name and created date */}
-                    <div className="absolute left-0 top-full mt-1 hidden group-hover/tooltip:block z-[100] pointer-events-none">
-                      <div className="bg-gray-900 text-white text-xs rounded-lg py-2.5 px-3.5 shadow-lg min-w-[200px]">
-                        <div className="font-semibold mb-1.5 text-white/95 break-words">{sb.name}</div>
-                        <div className="text-gray-300 text-[11px] space-y-0.5">
-                          <p>Created: {sb.created_at ? formatNepaliDate(sb.created_at) : formatNepaliDate(sb.start_date)}</p>
-                          <p>Batch: {sb.batch_name || '-'}</p>
-                        </div>
-                      </div>
-                      {/* Arrow pointing up */}
-                      <div className="absolute bottom-full left-4 w-0 h-0 border-l-[6px] border-r-[6px] border-b-[6px] border-transparent border-b-gray-900"></div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+        {/* Header */}
+        <div className="bg-white border-b border-gray-200 px-6 py-3">
+          <h1 className="text-sm font-bold text-gray-900">Production Dashboard</h1>
         </div>
 
-        {/* Department Cards - Horizontal Layout */}
-        <div className="flex-1 overflow-x-auto overflow-y-auto ml-4">
-          {visibleSubBatches.length === 0 ? (
-            // No sub-batch selected - show helpful message
-            <div className="flex items-center justify-center h-full">
-              <div className="text-center p-8 bg-white rounded-xl border-2 border-dashed border-gray-300 max-w-md">
-                <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No Sub-Batch Selected</h3>
-                <p className="text-sm text-gray-500">Select a sub-batch from the left panel to track its progress across departments</p>
+        {/* Main Content */}
+        <div className="flex-1 flex overflow-hidden pt-5 px-5 py-5 bg-gray-50">
+          {/* Left Sidebar - Sub Batch Selector */}
+          <div className="w-80 bg-white flex flex-col rounded-xl border border-gray-200 shadow-sm">
+            <div className="p-5 border-b border-gray-100 bg-white sticky top-0 z-20">
+              <div className="flex items-center justify-between mb-1">
+                <h3
+                  className="text-base font-semibold text-gray-900"
+                  style={{ letterSpacing: "-0.01em" }}
+                >
+                  Sub Batch Selector
+                </h3>
+                <span className="text-xs text-gray-500 bg-gray-50 px-2.5 py-1 rounded-full font-medium border border-gray-200">
+                  {data.total_sub_batches}
+                </span>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">Select a sub-batch to track its progress</p>
+            </div>
+            <div
+              className="flex-1 overflow-y-auto p-4 bg-white"
+              style={{
+                scrollbarWidth: "thin",
+                scrollbarColor: "#d1d5db #f3f4f6",
+              }}
+            >
+              <div className="space-y-2">
+                {data.all_sub_batches.map((sb) => {
+                  const isVisible = visibleSubBatches.includes(sb.id);
+
+                  return (
+                    <div key={sb.id} className="relative group/tooltip">
+                      <button
+                        onClick={() => toggleSubBatchVisibility(sb.id)}
+                        className={`w-full px-4 py-3 rounded-lg cursor-pointer transition-all duration-200 flex items-center justify-between ${
+                          isVisible
+                            ? "bg-blue-600 text-white shadow-sm"
+                            : "bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200"
+                        }`}
+                      >
+                        <span
+                          className={`text-sm font-medium truncate ${
+                            isVisible ? "text-white" : "text-gray-900"
+                          }`}
+                        >
+                          {sb.name}
+                        </span>
+                        <ChevronRight
+                          className={`w-4 h-4 flex-shrink-0 ml-2 transition-transform duration-200 ${
+                            isVisible
+                              ? "text-white transform translate-x-0.5"
+                              : "text-gray-400 group-hover/tooltip:text-gray-600"
+                          }`}
+                        />
+                      </button>
+                      {/* Hover Tooltip - Shows full name and created date */}
+                      <div className="absolute left-0 top-full mt-1 hidden group-hover/tooltip:block z-[100] pointer-events-none">
+                        <div className="bg-gray-900 text-white text-xs rounded-lg py-2.5 px-3.5 shadow-lg min-w-[200px]">
+                          <div className="font-semibold mb-1.5 text-white/95 break-words">
+                            {sb.name}
+                          </div>
+                          <div className="text-gray-300 text-[11px] space-y-0.5">
+                            <p>
+                              Created:{" "}
+                              {sb.created_at
+                                ? formatNepaliDate(sb.created_at)
+                                : formatNepaliDate(sb.start_date)}
+                            </p>
+                            <p>Batch: {sb.batch_name || "-"}</p>
+                          </div>
+                        </div>
+                        {/* Arrow pointing up */}
+                        <div className="absolute bottom-full left-4 w-0 h-0 border-l-[6px] border-r-[6px] border-b-[6px] border-transparent border-b-gray-900"></div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
-          ) : (
-            <div className="flex gap-4 h-full">
-              {/* Department Cards - Show ALL departments (even if empty) */}
-              {(() => {
-                const departmentsWithData = data.department_columns
-                  .map((dept) => {
+          </div>
+
+          {/* Department Cards - Horizontal Layout */}
+          <div className="flex-1 overflow-x-auto overflow-y-auto ml-4">
+            {visibleSubBatches.length === 0 ? (
+              // No sub-batch selected - show helpful message
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center p-8 bg-white rounded-xl border-2 border-dashed border-gray-300 max-w-md">
+                  <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg
+                      className="w-8 h-8 text-blue-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    No Sub-Batch Selected
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    Select a sub-batch from the left panel to track its progress across departments
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex gap-4 h-full">
+                {/* Department Cards - Show ALL departments (even if empty) */}
+                {(() => {
+                  const departmentsWithData = data.department_columns.map((dept) => {
                     // Get visible sub-batches for this department
                     // Filter by sb.id which is the sub_batch.id from backend
                     // NOTE: sb.id is set to dsb.sub_batch.id in the backend response
                     // Do NOT use batch_id as fallback - that's the parent batch, not the sub-batch
-                    const visibleSubBatchesInDept = dept.sub_batches.filter(sb =>
+                    const visibleSubBatchesInDept = dept.sub_batches.filter((sb) =>
                       isSubBatchVisible(sb.id)
                     );
 
@@ -408,149 +434,185 @@ const ProductionView = () => {
                   });
                   // ✅ REMOVED FILTER - Now shows all departments even if empty
 
-                // Check if sub-batch has no data anywhere (not in any department and not completed)
-                const hasAnyVisibleData = departmentsWithData.some(({ visibleSubBatchesInDept }) => visibleSubBatchesInDept.length > 0) ||
-                                         data.completed_sub_batches.filter(sb => isSubBatchVisible(sb.id)).length > 0;
+                  // Check if sub-batch has no data anywhere (not in any department and not completed)
+                  const hasAnyVisibleData =
+                    departmentsWithData.some(
+                      ({ visibleSubBatchesInDept }) => visibleSubBatchesInDept.length > 0
+                    ) ||
+                    data.completed_sub_batches.filter((sb) => isSubBatchVisible(sb.id)).length > 0;
 
-                if (!hasAnyVisibleData) {
-                  return (
-                    <div className="flex items-center justify-center h-full w-full">
-                      <div className="text-center p-8 bg-white rounded-xl border-2 border-dashed border-gray-300 max-w-md">
-                        <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <svg className="w-8 h-8 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                          </svg>
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">No Production Data</h3>
-                        <p className="text-sm text-gray-500">This sub-batch has not entered production yet or has no active tasks in any department</p>
-                      </div>
-                    </div>
-                  );
-                }
-
-                return (
-                  <>
-                    {departmentsWithData.map(({ dept, visibleSubBatchesInDept }) => (
-                      <div
-                        key={dept.department_id}
-                        className="w-80 flex-shrink-0 bg-gray-100 rounded-xl flex flex-col overflow-hidden"
-                      >
-                  {/* Department Header */}
-                  <div className="px-4 py-3 bg-white border border-gray-200 rounded-lg mx-3 mt-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
-                        <span className="text-sm font-semibold text-gray-800">{dept.department_name}</span>
-                        <span className="text-xs text-gray-500 bg-white px-2 py-0.5 rounded-full border border-gray-200">{visibleSubBatchesInDept.length}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Department Content */}
-                  <div className="flex-1 overflow-y-auto p-3 space-y-2">
-                    {visibleSubBatchesInDept.length === 0 ? (
-                      <div className="text-center text-gray-400 text-sm py-8">
-                        No tasks
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        {visibleSubBatchesInDept.map((subBatchInDept, cardIndex) => {
-                          const priority = getPriority(subBatchInDept.due_date);
-
-                          return (
-                            <div
-                              key={`dept-${dept.department_id}-card-${subBatchInDept.id}-${subBatchInDept.remarks || 'main'}-${cardIndex}`}
-                              onClick={() => handleCardClick(subBatchInDept, dept.department_id)}
-                              className="bg-white rounded-lg p-4 cursor-pointer hover:shadow-md transition-all duration-200 border border-gray-200"
+                  if (!hasAnyVisibleData) {
+                    return (
+                      <div className="flex items-center justify-center h-full w-full">
+                        <div className="text-center p-8 bg-white rounded-xl border-2 border-dashed border-gray-300 max-w-md">
+                          <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg
+                              className="w-8 h-8 text-orange-500"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
                             >
-                              {/* Task Header */}
-                              <div className="flex items-start justify-between mb-3">
-                                <h4 className="font-bold text-[#2272B4] text-sm leading-snug">
-                                  {subBatchInDept.name}
-                                </h4>
-                                {priority && (
-                                  <span className={`text-xs font-medium px-2 py-0.5 rounded flex items-center gap-1 flex-shrink-0 ml-2 ${
-                                    priority === 'urgent'
-                                      ? 'bg-red-100 text-red-700'
-                                      : 'bg-amber-100 text-amber-700'
-                                  }`}>
-                                    {priority === 'urgent' ? '!' : '⚠'} {priority === 'urgent' ? 'Overdue' : 'At Risk'}
-                                  </span>
-                                )}
-                              </div>
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                              />
+                            </svg>
+                          </div>
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            No Production Data
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            This sub-batch has not entered production yet or has no active tasks in
+                            any department
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  }
 
-                              {/* Info Lines */}
-                              <div className="space-y-1 text-xs text-gray-600">
-                                <p>Batch: {subBatchInDept.batch_name || '-'}</p>
-                                <p>Due date: {formatNepaliDate(subBatchInDept.due_date)}</p>
-                                <p>Start date: {formatNepaliDate(subBatchInDept.start_date)}</p>
-                                <p>Remaining: {(subBatchInDept.quantity_remaining ?? subBatchInDept.estimated_pieces).toLocaleString()} pcs</p>
+                  return (
+                    <>
+                      {departmentsWithData.map(({ dept, visibleSubBatchesInDept }) => (
+                        <div
+                          key={dept.department_id}
+                          className="w-80 flex-shrink-0 bg-gray-100 rounded-xl flex flex-col overflow-hidden"
+                        >
+                          {/* Department Header */}
+                          <div className="px-4 py-3 bg-white border border-gray-200 rounded-lg mx-3 mt-3">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
+                                <span className="text-sm font-semibold text-gray-800">
+                                  {dept.department_name}
+                                </span>
+                                <span className="text-xs text-gray-500 bg-white px-2 py-0.5 rounded-full border border-gray-200">
+                                  {visibleSubBatchesInDept.length}
+                                </span>
                               </div>
                             </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                      </div>
-                    </div>
-                    ))}
+                          </div>
 
-                    {/* Completed Card - Always show */}
-            <div className="w-80 flex-shrink-0 bg-gray-100 rounded-xl flex flex-col overflow-hidden">
-              {/* Completed Header */}
-              <div className="px-4 py-3 bg-white border border-gray-200 rounded-lg mx-3 mt-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
-                    <span className="text-sm font-semibold text-gray-800">Completed</span>
-                    <span className="text-xs text-gray-500 bg-white px-2 py-0.5 rounded-full border border-gray-200">{data.completed_sub_batches.length}</span>
-                  </div>
-                </div>
-              </div>
+                          {/* Department Content */}
+                          <div className="flex-1 overflow-y-auto p-3 space-y-2">
+                            {visibleSubBatchesInDept.length === 0 ? (
+                              <div className="text-center text-gray-400 text-sm py-8">No tasks</div>
+                            ) : (
+                              <div className="space-y-3">
+                                {visibleSubBatchesInDept.map((subBatchInDept, cardIndex) => {
+                                  const priority = getPriority(subBatchInDept.due_date);
 
-              {/* Completed Content */}
-              <div className="flex-1 overflow-y-auto p-3 space-y-2">
-                {data.completed_sub_batches.length === 0 ? (
-                  <div className="text-center text-gray-400 text-sm py-12 border-2 border-dashed border-gray-200 rounded-lg bg-white">
-                    No completed sub-batches
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {data.completed_sub_batches.map((sb) => (
-                      <div
-                        key={`completed-${sb.id}`}
-                        className="bg-white rounded-lg p-4 cursor-pointer hover:shadow-md transition-all duration-200 border border-gray-200"
-                      >
-                        {/* Task Header */}
-                        <div className="flex items-start justify-between mb-3">
-                          <h4 className="font-bold text-[#2272B4] text-sm leading-snug">
-                            {sb.name}
-                          </h4>
-                          <span className="text-xs font-medium px-2 py-0.5 rounded bg-green-100 text-green-700 flex-shrink-0 ml-2">
-                            ✓ Done
-                          </span>
+                                  return (
+                                    <div
+                                      key={`dept-${dept.department_id}-card-${subBatchInDept.id}-${subBatchInDept.remarks || "main"}-${cardIndex}`}
+                                      onClick={() =>
+                                        handleCardClick(subBatchInDept, dept.department_id)
+                                      }
+                                      className="bg-white rounded-lg p-4 cursor-pointer hover:shadow-md transition-all duration-200 border border-gray-200"
+                                    >
+                                      {/* Task Header */}
+                                      <div className="flex items-start justify-between mb-3">
+                                        <h4 className="font-bold text-[#2272B4] text-sm leading-snug">
+                                          {subBatchInDept.name}
+                                        </h4>
+                                        {priority && (
+                                          <span
+                                            className={`text-xs font-medium px-2 py-0.5 rounded flex items-center gap-1 flex-shrink-0 ml-2 ${
+                                              priority === "urgent"
+                                                ? "bg-red-100 text-red-700"
+                                                : "bg-amber-100 text-amber-700"
+                                            }`}
+                                          >
+                                            {priority === "urgent" ? "!" : "⚠"}{" "}
+                                            {priority === "urgent" ? "Overdue" : "At Risk"}
+                                          </span>
+                                        )}
+                                      </div>
+
+                                      {/* Info Lines */}
+                                      <div className="space-y-1 text-xs text-gray-600">
+                                        <p>Batch: {subBatchInDept.batch_name || "-"}</p>
+                                        <p>Due date: {formatNepaliDate(subBatchInDept.due_date)}</p>
+                                        <p>
+                                          Start date: {formatNepaliDate(subBatchInDept.start_date)}
+                                        </p>
+                                        <p>
+                                          Remaining:{" "}
+                                          {(
+                                            subBatchInDept.quantity_remaining ??
+                                            subBatchInDept.estimated_pieces
+                                          ).toLocaleString()}{" "}
+                                          pcs
+                                        </p>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* Completed Card - Always show */}
+                      <div className="w-80 flex-shrink-0 bg-gray-100 rounded-xl flex flex-col overflow-hidden">
+                        {/* Completed Header */}
+                        <div className="px-4 py-3 bg-white border border-gray-200 rounded-lg mx-3 mt-3">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+                              <span className="text-sm font-semibold text-gray-800">Completed</span>
+                              <span className="text-xs text-gray-500 bg-white px-2 py-0.5 rounded-full border border-gray-200">
+                                {data.completed_sub_batches.length}
+                              </span>
+                            </div>
+                          </div>
                         </div>
 
-                        {/* Info Lines */}
-                        <div className="space-y-1 text-xs text-gray-600">
-                          <p>Batch: {sb.batch_name || '-'}</p>
-                          <p>Due date: {formatNepaliDate(sb.due_date)}</p>
-                          <p>Start date: {formatNepaliDate(sb.start_date)}</p>
+                        {/* Completed Content */}
+                        <div className="flex-1 overflow-y-auto p-3 space-y-2">
+                          {data.completed_sub_batches.length === 0 ? (
+                            <div className="text-center text-gray-400 text-sm py-12 border-2 border-dashed border-gray-200 rounded-lg bg-white">
+                              No completed sub-batches
+                            </div>
+                          ) : (
+                            <div className="space-y-3">
+                              {data.completed_sub_batches.map((sb) => (
+                                <div
+                                  key={`completed-${sb.id}`}
+                                  className="bg-white rounded-lg p-4 cursor-pointer hover:shadow-md transition-all duration-200 border border-gray-200"
+                                >
+                                  {/* Task Header */}
+                                  <div className="flex items-start justify-between mb-3">
+                                    <h4 className="font-bold text-[#2272B4] text-sm leading-snug">
+                                      {sb.name}
+                                    </h4>
+                                    <span className="text-xs font-medium px-2 py-0.5 rounded bg-green-100 text-green-700 flex-shrink-0 ml-2">
+                                      ✓ Done
+                                    </span>
+                                  </div>
+
+                                  {/* Info Lines */}
+                                  <div className="space-y-1 text-xs text-gray-600">
+                                    <p>Batch: {sb.batch_name || "-"}</p>
+                                    <p>Due date: {formatNepaliDate(sb.due_date)}</p>
+                                    <p>Start date: {formatNepaliDate(sb.start_date)}</p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                )}
+                    </>
+                  );
+                })()}
               </div>
-            </div>
-                  </>
-                );
-              })()}
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
-    </div>
 
       {/* Task Details Modal */}
       {isTaskModalOpen && selectedTask && (

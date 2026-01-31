@@ -24,9 +24,7 @@ export const isNepaliDateString = (dateStr: string): boolean => {
  * @param date - ISO date string, Date object, or null/undefined
  * @returns Nepali date string "2082-09-07" or "-" if invalid
  */
-export const formatNepaliDate = (
-  date: string | Date | null | undefined
-): string => {
+export const formatNepaliDate = (date: string | Date | null | undefined): string => {
   if (!date) return "-";
 
   try {
@@ -74,9 +72,7 @@ export const formatNepaliDate = (
  * @param nepaliDateStr - Nepali date string "2082-09-07" or Gregorian "2024-12-22"
  * @returns ISO date string or null
  */
-export const nepaliToGregorian = (
-  nepaliDateStr: string | null | undefined
-): string | null => {
+export const nepaliToGregorian = (nepaliDateStr: string | null | undefined): string | null => {
   if (!nepaliDateStr) return null;
 
   try {
@@ -98,9 +94,7 @@ export const nepaliToGregorian = (
  * @param isoDate - ISO date string or Date object
  * @returns Nepali date string "2082-09-07" or empty string
  */
-export const gregorianToNepaliString = (
-  isoDate: string | Date | null | undefined
-): string => {
+export const gregorianToNepaliString = (isoDate: string | Date | null | undefined): string => {
   if (!isoDate) return "";
 
   try {

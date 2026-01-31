@@ -12,7 +12,12 @@ interface NavigationProps {
   onToggleSidebar?: () => void;
 }
 
-const Navigation: React.FC<NavigationProps> = ({ activeView, onViewChange, items, onToggleSidebar }) => {
+const Navigation: React.FC<NavigationProps> = ({
+  activeView,
+  onViewChange,
+  items,
+  onToggleSidebar,
+}) => {
   const [openItem, setOpenItem] = useState<string | null>(null);
 
   const handleClick = (item: NavigationItem) => {
@@ -38,7 +43,9 @@ const Navigation: React.FC<NavigationProps> = ({ activeView, onViewChange, items
           </button>
         )}
         <div className="flex flex-col">
-          <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-red-600 to-red-400 bg-clip-text text-transparent">Gaamma</span>
+          <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-red-600 to-red-400 bg-clip-text text-transparent">
+            Gaamma
+          </span>
           <span className="text-xs text-gray-400 font-medium">Enterprise - Edition</span>
         </div>
       </div>
@@ -84,11 +91,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeView, onViewChange, items
       <div className="px-4 py-3 border-t border-gray-200">
         <div className="flex items-center gap-1.5">
           <span className="text-xs text-gray-400">A Product of</span>
-          <img
-            src="/zunkireelabs-logo.png"
-            alt="Zunkireelabs"
-            className="h-7 w-auto"
-          />
+          <img src="/zunkireelabs-logo.png" alt="Zunkireelabs" className="h-7 w-auto" />
         </div>
       </div>
     </div>

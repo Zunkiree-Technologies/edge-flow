@@ -8,10 +8,10 @@
  * Alteration and Rejection workflows are handled by separate buttons/modals
  */
 
-import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
-import NepaliDatePicker from '@/app/Components/NepaliDatePicker';
-import { useToast } from '@/app/Components/ToastContext';
+import React, { useState, useEffect } from "react";
+import { X } from "lucide-react";
+import NepaliDatePicker from "@/app/Components/NepaliDatePicker";
+import { useToast } from "@/app/Components/ToastContext";
 
 interface Worker {
   id: number;
@@ -35,7 +35,7 @@ interface AddWorkerRecordModalProps {
   onClose: () => void;
   onSave: (record: any) => void;
   subBatch: SubBatch | null;
-  mode?: 'add' | 'edit' | 'preview';
+  mode?: "add" | "edit" | "preview";
   editRecord?: any;
 }
 
@@ -44,19 +44,19 @@ const AddWorkerRecordModal: React.FC<AddWorkerRecordModalProps> = ({
   onClose,
   onSave,
   subBatch,
-  mode = 'add',
+  mode = "add",
 }) => {
   const { showToast } = useToast();
 
   // Calculate remaining work from subBatch (passed from TaskDetailsModal)
   const remainingWork = subBatch?.remaining_work || 0;
   const [formData, setFormData] = useState({
-    workerId: '',
-    date: '',
-    quantityWorked: '',
-    unitPrice: '',
+    workerId: "",
+    date: "",
+    quantityWorked: "",
+    unitPrice: "",
     isBillable: true,
-    particulars: '',
+    particulars: "",
   });
 
   const [workers, setWorkers] = useState<Worker[]>([]);
@@ -67,12 +67,12 @@ const AddWorkerRecordModal: React.FC<AddWorkerRecordModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       setFormData({
-        workerId: '',
-        date: '',
-        quantityWorked: '',
-        unitPrice: '',
+        workerId: "",
+        date: "",
+        quantityWorked: "",
+        unitPrice: "",
         isBillable: true,
-        particulars: '',
+        particulars: "",
       });
       fetchWorkers();
     }
@@ -85,7 +85,9 @@ const AddWorkerRecordModal: React.FC<AddWorkerRecordModalProps> = ({
       const departmentId = subBatch?.department_id || localStorage.getItem("departmentId");
       if (!departmentId) return;
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/workers/department/${departmentId}`);
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/workers/department/${departmentId}`
+      );
       if (res.ok) {
         const data = await res.json();
         setWorkers(data);
@@ -98,44 +100,47 @@ const AddWorkerRecordModal: React.FC<AddWorkerRecordModalProps> = ({
   };
 
   const handleChange = (field: string, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async () => {
     // Validation
     if (!formData.workerId) {
-      showToast('warning', 'Please select a worker');
+      showToast("warning", "Please select a worker");
       return;
     }
 
     if (!formData.date) {
-      showToast('warning', 'Please select a date');
+      showToast("warning", "Please select a date");
       return;
     }
 
-    if (!formData.quantityWorked || formData.quantityWorked.trim() === '') {
-      showToast('warning', 'Please enter quantity worked');
+    if (!formData.quantityWorked || formData.quantityWorked.trim() === "") {
+      showToast("warning", "Please enter quantity worked");
       return;
     }
 
     const quantity = parseInt(formData.quantityWorked);
     if (isNaN(quantity) || quantity <= 0) {
-      showToast('warning', 'Please enter a valid quantity greater than 0');
+      showToast("warning", "Please enter a valid quantity greater than 0");
       return;
     }
 
     // Validate against remaining work
     if (quantity > remainingWork) {
-      showToast('warning', `Cannot assign ${quantity.toLocaleString()} pieces! Only ${remainingWork.toLocaleString()} pieces remaining to assign.`);
+      showToast(
+        "warning",
+        `Cannot assign ${quantity.toLocaleString()} pieces! Only ${remainingWork.toLocaleString()} pieces remaining to assign.`
+      );
       return;
     }
 
     // Unit price is optional - can be filled by admin later
     let unitPrice = null;
-    if (formData.unitPrice && formData.unitPrice.trim() !== '') {
+    if (formData.unitPrice && formData.unitPrice.trim() !== "") {
       unitPrice = parseFloat(formData.unitPrice);
       if (isNaN(unitPrice) || unitPrice <= 0) {
-        showToast('warning', 'Please enter a valid unit price greater than 0 (or leave blank)');
+        showToast("warning", "Please enter a valid unit price greater than 0 (or leave blank)");
         return;
       }
     }
@@ -149,7 +154,7 @@ const AddWorkerRecordModal: React.FC<AddWorkerRecordModalProps> = ({
         work_date: formData.date,
         quantity_worked: quantity,
         is_billable: formData.isBillable,
-        activity_type: 'NORMAL',
+        activity_type: "NORMAL",
         department_id: subBatch?.department_id,
       };
 
@@ -162,22 +167,22 @@ const AddWorkerRecordModal: React.FC<AddWorkerRecordModalProps> = ({
       }
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_CREATE_WORKER_LOGS}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
       if (response.ok) {
-        showToast('success', 'Worker assigned successfully!');
+        showToast("success", "Worker assigned successfully!");
         // Call onSave to trigger parent refresh
         onSave({} as any); // Parent will refresh data from API
         onClose();
       } else {
         const errorData = await response.json().catch(() => ({}));
-        showToast('error', `Failed to assign worker: ${errorData.message || 'Unknown error'}`);
+        showToast("error", `Failed to assign worker: ${errorData.message || "Unknown error"}`);
       }
     } catch {
-      showToast('error', 'Error assigning worker. Please try again.');
+      showToast("error", "Error assigning worker. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -185,17 +190,18 @@ const AddWorkerRecordModal: React.FC<AddWorkerRecordModalProps> = ({
 
   if (!isOpen) return null;
 
-  const selectedWorker = workers.find(w => w.id === parseInt(formData.workerId));
-  const calculatedWage = formData.quantityWorked && formData.unitPrice
-    ? (parseInt(formData.quantityWorked) * parseFloat(formData.unitPrice)).toFixed(2)
-    : '0.00';
+  const selectedWorker = workers.find((w) => w.id === parseInt(formData.workerId));
+  const calculatedWage =
+    formData.quantityWorked && formData.unitPrice
+      ? (parseInt(formData.quantityWorked) * parseFloat(formData.unitPrice)).toFixed(2)
+      : "0.00";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Blur Backdrop */}
       <div
         className="absolute inset-0 bg-white/30 transition-opacity duration-300"
-        style={{ backdropFilter: 'blur(4px)' }}
+        style={{ backdropFilter: "blur(4px)" }}
         onClick={onClose}
       />
 
@@ -226,13 +232,13 @@ const AddWorkerRecordModal: React.FC<AddWorkerRecordModalProps> = ({
             </label>
             <select
               value={formData.workerId}
-              onChange={(e) => handleChange('workerId', e.target.value)}
+              onChange={(e) => handleChange("workerId", e.target.value)}
               disabled={loading}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
               required
             >
-              <option value="">{loading ? 'Loading workers...' : 'Select Worker'}</option>
-              {workers.map(worker => (
+              <option value="">{loading ? "Loading workers..." : "Select Worker"}</option>
+              {workers.map((worker) => (
                 <option key={worker.id} value={worker.id}>
                   {worker.name}
                 </option>
@@ -248,7 +254,7 @@ const AddWorkerRecordModal: React.FC<AddWorkerRecordModalProps> = ({
             <input
               type="number"
               value={formData.quantityWorked}
-              onChange={(e) => handleChange('quantityWorked', e.target.value)}
+              onChange={(e) => handleChange("quantityWorked", e.target.value)}
               placeholder="Enter quantity"
               min="1"
               max={remainingWork}
@@ -267,7 +273,7 @@ const AddWorkerRecordModal: React.FC<AddWorkerRecordModalProps> = ({
             </label>
             <NepaliDatePicker
               value={formData.date}
-              onChange={(date) => handleChange('date', date)}
+              onChange={(date) => handleChange("date", date)}
               className="rounded-lg text-sm"
               required
             />
@@ -281,7 +287,7 @@ const AddWorkerRecordModal: React.FC<AddWorkerRecordModalProps> = ({
             <input
               type="number"
               value={formData.unitPrice}
-              onChange={(e) => handleChange('unitPrice', e.target.value)}
+              onChange={(e) => handleChange("unitPrice", e.target.value)}
               placeholder="Enter price per piece"
               step="0.01"
               min="0.01"
@@ -309,7 +315,7 @@ const AddWorkerRecordModal: React.FC<AddWorkerRecordModalProps> = ({
               type="checkbox"
               id="billable"
               checked={formData.isBillable}
-              onChange={(e) => handleChange('isBillable', e.target.checked)}
+              onChange={(e) => handleChange("isBillable", e.target.checked)}
               className="w-4 h-4 accent-blue-500 rounded"
             />
             <label htmlFor="billable" className="text-xs text-gray-700">
@@ -326,7 +332,7 @@ const AddWorkerRecordModal: React.FC<AddWorkerRecordModalProps> = ({
             <input
               type="text"
               value={formData.particulars}
-              onChange={(e) => handleChange('particulars', e.target.value)}
+              onChange={(e) => handleChange("particulars", e.target.value)}
               placeholder="e.g., Stitching sleeves, Cutting fabric"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
@@ -364,7 +370,7 @@ const AddWorkerRecordModal: React.FC<AddWorkerRecordModalProps> = ({
             disabled={isSubmitting || loading}
             className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
           >
-            {isSubmitting ? 'Assigning...' : 'Assign Worker'}
+            {isSubmitting ? "Assigning..." : "Assign Worker"}
           </button>
         </div>
       </div>

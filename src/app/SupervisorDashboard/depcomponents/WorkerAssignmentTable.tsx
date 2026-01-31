@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MoreVertical, Eye, Edit2, Trash2 } from 'lucide-react';
+import React, { useState } from "react";
+import { MoreVertical, Eye, Edit2, Trash2 } from "lucide-react";
 
 interface WorkerRecord {
   id: number;
@@ -31,24 +31,26 @@ const WorkerAssignmentTable: React.FC<WorkerAssignmentTableProps> = ({
   records,
   onDelete,
   onEdit,
-  onPreview
+  onPreview,
 }) => {
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
 
   // Filter records to only show NORMAL activity type
-  const filteredRecords = records.filter(record => record.activity_type === 'NORMAL' || !record.activity_type);
+  const filteredRecords = records.filter(
+    (record) => record.activity_type === "NORMAL" || !record.activity_type
+  );
 
   const handleMenuAction = (action: string, record: WorkerRecord) => {
     setOpenMenuId(null);
     switch (action) {
-      case 'preview':
+      case "preview":
         onPreview?.(record);
         break;
-      case 'edit':
+      case "edit":
         onEdit?.(record);
         break;
-      case 'delete':
-        if (confirm('Are you sure you want to delete this record?')) {
+      case "delete":
+        if (confirm("Are you sure you want to delete this record?")) {
           onDelete(record.id);
         }
         break;
@@ -69,81 +71,130 @@ const WorkerAssignmentTable: React.FC<WorkerAssignmentTableProps> = ({
       <table className="min-w-full border-collapse">
         <thead className="bg-gray-50">
           <tr>
-            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[120px] whitespace-nowrap">Worker</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[100px] whitespace-nowrap">Date</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[120px] whitespace-nowrap">Size/Category</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[120px] whitespace-nowrap">Particulars</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[100px] whitespace-nowrap">Qty Received</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[100px] whitespace-nowrap">Qty Worked</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[100px] whitespace-nowrap">Unit Price</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[90px] whitespace-nowrap">Rejected</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[140px] whitespace-nowrap">Returned Dept</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[150px] whitespace-nowrap">Rejection Reason</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[90px] whitespace-nowrap">Alteration</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[150px] whitespace-nowrap">Alteration Note</th>
-            <th className="p-3 text-center text-sm font-medium text-gray-700 min-w-[80px] whitespace-nowrap">Actions</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[120px] whitespace-nowrap">
+              Worker
+            </th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[100px] whitespace-nowrap">
+              Date
+            </th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[120px] whitespace-nowrap">
+              Size/Category
+            </th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[120px] whitespace-nowrap">
+              Particulars
+            </th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[100px] whitespace-nowrap">
+              Qty Received
+            </th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[100px] whitespace-nowrap">
+              Qty Worked
+            </th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[100px] whitespace-nowrap">
+              Unit Price
+            </th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[90px] whitespace-nowrap">
+              Rejected
+            </th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[140px] whitespace-nowrap">
+              Returned Dept
+            </th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[150px] whitespace-nowrap">
+              Rejection Reason
+            </th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[90px] whitespace-nowrap">
+              Alteration
+            </th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 min-w-[150px] whitespace-nowrap">
+              Alteration Note
+            </th>
+            <th className="p-3 text-center text-sm font-medium text-gray-700 min-w-[80px] whitespace-nowrap">
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
           {filteredRecords.map((record) => {
-            const hasRejectionOrAlteration = (record.rejectReturn ?? 0) > 0 || (record.alteration ?? 0) > 0;
-            const rowBgClass = hasRejectionOrAlteration ? 'bg-[#FEF2F2]' : 'bg-[#ECFDF5]';
+            const hasRejectionOrAlteration =
+              (record.rejectReturn ?? 0) > 0 || (record.alteration ?? 0) > 0;
+            const rowBgClass = hasRejectionOrAlteration ? "bg-[#FEF2F2]" : "bg-[#ECFDF5]";
 
             return (
-            <tr key={record.id} className={rowBgClass}>
-              <td className="p-3 text-sm text-gray-900 min-w-[120px] whitespace-nowrap">{record.worker}</td>
-              <td className="p-3 text-sm text-gray-600 min-w-[100px] whitespace-nowrap">{record.date}</td>
-              <td className="p-3 text-sm text-gray-600 min-w-[120px]">{record.realCategory}</td>
-              <td className="p-3 text-sm text-gray-600 min-w-[120px]">{record.particulars || '-'}</td>
-              <td className="p-3 text-sm text-gray-600 min-w-[100px] text-right">{record.qtyReceived ?? 0}</td>
-              <td className="p-3 text-sm text-gray-600 min-w-[100px] text-right">{record.qtyWorked ?? 0}</td>
-              <td className="p-3 text-sm text-gray-600 min-w-[100px] text-right">${record.unitPrice ?? 0}</td>
-              <td className={`p-3 text-sm min-w-[90px] text-right font-semibold ${
-                (record.rejectReturn ?? 0) > 0 ? 'text-red-600' : 'text-gray-600'
-              }`}>
-                {record.rejectReturn ?? 0}
-              </td>
-              <td className="p-3 text-sm text-gray-600 min-w-[140px]">{record.returnTo || '-'}</td>
-              <td className="p-3 text-sm text-gray-600 min-w-[150px]">{record.rejectionReason || '-'}</td>
-              <td className={`p-3 text-sm min-w-[90px] text-right font-semibold ${
-                (record.alteration ?? 0) > 0 ? 'text-red-600' : 'text-gray-600'
-              }`}>
-                {record.alteration ?? 0}
-              </td>
-              <td className="p-3 text-sm text-gray-600 min-w-[150px]">{record.alterationNote || '-'}</td>
-              <td className="p-3 text-center min-w-[80px]">
-                <div className="relative">
-                  <button
-                    onClick={() => setOpenMenuId(openMenuId === record.id ? null : record.id)}
-                    className="p-1 rounded hover:bg-gray-100"
-                  >
-                    <MoreVertical size={16} />
-                  </button>
-                  {openMenuId === record.id && (
-                    <div className="absolute right-0 top-full mt-1 w-32 bg-white rounded shadow-lg z-20 border">
-                      <button
-                        className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2 text-sm"
-                        onClick={() => handleMenuAction('preview', record)}
-                      >
-                        <Eye size={14} /> Preview
-                      </button>
-                      <button
-                        className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2 text-sm"
-                        onClick={() => handleMenuAction('edit', record)}
-                      >
-                        <Edit2 size={14} /> Edit
-                      </button>
-                      <button
-                        className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2 text-sm text-red-600"
-                        onClick={() => handleMenuAction('delete', record)}
-                      >
-                        <Trash2 size={14} /> Delete
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </td>
-            </tr>
+              <tr key={record.id} className={rowBgClass}>
+                <td className="p-3 text-sm text-gray-900 min-w-[120px] whitespace-nowrap">
+                  {record.worker}
+                </td>
+                <td className="p-3 text-sm text-gray-600 min-w-[100px] whitespace-nowrap">
+                  {record.date}
+                </td>
+                <td className="p-3 text-sm text-gray-600 min-w-[120px]">{record.realCategory}</td>
+                <td className="p-3 text-sm text-gray-600 min-w-[120px]">
+                  {record.particulars || "-"}
+                </td>
+                <td className="p-3 text-sm text-gray-600 min-w-[100px] text-right">
+                  {record.qtyReceived ?? 0}
+                </td>
+                <td className="p-3 text-sm text-gray-600 min-w-[100px] text-right">
+                  {record.qtyWorked ?? 0}
+                </td>
+                <td className="p-3 text-sm text-gray-600 min-w-[100px] text-right">
+                  ${record.unitPrice ?? 0}
+                </td>
+                <td
+                  className={`p-3 text-sm min-w-[90px] text-right font-semibold ${
+                    (record.rejectReturn ?? 0) > 0 ? "text-red-600" : "text-gray-600"
+                  }`}
+                >
+                  {record.rejectReturn ?? 0}
+                </td>
+                <td className="p-3 text-sm text-gray-600 min-w-[140px]">
+                  {record.returnTo || "-"}
+                </td>
+                <td className="p-3 text-sm text-gray-600 min-w-[150px]">
+                  {record.rejectionReason || "-"}
+                </td>
+                <td
+                  className={`p-3 text-sm min-w-[90px] text-right font-semibold ${
+                    (record.alteration ?? 0) > 0 ? "text-red-600" : "text-gray-600"
+                  }`}
+                >
+                  {record.alteration ?? 0}
+                </td>
+                <td className="p-3 text-sm text-gray-600 min-w-[150px]">
+                  {record.alterationNote || "-"}
+                </td>
+                <td className="p-3 text-center min-w-[80px]">
+                  <div className="relative">
+                    <button
+                      onClick={() => setOpenMenuId(openMenuId === record.id ? null : record.id)}
+                      className="p-1 rounded hover:bg-gray-100"
+                    >
+                      <MoreVertical size={16} />
+                    </button>
+                    {openMenuId === record.id && (
+                      <div className="absolute right-0 top-full mt-1 w-32 bg-white rounded shadow-lg z-20 border">
+                        <button
+                          className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2 text-sm"
+                          onClick={() => handleMenuAction("preview", record)}
+                        >
+                          <Eye size={14} /> Preview
+                        </button>
+                        <button
+                          className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2 text-sm"
+                          onClick={() => handleMenuAction("edit", record)}
+                        >
+                          <Edit2 size={14} /> Edit
+                        </button>
+                        <button
+                          className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2 text-sm text-red-600"
+                          onClick={() => handleMenuAction("delete", record)}
+                        >
+                          <Trash2 size={14} /> Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </td>
+              </tr>
             );
           })}
         </tbody>

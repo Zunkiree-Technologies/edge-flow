@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
-import NepaliDatePicker from '@/app/Components/NepaliDatePicker';
-import { useToast } from '@/app/Components/ToastContext';
+import React, { useState, useEffect } from "react";
+import { X } from "lucide-react";
+import NepaliDatePicker from "@/app/Components/NepaliDatePicker";
+import { useToast } from "@/app/Components/ToastContext";
 
 interface WorkerRecord {
   id: number;
@@ -45,19 +45,19 @@ interface EditRecordModalProps {
 const EditRecordModal: React.FC<EditRecordModalProps> = ({ isOpen, onClose, record, onSave }) => {
   const { showToast } = useToast();
   const [formData, setFormData] = useState({
-    workerId: '',
-    workerName: '',
-    date: '',
-    sizeCategory: '',
-    particulars: '',
-    qtyReceived: '',
-    qtyWorked: '',
-    unitPrice: '',
-    rejectReturn: '',
-    returnTo: '',
-    rejectionReason: '',
-    alteration: '',
-    alterationNote: ''
+    workerId: "",
+    workerName: "",
+    date: "",
+    sizeCategory: "",
+    particulars: "",
+    qtyReceived: "",
+    qtyWorked: "",
+    unitPrice: "",
+    rejectReturn: "",
+    returnTo: "",
+    rejectionReason: "",
+    alteration: "",
+    alterationNote: "",
   });
 
   const [workers, setWorkers] = useState<Worker[]>([]);
@@ -71,23 +71,23 @@ const EditRecordModal: React.FC<EditRecordModalProps> = ({ isOpen, onClose, reco
       // Convert date format from "MM/DD/YYYY" to "YYYY-MM-DD" for input
       const formatDateForInput = (dateStr: string) => {
         const date = new Date(dateStr);
-        return date.toISOString().split('T')[0];
+        return date.toISOString().split("T")[0];
       };
 
       setFormData({
-        workerId: '', // Will be set after workers are loaded
+        workerId: "", // Will be set after workers are loaded
         workerName: record.worker,
         date: formatDateForInput(record.date),
-        sizeCategory: record.realCategory || '',
-        particulars: record.particulars || '',
-        qtyReceived: record.qtyReceived?.toString() || '',
-        qtyWorked: record.qtyWorked?.toString() || '',
-        unitPrice: record.unitPrice?.toString() || '',
-        rejectReturn: record.rejectReturn?.toString() || '',
-        returnTo: record.returnTo || '',
-        rejectionReason: record.rejectionReason || '',
-        alteration: record.alteration?.toString() || '',
-        alterationNote: record.alterationNote || ''
+        sizeCategory: record.realCategory || "",
+        particulars: record.particulars || "",
+        qtyReceived: record.qtyReceived?.toString() || "",
+        qtyWorked: record.qtyWorked?.toString() || "",
+        unitPrice: record.unitPrice?.toString() || "",
+        rejectReturn: record.rejectReturn?.toString() || "",
+        returnTo: record.returnTo || "",
+        rejectionReason: record.rejectionReason || "",
+        alteration: record.alteration?.toString() || "",
+        alterationNote: record.alterationNote || "",
       });
     }
   }, [record, isOpen]);
@@ -103,11 +103,11 @@ const EditRecordModal: React.FC<EditRecordModalProps> = ({ isOpen, onClose, reco
   // Set workerId after workers are loaded
   useEffect(() => {
     if (workers.length > 0 && record) {
-      const worker = workers.find(w => w.name === record.worker);
+      const worker = workers.find((w) => w.name === record.worker);
       if (worker) {
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
-          workerId: worker.id.toString()
+          workerId: worker.id.toString(),
         }));
       }
     }
@@ -121,10 +121,10 @@ const EditRecordModal: React.FC<EditRecordModalProps> = ({ isOpen, onClose, reco
         const workersData = await response.json();
         setWorkers(workersData);
       } else {
-        showToast('error', 'Failed to load workers. Please try again.');
+        showToast("error", "Failed to load workers. Please try again.");
       }
     } catch {
-      showToast('error', 'Error loading workers. Please check your connection.');
+      showToast("error", "Error loading workers. Please check your connection.");
     } finally {
       setLoading(false);
     }
@@ -144,21 +144,23 @@ const EditRecordModal: React.FC<EditRecordModalProps> = ({ isOpen, onClose, reco
 
   if (!isOpen || !record) return null;
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    
+
     // If worker is selected, update both workerId and workerName
-    if (name === 'workerId') {
-      const selectedWorker = workers.find(worker => worker.id === parseInt(value));
-      setFormData(prev => ({
+    if (name === "workerId") {
+      const selectedWorker = workers.find((worker) => worker.id === parseInt(value));
+      setFormData((prev) => ({
         ...prev,
         workerId: value,
-        workerName: selectedWorker ? selectedWorker.name : ''
+        workerName: selectedWorker ? selectedWorker.name : "",
       }));
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
     }
   };
@@ -166,7 +168,7 @@ const EditRecordModal: React.FC<EditRecordModalProps> = ({ isOpen, onClose, reco
   const handleSave = async () => {
     // Basic validation
     if (!formData.workerId || !formData.date) {
-      showToast('warning', 'Worker and date are required');
+      showToast("warning", "Worker and date are required");
       return;
     }
 
@@ -187,16 +189,19 @@ const EditRecordModal: React.FC<EditRecordModalProps> = ({ isOpen, onClose, reco
         return_to: formData.returnTo || undefined,
         rejection_reason: formData.rejectionReason || undefined,
         alteration: formData.alteration ? parseInt(formData.alteration) : undefined,
-        alteration_note: formData.alterationNote || undefined
+        alteration_note: formData.alterationNote || undefined,
       };
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/worker-logs/logs/${record.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/worker-logs/logs/${record.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       if (response.ok) {
         await response.json(); // Parse response
@@ -205,8 +210,8 @@ const EditRecordModal: React.FC<EditRecordModalProps> = ({ isOpen, onClose, reco
         const updatedRecord: WorkerRecord = {
           id: record.id,
           worker: formData.workerName,
-          realCategory: formData.sizeCategory || 'General',
-          date: new Date(formData.date).toLocaleDateString('en-US'),
+          realCategory: formData.sizeCategory || "General",
+          date: new Date(formData.date).toLocaleDateString("en-US"),
           status: record.status, // Keep existing status
           qtyReceived: Number(formData.qtyReceived) || 0,
           qtyWorked: Number(formData.qtyWorked) || 0,
@@ -216,18 +221,18 @@ const EditRecordModal: React.FC<EditRecordModalProps> = ({ isOpen, onClose, reco
           rejectionReason: formData.rejectionReason,
           alteration: Number(formData.alteration) || 0,
           alterationNote: formData.alterationNote,
-          particulars: formData.particulars
+          particulars: formData.particulars,
         };
 
         onSave(updatedRecord);
-        showToast('success', 'Worker log updated successfully!');
+        showToast("success", "Worker log updated successfully!");
         onClose();
       } else {
         const errorData = await response.json().catch(() => ({}));
-        showToast('error', `Failed to update worker log: ${errorData.message || 'Unknown error'}`);
+        showToast("error", `Failed to update worker log: ${errorData.message || "Unknown error"}`);
       }
     } catch {
-      showToast('error', 'Error updating worker log. Please check your connection and try again.');
+      showToast("error", "Error updating worker log. Please check your connection and try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -240,10 +245,7 @@ const EditRecordModal: React.FC<EditRecordModalProps> = ({ isOpen, onClose, reco
         {/* Header */}
         <div className="flex items-center justify-between p-6 bg-gray-50">
           <h3 className="text-lg font-semibold">Edit Worker Record</h3>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
-          >
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <X size={20} />
           </button>
         </div>
@@ -261,9 +263,7 @@ const EditRecordModal: React.FC<EditRecordModalProps> = ({ isOpen, onClose, reco
                 disabled={loading}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
-                <option value="">
-                  {loading ? 'Loading workers...' : 'Select Worker'}
-                </option>
+                <option value="">{loading ? "Loading workers..." : "Select Worker"}</option>
                 {workers.map((worker) => (
                   <option key={worker.id} value={worker.id}>
                     {worker.name}
@@ -276,7 +276,7 @@ const EditRecordModal: React.FC<EditRecordModalProps> = ({ isOpen, onClose, reco
               <NepaliDatePicker
                 value={formData.date}
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                onChange={(value) => handleInputChange({ target: { name: 'date', value } } as any)}
+                onChange={(value) => handleInputChange({ target: { name: "date", value } } as any)}
                 placeholder="Select Date"
               />
             </div>
@@ -351,7 +351,7 @@ const EditRecordModal: React.FC<EditRecordModalProps> = ({ isOpen, onClose, reco
           {/* Additional Fields */}
           <div className="border-t pt-4">
             <h4 className="text-sm font-semibold mb-3 text-gray-700">Additional Tracking</h4>
-            
+
             {/* Reject & Return */}
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -438,7 +438,7 @@ const EditRecordModal: React.FC<EditRecordModalProps> = ({ isOpen, onClose, reco
             disabled={isSubmitting || loading}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? 'Updating...' : 'Update Record'}
+            {isSubmitting ? "Updating..." : "Update Record"}
           </button>
         </div>
       </div>

@@ -21,7 +21,8 @@ export default function GlobalError({
           <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full text-center">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Something went wrong!</h2>
             <p className="text-gray-600 mb-6">
-              We apologize for the inconvenience. An error has occurred and our team has been notified.
+              We apologize for the inconvenience. An error has occurred and our team has been
+              notified.
             </p>
             <button
               onClick={() => reset()}

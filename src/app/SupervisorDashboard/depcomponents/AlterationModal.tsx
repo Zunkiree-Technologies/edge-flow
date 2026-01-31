@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
-import { useToast } from '@/app/Components/ToastContext';
+import React, { useState, useEffect } from "react";
+import { X } from "lucide-react";
+import { useToast } from "@/app/Components/ToastContext";
 
 interface AlterationModalProps {
   isOpen: boolean;
@@ -41,10 +41,10 @@ const AlterationModal: React.FC<AlterationModalProps> = ({
 }) => {
   const { showToast } = useToast();
   const [formData, setFormData] = useState({
-    workerId: '',
-    quantity: '',
-    note: '',
-    returnToDepartmentId: '',
+    workerId: "",
+    quantity: "",
+    note: "",
+    returnToDepartmentId: "",
   });
   const [departments, setDepartments] = useState<Department[]>([]);
   const [loading, setLoading] = useState(false);
@@ -57,10 +57,10 @@ const AlterationModal: React.FC<AlterationModalProps> = ({
       fetchDepartments();
       // Reset form when opening
       setFormData({
-        workerId: '',
-        quantity: '',
-        note: '',
-        returnToDepartmentId: '',
+        workerId: "",
+        quantity: "",
+        note: "",
+        returnToDepartmentId: "",
       });
       setMaxQuantity(0);
     }
@@ -87,8 +87,8 @@ const AlterationModal: React.FC<AlterationModalProps> = ({
     }
 
     // Parse flow: "Dep-X → Dep-Y → Dep-Z"
-    const flow = departmentFlow.split('→').map(d => d.trim());
-    const currentIndex = flow.findIndex(d => d === currentDepartmentName);
+    const flow = departmentFlow.split("→").map((d) => d.trim());
+    const currentIndex = flow.findIndex((d) => d === currentDepartmentName);
 
     if (currentIndex === -1 || currentIndex === 0) {
       // Not in flow OR first department (no previous departments)
@@ -100,9 +100,7 @@ const AlterationModal: React.FC<AlterationModalProps> = ({
     const previousDeptNames = flow.slice(0, currentIndex);
 
     // Filter to show only those departments
-    const filtered = allDepartments.filter(dept =>
-      previousDeptNames.includes(dept.name)
-    );
+    const filtered = allDepartments.filter((dept) => previousDeptNames.includes(dept.name));
 
     setValidDepartments(filtered);
   };
@@ -112,67 +110,79 @@ const AlterationModal: React.FC<AlterationModalProps> = ({
 
     // Validation
     if (!formData.workerId) {
-      showToast('warning', 'Please select a worker');
+      showToast("warning", "Please select a worker");
       return;
     }
 
     const quantity = parseInt(formData.quantity);
     if (isNaN(quantity) || quantity <= 0) {
-      showToast('warning', 'Please enter a valid quantity greater than 0');
+      showToast("warning", "Please enter a valid quantity greater than 0");
       return;
     }
 
     if (quantity > maxQuantity) {
-      showToast('warning', `Cannot send ${quantity} pieces for alteration! Only ${maxQuantity} pieces available for this worker.`);
+      showToast(
+        "warning",
+        `Cannot send ${quantity} pieces for alteration! Only ${maxQuantity} pieces available for this worker.`
+      );
       return;
     }
 
     if (!formData.note.trim()) {
-      showToast('warning', 'Please enter a reason for alteration');
+      showToast("warning", "Please enter a reason for alteration");
       return;
     }
 
     if (!formData.returnToDepartmentId) {
-      showToast('warning', 'Please select a department to send items to');
+      showToast("warning", "Please select a department to send items to");
       return;
     }
 
     if (parseInt(formData.returnToDepartmentId) === departmentId) {
-      showToast('warning', 'Cannot send to the same department. Please select a different department.');
+      showToast(
+        "warning",
+        "Cannot send to the same department. Please select a different department."
+      );
       return;
     }
 
     setLoading(true);
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/production/alteration`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          sub_batch_id: subBatchId,
-          from_department_id: departmentId,
-          return_to_department_id: parseInt(formData.returnToDepartmentId),
-          quantity: quantity,
-          note: formData.note.trim(),
-          worker_log_id: parseInt(formData.workerId), // Worker log ID to track accountability
-        }),
-      });
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/production/alteration`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            sub_batch_id: subBatchId,
+            from_department_id: departmentId,
+            return_to_department_id: parseInt(formData.returnToDepartmentId),
+            quantity: quantity,
+            note: formData.note.trim(),
+            worker_log_id: parseInt(formData.workerId), // Worker log ID to track accountability
+          }),
+        }
+      );
 
       const result = await response.json();
 
       if (response.ok && result.success) {
-        showToast('success', `Successfully sent ${quantity} pieces for alteration!`);
+        showToast("success", `Successfully sent ${quantity} pieces for alteration!`);
         onSuccess();
         onClose();
       } else {
-        showToast('error', `Failed to send for alteration: ${result.message || 'Unknown error'}`);
+        showToast("error", `Failed to send for alteration: ${result.message || "Unknown error"}`);
       }
     } catch (error: unknown) {
-      showToast('error', `Error: ${error instanceof Error ? error.message : 'Failed to send for alteration'}`);
+      showToast(
+        "error",
+        `Error: ${error instanceof Error ? error.message : "Failed to send for alteration"}`
+      );
     } finally {
       setLoading(false);
     }
@@ -185,7 +195,7 @@ const AlterationModal: React.FC<AlterationModalProps> = ({
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-white/30 transition-opacity duration-300"
-        style={{ backdropFilter: 'blur(4px)' }}
+        style={{ backdropFilter: "blur(4px)" }}
         onClick={onClose}
       />
 
@@ -194,10 +204,7 @@ const AlterationModal: React.FC<AlterationModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900">Send for Alteration</h3>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
             <X size={20} />
           </button>
         </div>
@@ -223,8 +230,10 @@ const AlterationModal: React.FC<AlterationModalProps> = ({
               value={formData.workerId}
               onChange={(e) => {
                 const selectedWorkerLogId = e.target.value;
-                const selectedWorkerLog = workerRecords.find(r => r.id.toString() === selectedWorkerLogId);
-                setFormData({ ...formData, workerId: selectedWorkerLogId, quantity: '' });
+                const selectedWorkerLog = workerRecords.find(
+                  (r) => r.id.toString() === selectedWorkerLogId
+                );
+                setFormData({ ...formData, workerId: selectedWorkerLogId, quantity: "" });
                 setMaxQuantity(selectedWorkerLog?.qtyWorked || 0);
               }}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
@@ -252,7 +261,7 @@ const AlterationModal: React.FC<AlterationModalProps> = ({
               value={formData.quantity}
               onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
-              placeholder={maxQuantity > 0 ? `Max: ${maxQuantity}` : 'Select worker first'}
+              placeholder={maxQuantity > 0 ? `Max: ${maxQuantity}` : "Select worker first"}
               min="1"
               max={maxQuantity}
               disabled={!formData.workerId}
@@ -261,7 +270,7 @@ const AlterationModal: React.FC<AlterationModalProps> = ({
             <p className="text-xs text-gray-500 mt-1">
               {maxQuantity > 0
                 ? `Enter number of pieces from this worker's assignment (max: ${maxQuantity})`
-                : 'Select a worker to enable quantity input'}
+                : "Select a worker to enable quantity input"}
             </p>
           </div>
 
@@ -278,9 +287,7 @@ const AlterationModal: React.FC<AlterationModalProps> = ({
               rows={3}
               required
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Describe what needs to be altered
-            </p>
+            <p className="text-xs text-gray-500 mt-1">Describe what needs to be altered</p>
           </div>
 
           {/* Send to Department */}
@@ -292,7 +299,9 @@ const AlterationModal: React.FC<AlterationModalProps> = ({
               <>
                 <select
                   value={formData.returnToDepartmentId}
-                  onChange={(e) => setFormData({ ...formData, returnToDepartmentId: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, returnToDepartmentId: e.target.value })
+                  }
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
                   required
                 >
@@ -329,7 +338,7 @@ const AlterationModal: React.FC<AlterationModalProps> = ({
               disabled={loading || validDepartments.length === 0}
               className="px-6 py-2 rounded-lg bg-yellow-600 text-white hover:bg-yellow-700 disabled:opacity-50 font-medium transition-colors shadow-sm"
             >
-              {loading ? 'Sending...' : 'Send for Alteration'}
+              {loading ? "Sending..." : "Send for Alteration"}
             </button>
           </div>
         </form>

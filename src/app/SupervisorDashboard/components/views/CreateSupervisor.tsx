@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const CreateSupervisor = () => {
-  return (
-    <div>CreateSupervisor</div>
-  )
-}
+  return <div>CreateSupervisor</div>;
+};
 
-export default CreateSupervisor
+export default CreateSupervisor;

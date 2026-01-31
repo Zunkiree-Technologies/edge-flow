@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
-import { useToast } from '@/app/Components/ToastContext';
+import React, { useState, useEffect } from "react";
+import { X } from "lucide-react";
+import { useToast } from "@/app/Components/ToastContext";
 
 interface RejectionModalProps {
   isOpen: boolean;
@@ -37,9 +37,9 @@ const RejectionModal: React.FC<RejectionModalProps> = ({
 }) => {
   const { showToast } = useToast();
   const [formData, setFormData] = useState({
-    workerId: '',
-    quantity: '',
-    reason: '',
+    workerId: "",
+    quantity: "",
+    reason: "",
   });
   const [loading, setLoading] = useState(false);
   const [maxQuantity, setMaxQuantity] = useState(0);
@@ -48,9 +48,9 @@ const RejectionModal: React.FC<RejectionModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       setFormData({
-        workerId: '',
-        quantity: '',
-        reason: '',
+        workerId: "",
+        quantity: "",
+        reason: "",
       });
       setMaxQuantity(0);
     }
@@ -61,35 +61,38 @@ const RejectionModal: React.FC<RejectionModalProps> = ({
 
     // Validation
     if (!formData.workerId) {
-      showToast('warning', 'Please select a worker');
+      showToast("warning", "Please select a worker");
       return;
     }
 
     const quantity = parseInt(formData.quantity);
     if (isNaN(quantity) || quantity <= 0) {
-      showToast('warning', 'Please enter a valid quantity greater than 0');
+      showToast("warning", "Please enter a valid quantity greater than 0");
       return;
     }
 
     if (quantity > maxQuantity) {
-      showToast('warning', `Cannot reject ${quantity} pieces! Only ${maxQuantity} pieces available for this worker.`);
+      showToast(
+        "warning",
+        `Cannot reject ${quantity} pieces! Only ${maxQuantity} pieces available for this worker.`
+      );
       return;
     }
 
     if (!formData.reason.trim()) {
-      showToast('warning', 'Please enter a reason for rejection');
+      showToast("warning", "Please enter a reason for rejection");
       return;
     }
 
     setLoading(true);
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/production/reject`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           sub_batch_id: subBatchId,
@@ -103,14 +106,17 @@ const RejectionModal: React.FC<RejectionModalProps> = ({
       const result = await response.json();
 
       if (response.ok && result.success) {
-        showToast('success', `Successfully rejected ${quantity} pieces!`);
+        showToast("success", `Successfully rejected ${quantity} pieces!`);
         onSuccess();
         onClose();
       } else {
-        showToast('error', `Failed to reject items: ${result.message || 'Unknown error'}`);
+        showToast("error", `Failed to reject items: ${result.message || "Unknown error"}`);
       }
     } catch (error: unknown) {
-      showToast('error', `Error: ${error instanceof Error ? error.message : 'Failed to reject items'}`);
+      showToast(
+        "error",
+        `Error: ${error instanceof Error ? error.message : "Failed to reject items"}`
+      );
     } finally {
       setLoading(false);
     }
@@ -123,7 +129,7 @@ const RejectionModal: React.FC<RejectionModalProps> = ({
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-white/30 transition-opacity duration-300"
-        style={{ backdropFilter: 'blur(4px)' }}
+        style={{ backdropFilter: "blur(4px)" }}
         onClick={onClose}
       />
 
@@ -132,10 +138,7 @@ const RejectionModal: React.FC<RejectionModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900">Reject Items</h3>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
             <X size={20} />
           </button>
         </div>
@@ -161,8 +164,10 @@ const RejectionModal: React.FC<RejectionModalProps> = ({
               value={formData.workerId}
               onChange={(e) => {
                 const selectedWorkerLogId = e.target.value;
-                const selectedWorkerLog = workerRecords.find(r => r.id.toString() === selectedWorkerLogId);
-                setFormData({ ...formData, workerId: selectedWorkerLogId, quantity: '' });
+                const selectedWorkerLog = workerRecords.find(
+                  (r) => r.id.toString() === selectedWorkerLogId
+                );
+                setFormData({ ...formData, workerId: selectedWorkerLogId, quantity: "" });
                 setMaxQuantity(selectedWorkerLog?.qtyWorked || 0);
               }}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
@@ -190,7 +195,7 @@ const RejectionModal: React.FC<RejectionModalProps> = ({
               value={formData.quantity}
               onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
-              placeholder={maxQuantity > 0 ? `Max: ${maxQuantity}` : 'Select worker first'}
+              placeholder={maxQuantity > 0 ? `Max: ${maxQuantity}` : "Select worker first"}
               min="1"
               max={maxQuantity}
               disabled={!formData.workerId}
@@ -199,7 +204,7 @@ const RejectionModal: React.FC<RejectionModalProps> = ({
             <p className="text-xs text-gray-500 mt-1">
               {maxQuantity > 0
                 ? `Enter number of pieces from this worker's assignment (max: ${maxQuantity})`
-                : 'Select a worker to enable quantity input'}
+                : "Select a worker to enable quantity input"}
             </p>
           </div>
 
@@ -216,9 +221,7 @@ const RejectionModal: React.FC<RejectionModalProps> = ({
               rows={3}
               required
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Describe the quality issue or defect
-            </p>
+            <p className="text-xs text-gray-500 mt-1">Describe the quality issue or defect</p>
           </div>
 
           {/* Info Note */}
@@ -227,7 +230,8 @@ const RejectionModal: React.FC<RejectionModalProps> = ({
               ⚠️ These items will be marked as waste/scrap
             </p>
             <p className="text-xs text-red-700 mt-1">
-              Rejected items cannot be reworked and will be logged as loss. This action reduces inventory permanently.
+              Rejected items cannot be reworked and will be logged as loss. This action reduces
+              inventory permanently.
             </p>
           </div>
 
@@ -246,7 +250,7 @@ const RejectionModal: React.FC<RejectionModalProps> = ({
               disabled={loading}
               className="px-6 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 font-medium transition-colors shadow-sm"
             >
-              {loading ? 'Rejecting...' : 'Reject Items'}
+              {loading ? "Rejecting..." : "Reject Items"}
             </button>
           </div>
         </form>

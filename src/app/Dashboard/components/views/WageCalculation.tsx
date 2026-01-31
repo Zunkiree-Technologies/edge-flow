@@ -3,10 +3,22 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import axios from "axios";
 import {
-  DollarSign, Users, TrendingDown, Award,
-  ChevronDown, ChevronUp, ChevronLeft, ChevronRight,
-  ChevronsLeft, ChevronsRight, ArrowUpDown, Download,
-  Check, Search, ArrowLeft, X
+  DollarSign,
+  Users,
+  TrendingDown,
+  Award,
+  ChevronDown,
+  ChevronUp,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  ArrowUpDown,
+  Download,
+  Check,
+  Search,
+  ArrowLeft,
+  X,
 } from "lucide-react";
 import Loader from "@/app/Components/Loader";
 import NepaliDatePicker from "@/app/Components/NepaliDatePicker";
@@ -70,12 +82,13 @@ const FilterDropdown = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const selectedOption = options.find(opt => opt.value === value);
+  const selectedOption = options.find((opt) => opt.value === value);
   const displayLabel = selectedOption?.label || label;
 
-  const filteredOptions = options.filter(opt =>
-    opt.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (opt.description && opt.description.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredOptions = options.filter(
+    (opt) =>
+      opt.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (opt.description && opt.description.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   useEffect(() => {
@@ -112,7 +125,9 @@ const FilterDropdown = ({
       >
         {icon && <span className="flex-shrink-0">{icon}</span>}
         <span className="max-w-[150px] truncate">{displayLabel}</span>
-        <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown
+          className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+        />
       </button>
 
       {isOpen && (
@@ -145,13 +160,17 @@ const FilterDropdown = ({
                     value === option.value ? "bg-blue-50" : ""
                   }`}
                 >
-                  <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                    value === option.value ? "border-[#2272B4] bg-[#2272B4]" : "border-gray-300"
-                  }`}>
+                  <div
+                    className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                      value === option.value ? "border-[#2272B4] bg-[#2272B4]" : "border-gray-300"
+                    }`}
+                  >
                     {value === option.value && <Check className="w-2.5 h-2.5 text-white" />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className={`text-sm font-medium ${value === option.value ? "text-[#2272B4]" : "text-gray-900"}`}>
+                    <div
+                      className={`text-sm font-medium ${value === option.value ? "text-[#2272B4]" : "text-gray-900"}`}
+                    >
                       {option.label}
                     </div>
                     {option.description && (
@@ -172,8 +191,10 @@ const WageCalculation = () => {
   const { showToast } = useToast();
 
   // View state
-  const [activeView, setActiveView] = useState<'all' | 'detail'>('all');
-  const [selectedWorkerForDetail, setSelectedWorkerForDetail] = useState<WorkerWageSummary | null>(null);
+  const [activeView, setActiveView] = useState<"all" | "detail">("all");
+  const [selectedWorkerForDetail, setSelectedWorkerForDetail] = useState<WorkerWageSummary | null>(
+    null
+  );
 
   // Data states
   const [allWorkersWages, setAllWorkersWages] = useState<WorkerWageSummary[]>([]);
@@ -220,7 +241,7 @@ const WageCalculation = () => {
   // Helper to check if date is Nepali (year > 2050)
   const isNepaliDate = (dateStr: string): boolean => {
     if (!dateStr) return false;
-    const year = parseInt(dateStr.split('-')[0]);
+    const year = parseInt(dateStr.split("-")[0]);
     return year > 2050; // Nepali years are 2080+, Gregorian are 2024+
   };
 
@@ -229,87 +250,94 @@ const WageCalculation = () => {
   // The backend now stores dates correctly, but old data may still have wrong dates
   const convertNepaliToGregorianForFilter = (nepaliDateStr: string): string => {
     if (!nepaliDateStr || !isNepaliDate(nepaliDateStr)) return nepaliDateStr;
-    const [year, month, day] = nepaliDateStr.split('-');
+    const [year, month, day] = nepaliDateStr.split("-");
     const gregorianYear = parseInt(year) - 57; // Approximate conversion
     return `${gregorianYear}-${month}-${day}`;
   };
 
   // Fetch all workers wages
-  const fetchAllWorkersWages = useCallback(async (deptFilter?: string, start?: string, end?: string) => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      const dept = deptFilter ?? selectedDepartment;
-      const startD = start ?? startDate;
-      const endD = end ?? endDate;
+  const fetchAllWorkersWages = useCallback(
+    async (deptFilter?: string, start?: string, end?: string) => {
+      setLoading(true);
+      try {
+        const params = new URLSearchParams();
+        const dept = deptFilter ?? selectedDepartment;
+        const startD = start ?? startDate;
+        const endD = end ?? endDate;
 
-      // Convert Nepali dates to Gregorian for API filtering
-      // Backend now stores dates correctly, but we convert here for filtering
-      if (startD) {
-        const convertedStart = convertNepaliToGregorianForFilter(startD);
-        params.append('start_date', convertedStart);
+        // Convert Nepali dates to Gregorian for API filtering
+        // Backend now stores dates correctly, but we convert here for filtering
+        if (startD) {
+          const convertedStart = convertNepaliToGregorianForFilter(startD);
+          params.append("start_date", convertedStart);
+        }
+        if (endD) {
+          const convertedEnd = convertNepaliToGregorianForFilter(endD);
+          params.append("end_date", convertedEnd);
+        }
+
+        if (dept !== "all") params.append("department_id", dept);
+
+        const url = `${API}/wages/all?${params.toString()}`;
+
+        const response = await axios.get(url);
+
+        const data: WorkerWageSummary[] = response.data;
+        setAllWorkersWages(data);
+
+        // Calculate dashboard stats
+        const totalBillable = data.reduce((sum, w) => sum + w.total_billable_wages, 0);
+        const totalNonBillable = data.reduce((sum, w) => sum + w.total_non_billable_wages, 0);
+        const topEarner =
+          data.length > 0
+            ? data.reduce(
+                (max, w) => (w.total_billable_wages > max.total_billable_wages ? w : max),
+                data[0]
+              )
+            : null;
+
+        setDashboardStats({
+          totalBillableWages: totalBillable,
+          totalNonBillableWages: totalNonBillable,
+          totalWorkers: data.length,
+          topEarner,
+        });
+      } catch {
+        showToast("error", "Failed to fetch wages data. Please try again.");
+      } finally {
+        setLoading(false);
       }
-      if (endD) {
-        const convertedEnd = convertNepaliToGregorianForFilter(endD);
-        params.append('end_date', convertedEnd);
-      }
-
-      if (dept !== 'all') params.append('department_id', dept);
-
-      const url = `${API}/wages/all?${params.toString()}`;
-
-      const response = await axios.get(url);
-
-      const data: WorkerWageSummary[] = response.data;
-      setAllWorkersWages(data);
-
-      // Calculate dashboard stats
-      const totalBillable = data.reduce((sum, w) => sum + w.total_billable_wages, 0);
-      const totalNonBillable = data.reduce((sum, w) => sum + w.total_non_billable_wages, 0);
-      const topEarner = data.length > 0 ? data.reduce((max, w) =>
-        w.total_billable_wages > max.total_billable_wages ? w : max
-      , data[0]) : null;
-
-      setDashboardStats({
-        totalBillableWages: totalBillable,
-        totalNonBillableWages: totalNonBillable,
-        totalWorkers: data.length,
-        topEarner,
-      });
-    } catch {
-      showToast("error", "Failed to fetch wages data. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [API, showToast]);
+    },
+    [API, showToast]
+  );
 
   // Fetch worker detailed logs
-  const fetchWorkerDetails = useCallback(async (workerId: number) => {
-    setDetailLoading(true);
-    try {
-      const params = new URLSearchParams();
-      // Only send dates if they're valid Gregorian dates (not Nepali)
-      if (startDate && !isNepaliDate(startDate)) params.append('start_date', startDate);
-      if (endDate && !isNepaliDate(endDate)) params.append('end_date', endDate);
+  const fetchWorkerDetails = useCallback(
+    async (workerId: number) => {
+      setDetailLoading(true);
+      try {
+        const params = new URLSearchParams();
+        // Only send dates if they're valid Gregorian dates (not Nepali)
+        if (startDate && !isNepaliDate(startDate)) params.append("start_date", startDate);
+        if (endDate && !isNepaliDate(endDate)) params.append("end_date", endDate);
 
-      const response = await axios.get(
-        `${API}/wages/worker/${workerId}?${params.toString()}`
-      );
+        const response = await axios.get(`${API}/wages/worker/${workerId}?${params.toString()}`);
 
-      setWorkerDetailedLogs(response.data.detailed_logs || []);
-    } catch {
-      showToast("error", "Failed to fetch worker details.");
-    } finally {
-      setDetailLoading(false);
-    }
-  }, [API, startDate, endDate, showToast]);
+        setWorkerDetailedLogs(response.data.detailed_logs || []);
+      } catch {
+        showToast("error", "Failed to fetch worker details.");
+      } finally {
+        setDetailLoading(false);
+      }
+    },
+    [API, startDate, endDate, showToast]
+  );
 
   // Initial load - fetch departments and wages (no filters)
   useEffect(() => {
     fetchDepartments();
-    fetchAllWorkersWages('all', '', '');
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchAllWorkersWages("all", "", "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Filter, sort, and paginate data
@@ -353,7 +381,7 @@ const WageCalculation = () => {
   // Handle row click
   const handleRowClick = (worker: WorkerWageSummary) => {
     setSelectedWorkerForDetail(worker);
-    setActiveView('detail');
+    setActiveView("detail");
     fetchWorkerDetails(worker.worker_id);
   };
 
@@ -364,7 +392,7 @@ const WageCalculation = () => {
     setEndDate("");
     setCurrentPage(1);
     // Fetch with no filters
-    fetchAllWorkersWages('all', '', '');
+    fetchAllWorkersWages("all", "", "");
   };
 
   // Check if any filters are active
@@ -372,25 +400,36 @@ const WageCalculation = () => {
 
   // Export to CSV
   const exportToCSV = () => {
-    const headers = ['Worker ID', 'Worker Name', 'Billable Wages', 'Non-Billable Wages', 'Total Quantity', 'Billable Qty', 'Non-Billable Qty', 'Entries'];
+    const headers = [
+      "Worker ID",
+      "Worker Name",
+      "Billable Wages",
+      "Non-Billable Wages",
+      "Total Quantity",
+      "Billable Qty",
+      "Non-Billable Qty",
+      "Entries",
+    ];
     const csvContent = [
-      headers.join(','),
-      ...allWorkersWages.map(w => [
-        w.worker_id,
-        `"${w.worker_name}"`,
-        w.total_billable_wages.toFixed(2),
-        w.total_non_billable_wages.toFixed(2),
-        w.total_quantity_worked,
-        w.billable_quantity,
-        w.non_billable_quantity,
-        w.total_entries
-      ].join(','))
-    ].join('\n');
+      headers.join(","),
+      ...allWorkersWages.map((w) =>
+        [
+          w.worker_id,
+          `"${w.worker_name}"`,
+          w.total_billable_wages.toFixed(2),
+          w.total_non_billable_wages.toFixed(2),
+          w.total_quantity_worked,
+          w.billable_quantity,
+          w.non_billable_quantity,
+          w.total_entries,
+        ].join(",")
+      ),
+    ].join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `wage_report_${new Date().toISOString().split('T')[0]}.csv`;
+    link.download = `wage_report_${new Date().toISOString().split("T")[0]}.csv`;
     link.click();
 
     showToast("success", "Wage report exported successfully!");
@@ -404,16 +443,28 @@ const WageCalculation = () => {
 
   // Sort options
   const sortOptions: FilterOption[] = [
-    { value: "total_billable_wages", label: "Billable Wages (High to Low)", description: "Sort by billable wages descending" },
-    { value: "worker_name", label: "Worker Name (A-Z)", description: "Sort alphabetically by name" },
-    { value: "total_quantity_worked", label: "Quantity Worked", description: "Sort by total quantity" },
+    {
+      value: "total_billable_wages",
+      label: "Billable Wages (High to Low)",
+      description: "Sort by billable wages descending",
+    },
+    {
+      value: "worker_name",
+      label: "Worker Name (A-Z)",
+      description: "Sort alphabetically by name",
+    },
+    {
+      value: "total_quantity_worked",
+      label: "Quantity Worked",
+      description: "Sort by total quantity",
+    },
     { value: "total_entries", label: "Number of Entries", description: "Sort by entry count" },
   ];
 
   // Department options
   const departmentOptions: FilterOption[] = [
     { value: "all", label: "All Departments", description: "Show all workers" },
-    ...departments.map(d => ({ value: d.id.toString(), label: d.name }))
+    ...departments.map((d) => ({ value: d.id.toString(), label: d.name })),
   ];
 
   return (
@@ -435,7 +486,11 @@ const WageCalculation = () => {
             <div>
               <p className="text-sm text-gray-500">Total Billable Wages</p>
               <p className="text-xl font-bold text-gray-900">
-                Rs. {dashboardStats.totalBillableWages.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                Rs.{" "}
+                {dashboardStats.totalBillableWages.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </p>
             </div>
           </div>
@@ -449,9 +504,7 @@ const WageCalculation = () => {
             </div>
             <div>
               <p className="text-sm text-gray-500">Total Workers</p>
-              <p className="text-xl font-bold text-gray-900">
-                {dashboardStats.totalWorkers}
-              </p>
+              <p className="text-xl font-bold text-gray-900">{dashboardStats.totalWorkers}</p>
             </div>
           </div>
         </div>
@@ -465,7 +518,11 @@ const WageCalculation = () => {
             <div>
               <p className="text-sm text-gray-500">Non-Billable Wages</p>
               <p className="text-xl font-bold text-gray-900">
-                Rs. {dashboardStats.totalNonBillableWages.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                Rs.{" "}
+                {dashboardStats.totalNonBillableWages.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </p>
             </div>
           </div>
@@ -480,7 +537,7 @@ const WageCalculation = () => {
             <div>
               <p className="text-sm text-gray-500">Top Earner</p>
               <p className="text-lg font-bold text-gray-900 truncate max-w-[150px]">
-                {dashboardStats.topEarner?.worker_name || '-'}
+                {dashboardStats.topEarner?.worker_name || "-"}
               </p>
               {dashboardStats.topEarner && (
                 <p className="text-xs text-gray-500">
@@ -495,22 +552,25 @@ const WageCalculation = () => {
       {/* View Tabs */}
       <div className="flex gap-2 mb-4 border-b border-gray-200">
         <button
-          onClick={() => { setActiveView('all'); setSelectedWorkerForDetail(null); }}
+          onClick={() => {
+            setActiveView("all");
+            setSelectedWorkerForDetail(null);
+          }}
           className={`px-4 py-2 text-sm font-medium transition-colors ${
-            activeView === 'all'
-              ? 'text-[#2272B4] border-b-2 border-[#2272B4]'
-              : 'text-gray-500 hover:text-gray-700'
+            activeView === "all"
+              ? "text-[#2272B4] border-b-2 border-[#2272B4]"
+              : "text-gray-500 hover:text-gray-700"
           }`}
         >
           All Workers
         </button>
         {selectedWorkerForDetail && (
           <button
-            onClick={() => setActiveView('detail')}
+            onClick={() => setActiveView("detail")}
             className={`px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
-              activeView === 'detail'
-                ? 'text-[#2272B4] border-b-2 border-[#2272B4]'
-                : 'text-gray-500 hover:text-gray-700'
+              activeView === "detail"
+                ? "text-[#2272B4] border-b-2 border-[#2272B4]"
+                : "text-gray-500 hover:text-gray-700"
             }`}
           >
             {selectedWorkerForDetail.worker_name}
@@ -518,7 +578,7 @@ const WageCalculation = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 setSelectedWorkerForDetail(null);
-                setActiveView('all');
+                setActiveView("all");
               }}
               className="p-0.5 hover:bg-gray-200 rounded"
             >
@@ -528,7 +588,7 @@ const WageCalculation = () => {
         )}
       </div>
 
-      {activeView === 'all' ? (
+      {activeView === "all" ? (
         <>
           {/* HubSpot-style Filter Bar */}
           <div className="flex items-center gap-3 mb-4 flex-wrap">
@@ -536,7 +596,10 @@ const WageCalculation = () => {
               label="All Departments"
               options={departmentOptions}
               value={selectedDepartment}
-              onChange={(val) => { setSelectedDepartment(val); setCurrentPage(1); }}
+              onChange={(val) => {
+                setSelectedDepartment(val);
+                setCurrentPage(1);
+              }}
             />
 
             {/* Date Range - HubSpot style compact */}
@@ -568,7 +631,11 @@ const WageCalculation = () => {
               icon={<ArrowUpDown className="w-4 h-4" />}
               options={sortOptions}
               value={sortColumn}
-              onChange={(val) => { setSortColumn(val); setSortDirection("desc"); setCurrentPage(1); }}
+              onChange={(val) => {
+                setSortColumn(val);
+                setSortDirection("desc");
+                setCurrentPage(1);
+              }}
               searchable={false}
             />
 
@@ -600,58 +667,73 @@ const WageCalculation = () => {
               <thead className="bg-gray-50">
                 <tr>
                   <th
-                    onClick={() => handleSort('worker_name')}
+                    onClick={() => handleSort("worker_name")}
                     className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                   >
                     <div className="flex items-center gap-1">
                       Worker Name
-                      {sortColumn === 'worker_name' && (
-                        sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                      )}
+                      {sortColumn === "worker_name" &&
+                        (sortDirection === "asc" ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        ))}
                     </div>
                   </th>
                   <th
-                    onClick={() => handleSort('total_billable_wages')}
+                    onClick={() => handleSort("total_billable_wages")}
                     className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                   >
                     <div className="flex items-center justify-end gap-1">
                       Billable Wages
-                      {sortColumn === 'total_billable_wages' && (
-                        sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                      )}
+                      {sortColumn === "total_billable_wages" &&
+                        (sortDirection === "asc" ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        ))}
                     </div>
                   </th>
                   <th
-                    onClick={() => handleSort('total_non_billable_wages')}
+                    onClick={() => handleSort("total_non_billable_wages")}
                     className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                   >
                     <div className="flex items-center justify-end gap-1">
                       Non-Billable
-                      {sortColumn === 'total_non_billable_wages' && (
-                        sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                      )}
+                      {sortColumn === "total_non_billable_wages" &&
+                        (sortDirection === "asc" ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        ))}
                     </div>
                   </th>
                   <th
-                    onClick={() => handleSort('total_quantity_worked')}
+                    onClick={() => handleSort("total_quantity_worked")}
                     className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                   >
                     <div className="flex items-center justify-end gap-1">
                       Qty Worked
-                      {sortColumn === 'total_quantity_worked' && (
-                        sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                      )}
+                      {sortColumn === "total_quantity_worked" &&
+                        (sortDirection === "asc" ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        ))}
                     </div>
                   </th>
                   <th
-                    onClick={() => handleSort('total_entries')}
+                    onClick={() => handleSort("total_entries")}
                     className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                   >
                     <div className="flex items-center justify-end gap-1">
                       Entries
-                      {sortColumn === 'total_entries' && (
-                        sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                      )}
+                      {sortColumn === "total_entries" &&
+                        (sortDirection === "asc" ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        ))}
                     </div>
                   </th>
                 </tr>
@@ -680,10 +762,18 @@ const WageCalculation = () => {
                         {worker.worker_name}
                       </td>
                       <td className="px-4 py-2 text-sm text-right text-green-600 font-medium">
-                        Rs. {worker.total_billable_wages.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        Rs.{" "}
+                        {worker.total_billable_wages.toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
                       </td>
                       <td className="px-4 py-2 text-sm text-right text-red-500">
-                        Rs. {worker.total_non_billable_wages.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        Rs.{" "}
+                        {worker.total_non_billable_wages.toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
                       </td>
                       <td className="px-4 py-2 text-sm text-right text-gray-900">
                         {worker.total_quantity_worked.toLocaleString()}
@@ -702,7 +792,8 @@ const WageCalculation = () => {
           {!loading && paginatedData.length > 0 && (
             <div className="flex items-center justify-between mt-4 px-2">
               <span className="text-sm text-gray-500">
-                Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalFiltered)} of {totalFiltered}
+                Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                {Math.min(currentPage * itemsPerPage, totalFiltered)} of {totalFiltered}
               </span>
 
               <div className="flex items-center gap-4">
@@ -711,7 +802,10 @@ const WageCalculation = () => {
                   <span className="text-sm text-gray-500">per page</span>
                   <select
                     value={itemsPerPage}
-                    onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }}
+                    onChange={(e) => {
+                      setItemsPerPage(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
                     className="px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2272B4]"
                   >
                     <option value={10}>10</option>
@@ -731,7 +825,7 @@ const WageCalculation = () => {
                     <ChevronsLeft className="w-5 h-5" />
                   </button>
                   <button
-                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
                     className="p-1 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
@@ -741,7 +835,7 @@ const WageCalculation = () => {
                     Page {currentPage} of {totalPages || 1}
                   </span>
                   <button
-                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages || totalPages === 0}
                     className="p-1 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
@@ -765,7 +859,9 @@ const WageCalculation = () => {
           {/* Back button and worker info header */}
           <div className="mb-6">
             <button
-              onClick={() => { setActiveView('all'); }}
+              onClick={() => {
+                setActiveView("all");
+              }}
               className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 mb-4"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -815,14 +911,30 @@ const WageCalculation = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sub-Batch</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Activity</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Particulars</th>
-                  <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
-                  <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Price</th>
-                  <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                  <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Date
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Sub-Batch
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Activity
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Particulars
+                  </th>
+                  <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Qty
+                  </th>
+                  <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Unit Price
+                  </th>
+                  <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Amount
+                  </th>
+                  <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -842,35 +954,48 @@ const WageCalculation = () => {
                   workerDetailedLogs.map((log) => (
                     <tr
                       key={log.id}
-                      className={`${!log.is_billable ? 'bg-gray-50' : ''} hover:bg-gray-100`}
+                      className={`${!log.is_billable ? "bg-gray-50" : ""} hover:bg-gray-100`}
                     >
                       <td className="px-4 py-2 text-sm text-gray-900">
-                        {log.work_date ? new Date(log.work_date).toLocaleDateString('en-US') : '-'}
+                        {log.work_date ? new Date(log.work_date).toLocaleDateString("en-US") : "-"}
                       </td>
-                      <td className="px-4 py-2 text-sm text-gray-900">{log.sub_batch_name || '-'}</td>
+                      <td className="px-4 py-2 text-sm text-gray-900">
+                        {log.sub_batch_name || "-"}
+                      </td>
                       <td className="px-4 py-2 text-sm">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          log.activity_type === 'NORMAL' ? 'bg-blue-100 text-blue-800' :
-                          log.activity_type === 'ALTERED' ? 'bg-amber-100 text-amber-800' :
-                          log.activity_type === 'REJECTED' ? 'bg-red-100 text-red-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {log.activity_type || 'NORMAL'}
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            log.activity_type === "NORMAL"
+                              ? "bg-blue-100 text-blue-800"
+                              : log.activity_type === "ALTERED"
+                                ? "bg-amber-100 text-amber-800"
+                                : log.activity_type === "REJECTED"
+                                  ? "bg-red-100 text-red-800"
+                                  : "bg-gray-100 text-gray-800"
+                          }`}
+                        >
+                          {log.activity_type || "NORMAL"}
                         </span>
                       </td>
-                      <td className="px-4 py-2 text-sm text-gray-600">{log.particulars || '-'}</td>
-                      <td className="px-4 py-2 text-sm text-right text-gray-900">{log.quantity_worked}</td>
-                      <td className="px-4 py-2 text-sm text-right text-gray-900">Rs. {log.unit_price}</td>
+                      <td className="px-4 py-2 text-sm text-gray-600">{log.particulars || "-"}</td>
+                      <td className="px-4 py-2 text-sm text-right text-gray-900">
+                        {log.quantity_worked}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-right text-gray-900">
+                        Rs. {log.unit_price}
+                      </td>
                       <td className="px-4 py-2 text-sm text-right font-medium text-gray-900">
                         Rs. {log.amount.toLocaleString()}
                       </td>
                       <td className="px-4 py-2 text-center">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          log.is_billable
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
-                        }`}>
-                          {log.is_billable ? 'Billable' : 'Non-Billable'}
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            log.is_billable
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {log.is_billable ? "Billable" : "Non-Billable"}
                         </span>
                       </td>
                     </tr>

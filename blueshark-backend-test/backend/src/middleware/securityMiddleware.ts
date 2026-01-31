@@ -16,7 +16,7 @@ export const securityHeaders = helmet({
   crossOriginEmbedderPolicy: false, // Disabled for API compatibility
 });
 
-// General API rate limiter - 100 requests per minute
+// General API rate limiter - 100 requests per minute (disabled in development)
 export const apiLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 100, // 100 requests per minute
@@ -28,6 +28,10 @@ export const apiLimiter = rateLimit({
   standardHeaders: true, // Return rate limit info in headers
   legacyHeaders: false,
   skip: (req: Request) => {
+    // Skip rate limiting in development mode
+    if (process.env.NODE_ENV === "development") {
+      return true;
+    }
     // Skip rate limiting for health checks
     return req.path === "/api/health";
   },
@@ -47,11 +51,7 @@ export const authLimiter = rateLimit({
 });
 
 // Request logging middleware
-export const requestLogger = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const requestLogger = (req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
   const { method, url, ip } = req;
 
@@ -72,11 +72,7 @@ export const requestLogger = (
 };
 
 // Sanitize request body - remove potentially dangerous characters
-export const sanitizeInput = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const sanitizeInput = (req: Request, res: Response, next: NextFunction) => {
   if (req.body && typeof req.body === "object") {
     sanitizeObject(req.body);
   }

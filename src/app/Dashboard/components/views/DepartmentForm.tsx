@@ -52,12 +52,13 @@ const FilterDropdown = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const selectedOption = options.find(opt => opt.value === value);
+  const selectedOption = options.find((opt) => opt.value === value);
   const displayLabel = selectedOption?.label || label;
 
-  const filteredOptions = options.filter(opt =>
-    opt.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (opt.description && opt.description.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredOptions = options.filter(
+    (opt) =>
+      opt.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (opt.description && opt.description.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   useEffect(() => {
@@ -94,7 +95,9 @@ const FilterDropdown = ({
       >
         {icon && <span className="flex-shrink-0">{icon}</span>}
         <span className="max-w-[150px] truncate">{displayLabel}</span>
-        <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown
+          className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+        />
       </button>
 
       {isOpen && (
@@ -127,13 +130,17 @@ const FilterDropdown = ({
                     value === option.value ? "bg-blue-50" : ""
                   }`}
                 >
-                  <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                    value === option.value ? "border-[#2272B4] bg-[#2272B4]" : "border-gray-300"
-                  }`}>
+                  <div
+                    className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                      value === option.value ? "border-[#2272B4] bg-[#2272B4]" : "border-gray-300"
+                    }`}
+                  >
                     {value === option.value && <Check className="w-2.5 h-2.5 text-white" />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className={`text-sm font-medium ${value === option.value ? "text-[#2272B4]" : "text-gray-900"}`}>
+                    <div
+                      className={`text-sm font-medium ${value === option.value ? "text-[#2272B4]" : "text-gray-900"}`}
+                    >
                       {option.label}
                     </div>
                     {option.description && (
@@ -159,11 +166,13 @@ interface WorkerAssignment {
 interface Department {
   id: number | string;
   name: string;
-  supervisor: {
-    id: number;
-    name: string;
-    email: string;
-  } | string; // Handle both object and string formats
+  supervisor:
+    | {
+        id: number;
+        name: string;
+        email: string;
+      }
+    | string; // Handle both object and string formats
   workers: WorkerAssignment[];
   dept_workers?: any[]; // Backend might return this
   remarks?: string;
@@ -223,21 +232,21 @@ const DepartmentForm = () => {
   const [, setWorkerDate] = useState("");
 
   // Helper function to get supervisor name
-  const getSupervisorName = (supervisor: Department['supervisor']) => {
-    if (typeof supervisor === 'string') {
+  const getSupervisorName = (supervisor: Department["supervisor"]) => {
+    if (typeof supervisor === "string") {
       return supervisor;
     }
-    return supervisor?.name || 'Unknown';
+    return supervisor?.name || "Unknown";
   };
 
   // Helper function to get supervisor ID
-  const getSupervisorId = (supervisor: Department['supervisor']) => {
-    if (typeof supervisor === 'string') {
+  const getSupervisorId = (supervisor: Department["supervisor"]) => {
+    if (typeof supervisor === "string") {
       // Try to find supervisor by name
-      const found = supervisors.find(s => s.name === supervisor);
-      return found?.id?.toString() || '';
+      const found = supervisors.find((s) => s.name === supervisor);
+      return found?.id?.toString() || "";
     }
-    return supervisor?.id?.toString() || '';
+    return supervisor?.id?.toString() || "";
   };
 
   // Helper function to process workers data
@@ -245,9 +254,9 @@ const DepartmentForm = () => {
     // Check if dept_workers exists and has data
     if (dept.dept_workers && dept.dept_workers.length > 0) {
       return dept.dept_workers.map((dw: any) => ({
-        id: dw.worker?.id || dw.workerId || '',
-        name: dw.worker?.name || 'Unknown',
-        date: dw.assigned_date ? new Date(dw.assigned_date).toISOString().split('T')[0] : ''
+        id: dw.worker?.id || dw.workerId || "",
+        name: dw.worker?.name || "Unknown",
+        date: dw.assigned_date ? new Date(dw.assigned_date).toISOString().split("T")[0] : "",
       }));
     }
     // Fallback to workers array
@@ -257,17 +266,19 @@ const DepartmentForm = () => {
   // Filter, sort and paginate departments using useMemo
   const { paginatedDepartments, totalPages, totalFiltered } = useMemo(() => {
     // Step 1: Filter
-    let filtered = departments.filter(dept => {
+    const filtered = departments.filter((dept) => {
       // Search filter
       if (tableSearchQuery.trim()) {
         const query = tableSearchQuery.toLowerCase();
         const searchFields = [
           dept.name,
-          `D${String(dept.id).padStart(3, '0')}`,
+          `D${String(dept.id).padStart(3, "0")}`,
           getSupervisorName(dept.supervisor),
-        ].filter(Boolean).map(f => String(f).toLowerCase());
+        ]
+          .filter(Boolean)
+          .map((f) => String(f).toLowerCase());
 
-        if (!searchFields.some(field => field.includes(query))) {
+        if (!searchFields.some((field) => field.includes(query))) {
           return false;
         }
       }
@@ -353,7 +364,7 @@ const DepartmentForm = () => {
       // Process the data to normalize the structure
       const normalizedData = data.map((dept: any) => ({
         ...dept,
-        workers: processWorkersData(dept)
+        workers: processWorkersData(dept),
       }));
 
       setDepartments(normalizedData);
@@ -382,9 +393,7 @@ const DepartmentForm = () => {
       const data = await res.json();
 
       // Normalize supervisors into an array
-      const supervisorsArray = Array.isArray(data)
-        ? data
-        : data?.data || data?.supervisors || [];
+      const supervisorsArray = Array.isArray(data) ? data : data?.data || data?.supervisors || [];
 
       setSupervisors(supervisorsArray);
     } catch {
@@ -427,10 +436,11 @@ const DepartmentForm = () => {
         remarks: formData.remarks.trim(),
         // Only include supervisorId if a supervisor is selected
         ...(formData.supervisor.trim() ? { supervisorId: Number(formData.supervisor) } : {}),
-        workers: formData.workers?.map((w) => ({
-          id: Number(w.id),
-          assignedDate: w.date ? new Date(w.date).toISOString() : undefined,
-        })) || [],
+        workers:
+          formData.workers?.map((w) => ({
+            id: Number(w.id),
+            assignedDate: w.date ? new Date(w.date).toISOString() : undefined,
+          })) || [],
       };
 
       let response;
@@ -548,7 +558,7 @@ const DepartmentForm = () => {
           label="Sort"
           value={`${sortColumn}-${sortDirection}`}
           onChange={(val) => {
-            const [col, dir] = val.split('-');
+            const [col, dir] = val.split("-");
             setSortColumn(col);
             setSortDirection(dir as "asc" | "desc");
             setCurrentPage(1);
@@ -560,9 +570,21 @@ const DepartmentForm = () => {
             { value: "id-asc", label: "Oldest first", description: "First created departments" },
             { value: "name-asc", label: "Name A-Z", description: "Alphabetical order" },
             { value: "name-desc", label: "Name Z-A", description: "Reverse alphabetical" },
-            { value: "supervisor-asc", label: "Supervisor A-Z", description: "Sort by supervisor name" },
-            { value: "workers-desc", label: "Workers (High to Low)", description: "Most workers first" },
-            { value: "workers-asc", label: "Workers (Low to High)", description: "Fewest workers first" },
+            {
+              value: "supervisor-asc",
+              label: "Supervisor A-Z",
+              description: "Sort by supervisor name",
+            },
+            {
+              value: "workers-desc",
+              label: "Workers (High to Low)",
+              description: "Most workers first",
+            },
+            {
+              value: "workers-asc",
+              label: "Workers (Low to High)",
+              description: "Fewest workers first",
+            },
           ]}
         />
 
@@ -613,9 +635,7 @@ const DepartmentForm = () => {
           <div className="flex flex-col items-center justify-center py-12">
             <Users size={48} className="text-gray-300 mb-4" />
             <p className="text-black mb-2 font-medium">No departments found</p>
-            <p className="text-gray-500 text-sm">
-              Get started by creating your first department.
-            </p>
+            <p className="text-gray-500 text-sm">Get started by creating your first department.</p>
           </div>
         ) : (
           <>
@@ -623,32 +643,86 @@ const DepartmentForm = () => {
               <table className="w-full min-w-full">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50">
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onClick={() => handleSort("id")}>
-                      <div className="flex items-center gap-1">ID {sortColumn === "id" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleSort("id")}
+                    >
+                      <div className="flex items-center gap-1">
+                        ID{" "}
+                        {sortColumn === "id" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onClick={() => handleSort("name")}>
-                      <div className="flex items-center gap-1">Department Name {sortColumn === "name" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleSort("name")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Department Name{" "}
+                        {sortColumn === "name" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onClick={() => handleSort("supervisor")}>
-                      <div className="flex items-center gap-1">Supervisor {sortColumn === "supervisor" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleSort("supervisor")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Supervisor{" "}
+                        {sortColumn === "supervisor" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onClick={() => handleSort("workers")}>
-                      <div className="flex items-center gap-1">Workers {sortColumn === "workers" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleSort("workers")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Workers{" "}
+                        {sortColumn === "workers" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remarks</th>
-                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Remarks
+                    </th>
+                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {paginatedDepartments.map((dept) => (
                     <tr key={dept.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-2 text-sm text-gray-500">D{String(dept.id).padStart(3, '0')}</td>
+                      <td className="px-4 py-2 text-sm text-gray-500">
+                        D{String(dept.id).padStart(3, "0")}
+                      </td>
                       <td className="px-4 py-2">
-                        <span className="text-sm font-medium text-[#2272B4] hover:underline cursor-pointer">{dept.name}</span>
+                        <span className="text-sm font-medium text-[#2272B4] hover:underline cursor-pointer">
+                          {dept.name}
+                        </span>
                       </td>
                       <td className="px-4 py-2 text-sm">
                         {dept.supervisor ? (
-                          <span className="text-gray-600">{getSupervisorName(dept.supervisor)}</span>
+                          <span className="text-gray-600">
+                            {getSupervisorName(dept.supervisor)}
+                          </span>
                         ) : (
                           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
                             <Users size={12} />
@@ -656,8 +730,12 @@ const DepartmentForm = () => {
                           </span>
                         )}
                       </td>
-                      <td className="px-4 py-2 text-sm text-gray-600">{dept.workers?.length || 0} workers</td>
-                      <td className="px-4 py-2 text-sm text-gray-600">{dept.remarks || <span className="text-gray-400">—</span>}</td>
+                      <td className="px-4 py-2 text-sm text-gray-600">
+                        {dept.workers?.length || 0} workers
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-600">
+                        {dept.remarks || <span className="text-gray-400">—</span>}
+                      </td>
                       <td className="px-4 py-2 text-right">
                         <div className="flex items-center justify-end gap-1">
                           <button
@@ -692,12 +770,20 @@ const DepartmentForm = () => {
             {/* Pagination */}
             <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-between bg-white">
               <span className="text-sm text-gray-700">
-                Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalFiltered)} of {totalFiltered}
+                Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                {Math.min(currentPage * itemsPerPage, totalFiltered)} of {totalFiltered}
               </span>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600">per page</span>
-                  <select value={itemsPerPage} onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }} className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-[#2272B4]">
+                  <select
+                    value={itemsPerPage}
+                    onChange={(e) => {
+                      setItemsPerPage(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                    className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-[#2272B4]"
+                  >
                     <option value={10}>10</option>
                     <option value={25}>25</option>
                     <option value={50}>50</option>
@@ -705,11 +791,37 @@ const DepartmentForm = () => {
                   </select>
                 </div>
                 <div className="flex items-center gap-1">
-                  <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronsLeft className="w-4 h-4" /></button>
-                  <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronLeft className="w-4 h-4" /></button>
-                  <span className="px-3 py-1 text-sm text-gray-700">Page {currentPage} of {totalPages || 1}</span>
-                  <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage >= totalPages} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronRight className="w-4 h-4" /></button>
-                  <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage >= totalPages} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronsRight className="w-4 h-4" /></button>
+                  <button
+                    onClick={() => setCurrentPage(1)}
+                    disabled={currentPage === 1}
+                    className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+                  >
+                    <ChevronsLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <span className="px-3 py-1 text-sm text-gray-700">
+                    Page {currentPage} of {totalPages || 1}
+                  </span>
+                  <button
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={currentPage >= totalPages}
+                    className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(totalPages)}
+                    disabled={currentPage >= totalPages}
+                    className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+                  >
+                    <ChevronsRight className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -754,9 +866,7 @@ const DepartmentForm = () => {
                   name="name"
                   placeholder="Enter department name"
                   value={formData.name}
-                  onChange={(e) =>
-                    setFormData((p) => ({ ...p, name: e.target.value }))
-                  }
+                  onChange={(e) => setFormData((p) => ({ ...p, name: e.target.value }))}
                   readOnly={isPreview}
                   className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 />
@@ -771,7 +881,8 @@ const DepartmentForm = () => {
                   // Preview mode - show badge or name
                   formData.supervisor ? (
                     <div className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-700">
-                      {supervisors.find(s => s.id.toString() === formData.supervisor)?.name || formData.supervisor}
+                      {supervisors.find((s) => s.id.toString() === formData.supervisor)?.name ||
+                        formData.supervisor}
                     </div>
                   ) : (
                     <div className="pt-1">
@@ -786,9 +897,7 @@ const DepartmentForm = () => {
                   <select
                     name="supervisor"
                     value={formData.supervisor}
-                    onChange={(e) =>
-                      setFormData((p) => ({ ...p, supervisor: e.target.value }))
-                    }
+                    onChange={(e) => setFormData((p) => ({ ...p, supervisor: e.target.value }))}
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-white"
                   >
                     <option value="">No Supervisor (Super Supervisor will manage)</option>
@@ -816,8 +925,13 @@ const DepartmentForm = () => {
                           onChange={(e) => {
                             const newWorkers = [...formData.workers];
                             const workerId = Number(e.target.value);
-                            const workerName = workers.find(worker => worker.id == workerId)?.name || '';
-                            newWorkers[index] = { ...newWorkers[index], id: workerId, name: workerName };
+                            const workerName =
+                              workers.find((worker) => worker.id == workerId)?.name || "";
+                            newWorkers[index] = {
+                              ...newWorkers[index],
+                              id: workerId,
+                              name: workerName,
+                            };
                             setFormData((p) => ({ ...p, workers: newWorkers }));
                           }}
                           className="flex-1 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-white"
@@ -875,9 +989,13 @@ const DepartmentForm = () => {
                   <ul className="space-y-2 mt-2">
                     {formData.workers.length > 0 ? (
                       formData.workers.map((w, index) => {
-                        const workerName = w.name || workers.find((worker) => worker.id == w.id)?.name || "Unknown";
+                        const workerName =
+                          w.name || workers.find((worker) => worker.id == w.id)?.name || "Unknown";
                         return (
-                          <li key={index} className="flex items-center justify-between border border-gray-200 rounded-lg p-3 bg-gray-50">
+                          <li
+                            key={index}
+                            className="flex items-center justify-between border border-gray-200 rounded-lg p-3 bg-gray-50"
+                          >
                             <span className="text-sm text-gray-900">{workerName}</span>
                             <span className="text-xs text-gray-500">{w.date}</span>
                           </li>
@@ -892,16 +1010,12 @@ const DepartmentForm = () => {
 
               {/* Remarks */}
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                  Remarks
-                </label>
+                <label className="block text-sm font-medium text-gray-900 mb-1.5">Remarks</label>
                 <textarea
                   name="remarks"
                   placeholder="Add remarks (optional)"
                   value={formData.remarks}
-                  onChange={(e) =>
-                    setFormData((p) => ({ ...p, remarks: e.target.value }))
-                  }
+                  onChange={(e) => setFormData((p) => ({ ...p, remarks: e.target.value }))}
                   readOnly={isPreview}
                   rows={3}
                   className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"

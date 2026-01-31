@@ -2,12 +2,7 @@
 
 import React, { useMemo } from "react";
 import Navigation from "../navigation/Navigation";
-import {
-  Building2,
-  LayoutDashboard,
-  Users2,
-  Layers,
-} from "lucide-react";
+import { Building2, LayoutDashboard, Users2, Layers } from "lucide-react";
 
 import { NavigationItem } from "../../types/navigation";
 
@@ -30,7 +25,12 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({ activeView, onViewChange, onT
   }, []);
 
   return (
-    <Navigation activeView={activeView} onViewChange={onViewChange} items={navItems} onToggleSidebar={onToggleSidebar} />
+    <Navigation
+      activeView={activeView}
+      onViewChange={onViewChange}
+      items={navItems}
+      onToggleSidebar={onToggleSidebar}
+    />
   );
 };
 

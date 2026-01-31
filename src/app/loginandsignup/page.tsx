@@ -25,14 +25,11 @@ const AuthPage: React.FC = () => {
       let data: any;
 
       // Try Admin login first
-      let res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_LOGIN_URL_ADMIN}/api/auth/login`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+      let res = await fetch(`${process.env.NEXT_PUBLIC_API_LOGIN_URL_ADMIN}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
       if (res.ok) {
         data = await res.json();
@@ -71,16 +68,21 @@ const AuthPage: React.FC = () => {
         localStorage.setItem("token", data.token);
         localStorage.setItem("role", data.supervisor.role);
         // SUPER_SUPERVISOR has no departmentId (can view all departments)
-        localStorage.setItem("departmentId", isSuperSupervisor ? "" : String(data.supervisor.departmentId || ""));
+        localStorage.setItem(
+          "departmentId",
+          isSuperSupervisor ? "" : String(data.supervisor.departmentId || "")
+        );
         localStorage.setItem("userId", data.supervisor.id?.toString() || "");
-        localStorage.setItem("userName", data.supervisor.name || (isSuperSupervisor ? "Super Supervisor" : "Supervisor"));
+        localStorage.setItem(
+          "userName",
+          data.supervisor.name || (isSuperSupervisor ? "Super Supervisor" : "Supervisor")
+        );
         localStorage.setItem("userEmail", email);
         window.location.href = "/SupervisorDashboard";
         return;
       }
 
       throw new Error("Invalid email or password");
-
     } catch (err: any) {
       setError(err.message || "An error occurred. Please try again.");
     } finally {
@@ -101,48 +103,48 @@ const AuthPage: React.FC = () => {
         <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
         {/* Content */}
         <div className="relative z-10 flex flex-col justify-center px-16 py-12 w-full">
-        <div className="max-w-lg">
-          {/* Main Heading */}
-          <h1 className="text-[42px] font-semibold text-white leading-tight mb-4">
-            Get started with Gaamma
-          </h1>
+          <div className="max-w-lg">
+            {/* Main Heading */}
+            <h1 className="text-[42px] font-semibold text-white leading-tight mb-4">
+              Get started with Gaamma
+            </h1>
 
-          {/* Subtitle */}
-          <p className="text-[20px] text-white/90 mb-10">
-            Streamline production with all your data in one place
-          </p>
+            {/* Subtitle */}
+            <p className="text-[20px] text-white/90 mb-10">
+              Streamline production with all your data in one place
+            </p>
 
-          {/* Feature List */}
-          <div className="space-y-5">
-            <div className="flex items-center gap-4">
-              <Check className="w-6 h-6 text-emerald-400 flex-shrink-0" strokeWidth={3} />
-              <span className="text-[17px] text-white/90">
-                Track production progress across all departments
-              </span>
-            </div>
+            {/* Feature List */}
+            <div className="space-y-5">
+              <div className="flex items-center gap-4">
+                <Check className="w-6 h-6 text-emerald-400 flex-shrink-0" strokeWidth={3} />
+                <span className="text-[17px] text-white/90">
+                  Track production progress across all departments
+                </span>
+              </div>
 
-            <div className="flex items-center gap-4">
-              <Check className="w-6 h-6 text-emerald-400 flex-shrink-0" strokeWidth={3} />
-              <span className="text-[17px] text-white/90">
-                Manage workers and assign tasks efficiently
-              </span>
-            </div>
+              <div className="flex items-center gap-4">
+                <Check className="w-6 h-6 text-emerald-400 flex-shrink-0" strokeWidth={3} />
+                <span className="text-[17px] text-white/90">
+                  Manage workers and assign tasks efficiently
+                </span>
+              </div>
 
-            <div className="flex items-center gap-4">
-              <Check className="w-6 h-6 text-emerald-400 flex-shrink-0" strokeWidth={3} />
-              <span className="text-[17px] text-white/90">
-                Monitor quality control and handle rejections
-              </span>
-            </div>
+              <div className="flex items-center gap-4">
+                <Check className="w-6 h-6 text-emerald-400 flex-shrink-0" strokeWidth={3} />
+                <span className="text-[17px] text-white/90">
+                  Monitor quality control and handle rejections
+                </span>
+              </div>
 
-            <div className="flex items-center gap-4">
-              <Check className="w-6 h-6 text-emerald-400 flex-shrink-0" strokeWidth={3} />
-              <span className="text-[17px] text-white/90">
-                Calculate wages and generate reports instantly
-              </span>
+              <div className="flex items-center gap-4">
+                <Check className="w-6 h-6 text-emerald-400 flex-shrink-0" strokeWidth={3} />
+                <span className="text-[17px] text-white/90">
+                  Calculate wages and generate reports instantly
+                </span>
+              </div>
             </div>
           </div>
-        </div>
         </div>
       </div>
 
@@ -159,74 +161,70 @@ const AuthPage: React.FC = () => {
             {/* Form Header */}
             <div className="text-center mb-8">
               <h2 className="text-[26px] font-semibold text-gray-900">Log in</h2>
-              <p className="text-gray-500 mt-1 text-[15px]">
-                Access your production dashboard
-              </p>
+              <p className="text-gray-500 mt-1 text-[15px]">Access your production dashboard</p>
             </div>
 
-              {/* Error Message */}
-              {error && (
-                <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-md">
-                  <p className="text-sm text-red-600">{error}</p>
-                </div>
-              )}
+            {/* Error Message */}
+            {error && (
+              <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-md">
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
+            )}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Email Field */}
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                    Email
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-[15px]"
-                    placeholder="you@company.com"
-                  />
-                </div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Email Field */}
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-[15px]"
+                  placeholder="you@company.com"
+                />
+              </div>
 
-                {/* Password Field */}
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                    Password
-                  </label>
-                  <input
-                    id="password"
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-[15px]"
-                    placeholder="Enter your password"
-                  />
-                </div>
+              {/* Password Field */}
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-[15px]"
+                  placeholder="Enter your password"
+                />
+              </div>
 
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-black text-white py-3 px-4 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors font-medium text-[15px] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-6"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Signing in...
-                    </>
-                  ) : (
-                    "Continue"
-                  )}
-                </button>
-              </form>
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-black text-white py-3 px-4 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors font-medium text-[15px] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-6"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Signing in...
+                  </>
+                ) : (
+                  "Continue"
+                )}
+              </button>
+            </form>
           </div>
 
           {/* Footer Links */}
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-500">
-              Contact admin for account access
-            </p>
+            <p className="text-sm text-gray-500">Contact admin for account access</p>
           </div>
         </div>
       </div>

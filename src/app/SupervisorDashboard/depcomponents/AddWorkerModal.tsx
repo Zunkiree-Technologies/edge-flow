@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { X, AlertCircle } from 'lucide-react';
-import { useToast } from '@/app/Components/ToastContext';
+import React, { useState, useEffect } from "react";
+import { X, AlertCircle } from "lucide-react";
+import { useToast } from "@/app/Components/ToastContext";
 
 interface Department {
   id: number;
@@ -27,14 +27,10 @@ interface AddWorkerModalProps {
   onSuccess: () => void;
 }
 
-const AddWorkerModal: React.FC<AddWorkerModalProps> = ({
-  isOpen,
-  onClose,
-  onSuccess,
-}) => {
+const AddWorkerModal: React.FC<AddWorkerModalProps> = ({ isOpen, onClose, onSuccess }) => {
   const { showToast } = useToast();
-  const [selectedWorkerId, setSelectedWorkerId] = useState('');
-  const [, setSelectedDepartmentId] = useState('');
+  const [selectedWorkerId, setSelectedWorkerId] = useState("");
+  const [, setSelectedDepartmentId] = useState("");
   const [workers, setWorkers] = useState<Worker[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [loading, setLoading] = useState(false);
@@ -62,7 +58,7 @@ const AddWorkerModal: React.FC<AddWorkerModalProps> = ({
   // Reset form when modal closes
   useEffect(() => {
     if (!isOpen) {
-      setSelectedWorkerId('');
+      setSelectedWorkerId("");
       // Keep the supervisor's department selected
       const departmentId = localStorage.getItem("departmentId");
       if (departmentId) {
@@ -79,10 +75,10 @@ const AddWorkerModal: React.FC<AddWorkerModalProps> = ({
         const data = await res.json();
         setWorkers(data);
       } else {
-        showToast('error', 'Failed to fetch workers');
+        showToast("error", "Failed to fetch workers");
       }
     } catch {
-      showToast('error', 'Error fetching workers');
+      showToast("error", "Error fetching workers");
     } finally {
       setLoading(false);
     }
@@ -95,42 +91,45 @@ const AddWorkerModal: React.FC<AddWorkerModalProps> = ({
         const data = await res.json();
         setDepartments(data);
       } else {
-        showToast('error', 'Failed to fetch departments');
+        showToast("error", "Failed to fetch departments");
       }
     } catch {
-      showToast('error', 'Error fetching departments');
+      showToast("error", "Error fetching departments");
     }
   };
 
   const getSelectedWorker = () => {
-    return workers.find(w => w.id === parseInt(selectedWorkerId));
+    return workers.find((w) => w.id === parseInt(selectedWorkerId));
   };
 
   const handleSubmit = async () => {
     // Validation
     if (!selectedWorkerId) {
-      showToast('warning', 'Please select a worker');
+      showToast("warning", "Please select a worker");
       return;
     }
 
     if (!supervisorDepartmentId) {
-      showToast('error', 'Unable to determine your department. Please try again.');
+      showToast("error", "Unable to determine your department. Please try again.");
       return;
     }
 
     const worker = getSelectedWorker();
     if (!worker) {
-      showToast('error', 'Invalid worker selection');
+      showToast("error", "Invalid worker selection");
       return;
     }
 
     // Check if worker is already assigned to any department (including this one)
     if (worker.department_id) {
       if (worker.department_id === supervisorDepartmentId) {
-        showToast('warning', `${worker.name} is already assigned to your department`);
+        showToast("warning", `${worker.name} is already assigned to your department`);
       } else {
-        const currentDept = departments.find(d => d.id === worker.department_id);
-        showToast('error', `Cannot add worker. ${worker.name} is already assigned to ${currentDept?.name || 'another department'}`);
+        const currentDept = departments.find((d) => d.id === worker.department_id);
+        showToast(
+          "error",
+          `Cannot add worker. ${worker.name} is already assigned to ${currentDept?.name || "another department"}`
+        );
       }
       return;
     }
@@ -143,22 +142,25 @@ const AddWorkerModal: React.FC<AddWorkerModalProps> = ({
       };
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/workers/${worker.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
       if (response.ok) {
-        const selectedDept = departments.find(d => d.id === supervisorDepartmentId);
-        showToast('success', `Worker "${worker.name}" has been assigned to ${selectedDept?.name || 'your department'} successfully!`);
+        const selectedDept = departments.find((d) => d.id === supervisorDepartmentId);
+        showToast(
+          "success",
+          `Worker "${worker.name}" has been assigned to ${selectedDept?.name || "your department"} successfully!`
+        );
         onSuccess();
         onClose();
       } else {
         const err = await response.json().catch(() => ({}));
-        showToast('error', `Failed to assign worker: ${err.message || 'Unknown error'}`);
+        showToast("error", `Failed to assign worker: ${err.message || "Unknown error"}`);
       }
     } catch {
-      showToast('error', 'Error assigning worker to department');
+      showToast("error", "Error assigning worker to department");
     } finally {
       setIsSubmitting(false);
     }
@@ -193,10 +195,13 @@ const AddWorkerModal: React.FC<AddWorkerModalProps> = ({
               disabled={loading}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
-              <option value="">{loading ? 'Loading workers...' : 'Select a worker'}</option>
-              {workers.map(worker => (
+              <option value="">{loading ? "Loading workers..." : "Select a worker"}</option>
+              {workers.map((worker) => (
                 <option key={worker.id} value={worker.id}>
-                  {worker.name} {worker.department_id ? `(Currently in ${worker.department?.name || 'a department'})` : '(Unassigned)'}
+                  {worker.name}{" "}
+                  {worker.department_id
+                    ? `(Currently in ${worker.department?.name || "a department"})`
+                    : "(Unassigned)"}
                 </option>
               ))}
             </select>
@@ -204,29 +209,36 @@ const AddWorkerModal: React.FC<AddWorkerModalProps> = ({
 
           {/* Show current assignment if worker is selected */}
           {selectedWorker && selectedWorker.department_id && (
-            <div className={`${
-              selectedWorker.department_id === supervisorDepartmentId
-                ? 'bg-green-50 border-green-200'
-                : 'bg-yellow-50 border-yellow-200'
-            } border rounded-lg p-4 flex items-start gap-3`}>
-              <AlertCircle className={`${
+            <div
+              className={`${
                 selectedWorker.department_id === supervisorDepartmentId
-                  ? 'text-green-600'
-                  : 'text-yellow-600'
-              } flex-shrink-0 mt-0.5`} size={20} />
+                  ? "bg-green-50 border-green-200"
+                  : "bg-yellow-50 border-yellow-200"
+              } border rounded-lg p-4 flex items-start gap-3`}
+            >
+              <AlertCircle
+                className={`${
+                  selectedWorker.department_id === supervisorDepartmentId
+                    ? "text-green-600"
+                    : "text-yellow-600"
+                } flex-shrink-0 mt-0.5`}
+                size={20}
+              />
               <div className="text-sm">
                 {selectedWorker.department_id === supervisorDepartmentId ? (
                   <>
                     <p className="font-semibold text-green-900">Already in Your Department</p>
                     <p className="text-green-800 mt-1">
-                      {selectedWorker.name} is already assigned to your department ({selectedWorker.department?.name}).
+                      {selectedWorker.name} is already assigned to your department (
+                      {selectedWorker.department?.name}).
                     </p>
                   </>
                 ) : (
                   <>
                     <p className="font-semibold text-yellow-900">Worker Already Assigned</p>
                     <p className="text-yellow-800 mt-1">
-                      {selectedWorker.name} is currently assigned to <strong>{selectedWorker.department?.name || 'another department'}</strong>.
+                      {selectedWorker.name} is currently assigned to{" "}
+                      <strong>{selectedWorker.department?.name || "another department"}</strong>.
                       You cannot add workers from other departments.
                     </p>
                   </>
@@ -256,22 +268,25 @@ const AddWorkerModal: React.FC<AddWorkerModalProps> = ({
                 <div className="text-gray-600">PAN:</div>
                 <div className="text-gray-900 font-medium">{selectedWorker.pan}</div>
                 <div className="text-gray-600">Wage Type:</div>
-                <div className="text-gray-900 font-medium capitalize">{selectedWorker.wage_type}</div>
+                <div className="text-gray-900 font-medium capitalize">
+                  {selectedWorker.wage_type}
+                </div>
                 <div className="text-gray-600">Wage Rate:</div>
-                <div className="text-gray-900 font-medium">₹{selectedWorker.wage_rate.toFixed(2)}</div>
+                <div className="text-gray-900 font-medium">
+                  ₹{selectedWorker.wage_rate.toFixed(2)}
+                </div>
               </div>
             </div>
           )}
 
           {/* Department Selection - Only showing supervisor's own department */}
           <div>
-            <label className="block text-sm font-semibold mb-2">
-              Assign to Department
-            </label>
+            <label className="block text-sm font-semibold mb-2">Assign to Department</label>
             <div className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50 text-gray-900 font-medium">
               {supervisorDepartmentId
-                ? departments.find(d => d.id === supervisorDepartmentId)?.name || 'Your Department'
-                : 'Loading...'}
+                ? departments.find((d) => d.id === supervisorDepartmentId)?.name ||
+                  "Your Department"
+                : "Loading..."}
             </div>
             <p className="text-xs text-gray-500 mt-1">
               You can only assign workers to your own department
@@ -293,7 +308,7 @@ const AddWorkerModal: React.FC<AddWorkerModalProps> = ({
             disabled={isSubmitting || loading || !selectedWorkerId || !supervisorDepartmentId}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? 'Assigning...' : 'Assign Worker'}
+            {isSubmitting ? "Assigning..." : "Assign Worker"}
           </button>
         </div>
       </div>

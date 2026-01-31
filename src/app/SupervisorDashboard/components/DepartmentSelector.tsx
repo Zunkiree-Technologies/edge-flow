@@ -5,7 +5,8 @@ import { Building2, ChevronDown, Check } from "lucide-react";
 import { useDepartment } from "../contexts/DepartmentContext";
 
 const DepartmentSelector = () => {
-  const { departments, selectedDepartmentId, setSelectedDepartmentId, isSuperSupervisor } = useDepartment();
+  const { departments, selectedDepartmentId, setSelectedDepartmentId, isSuperSupervisor } =
+    useDepartment();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -27,13 +28,10 @@ const DepartmentSelector = () => {
     return null;
   }
 
-  const selectedDepartment = selectedDepartmentId === "all"
-    ? null
-    : departments.find(d => d.id === selectedDepartmentId);
+  const selectedDepartment =
+    selectedDepartmentId === "all" ? null : departments.find((d) => d.id === selectedDepartmentId);
 
-  const displayText = selectedDepartment
-    ? selectedDepartment.name
-    : "Select Department";
+  const displayText = selectedDepartment ? selectedDepartment.name : "Select Department";
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -47,7 +45,9 @@ const DepartmentSelector = () => {
       >
         <Building2 className="w-4 h-4" />
         <span className="font-medium text-sm">{displayText}</span>
-        <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown
+          className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+        />
       </button>
 
       {isOpen && (
@@ -71,13 +71,19 @@ const DepartmentSelector = () => {
                 selectedDepartmentId === "all" ? "bg-amber-50" : ""
               }`}
             >
-              <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                selectedDepartmentId === "all" ? "border-amber-500 bg-amber-500" : "border-gray-300"
-              }`}>
+              <div
+                className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                  selectedDepartmentId === "all"
+                    ? "border-amber-500 bg-amber-500"
+                    : "border-gray-300"
+                }`}
+              >
                 {selectedDepartmentId === "all" && <Check className="w-2.5 h-2.5 text-white" />}
               </div>
               <div className="flex-1">
-                <span className={`text-sm font-medium ${selectedDepartmentId === "all" ? "text-amber-700" : "text-gray-700"}`}>
+                <span
+                  className={`text-sm font-medium ${selectedDepartmentId === "all" ? "text-amber-700" : "text-gray-700"}`}
+                >
                   All Departments
                 </span>
                 <p className="text-xs text-gray-500">View overview stats only</p>
@@ -96,13 +102,19 @@ const DepartmentSelector = () => {
                   selectedDepartmentId === dept.id ? "bg-blue-50" : ""
                 }`}
               >
-                <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                  selectedDepartmentId === dept.id ? "border-[#2272B4] bg-[#2272B4]" : "border-gray-300"
-                }`}>
+                <div
+                  className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                    selectedDepartmentId === dept.id
+                      ? "border-[#2272B4] bg-[#2272B4]"
+                      : "border-gray-300"
+                  }`}
+                >
                   {selectedDepartmentId === dept.id && <Check className="w-2.5 h-2.5 text-white" />}
                 </div>
                 <div className="flex-1">
-                  <span className={`text-sm font-medium ${selectedDepartmentId === dept.id ? "text-[#2272B4]" : "text-gray-700"}`}>
+                  <span
+                    className={`text-sm font-medium ${selectedDepartmentId === dept.id ? "text-[#2272B4]" : "text-gray-700"}`}
+                  >
                     {dept.name}
                   </span>
                   {dept.description && (

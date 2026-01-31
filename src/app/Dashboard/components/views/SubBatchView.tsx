@@ -4,13 +4,37 @@
 
 import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import axios from "axios";
-import { Plus, Edit2, Trash2, X, FileX, Layers, Package, Volleyball, PackageMinus, ClockAlert, Clock, MoreVertical, Eye, ChevronDown, ChevronUp, SlidersHorizontal, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ArrowUpDown, Search, Check } from "lucide-react";
+import {
+  Plus,
+  Edit2,
+  Trash2,
+  X,
+  FileX,
+  Layers,
+  Package,
+  Volleyball,
+  PackageMinus,
+  ClockAlert,
+  Clock,
+  MoreVertical,
+  Eye,
+  ChevronDown,
+  ChevronUp,
+  SlidersHorizontal,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  ArrowUpDown,
+  Search,
+  Check,
+} from "lucide-react";
 import Loader from "@/app/Components/Loader";
 import NepaliDatePicker from "@/app/Components/NepaliDatePicker";
 import { useToast } from "@/app/Components/ToastContext";
 import { formatNepaliDate } from "@/app/utils/dateUtils";
 
-const API = process.env.NEXT_PUBLIC_API_URL ;
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 interface SubBatch {
   id: number;
@@ -23,9 +47,9 @@ interface SubBatch {
   roll_id?: number | null;
   batch_id?: number | null;
   department_id?: number | null;
-  status?: 'DRAFT' | 'IN_PRODUCTION' | 'COMPLETED' | 'CANCELLED';
+  status?: "DRAFT" | "IN_PRODUCTION" | "COMPLETED" | "CANCELLED";
   total_quantity?: number;
-  created_at?: string;  // Creation date
+  created_at?: string; // Creation date
 }
 
 interface Roll {
@@ -133,13 +157,14 @@ const FilterDropdown = ({
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Get selected option label
-  const selectedOption = options.find(opt => opt.value === value);
+  const selectedOption = options.find((opt) => opt.value === value);
   const displayLabel = selectedOption?.label || label;
 
   // Filter options based on search
-  const filteredOptions = options.filter(opt =>
-    opt.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (opt.description && opt.description.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredOptions = options.filter(
+    (opt) =>
+      opt.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (opt.description && opt.description.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   // Handle click outside to close
@@ -183,7 +208,9 @@ const FilterDropdown = ({
       >
         {icon && <span className="flex-shrink-0">{icon}</span>}
         <span className="max-w-[120px] truncate">{displayLabel}</span>
-        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown
+          className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+        />
       </button>
 
       {/* Dropdown Panel */}
@@ -223,19 +250,19 @@ const FilterDropdown = ({
                   }`}
                 >
                   {/* Selection indicator */}
-                  <div className={`mt-0.5 w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                    value === option.value
-                      ? "border-[#2272B4] bg-[#2272B4]"
-                      : "border-gray-300"
-                  }`}>
-                    {value === option.value && (
-                      <Check className="w-2 h-2 text-white" />
-                    )}
+                  <div
+                    className={`mt-0.5 w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                      value === option.value ? "border-[#2272B4] bg-[#2272B4]" : "border-gray-300"
+                    }`}
+                  >
+                    {value === option.value && <Check className="w-2 h-2 text-white" />}
                   </div>
 
                   {/* Option content */}
                   <div className="flex-1 min-w-0">
-                    <div className={`text-xs font-medium ${value === option.value ? "text-[#2272B4]" : "text-gray-900"}`}>
+                    <div
+                      className={`text-xs font-medium ${value === option.value ? "text-[#2272B4]" : "text-gray-900"}`}
+                    >
                       {option.label}
                     </div>
                     {option.description && (
@@ -330,7 +357,7 @@ const SubBatchView = () => {
 
   // Size Allocation State
   const [batchSizeAllocation, setBatchSizeAllocation] = useState<BatchSizeAllocation[]>([]);
-  const [sizeAllocations, setSizeAllocations] = useState<{[size: string]: number}>({});
+  const [sizeAllocations, setSizeAllocations] = useState<{ [size: string]: number }>({});
   const [loadingBatchSizes, setLoadingBatchSizes] = useState(false);
   const [selectedBatchHasSizes, setSelectedBatchHasSizes] = useState(false);
 
@@ -395,8 +422,14 @@ const SubBatchView = () => {
         return "This Month";
       case "custom":
         if (customDateFrom && customDateTo) {
-          const from = new Date(customDateFrom).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-          const to = new Date(customDateTo).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          const from = new Date(customDateFrom).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          });
+          const to = new Date(customDateTo).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          });
           return `${from} - ${to}`;
         }
         return "Custom Range";
@@ -408,11 +441,12 @@ const SubBatchView = () => {
   // Filter, sort, and paginate sub batches using useMemo
   const { paginatedSubBatches, totalPages, totalFiltered } = useMemo(() => {
     // Step 1: Filter
-    let filtered = subBatches.filter(sb => {
+    let filtered = subBatches.filter((sb) => {
       // Status filter
       if (selectedStatus !== "all" && sb.status !== selectedStatus) return false;
       // Batch filter
-      if (selectedBatchFilter !== "all" && sb.batch_id !== Number(selectedBatchFilter)) return false;
+      if (selectedBatchFilter !== "all" && sb.batch_id !== Number(selectedBatchFilter))
+        return false;
       // Roll filter
       if (selectedRollFilter !== "all" && sb.roll_id !== Number(selectedRollFilter)) return false;
       // Date filter (using start_date)
@@ -422,17 +456,19 @@ const SubBatchView = () => {
       if (tableSearchQuery.trim()) {
         const query = tableSearchQuery.toLowerCase();
         // Look up batch and roll names from their respective arrays
-        const batchName = batches.find(b => b.id === sb.batch_id)?.name;
-        const rollName = rolls.find(r => r.id === sb.roll_id)?.name;
+        const batchName = batches.find((b) => b.id === sb.batch_id)?.name;
+        const rollName = rolls.find((r) => r.id === sb.roll_id)?.name;
         const searchFields = [
           sb.name,
-          `SB${String(sb.id).padStart(3, '0')}`,
+          `SB${String(sb.id).padStart(3, "0")}`,
           sb.status,
           batchName,
           rollName,
-        ].filter(Boolean).map(f => String(f).toLowerCase());
+        ]
+          .filter(Boolean)
+          .map((f) => String(f).toLowerCase());
 
-        if (!searchFields.some(field => field.includes(query))) {
+        if (!searchFields.some((field) => field.includes(query))) {
           return false;
         }
       }
@@ -457,9 +493,7 @@ const SubBatchView = () => {
 
       // Handle strings
       if (typeof aVal === "string" && typeof bVal === "string") {
-        return sortDirection === "asc"
-          ? aVal.localeCompare(bVal)
-          : bVal.localeCompare(aVal);
+        return sortDirection === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
       }
 
       // Handle numbers
@@ -473,7 +507,22 @@ const SubBatchView = () => {
     const paginated = filtered.slice(startIndex, startIndex + itemsPerPage);
 
     return { paginatedSubBatches: paginated, totalPages, totalFiltered };
-  }, [subBatches, selectedStatus, selectedBatchFilter, selectedRollFilter, selectedDateFilter, customDateFrom, customDateTo, tableSearchQuery, sortColumn, sortDirection, currentPage, itemsPerPage, batches, rolls]);
+  }, [
+    subBatches,
+    selectedStatus,
+    selectedBatchFilter,
+    selectedRollFilter,
+    selectedDateFilter,
+    customDateFrom,
+    customDateTo,
+    tableSearchQuery,
+    sortColumn,
+    sortDirection,
+    currentPage,
+    itemsPerPage,
+    batches,
+    rolls,
+  ]);
 
   // Handle sort column click
   const handleSort = (column: string) => {
@@ -499,11 +548,16 @@ const SubBatchView = () => {
   };
 
   // Check if any filters are active
-  const hasActiveFilters = selectedStatus !== "all" || selectedBatchFilter !== "all" || selectedRollFilter !== "all" || selectedDateFilter !== "all" || tableSearchQuery.trim() !== "";
+  const hasActiveFilters =
+    selectedStatus !== "all" ||
+    selectedBatchFilter !== "all" ||
+    selectedRollFilter !== "all" ||
+    selectedDateFilter !== "all" ||
+    tableSearchQuery.trim() !== "";
 
   // Toggle row selection
   const toggleRowSelection = (id: number) => {
-    setSelectedRows(prev => {
+    setSelectedRows((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
         newSet.delete(id);
@@ -516,35 +570,38 @@ const SubBatchView = () => {
 
   // Toggle all rows (only on current page)
   const toggleAllRows = () => {
-    if (selectedRows.size === paginatedSubBatches.length && paginatedSubBatches.every(sb => selectedRows.has(sb.id))) {
+    if (
+      selectedRows.size === paginatedSubBatches.length &&
+      paginatedSubBatches.every((sb) => selectedRows.has(sb.id))
+    ) {
       setSelectedRows(new Set());
     } else {
-      setSelectedRows(new Set(paginatedSubBatches.map(sb => sb.id)));
+      setSelectedRows(new Set(paginatedSubBatches.map((sb) => sb.id)));
     }
   };
 
   // Helper function to get status badge styling
-  const getStatusBadge = (status?: 'DRAFT' | 'IN_PRODUCTION' | 'COMPLETED' | 'CANCELLED') => {
+  const getStatusBadge = (status?: "DRAFT" | "IN_PRODUCTION" | "COMPLETED" | "CANCELLED") => {
     switch (status) {
-      case 'DRAFT':
+      case "DRAFT":
         return (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-200 text-gray-800">
             Draft
           </span>
         );
-      case 'IN_PRODUCTION':
+      case "IN_PRODUCTION":
         return (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
             In Production
           </span>
         );
-      case 'COMPLETED':
+      case "COMPLETED":
         return (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
             Completed
           </span>
         );
-      case 'CANCELLED':
+      case "CANCELLED":
         return (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
             Cancelled
@@ -623,14 +680,14 @@ const SubBatchView = () => {
 
   // Handle batch selection - fetch batch details and size allocation
   const handleBatchSelection = async (batchId: number) => {
-    const selectedBatch = batches.find(b => b.id === batchId);
+    const selectedBatch = batches.find((b) => b.id === batchId);
     if (!selectedBatch) return;
 
     // Update form data
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       batch_id: String(batchId),
-      roll_id: '', // Clear roll_id - user will select from batch rolls
+      roll_id: "", // Clear roll_id - user will select from batch rolls
     }));
 
     // Set batch rolls for color selection
@@ -640,7 +697,7 @@ const SubBatchView = () => {
       // Auto-select if only one roll
       if (selectedBatch.batch_rolls.length === 1) {
         setSelectedRollId(selectedBatch.batch_rolls[0].roll.id);
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
           roll_id: String(selectedBatch.batch_rolls![0].roll.id),
         }));
@@ -650,7 +707,7 @@ const SubBatchView = () => {
     } else if (selectedBatch.roll_id) {
       // Legacy single-roll batch
       setSelectedRollId(selectedBatch.roll_id);
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         roll_id: String(selectedBatch.roll_id),
       }));
@@ -697,7 +754,7 @@ const SubBatchView = () => {
   const sizeAllocationValidation = useMemo(() => {
     const hasAllocations = calculatedEstimatedPieces > 0;
     const hasOverAllocation = batchSizeAllocation.some(
-      size => (sizeAllocations[size.size] || 0) > size.available
+      (size) => (sizeAllocations[size.size] || 0) > size.available
     );
     const isValid = hasAllocations && !hasOverAllocation;
 
@@ -707,7 +764,7 @@ const SubBatchView = () => {
   // Handle size allocation change
   const handleSizeAllocationChange = (size: string, value: string) => {
     const numValue = parseInt(value) || 0;
-    setSizeAllocations(prev => ({
+    setSizeAllocations((prev) => ({
       ...prev,
       [size]: numValue,
     }));
@@ -749,7 +806,7 @@ const SubBatchView = () => {
 
     const trimmedCategoryName = newCategoryName.trim();
     const categoryExists = categoryOptions.some(
-      category => category.toLowerCase() === trimmedCategoryName.toLowerCase()
+      (category) => category.toLowerCase() === trimmedCategoryName.toLowerCase()
     );
 
     if (categoryExists) {
@@ -773,7 +830,10 @@ const SubBatchView = () => {
       // Type guard for Axios error
       if (axios.isAxiosError(err)) {
         const axiosError = err;
-        if (axiosError.response?.status === 409 || axiosError.response?.data?.message?.includes("already exists")) {
+        if (
+          axiosError.response?.status === 409 ||
+          axiosError.response?.data?.message?.includes("already exists")
+        ) {
           showToast("warning", "Category already exists");
         } else {
           showToast("error", "Failed to save category. Please try again.");
@@ -800,18 +860,18 @@ const SubBatchView = () => {
       if (openMenuId !== null) {
         const target = event.target as HTMLElement;
         // Check if click is outside the dropdown menu
-        if (!target.closest('.relative')) {
+        if (!target.closest(".relative")) {
           setOpenMenuId(null);
         }
       }
     };
 
     if (openMenuId !== null) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openMenuId]);
 
@@ -825,11 +885,11 @@ const SubBatchView = () => {
     };
 
     if (showBatchDropdown) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showBatchDropdown]);
 
@@ -841,7 +901,7 @@ const SubBatchView = () => {
     }
 
     // Validate workflow
-    const validWorkflow = departmentWorkflow.filter(step => step.current && step.departmentId);
+    const validWorkflow = departmentWorkflow.filter((step) => step.current && step.departmentId);
     if (validWorkflow.length === 0) {
       showToast("warning", "Please select at least one department for the workflow");
       return;
@@ -854,8 +914,8 @@ const SubBatchView = () => {
 
       const payload = {
         subBatchId: selectedSubBatch.id,
-        manualDepartments: validWorkflow.map(step => step.departmentId),
-        total_quantity: selectedSubBatch.total_quantity || selectedSubBatch.estimated_pieces || 0
+        manualDepartments: validWorkflow.map((step) => step.departmentId),
+        total_quantity: selectedSubBatch.total_quantity || selectedSubBatch.estimated_pieces || 0,
       };
 
       const response = await axios.post(`${API}/sub-batches/send-to-production`, payload, {
@@ -866,7 +926,10 @@ const SubBatchView = () => {
 
       if (response.data.success) {
         const workflow = response.data.workflow;
-        showToast("success", `Sub-batch sent to production! Workflow ID: ${workflow.id}, Steps: ${workflow.steps.length} departments`);
+        showToast(
+          "success",
+          `Sub-batch sent to production! Workflow ID: ${workflow.id}, Steps: ${workflow.steps.length} departments`
+        );
 
         setIsSendModalOpen(false);
         setSelectedSubBatch(null);
@@ -879,7 +942,8 @@ const SubBatchView = () => {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.message || error.message || "Unknown error occurred";
+        const errorMessage =
+          error.response?.data?.message || error.message || "Unknown error occurred";
         showToast("error", `Failed to send sub-batch to production: ${errorMessage}`);
       } else {
         showToast("error", "Failed to send sub-batch to production. Please try again.");
@@ -916,14 +980,17 @@ const SubBatchView = () => {
       }
 
       // Determine roll ID: use selectedRollId if batch has rolls, otherwise use form data
-      const rollIdToUse = selectedBatchHasSizes && batchRolls.length > 0
-        ? selectedRollId
-        : (formData.roll_id ? Number(formData.roll_id) : null);
+      const rollIdToUse =
+        selectedBatchHasSizes && batchRolls.length > 0
+          ? selectedRollId
+          : formData.roll_id
+            ? Number(formData.roll_id)
+            : null;
 
       // Determine estimated pieces: auto-calculated when batch has sizes
       const estimatedPiecesToUse = selectedBatchHasSizes
         ? calculatedEstimatedPieces
-        : (Number(formData.estimatedPieces) || 0);
+        : Number(formData.estimatedPieces) || 0;
 
       // Determine size details: from allocation when batch has sizes
       const sizeDetailsToUse = selectedBatchHasSizes
@@ -966,7 +1033,10 @@ const SubBatchView = () => {
 
       closeModal();
       fetchSubBatches();
-      showToast("success", isEditing ? "Sub-batch updated successfully!" : "Sub-batch created successfully!");
+      showToast(
+        "success",
+        isEditing ? "Sub-batch updated successfully!" : "Sub-batch created successfully!"
+      );
     } catch {
       showToast("error", "Failed to save subbatch. Please try again.");
     } finally {
@@ -998,7 +1068,7 @@ const SubBatchView = () => {
         const errorMessage =
           errorData?.message ||
           errorData?.error ||
-          (typeof errorData === 'string' ? errorData : null) ||
+          (typeof errorData === "string" ? errorData : null) ||
           error.message ||
           "Unknown error occurred";
 
@@ -1016,16 +1086,18 @@ const SubBatchView = () => {
     setEditingSubBatch(subBatch);
 
     // Map sizes
-    const mappedSizes = subBatch.size_details?.map((s: any) => ({
-      size: s.category || "",
-      number_of_pieces: s.pieces || "",
-    })) || [];
+    const mappedSizes =
+      subBatch.size_details?.map((s: any) => ({
+        size: s.category || "",
+        number_of_pieces: s.pieces || "",
+      })) || [];
 
     // Map attachments
-    const mappedAttachments = subBatch.attachments?.map((a: any) => ({
-      name: a.attachment_name || "",
-      quantity: a.quantity || "",
-    })) || [];
+    const mappedAttachments =
+      subBatch.attachments?.map((a: any) => ({
+        name: a.attachment_name || "",
+        quantity: a.quantity || "",
+      })) || [];
 
     // Map categories from sizes list
     const mappedCategories =
@@ -1068,7 +1140,7 @@ const SubBatchView = () => {
     const subBatch = await fetchSubBatchById(id);
     if (subBatch) {
       handleEdit(subBatch); // populate your modal/form with data
-      setIsPreview(true);  // open the preview modal
+      setIsPreview(true); // open the preview modal
     }
   };
 
@@ -1102,21 +1174,50 @@ const SubBatchView = () => {
   // Color badge helpers - same as Roll and Batch views
   const getColorBg = (colorName: string): string => {
     const colorMap: Record<string, string> = {
-      black: '#1f2937', red: '#ef4444', blue: '#3b82f6',
-      green: '#22c55e', yellow: '#fbbf24', pink: '#f472b6',
-      white: '#f3f4f6', orange: '#f97316', purple: '#a855f7',
-      brown: '#92400e', gray: '#6b7280', grey: '#6b7280',
-      navy: '#1e3a5f', maroon: '#7f1d1d', teal: '#14b8a6',
-      cyan: '#06b6d4', lime: '#84cc16', indigo: '#6366f1',
-      violet: '#8b5cf6', rose: '#f43f5e', amber: '#f59e0b',
-      emerald: '#10b981', sky: '#0ea5e9', slate: '#64748b',
+      black: "#1f2937",
+      red: "#ef4444",
+      blue: "#3b82f6",
+      green: "#22c55e",
+      yellow: "#fbbf24",
+      pink: "#f472b6",
+      white: "#f3f4f6",
+      orange: "#f97316",
+      purple: "#a855f7",
+      brown: "#92400e",
+      gray: "#6b7280",
+      grey: "#6b7280",
+      navy: "#1e3a5f",
+      maroon: "#7f1d1d",
+      teal: "#14b8a6",
+      cyan: "#06b6d4",
+      lime: "#84cc16",
+      indigo: "#6366f1",
+      violet: "#8b5cf6",
+      rose: "#f43f5e",
+      amber: "#f59e0b",
+      emerald: "#10b981",
+      sky: "#0ea5e9",
+      slate: "#64748b",
     };
-    return colorMap[colorName?.toLowerCase()] || '#e5e7eb';
+    return colorMap[colorName?.toLowerCase()] || "#e5e7eb";
   };
 
   const getColorText = (colorName: string): string => {
-    const darkColors = ['black', 'red', 'blue', 'green', 'purple', 'brown', 'gray', 'grey', 'navy', 'maroon', 'indigo', 'violet'];
-    return darkColors.includes(colorName?.toLowerCase()) ? '#ffffff' : '#1f2937';
+    const darkColors = [
+      "black",
+      "red",
+      "blue",
+      "green",
+      "purple",
+      "brown",
+      "gray",
+      "grey",
+      "navy",
+      "maroon",
+      "indigo",
+      "violet",
+    ];
+    return darkColors.includes(colorName?.toLowerCase()) ? "#ffffff" : "#1f2937";
   };
 
   // Categories & Sizes & Attachments handlers
@@ -1153,16 +1254,17 @@ const SubBatchView = () => {
     try {
       // Call backend to check status-based deletion eligibility
       const response = await axios.post(`${API}/sub-batches/check-dependencies`, {
-        subBatchIds: Array.from(selectedRows)
+        subBatchIds: Array.from(selectedRows),
       });
 
-      const { inProductionSubBatches, completedSubBatches, cancelledSubBatches, draftSubBatches } = response.data;
+      const { inProductionSubBatches, completedSubBatches, cancelledSubBatches, draftSubBatches } =
+        response.data;
 
       // Categorize selected sub-batches by status
-      const inProduction = subBatches.filter(sb => inProductionSubBatches.includes(sb.id));
-      const completed = subBatches.filter(sb => completedSubBatches.includes(sb.id));
-      const cancelled = subBatches.filter(sb => cancelledSubBatches.includes(sb.id));
-      const draft = subBatches.filter(sb => draftSubBatches.includes(sb.id));
+      const inProduction = subBatches.filter((sb) => inProductionSubBatches.includes(sb.id));
+      const completed = subBatches.filter((sb) => completedSubBatches.includes(sb.id));
+      const cancelled = subBatches.filter((sb) => cancelledSubBatches.includes(sb.id));
+      const draft = subBatches.filter((sb) => draftSubBatches.includes(sb.id));
 
       setInProductionSubBatches(inProduction);
       setCompletedSubBatches(completed);
@@ -1197,14 +1299,13 @@ const SubBatchView = () => {
 
     try {
       // Only delete DRAFT sub-batches
-      const draftIds = draftSubBatches.map(sb => sb.id);
-      const deletePromises = draftIds.map(id =>
-        axios.delete(`${API}/sub-batches/${id}`)
-      );
+      const draftIds = draftSubBatches.map((sb) => sb.id);
+      const deletePromises = draftIds.map((id) => axios.delete(`${API}/sub-batches/${id}`));
 
       await Promise.all(deletePromises);
 
-      const blockedCount = inProductionSubBatches.length + completedSubBatches.length + cancelledSubBatches.length;
+      const blockedCount =
+        inProductionSubBatches.length + completedSubBatches.length + cancelledSubBatches.length;
 
       let message = `Successfully deleted ${draftIds.length} sub-batch(es)`;
       if (blockedCount > 0) {
@@ -1296,11 +1397,18 @@ const SubBatchView = () => {
         <FilterDropdown
           label="All Status"
           value={selectedStatus}
-          onChange={(val) => { setSelectedStatus(val); setCurrentPage(1); }}
+          onChange={(val) => {
+            setSelectedStatus(val);
+            setCurrentPage(1);
+          }}
           options={[
             { value: "all", label: "All Status", description: "Show all sub-batches" },
             { value: "DRAFT", label: "Draft", description: "Not yet sent to production" },
-            { value: "IN_PRODUCTION", label: "In Production", description: "Currently in departments" },
+            {
+              value: "IN_PRODUCTION",
+              label: "In Production",
+              description: "Currently in departments",
+            },
             { value: "COMPLETED", label: "Completed", description: "All departments finished" },
             { value: "CANCELLED", label: "Cancelled", description: "Production was cancelled" },
           ]}
@@ -1310,14 +1418,21 @@ const SubBatchView = () => {
         <FilterDropdown
           label="All Batches"
           value={selectedBatchFilter}
-          onChange={(val) => { setSelectedBatchFilter(val); setCurrentPage(1); }}
+          onChange={(val) => {
+            setSelectedBatchFilter(val);
+            setCurrentPage(1);
+          }}
           options={[
-            { value: "all", label: "All Batches", description: "Show sub-batches from all batches" },
-            ...batches.map(batch => ({
+            {
+              value: "all",
+              label: "All Batches",
+              description: "Show sub-batches from all batches",
+            },
+            ...batches.map((batch) => ({
               value: String(batch.id),
               label: batch.name,
-              description: `${batch.quantity || 0} ${batch.unit || 'pcs'} • ${batch.color || 'No color'}`
-            }))
+              description: `${batch.quantity || 0} ${batch.unit || "pcs"} • ${batch.color || "No color"}`,
+            })),
           ]}
         />
 
@@ -1325,14 +1440,17 @@ const SubBatchView = () => {
         <FilterDropdown
           label="All Rolls"
           value={selectedRollFilter}
-          onChange={(val) => { setSelectedRollFilter(val); setCurrentPage(1); }}
+          onChange={(val) => {
+            setSelectedRollFilter(val);
+            setCurrentPage(1);
+          }}
           options={[
             { value: "all", label: "All Rolls", description: "Show sub-batches from all rolls" },
-            ...rolls.map(roll => ({
+            ...rolls.map((roll) => ({
               value: String(roll.id),
               label: roll.name,
-              description: `Roll ID: R${String(roll.id).padStart(3, '0')}`
-            }))
+              description: `Roll ID: R${String(roll.id).padStart(3, "0")}`,
+            })),
           ]}
         />
 
@@ -1354,10 +1472,26 @@ const SubBatchView = () => {
           options={[
             { value: "all", label: "All Dates", description: "Show sub-batches from any date" },
             { value: "today", label: "Today", description: "Sub-batches started today" },
-            { value: "last7days", label: "Last 7 Days", description: "Sub-batches from the past week" },
-            { value: "last30days", label: "Last 30 Days", description: "Sub-batches from the past month" },
-            { value: "thisMonth", label: "This Month", description: "Sub-batches started this month" },
-            { value: "custom", label: "Custom Range...", description: "Select specific date range" },
+            {
+              value: "last7days",
+              label: "Last 7 Days",
+              description: "Sub-batches from the past week",
+            },
+            {
+              value: "last30days",
+              label: "Last 30 Days",
+              description: "Sub-batches from the past month",
+            },
+            {
+              value: "thisMonth",
+              label: "This Month",
+              description: "Sub-batches started this month",
+            },
+            {
+              value: "custom",
+              label: "Custom Range...",
+              description: "Select specific date range",
+            },
           ]}
         />
 
@@ -1366,7 +1500,7 @@ const SubBatchView = () => {
           label="Sort"
           value={`${sortColumn}-${sortDirection}`}
           onChange={(val) => {
-            const [col, dir] = val.split('-');
+            const [col, dir] = val.split("-");
             setSortColumn(col);
             setSortDirection(dir as "asc" | "desc");
             setCurrentPage(1);
@@ -1380,12 +1514,36 @@ const SubBatchView = () => {
             { value: "name-desc", label: "Name Z-A", description: "Reverse alphabetical" },
             { value: "status-asc", label: "Status A-Z", description: "By status alphabetically" },
             { value: "status-desc", label: "Status Z-A", description: "Status reverse order" },
-            { value: "estimated_pieces-desc", label: "Pieces (High to Low)", description: "Largest quantities first" },
-            { value: "estimated_pieces-asc", label: "Pieces (Low to High)", description: "Smallest quantities first" },
-            { value: "start_date-desc", label: "Start Date (Latest)", description: "Most recent start dates" },
-            { value: "start_date-asc", label: "Start Date (Earliest)", description: "Oldest start dates first" },
-            { value: "due_date-desc", label: "Due Date (Latest)", description: "Farthest deadlines first" },
-            { value: "due_date-asc", label: "Due Date (Earliest)", description: "Soonest deadlines first" },
+            {
+              value: "estimated_pieces-desc",
+              label: "Pieces (High to Low)",
+              description: "Largest quantities first",
+            },
+            {
+              value: "estimated_pieces-asc",
+              label: "Pieces (Low to High)",
+              description: "Smallest quantities first",
+            },
+            {
+              value: "start_date-desc",
+              label: "Start Date (Latest)",
+              description: "Most recent start dates",
+            },
+            {
+              value: "start_date-asc",
+              label: "Start Date (Earliest)",
+              description: "Oldest start dates first",
+            },
+            {
+              value: "due_date-desc",
+              label: "Due Date (Latest)",
+              description: "Farthest deadlines first",
+            },
+            {
+              value: "due_date-asc",
+              label: "Due Date (Earliest)",
+              description: "Soonest deadlines first",
+            },
           ]}
         />
 
@@ -1425,7 +1583,8 @@ const SubBatchView = () => {
               </div>
               <h3 className="text-black mb-2 font-bold">No sub batches found</h3>
               <p className="text-gray-500 font-medium">
-                {hasActiveFilters ? "Try adjusting your filters or " : "Get started by "}creating your first sub batch.
+                {hasActiveFilters ? "Try adjusting your filters or " : "Get started by "}creating
+                your first sub batch.
               </p>
               {hasActiveFilters && (
                 <button
@@ -1442,11 +1601,17 @@ const SubBatchView = () => {
             <div className="overflow-x-auto">
               <table className="min-w-max w-full">
                 <thead>
-                  <tr className="border-b border-gray-200" style={{ backgroundColor: 'rgb(247, 242, 242)' }}>
+                  <tr
+                    className="border-b border-gray-200"
+                    style={{ backgroundColor: "rgb(247, 242, 242)" }}
+                  >
                     <th className="px-4 py-2 text-left w-12 whitespace-nowrap border-r border-gray-200">
                       <input
                         type="checkbox"
-                        checked={paginatedSubBatches.length > 0 && paginatedSubBatches.every(sb => selectedRows.has(sb.id))}
+                        checked={
+                          paginatedSubBatches.length > 0 &&
+                          paginatedSubBatches.every((sb) => selectedRows.has(sb.id))
+                        }
                         onChange={toggleAllRows}
                         className="w-4 h-4 rounded border-gray-300 text-[#2272B4] focus:ring-[#2272B4]"
                       />
@@ -1454,98 +1619,131 @@ const SubBatchView = () => {
                     {/* Sortable Headers - Order: ID, Created, Name, Pieces, Color, Parent Batch, Parent Roll, Status, Start Date, Due Date, Actions */}
                     <th
                       className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 transition-colors whitespace-nowrap border-r border-gray-200"
-                      style={{ color: '#141414', fontWeight: 500 }}
+                      style={{ color: "#141414", fontWeight: 500 }}
                       onClick={() => handleSort("id")}
                     >
                       <div className="flex items-center gap-1">
                         Id
-                        {sortColumn === "id" && (
-                          sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
-                        )}
+                        {sortColumn === "id" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
                       </div>
                     </th>
                     <th
                       className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 transition-colors whitespace-nowrap border-r border-gray-200"
-                      style={{ color: '#141414', fontWeight: 500 }}
+                      style={{ color: "#141414", fontWeight: 500 }}
                       onClick={() => handleSort("created_at")}
                     >
                       <div className="flex items-center gap-1">
                         Created
-                        {sortColumn === "created_at" && (
-                          sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
-                        )}
+                        {sortColumn === "created_at" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
                       </div>
                     </th>
                     <th
                       className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 transition-colors whitespace-nowrap border-r border-gray-200"
-                      style={{ color: '#141414', fontWeight: 500 }}
+                      style={{ color: "#141414", fontWeight: 500 }}
                       onClick={() => handleSort("name")}
                     >
                       <div className="flex items-center gap-1">
                         Name
-                        {sortColumn === "name" && (
-                          sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
-                        )}
+                        {sortColumn === "name" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
                       </div>
                     </th>
                     <th
                       className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 transition-colors whitespace-nowrap border-r border-gray-200"
-                      style={{ color: '#141414', fontWeight: 500 }}
+                      style={{ color: "#141414", fontWeight: 500 }}
                       onClick={() => handleSort("estimated_pieces")}
                     >
                       <div className="flex items-center gap-1">
                         Pieces
-                        {sortColumn === "estimated_pieces" && (
-                          sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
-                        )}
+                        {sortColumn === "estimated_pieces" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
                       </div>
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                    >
                       Color
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                    >
                       Parent Batch
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                    >
                       Parent Roll
                     </th>
                     <th
                       className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 transition-colors whitespace-nowrap border-r border-gray-200"
-                      style={{ color: '#141414', fontWeight: 500 }}
+                      style={{ color: "#141414", fontWeight: 500 }}
                       onClick={() => handleSort("status")}
                     >
                       <div className="flex items-center gap-1">
                         Status
-                        {sortColumn === "status" && (
-                          sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
-                        )}
+                        {sortColumn === "status" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
                       </div>
                     </th>
                     <th
                       className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 transition-colors whitespace-nowrap border-r border-gray-200"
-                      style={{ color: '#141414', fontWeight: 500 }}
+                      style={{ color: "#141414", fontWeight: 500 }}
                       onClick={() => handleSort("start_date")}
                     >
                       <div className="flex items-center gap-1">
                         Start Date
-                        {sortColumn === "start_date" && (
-                          sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
-                        )}
+                        {sortColumn === "start_date" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
                       </div>
                     </th>
                     <th
                       className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 transition-colors whitespace-nowrap border-r border-gray-200"
-                      style={{ color: '#141414', fontWeight: 500 }}
+                      style={{ color: "#141414", fontWeight: 500 }}
                       onClick={() => handleSort("due_date")}
                     >
                       <div className="flex items-center gap-1">
                         Due Date
-                        {sortColumn === "due_date" && (
-                          sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
-                        )}
+                        {sortColumn === "due_date" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
                       </div>
                     </th>
-                    <th className="px-4 py-2 text-right text-xs font-medium whitespace-nowrap" style={{ color: '#141414', fontWeight: 500 }}>
+                    <th
+                      className="px-4 py-2 text-right text-xs font-medium whitespace-nowrap"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                    >
                       Actions
                     </th>
                   </tr>
@@ -1554,7 +1752,7 @@ const SubBatchView = () => {
                   {paginatedSubBatches.map((sb) => (
                     <tr
                       key={sb.id}
-                      className={`transition-colors ${selectedRows.has(sb.id) ? 'bg-blue-50' : 'hover:bg-gray-50'}`}
+                      className={`transition-colors ${selectedRows.has(sb.id) ? "bg-blue-50" : "hover:bg-gray-50"}`}
                     >
                       <td className="px-4 py-1.5 whitespace-nowrap border-r border-gray-200">
                         <input
@@ -1565,14 +1763,23 @@ const SubBatchView = () => {
                         />
                       </td>
                       {/* Order: ID, Created, Name, Pieces, Color, Parent Batch, Parent Roll, Status, Start Date, Due Date */}
-                      <td className="px-4 py-1.5 text-sm text-gray-500 whitespace-nowrap border-r border-gray-200 font-light">SB{String(sb.id).padStart(3, '0')}</td>
+                      <td className="px-4 py-1.5 text-sm text-gray-500 whitespace-nowrap border-r border-gray-200 font-light">
+                        SB{String(sb.id).padStart(3, "0")}
+                      </td>
                       <td className="px-4 py-1.5 text-sm text-gray-500 whitespace-nowrap border-r border-gray-200 font-light">
                         {formatNepaliDate(sb.created_at)}
                       </td>
                       <td className="px-4 py-1.5 whitespace-nowrap border-r border-gray-200">
-                        <span className="text-sm font-medium text-[#2272B4] hover:underline cursor-pointer" onClick={() => handlePreview(sb.id)}>{sb.name}</span>
+                        <span
+                          className="text-sm font-medium text-[#2272B4] hover:underline cursor-pointer"
+                          onClick={() => handlePreview(sb.id)}
+                        >
+                          {sb.name}
+                        </span>
                       </td>
-                      <td className="px-4 py-1.5 text-sm text-gray-600 whitespace-nowrap border-r border-gray-200 font-light">{sb.estimated_pieces}</td>
+                      <td className="px-4 py-1.5 text-sm text-gray-600 whitespace-nowrap border-r border-gray-200 font-light">
+                        {sb.estimated_pieces}
+                      </td>
                       <td className="px-4 py-1.5 text-sm whitespace-nowrap border-r border-gray-200">
                         {(() => {
                           const color = getRollColor(sb.roll_id);
@@ -1580,7 +1787,10 @@ const SubBatchView = () => {
                             return (
                               <span
                                 className="px-2 py-0.5 rounded text-xs font-medium"
-                                style={{ backgroundColor: getColorBg(color), color: getColorText(color) }}
+                                style={{
+                                  backgroundColor: getColorBg(color),
+                                  color: getColorText(color),
+                                }}
                               >
                                 {color}
                               </span>
@@ -1589,11 +1799,21 @@ const SubBatchView = () => {
                           return <span className="text-gray-400 font-light">—</span>;
                         })()}
                       </td>
-                      <td className="px-4 py-1.5 text-sm text-gray-600 whitespace-nowrap border-r border-gray-200 font-light">{getBatchName(sb.batch_id)}</td>
-                      <td className="px-4 py-1.5 text-sm text-gray-600 whitespace-nowrap border-r border-gray-200 font-light">{getRollName(sb.roll_id)}</td>
-                      <td className="px-4 py-1.5 text-sm whitespace-nowrap border-r border-gray-200">{getStatusBadge(sb.status)}</td>
-                      <td className="px-4 py-1.5 text-sm text-gray-600 whitespace-nowrap border-r border-gray-200 font-light">{formatNepaliDate(sb.start_date)}</td>
-                      <td className="px-4 py-1.5 text-sm text-gray-600 whitespace-nowrap border-r border-gray-200 font-light">{formatNepaliDate(sb.due_date)}</td>
+                      <td className="px-4 py-1.5 text-sm text-gray-600 whitespace-nowrap border-r border-gray-200 font-light">
+                        {getBatchName(sb.batch_id)}
+                      </td>
+                      <td className="px-4 py-1.5 text-sm text-gray-600 whitespace-nowrap border-r border-gray-200 font-light">
+                        {getRollName(sb.roll_id)}
+                      </td>
+                      <td className="px-4 py-1.5 text-sm whitespace-nowrap border-r border-gray-200">
+                        {getStatusBadge(sb.status)}
+                      </td>
+                      <td className="px-4 py-1.5 text-sm text-gray-600 whitespace-nowrap border-r border-gray-200 font-light">
+                        {formatNepaliDate(sb.start_date)}
+                      </td>
+                      <td className="px-4 py-1.5 text-sm text-gray-600 whitespace-nowrap border-r border-gray-200 font-light">
+                        {formatNepaliDate(sb.due_date)}
+                      </td>
                       <td className="px-4 py-1.5 text-right whitespace-nowrap">
                         <div className="flex items-center justify-end gap-1">
                           <button
@@ -1641,7 +1861,8 @@ const SubBatchView = () => {
             <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-between bg-white">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-700">
-                  Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalFiltered)} of {totalFiltered}
+                  Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                  {Math.min(currentPage * itemsPerPage, totalFiltered)} of {totalFiltered}
                 </span>
               </div>
               <div className="flex items-center gap-4">
@@ -1650,7 +1871,10 @@ const SubBatchView = () => {
                   <span className="text-sm text-gray-600">per page</span>
                   <select
                     value={itemsPerPage}
-                    onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }}
+                    onChange={(e) => {
+                      setItemsPerPage(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
                     className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-[#2272B4]"
                   >
                     <option value={10}>10</option>
@@ -1737,10 +1961,7 @@ const SubBatchView = () => {
       {showDeleteWarning && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           {/* Overlay */}
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={cancelBulkDelete}
-          />
+          <div className="absolute inset-0 bg-black/50" onClick={cancelBulkDelete} />
 
           {/* Modal */}
           <div className="relative bg-white w-full max-w-2xl rounded-lg shadow-xl p-6 m-4 max-h-[80vh] overflow-y-auto">
@@ -1749,13 +1970,11 @@ const SubBatchView = () => {
               <div>
                 <h3 className="text-xl font-bold text-gray-900">Confirm Bulk Delete</h3>
                 <p className="text-sm text-gray-600 mt-1">
-                  You are about to delete {selectedRows.size} sub-batch(es). Please review the impact below.
+                  You are about to delete {selectedRows.size} sub-batch(es). Please review the
+                  impact below.
                 </p>
               </div>
-              <button
-                onClick={cancelBulkDelete}
-                className="text-gray-400 hover:text-gray-600"
-              >
+              <button onClick={cancelBulkDelete} className="text-gray-400 hover:text-gray-600">
                 <X size={20} />
               </button>
             </div>
@@ -1774,14 +1993,17 @@ const SubBatchView = () => {
                         🚫 IN PRODUCTION - Cannot Delete ({inProductionSubBatches.length})
                       </h4>
                       <p className="text-sm text-red-800 mb-3">
-                        These sub-batches are actively being worked on by supervisors. They cannot be deleted while in production.
+                        These sub-batches are actively being worked on by supervisors. They cannot
+                        be deleted while in production.
                       </p>
                       <div className="space-y-2">
-                        {inProductionSubBatches.map(sb => (
+                        {inProductionSubBatches.map((sb) => (
                           <div key={sb.id} className="bg-white p-3 rounded border border-red-200">
                             <div className="flex justify-between items-center">
                               <span className="font-medium text-gray-900">{sb.name}</span>
-                              <span className="text-xs text-gray-600">ID: B00{sb.id.toString().padStart(2, "0")}</span>
+                              <span className="text-xs text-gray-600">
+                                ID: B00{sb.id.toString().padStart(2, "0")}
+                              </span>
                             </div>
                             <div className="text-sm text-gray-600 mt-1">
                               {sb.estimated_pieces} pieces • {getStatusBadge(sb.status)}
@@ -1806,14 +2028,20 @@ const SubBatchView = () => {
                         💰 COMPLETED - Cannot Delete ({completedSubBatches.length})
                       </h4>
                       <p className="text-sm text-yellow-800 mb-3">
-                        These sub-batches contain worker logs and wage calculation data. They must be preserved for payroll records.
+                        These sub-batches contain worker logs and wage calculation data. They must
+                        be preserved for payroll records.
                       </p>
                       <div className="space-y-2">
-                        {completedSubBatches.map(sb => (
-                          <div key={sb.id} className="bg-white p-3 rounded border border-yellow-200">
+                        {completedSubBatches.map((sb) => (
+                          <div
+                            key={sb.id}
+                            className="bg-white p-3 rounded border border-yellow-200"
+                          >
                             <div className="flex justify-between items-center">
                               <span className="font-medium text-gray-900">{sb.name}</span>
-                              <span className="text-xs text-gray-600">ID: B00{sb.id.toString().padStart(2, "0")}</span>
+                              <span className="text-xs text-gray-600">
+                                ID: B00{sb.id.toString().padStart(2, "0")}
+                              </span>
                             </div>
                             <div className="text-sm text-gray-600 mt-1">
                               {sb.estimated_pieces} pieces • {getStatusBadge(sb.status)}
@@ -1838,14 +2066,17 @@ const SubBatchView = () => {
                         📋 CANCELLED - Cannot Delete ({cancelledSubBatches.length})
                       </h4>
                       <p className="text-sm text-gray-800 mb-3">
-                        These sub-batches contain historical data that must be preserved for record-keeping.
+                        These sub-batches contain historical data that must be preserved for
+                        record-keeping.
                       </p>
                       <div className="space-y-2">
-                        {cancelledSubBatches.map(sb => (
+                        {cancelledSubBatches.map((sb) => (
                           <div key={sb.id} className="bg-white p-3 rounded border border-gray-200">
                             <div className="flex justify-between items-center">
                               <span className="font-medium text-gray-900">{sb.name}</span>
-                              <span className="text-xs text-gray-600">ID: B00{sb.id.toString().padStart(2, "0")}</span>
+                              <span className="text-xs text-gray-600">
+                                ID: B00{sb.id.toString().padStart(2, "0")}
+                              </span>
                             </div>
                             <div className="text-sm text-gray-600 mt-1">
                               {sb.estimated_pieces} pieces • {getStatusBadge(sb.status)}
@@ -1870,14 +2101,17 @@ const SubBatchView = () => {
                         ✅ DRAFT - Safe to Delete ({draftSubBatches.length})
                       </h4>
                       <p className="text-sm text-green-800 mb-3">
-                        These sub-batches are still in planning stage and can be safely deleted. Quantity will be restored to parent batches.
+                        These sub-batches are still in planning stage and can be safely deleted.
+                        Quantity will be restored to parent batches.
                       </p>
                       <div className="space-y-2">
-                        {draftSubBatches.map(sb => (
+                        {draftSubBatches.map((sb) => (
                           <div key={sb.id} className="bg-white p-3 rounded border border-green-200">
                             <div className="flex justify-between items-center">
                               <span className="font-medium text-gray-900">{sb.name}</span>
-                              <span className="text-xs text-gray-600">ID: B00{sb.id.toString().padStart(2, "0")}</span>
+                              <span className="text-xs text-gray-600">
+                                ID: B00{sb.id.toString().padStart(2, "0")}
+                              </span>
                             </div>
                             <div className="text-sm text-gray-600 mt-1">
                               {sb.estimated_pieces} pieces • {getStatusBadge(sb.status)}
@@ -1897,11 +2131,21 @@ const SubBatchView = () => {
                 <div className="flex gap-3">
                   <Layers className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                   <div className="flex-1">
-                    <h4 className="font-semibold text-blue-900 mb-1">Only DRAFT Sub-Batches Will Be Deleted</h4>
+                    <h4 className="font-semibold text-blue-900 mb-1">
+                      Only DRAFT Sub-Batches Will Be Deleted
+                    </h4>
                     <ul className="text-sm text-blue-800 space-y-1 mt-2">
-                      <li>• {draftSubBatches.length} DRAFT sub-batch(es) will be permanently deleted</li>
+                      <li>
+                        • {draftSubBatches.length} DRAFT sub-batch(es) will be permanently deleted
+                      </li>
                       <li>• Quantity will be restored to their parent batches</li>
-                      <li>• {inProductionSubBatches.length + completedSubBatches.length + cancelledSubBatches.length} sub-batch(es) will NOT be deleted (protected)</li>
+                      <li>
+                        •{" "}
+                        {inProductionSubBatches.length +
+                          completedSubBatches.length +
+                          cancelledSubBatches.length}{" "}
+                        sub-batch(es) will NOT be deleted (protected)
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -1914,7 +2158,9 @@ const SubBatchView = () => {
                 <div className="flex gap-3">
                   <span className="text-2xl">⚠️</span>
                   <div className="flex-1">
-                    <h4 className="font-semibold text-amber-900 mb-1">No Sub-Batches Can Be Deleted</h4>
+                    <h4 className="font-semibold text-amber-900 mb-1">
+                      No Sub-Batches Can Be Deleted
+                    </h4>
                     <p className="text-sm text-amber-800">
                       All selected sub-batches are protected. Only DRAFT sub-batches can be deleted.
                     </p>
@@ -1946,10 +2192,7 @@ const SubBatchView = () => {
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           {/* Overlay */}
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={cancelBulkDelete}
-          />
+          <div className="absolute inset-0 bg-black/50" onClick={cancelBulkDelete} />
 
           {/* Modal */}
           <div className="relative bg-white w-full max-w-md rounded-lg shadow-xl p-6 m-4">
@@ -1957,14 +2200,9 @@ const SubBatchView = () => {
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h3 className="text-xl font-bold text-gray-900">Final Confirmation</h3>
-                <p className="text-sm text-gray-600 mt-1">
-                  This action cannot be undone
-                </p>
+                <p className="text-sm text-gray-600 mt-1">This action cannot be undone</p>
               </div>
-              <button
-                onClick={cancelBulkDelete}
-                className="text-gray-400 hover:text-gray-600"
-              >
+              <button onClick={cancelBulkDelete} className="text-gray-400 hover:text-gray-600">
                 <X size={20} />
               </button>
             </div>
@@ -1980,9 +2218,16 @@ const SubBatchView = () => {
                     <li>• All related size details and attachments</li>
                     <li>• Quantity will be restored to parent batches</li>
                   </ul>
-                  {(inProductionSubBatches.length + completedSubBatches.length + cancelledSubBatches.length) > 0 && (
+                  {inProductionSubBatches.length +
+                    completedSubBatches.length +
+                    cancelledSubBatches.length >
+                    0 && (
                     <p className="text-sm text-red-700 mt-3 font-semibold">
-                      Note: {inProductionSubBatches.length + completedSubBatches.length + cancelledSubBatches.length} sub-batch(es) will NOT be deleted (protected)
+                      Note:{" "}
+                      {inProductionSubBatches.length +
+                        completedSubBatches.length +
+                        cancelledSubBatches.length}{" "}
+                      sub-batch(es) will NOT be deleted (protected)
                     </p>
                   )}
                 </div>
@@ -2029,10 +2274,7 @@ const SubBatchView = () => {
       {isSendModalOpen && selectedSubBatch && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           {/* Overlay */}
-          <div
-            className="absolute inset-0 bg-black/30"
-            onClick={() => setIsSendModalOpen(false)}
-          />
+          <div className="absolute inset-0 bg-black/30" onClick={() => setIsSendModalOpen(false)} />
 
           {/* Modal */}
           <div className="relative bg-white w-full max-w-[600px] h-auto rounded-[10px] shadow-lg p-6 overflow-y-auto transition-transform">
@@ -2054,7 +2296,9 @@ const SubBatchView = () => {
 
               <div className="flex justify-between w-[300px] gap-10 mt-4 my-2">
                 <p className="text-gray-500">Name: {selectedSubBatch.name || "Linen Batch"}</p>
-                <p className="text-gray-500">ID: B{selectedSubBatch.id.toString().padStart(4, "0")}</p>
+                <p className="text-gray-500">
+                  ID: B{selectedSubBatch.id.toString().padStart(4, "0")}
+                </p>
               </div>
               <div className="flex justify-between w-fit gap-10">
                 <p className="text-gray-500">
@@ -2079,7 +2323,7 @@ const SubBatchView = () => {
                     <select
                       value={row.current}
                       onChange={(e) => {
-                        const selectedDept = departments.find(d => d.name === e.target.value);
+                        const selectedDept = departments.find((d) => d.name === e.target.value);
                         const newWorkflow = [...departmentWorkflow];
                         newWorkflow[index].current = e.target.value;
                         newWorkflow[index].departmentId = selectedDept?.id;
@@ -2112,11 +2356,15 @@ const SubBatchView = () => {
 
                 <button
                   onClick={() =>
-                    setDepartmentWorkflow([...departmentWorkflow, { current: "", departmentId: undefined }])
+                    setDepartmentWorkflow([
+                      ...departmentWorkflow,
+                      { current: "", departmentId: undefined },
+                    ])
                   }
                   className="mt-2 px-3 py-1 text-sm text-blue-600 border border-blue-200 rounded hover:bg-blue-50"
                 >
-                  + {departmentWorkflow.length === 0 ? "Add Start Department" : "Add Next Department"}
+                  +{" "}
+                  {departmentWorkflow.length === 0 ? "Add Start Department" : "Add Next Department"}
                 </button>
               </div>
 
@@ -2151,14 +2399,20 @@ const SubBatchView = () => {
               </button>
               <button
                 onClick={handleSendToProduction}
-                disabled={isSending || departmentWorkflow.filter(step => step.current && step.departmentId).length === 0}
+                disabled={
+                  isSending ||
+                  departmentWorkflow.filter((step) => step.current && step.departmentId).length ===
+                    0
+                }
                 className={`px-4 py-2 rounded text-white ${
-                  isSending || departmentWorkflow.filter(step => step.current && step.departmentId).length === 0
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-blue-600 hover:bg-blue-700'
+                  isSending ||
+                  departmentWorkflow.filter((step) => step.current && step.departmentId).length ===
+                    0
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
                 }`}
               >
-                {isSending ? 'Sending...' : 'Confirm & Send'}
+                {isSending ? "Sending..." : "Confirm & Send"}
               </button>
             </div>
           </div>
@@ -2173,7 +2427,9 @@ const SubBatchView = () => {
             onClick={closeModal}
           />
 
-          <div className={`ml-auto w-full max-w-xl bg-white shadow-lg p-4 relative h-screen overflow-y-auto transition-transform duration-300 ease-in-out ${isModalOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+          <div
+            className={`ml-auto w-full max-w-xl bg-white shadow-lg p-4 relative h-screen overflow-y-auto transition-transform duration-300 ease-in-out ${isModalOpen ? "translate-x-0" : "translate-x-full"}`}
+          >
             <button
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
               onClick={closeModal}
@@ -2181,131 +2437,150 @@ const SubBatchView = () => {
               <X size={20} />
             </button>
 
-                {isPreview ? (
-                  // Preview Layout
-                  <div className="space-y-4">
-                    {/* ID */}
-                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                      <span className="font-medium text-black">ID</span>
-                      <span className="text-sm text-gray-500">B{editingSubBatch?.id.toString().padStart(4, "0")}</span>
-                    </div>
+            {isPreview ? (
+              // Preview Layout
+              <div className="space-y-4">
+                {/* ID */}
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="font-medium text-black">ID</span>
+                  <span className="text-sm text-gray-500">
+                    B{editingSubBatch?.id.toString().padStart(4, "0")}
+                  </span>
+                </div>
 
-                    {/* Parent Roll */}
-                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                      <span className="font-medium text-black">Parent Roll</span>
-                      <span className="text-sm text-gray-500">{getRollName(editingSubBatch?.roll_id)}</span>
-                    </div>
+                {/* Parent Roll */}
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="font-medium text-black">Parent Roll</span>
+                  <span className="text-sm text-gray-500">
+                    {getRollName(editingSubBatch?.roll_id)}
+                  </span>
+                </div>
 
-                    {/* Parent Batch */}
-                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                      <span className="font-medium text-black">Parent Batch</span>
-                      <span className="text-sm text-gray-500">{getBatchName(editingSubBatch?.batch_id)}</span>
-                    </div>
+                {/* Parent Batch */}
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="font-medium text-black">Parent Batch</span>
+                  <span className="text-sm text-gray-500">
+                    {getBatchName(editingSubBatch?.batch_id)}
+                  </span>
+                </div>
 
-                    {/* Sub Batch Name */}
-                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                      <span className="font-medium text-black">Sub Batch Name</span>
-                      <span className="text-sm text-gray-500">{formData.name}</span>
-                    </div>
+                {/* Sub Batch Name */}
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="font-medium text-black">Sub Batch Name</span>
+                  <span className="text-sm text-gray-500">{formData.name}</span>
+                </div>
 
-                    {/* Estimated Pieces */}
-                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                      <span className="font-medium text-black">Pieces</span>
-                      <span className="text-sm text-gray-500">{formData.estimatedPieces} </span>
-                    </div>
+                {/* Estimated Pieces */}
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="font-medium text-black">Pieces</span>
+                  <span className="text-sm text-gray-500">{formData.estimatedPieces} </span>
+                </div>
 
-                    {/* Expected Items */}
-                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                      <span className="font-medium text-black">Expected Items</span>
-                      <span className="text-sm text-gray-500">{formData.expectedItems || editingSubBatch?.expected_items}</span>
-                    </div>
+                {/* Expected Items */}
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="font-medium text-black">Expected Items</span>
+                  <span className="text-sm text-gray-500">
+                    {formData.expectedItems || editingSubBatch?.expected_items}
+                  </span>
+                </div>
 
-                    {/* Size Details */}
-                    {sizesList.length > 0 && (
-                      <div className="py-2">
-                        <p className="font-medium text-black mb-3">Size Details</p>
-                        <table className="w-full border border-gray-400">
-                          <thead>
-                            <tr className="bg-gray-50 ">
-                              <th className="text-left text-xs font-medium text-gray-600 px-3 py-2 border-b">Size</th>
-                              <th className="text-left text-xs font-medium text-gray-600 px-3 py-2 border-b">Number of Pieces</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {sizesList.map((size, index) => (
-                              <tr key={index} className=" border-gray-100">
-                                <td className="text-sm text-gray-500 px-3 py-2">{size.size}</td>
-                                <td className="text-sm text-gray-500 px-3 py-2">{size.number_of_pieces}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-
-                    {/* Attachment */}
-                    {attachments.length > 0 && (
-                      <div className="py-2">
-                        <p className="font-medium text-black mb-3">Attachment</p>
-                        <table className="w-full  border border-gray-400">
-                          <thead>
-                            <tr className="bg-gray-50">
-                              <th className="text-left text-xs font-medium text-gray-600 px-3 py-2 border-b">Attachment Name</th>
-                              <th className="text-left text-xs font-medium text-gray-600 px-3 py-2 border-b">Quantity</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {attachments.map((att, index) => (
-                              <tr key={index} className=" ">
-                                <td className="text-sm text-gray-500 px-3 py-2">{att.name}</td>
-                                <td className="text-sm text-gray-500 px-3 py-2">{att.quantity}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-
-                    {/* Start Date */}
-                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                      <span className="font-medium text-black">Start Date</span>
-                      <span className="text-sm text-gray-500">{formatNepaliDate(formData.startDate)}</span>
-                    </div>
-
-                    {/* End Date */}
-                    <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                      <span className="font-medium text-black">End Date</span>
-                      <span className="text-sm text-gray-500">{formatNepaliDate(formData.dueDate)}</span>
-                    </div>
-
-                    
+                {/* Size Details */}
+                {sizesList.length > 0 && (
+                  <div className="py-2">
+                    <p className="font-medium text-black mb-3">Size Details</p>
+                    <table className="w-full border border-gray-400">
+                      <thead>
+                        <tr className="bg-gray-50 ">
+                          <th className="text-left text-xs font-medium text-gray-600 px-3 py-2 border-b">
+                            Size
+                          </th>
+                          <th className="text-left text-xs font-medium text-gray-600 px-3 py-2 border-b">
+                            Number of Pieces
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {sizesList.map((size, index) => (
+                          <tr key={index} className=" border-gray-100">
+                            <td className="text-sm text-gray-500 px-3 py-2">{size.size}</td>
+                            <td className="text-sm text-gray-500 px-3 py-2">
+                              {size.number_of_pieces}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                ) : (
-                  // Edit/Add Layout
-                  <>
-                    {/* Modal Header */}
-                    <div className="mb-5">
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        {editingSubBatch ? "Edit Sub Batch" : "Add Sub Batch"}
-                      </h3>
-                    </div>
+                )}
 
-                    <div className="space-y-4">
-                      {/* Sub Batch Name */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                          Sub Batch Name <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Enter sub batch name"
-                          value={formData.name || ""}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                          disabled={isPreview}
-                        />
-                      </div>
+                {/* Attachment */}
+                {attachments.length > 0 && (
+                  <div className="py-2">
+                    <p className="font-medium text-black mb-3">Attachment</p>
+                    <table className="w-full  border border-gray-400">
+                      <thead>
+                        <tr className="bg-gray-50">
+                          <th className="text-left text-xs font-medium text-gray-600 px-3 py-2 border-b">
+                            Attachment Name
+                          </th>
+                          <th className="text-left text-xs font-medium text-gray-600 px-3 py-2 border-b">
+                            Quantity
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {attachments.map((att, index) => (
+                          <tr key={index} className=" ">
+                            <td className="text-sm text-gray-500 px-3 py-2">{att.name}</td>
+                            <td className="text-sm text-gray-500 px-3 py-2">{att.quantity}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
 
+                {/* Start Date */}
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="font-medium text-black">Start Date</span>
+                  <span className="text-sm text-gray-500">
+                    {formatNepaliDate(formData.startDate)}
+                  </span>
+                </div>
+
+                {/* End Date */}
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="font-medium text-black">End Date</span>
+                  <span className="text-sm text-gray-500">
+                    {formatNepaliDate(formData.dueDate)}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              // Edit/Add Layout
+              <>
+                {/* Modal Header */}
+                <div className="mb-5">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {editingSubBatch ? "Edit Sub Batch" : "Add Sub Batch"}
+                  </h3>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Sub Batch Name */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                      Sub Batch Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter sub batch name"
+                      value={formData.name || ""}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      disabled={isPreview}
+                    />
+                  </div>
 
                   {/* Batch - MOVED TO TOP */}
                   <div className="relative" ref={batchDropdownRef}>
@@ -2318,18 +2593,27 @@ const SubBatchView = () => {
                       onClick={() => !isPreview && setShowBatchDropdown(!showBatchDropdown)}
                       disabled={isPreview}
                       className={`w-full border border-gray-200 rounded-lg px-3 py-2 text-left text-sm flex items-center justify-between ${
-                        isPreview ? 'bg-gray-100 cursor-not-allowed' : 'bg-white hover:border-gray-300'
+                        isPreview
+                          ? "bg-gray-100 cursor-not-allowed"
+                          : "bg-white hover:border-gray-300"
                       }`}
                     >
-                      <span className={formData.batch_id ? 'text-gray-900 truncate flex items-center gap-2' : 'text-gray-400'}>
+                      <span
+                        className={
+                          formData.batch_id
+                            ? "text-gray-900 truncate flex items-center gap-2"
+                            : "text-gray-400"
+                        }
+                      >
                         {formData.batch_id
                           ? (() => {
-                              const batch = batches.find(b => b.id === Number(formData.batch_id));
-                              if (!batch) return 'Select batch...';
+                              const batch = batches.find((b) => b.id === Number(formData.batch_id));
+                              if (!batch) return "Select batch...";
                               const hasSizes = batch.batch_sizes && batch.batch_sizes.length > 0;
                               return (
                                 <>
-                                  {batch.name} (B{String(batch.id).padStart(3, '0')}) | {batch.quantity} {batch.unit || 'pcs'}
+                                  {batch.name} (B{String(batch.id).padStart(3, "0")}) |{" "}
+                                  {batch.quantity} {batch.unit || "pcs"}
                                   {hasSizes ? (
                                     <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-xs bg-green-100 text-green-700">
                                       ✓ {batch.batch_sizes!.length} sizes
@@ -2342,9 +2626,11 @@ const SubBatchView = () => {
                                 </>
                               );
                             })()
-                          : 'Select batch...'}
+                          : "Select batch..."}
                       </span>
-                      <ChevronDown className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform ${showBatchDropdown ? 'rotate-180' : ''}`} />
+                      <ChevronDown
+                        className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform ${showBatchDropdown ? "rotate-180" : ""}`}
+                      />
                     </button>
 
                     {showBatchDropdown && (
@@ -2367,10 +2653,15 @@ const SubBatchView = () => {
                         <div className="max-h-48 overflow-y-auto">
                           {[...batches]
                             .sort((a, b) => b.id - a.id)
-                            .filter(b =>
-                              b.name.toLowerCase().includes(batchSearchQuery.toLowerCase()) ||
-                              (b.color && b.color.toLowerCase().includes(batchSearchQuery.toLowerCase())) ||
-                              (b.vendor?.name && b.vendor.name.toLowerCase().includes(batchSearchQuery.toLowerCase()))
+                            .filter(
+                              (b) =>
+                                b.name.toLowerCase().includes(batchSearchQuery.toLowerCase()) ||
+                                (b.color &&
+                                  b.color.toLowerCase().includes(batchSearchQuery.toLowerCase())) ||
+                                (b.vendor?.name &&
+                                  b.vendor.name
+                                    .toLowerCase()
+                                    .includes(batchSearchQuery.toLowerCase()))
                             )
                             .map((batch) => (
                               <button
@@ -2378,18 +2669,26 @@ const SubBatchView = () => {
                                 type="button"
                                 onClick={() => handleBatchSelection(batch.id)}
                                 className={`w-full px-3 py-2.5 text-left hover:bg-gray-50 transition-colors flex items-start gap-3 ${
-                                  formData.batch_id === String(batch.id) ? 'bg-blue-50' : ''
+                                  formData.batch_id === String(batch.id) ? "bg-blue-50" : ""
                                 }`}
                               >
-                                <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                                  formData.batch_id === String(batch.id) ? 'border-[#2272B4] bg-[#2272B4]' : 'border-gray-300'
-                                }`}>
-                                  {formData.batch_id === String(batch.id) && <Check className="w-2.5 h-2.5 text-white" />}
+                                <div
+                                  className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                                    formData.batch_id === String(batch.id)
+                                      ? "border-[#2272B4] bg-[#2272B4]"
+                                      : "border-gray-300"
+                                  }`}
+                                >
+                                  {formData.batch_id === String(batch.id) && (
+                                    <Check className="w-2.5 h-2.5 text-white" />
+                                  )}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-center gap-2">
-                                    <span className={`text-sm font-medium ${formData.batch_id === String(batch.id) ? 'text-[#2272B4]' : 'text-gray-900'}`}>
-                                      {batch.name} (B{String(batch.id).padStart(3, '0')})
+                                    <span
+                                      className={`text-sm font-medium ${formData.batch_id === String(batch.id) ? "text-[#2272B4]" : "text-gray-900"}`}
+                                    >
+                                      {batch.name} (B{String(batch.id).padStart(3, "0")})
                                     </span>
                                     {batch.batch_sizes && batch.batch_sizes.length > 0 ? (
                                       <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-xs bg-green-100 text-green-700">
@@ -2402,90 +2701,123 @@ const SubBatchView = () => {
                                     )}
                                   </div>
                                   <div className="text-xs text-gray-500">
-                                    Qty: {batch.quantity} {batch.unit || 'pcs'} | Color: {batch.color || 'N/A'} | Vendor: {batch.vendor?.name || 'No Vendor'}
-                                    {batch.total_pieces ? ` | ${batch.total_pieces} pcs` : ''}
+                                    Qty: {batch.quantity} {batch.unit || "pcs"} | Color:{" "}
+                                    {batch.color || "N/A"} | Vendor:{" "}
+                                    {batch.vendor?.name || "No Vendor"}
+                                    {batch.total_pieces ? ` | ${batch.total_pieces} pcs` : ""}
                                   </div>
                                 </div>
                               </button>
                             ))}
 
-                          {batches.filter(b =>
-                            b.name.toLowerCase().includes(batchSearchQuery.toLowerCase()) ||
-                            (b.color && b.color.toLowerCase().includes(batchSearchQuery.toLowerCase())) ||
-                            (b.vendor?.name && b.vendor.name.toLowerCase().includes(batchSearchQuery.toLowerCase()))
+                          {batches.filter(
+                            (b) =>
+                              b.name.toLowerCase().includes(batchSearchQuery.toLowerCase()) ||
+                              (b.color &&
+                                b.color.toLowerCase().includes(batchSearchQuery.toLowerCase())) ||
+                              (b.vendor?.name &&
+                                b.vendor.name
+                                  .toLowerCase()
+                                  .includes(batchSearchQuery.toLowerCase()))
                           ).length === 0 && (
-                            <div className="px-3 py-4 text-sm text-gray-500 text-center">No batches found</div>
+                            <div className="px-3 py-4 text-sm text-gray-500 text-center">
+                              No batches found
+                            </div>
                           )}
                         </div>
                       </div>
                     )}
                   </div>
 
-                      {/* Roll/Color Selection - For multi-roll batches */}
-                      {batchRolls.length > 1 ? (
-                        <div>
-                          <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                            Select Roll / Color <span className="text-red-500">*</span>
-                          </label>
-                          <div className="border border-gray-200 rounded-lg overflow-hidden">
-                            {batchRolls.map((br) => (
-                              <button
-                                key={br.roll.id}
-                                type="button"
-                                onClick={() => {
-                                  setSelectedRollId(br.roll.id);
-                                  setFormData(prev => ({ ...prev, roll_id: String(br.roll.id) }));
-                                }}
-                                className={`w-full px-3 py-2 text-left flex items-center gap-3 transition-colors ${
-                                  selectedRollId === br.roll.id ? 'bg-blue-50 border-l-2 border-[#2272B4]' : 'hover:bg-gray-50'
-                                }`}
-                                disabled={isPreview}
-                              >
-                                <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                                  selectedRollId === br.roll.id ? 'border-[#2272B4] bg-[#2272B4]' : 'border-gray-300'
-                                }`}>
-                                  {selectedRollId === br.roll.id && <Check className="w-2.5 h-2.5 text-white" />}
-                                </div>
-                                <div className="flex-1">
-                                  <span className="text-sm font-medium text-gray-900">{br.roll.name}</span>
-                                  <span className="text-xs text-gray-500 ml-2">| {br.roll.color} | {br.weight} {br.roll.unit}</span>
-                                </div>
-                              </button>
-                            ))}
-                          </div>
-                          {!selectedRollId && formData.batch_id && (
-                            <p className="text-xs text-amber-600 mt-1">Please select a roll/color</p>
-                          )}
-                        </div>
-                      ) : (
-                        <div>
-                          <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                            Roll Name <span className="text-xs text-gray-500">(Auto-filled from Batch)</span>
-                          </label>
-                          <select
-                            value={formData.roll_id}
-                            onChange={(e) => setFormData({ ...formData, roll_id: e.target.value })}
-                            className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-gray-100 cursor-not-allowed"
-                            disabled={true}
+                  {/* Roll/Color Selection - For multi-roll batches */}
+                  {batchRolls.length > 1 ? (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                        Select Roll / Color <span className="text-red-500">*</span>
+                      </label>
+                      <div className="border border-gray-200 rounded-lg overflow-hidden">
+                        {batchRolls.map((br) => (
+                          <button
+                            key={br.roll.id}
+                            type="button"
+                            onClick={() => {
+                              setSelectedRollId(br.roll.id);
+                              setFormData((prev) => ({ ...prev, roll_id: String(br.roll.id) }));
+                            }}
+                            className={`w-full px-3 py-2 text-left flex items-center gap-3 transition-colors ${
+                              selectedRollId === br.roll.id
+                                ? "bg-blue-50 border-l-2 border-[#2272B4]"
+                                : "hover:bg-gray-50"
+                            }`}
+                            disabled={isPreview}
                           >
-                            <option value="">Select batch first to auto-fill roll...</option>
-                            {rolls.map((roll) => <option key={roll.id} value={roll.id}>{roll.name}</option>)}
-                          </select>
-                        </div>
+                            <div
+                              className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                                selectedRollId === br.roll.id
+                                  ? "border-[#2272B4] bg-[#2272B4]"
+                                  : "border-gray-300"
+                              }`}
+                            >
+                              {selectedRollId === br.roll.id && (
+                                <Check className="w-2.5 h-2.5 text-white" />
+                              )}
+                            </div>
+                            <div className="flex-1">
+                              <span className="text-sm font-medium text-gray-900">
+                                {br.roll.name}
+                              </span>
+                              <span className="text-xs text-gray-500 ml-2">
+                                | {br.roll.color} | {br.weight} {br.roll.unit}
+                              </span>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                      {!selectedRollId && formData.batch_id && (
+                        <p className="text-xs text-amber-600 mt-1">Please select a roll/color</p>
                       )}
+                    </div>
+                  ) : (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                        Roll Name{" "}
+                        <span className="text-xs text-gray-500">(Auto-filled from Batch)</span>
+                      </label>
+                      <select
+                        value={formData.roll_id}
+                        onChange={(e) => setFormData({ ...formData, roll_id: e.target.value })}
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-gray-100 cursor-not-allowed"
+                        disabled={true}
+                      >
+                        <option value="">Select batch first to auto-fill roll...</option>
+                        {rolls.map((roll) => (
+                          <option key={roll.id} value={roll.id}>
+                            {roll.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
 
                   {/* Estimated Pieces - Auto-calculated when sizes allocated */}
                   <div>
                     <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                      Estimated Pieces {selectedBatchHasSizes && <span className="text-xs text-gray-500">(Auto-calculated from sizes)</span>}
+                      Estimated Pieces{" "}
+                      {selectedBatchHasSizes && (
+                        <span className="text-xs text-gray-500">(Auto-calculated from sizes)</span>
+                      )}
                     </label>
                     <input
                       type="number"
                       placeholder="Enter estimated pieces"
-                      value={selectedBatchHasSizes ? calculatedEstimatedPieces : formData.estimatedPieces}
-                      onChange={(e) => setFormData({ ...formData, estimatedPieces: e.target.value })}
+                      value={
+                        selectedBatchHasSizes ? calculatedEstimatedPieces : formData.estimatedPieces
+                      }
+                      onChange={(e) =>
+                        setFormData({ ...formData, estimatedPieces: e.target.value })
+                      }
                       className={`w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm ${
-                        selectedBatchHasSizes ? 'bg-gray-100 cursor-not-allowed' : ''
+                        selectedBatchHasSizes ? "bg-gray-100 cursor-not-allowed" : ""
                       }`}
                       disabled={isPreview || selectedBatchHasSizes}
                     />
@@ -2517,11 +2849,11 @@ const SubBatchView = () => {
                           disabled={!newCategoryName.trim() || isSavingCategory}
                           className={`px-4 py-2 rounded-lg text-sm font-medium ${
                             !newCategoryName.trim() || isSavingCategory
-                              ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                              : 'bg-[#2272B4] text-white hover:bg-[#1a5a8a]'
+                              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                              : "bg-[#2272B4] text-white hover:bg-[#1a5a8a]"
                           }`}
                         >
-                          {isSavingCategory ? 'Saving...' : 'Save'}
+                          {isSavingCategory ? "Saving..." : "Save"}
                         </button>
                       </div>
                     )}
@@ -2535,7 +2867,9 @@ const SubBatchView = () => {
                       </label>
 
                       {loadingBatchSizes ? (
-                        <div className="text-sm text-gray-500 text-center py-4">Loading sizes...</div>
+                        <div className="text-sm text-gray-500 text-center py-4">
+                          Loading sizes...
+                        </div>
                       ) : batchSizeAllocation.length > 0 ? (
                         <>
                           <div className="space-y-2">
@@ -2544,7 +2878,9 @@ const SubBatchView = () => {
                               const isOverAllocated = allocation > size.available;
                               return (
                                 <div key={size.size} className="flex items-center gap-3">
-                                  <div className="w-16 text-sm font-medium text-gray-700">{size.size}</div>
+                                  <div className="w-16 text-sm font-medium text-gray-700">
+                                    {size.size}
+                                  </div>
                                   <div className="text-xs text-gray-500">
                                     Available: {size.available}/{size.total}
                                   </div>
@@ -2553,11 +2889,15 @@ const SubBatchView = () => {
                                       type="number"
                                       min="0"
                                       max={size.available}
-                                      value={allocation || ''}
-                                      onChange={(e) => handleSizeAllocationChange(size.size, e.target.value)}
+                                      value={allocation || ""}
+                                      onChange={(e) =>
+                                        handleSizeAllocationChange(size.size, e.target.value)
+                                      }
                                       placeholder="0"
                                       className={`w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                                        isOverAllocated ? 'border-red-300 bg-red-50' : 'border-gray-200'
+                                        isOverAllocated
+                                          ? "border-red-300 bg-red-50"
+                                          : "border-gray-200"
                                       }`}
                                       disabled={isPreview}
                                     />
@@ -2571,10 +2911,15 @@ const SubBatchView = () => {
                           </div>
 
                           {/* Allocation Summary */}
-                          <div className={`mt-3 pt-3 border-t border-gray-200 flex items-center justify-between ${
-                            sizeAllocationValidation.hasOverAllocation ? 'text-red-600' :
-                            sizeAllocationValidation.hasAllocations ? 'text-green-600' : 'text-gray-500'
-                          }`}>
+                          <div
+                            className={`mt-3 pt-3 border-t border-gray-200 flex items-center justify-between ${
+                              sizeAllocationValidation.hasOverAllocation
+                                ? "text-red-600"
+                                : sizeAllocationValidation.hasAllocations
+                                  ? "text-green-600"
+                                  : "text-gray-500"
+                            }`}
+                          >
                             <span className="text-sm font-medium">
                               Total Allocated: {calculatedEstimatedPieces} pieces
                             </span>
@@ -2591,7 +2936,8 @@ const SubBatchView = () => {
                         </>
                       ) : (
                         <div className="text-sm text-amber-600 text-center py-4">
-                          This batch has no size breakdown defined. Please add sizes to the batch first.
+                          This batch has no size breakdown defined. Please add sizes to the batch
+                          first.
                         </div>
                       )}
                     </div>
@@ -2599,68 +2945,73 @@ const SubBatchView = () => {
 
                   {/* Items - Show only when batch doesn't have sizes */}
                   {!selectedBatchHasSizes && (
-                  <div>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <label className="block text-sm font-medium text-gray-900">Items</label>
-                      {!isPreview && (
-                        <button
-                          type="button"
-                          onClick={handleAddSizeRow}
-                          className="text-sm text-[#2272B4] hover:text-[#1a5a8a] font-medium"
-                        >
-                          + Add Items
-                        </button>
-                      )}
-                    </div>
-
-                    {sizesList.map((row, index) => (
-                      <div key={index} className="flex gap-2 items-center mb-2">
-                        <select
-                          value={row.size}
-                          onChange={(e) => handleSizeChange(index, "size", e.target.value)}
-                          className="flex-1 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                          disabled={isPreview}
-                        >
-                          <option value="">Select items</option>
-                          {categoryOptions.map((option, i) => (
-                            <option key={i} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </select>
-
-                        <input
-                          type="number"
-                          placeholder="Pieces"
-                          value={row.number_of_pieces}
-                          onChange={(e) => handleSizeChange(index, "number_of_pieces", e.target.value)}
-                          className="w-24 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                          disabled={isPreview}
-                        />
-
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="block text-sm font-medium text-gray-900">Items</label>
                         {!isPreview && (
                           <button
                             type="button"
-                            className="text-gray-400 hover:text-red-500"
-                            onClick={() => handleDeleteSizeRow(index)}
+                            onClick={handleAddSizeRow}
+                            className="text-sm text-[#2272B4] hover:text-[#1a5a8a] font-medium"
                           >
-                            <Trash2 size={18} />
+                            + Add Items
                           </button>
                         )}
                       </div>
-                    ))}
 
-                    {/* Display current sizes for preview */}
-                    {isPreview && sizesList.length > 0 && (
-                      <div className="mt-2 space-y-1">
-                        {sizesList.map((s, idx) => (
-                          <div key={idx} className="text-sm text-gray-600 p-2 bg-gray-50 rounded-lg">
-                            {s.size}: {s.number_of_pieces} pieces
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                      {sizesList.map((row, index) => (
+                        <div key={index} className="flex gap-2 items-center mb-2">
+                          <select
+                            value={row.size}
+                            onChange={(e) => handleSizeChange(index, "size", e.target.value)}
+                            className="flex-1 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                            disabled={isPreview}
+                          >
+                            <option value="">Select items</option>
+                            {categoryOptions.map((option, i) => (
+                              <option key={i} value={option}>
+                                {option}
+                              </option>
+                            ))}
+                          </select>
+
+                          <input
+                            type="number"
+                            placeholder="Pieces"
+                            value={row.number_of_pieces}
+                            onChange={(e) =>
+                              handleSizeChange(index, "number_of_pieces", e.target.value)
+                            }
+                            className="w-24 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                            disabled={isPreview}
+                          />
+
+                          {!isPreview && (
+                            <button
+                              type="button"
+                              className="text-gray-400 hover:text-red-500"
+                              onClick={() => handleDeleteSizeRow(index)}
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          )}
+                        </div>
+                      ))}
+
+                      {/* Display current sizes for preview */}
+                      {isPreview && sizesList.length > 0 && (
+                        <div className="mt-2 space-y-1">
+                          {sizesList.map((s, idx) => (
+                            <div
+                              key={idx}
+                              className="text-sm text-gray-600 p-2 bg-gray-50 rounded-lg"
+                            >
+                              {s.size}: {s.number_of_pieces} pieces
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   )}
 
                   {/* Attachment */}
@@ -2695,7 +3046,9 @@ const SubBatchView = () => {
                             type="number"
                             placeholder="Quantity"
                             value={att.quantity}
-                            onChange={(e) => handleAttachmentChange(index, "quantity", e.target.value)}
+                            onChange={(e) =>
+                              handleAttachmentChange(index, "quantity", e.target.value)
+                            }
                             className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                             disabled={isPreview}
                           />
@@ -2753,37 +3106,36 @@ const SubBatchView = () => {
                       />
                     </div>
                   </div>
+                </div>
 
-                    </div>
-
-                    {/* Footer Buttons */}
-                    <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-gray-200 sticky bottom-0 bg-white">
-                      <button
-                        onClick={closeModal}
-                        className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium transition-colors"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={async () => {
-                          const confirmed = await showConfirm({
-                            title: editingSubBatch ? "Update Sub Batch" : "Save Sub Batch",
-                            message: `Are you sure you want to ${editingSubBatch ? 'update' : 'save'} this sub batch?`,
-                            confirmText: editingSubBatch ? "Update" : "Save",
-                            cancelText: "Cancel",
-                            type: "info",
-                          });
-                          if (confirmed) {
-                            handleSaveSubBatch();
-                          }
-                        }}
-                        className="px-6 py-2 rounded bg-[#2272B4] text-white hover:bg-[#0E538B] font-medium transition-colors shadow-sm"
-                      >
-                        {editingSubBatch ? "Update Sub Batch" : "Save Sub Batch"}
-                      </button>
-                    </div>
-                  </>
-                )}
+                {/* Footer Buttons */}
+                <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-gray-200 sticky bottom-0 bg-white">
+                  <button
+                    onClick={closeModal}
+                    className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={async () => {
+                      const confirmed = await showConfirm({
+                        title: editingSubBatch ? "Update Sub Batch" : "Save Sub Batch",
+                        message: `Are you sure you want to ${editingSubBatch ? "update" : "save"} this sub batch?`,
+                        confirmText: editingSubBatch ? "Update" : "Save",
+                        cancelText: "Cancel",
+                        type: "info",
+                      });
+                      if (confirmed) {
+                        handleSaveSubBatch();
+                      }
+                    }}
+                    className="px-6 py-2 rounded bg-[#2272B4] text-white hover:bg-[#0E538B] font-medium transition-colors shadow-sm"
+                  >
+                    {editingSubBatch ? "Update Sub Batch" : "Save Sub Batch"}
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -2803,15 +3155,11 @@ const SubBatchView = () => {
               <X size={18} />
             </button>
 
-            <h3 className="text-base font-semibold text-gray-900 mb-4">
-              Custom Date Range
-            </h3>
+            <h3 className="text-base font-semibold text-gray-900 mb-4">Custom Date Range</h3>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  From Date
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">From Date</label>
                 <input
                   type="date"
                   value={customDateFrom}
@@ -2821,9 +3169,7 @@ const SubBatchView = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  To Date
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">To Date</label>
                 <input
                   type="date"
                   value={customDateTo}

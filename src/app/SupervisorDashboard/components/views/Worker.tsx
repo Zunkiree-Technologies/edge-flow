@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { Plus, Edit, Trash2, Users, Building2 } from 'lucide-react';
-import AddWorkerModal from '../../depcomponents/AddWorkerModal';
-import { useToast } from '@/app/Components/ToastContext';
-import { useDepartment } from '../../contexts/DepartmentContext';
+import React, { useState, useEffect, useCallback } from "react";
+import { Plus, Edit, Trash2, Users, Building2 } from "lucide-react";
+import AddWorkerModal from "../../depcomponents/AddWorkerModal";
+import { useToast } from "@/app/Components/ToastContext";
+import { useDepartment } from "../../contexts/DepartmentContext";
 
 interface Worker {
   id: number;
@@ -39,7 +39,9 @@ const Worker = () => {
   const fetchWorkers = useCallback(async () => {
     // Determine target department ID
     const targetDeptId = isSuperSupervisor
-      ? (typeof selectedDepartmentId === 'number' ? selectedDepartmentId : null)
+      ? typeof selectedDepartmentId === "number"
+        ? selectedDepartmentId
+        : null
       : supervisorDepartmentId;
 
     // For SUPER_SUPERVISOR with "all" selected - fetch workers from all departments
@@ -49,7 +51,9 @@ const Worker = () => {
         // Fetch workers from all departments in parallel
         const departmentPromises = departments.map(async (dept) => {
           try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/workers/department/${dept.id}`);
+            const res = await fetch(
+              `${process.env.NEXT_PUBLIC_API_URL}/workers/department/${dept.id}`
+            );
             if (res.ok) {
               return await res.json();
             }
@@ -63,7 +67,7 @@ const Worker = () => {
         const allWorkers = results.flat();
         setWorkers(allWorkers);
       } catch {
-        showToast('error', 'Error fetching workers');
+        showToast("error", "Error fetching workers");
       } finally {
         setLoading(false);
       }
@@ -84,10 +88,10 @@ const Worker = () => {
         const data = await res.json();
         setWorkers(data);
       } else {
-        showToast('error', 'Failed to fetch workers for this department');
+        showToast("error", "Failed to fetch workers for this department");
       }
     } catch {
-      showToast('error', 'Error fetching workers');
+      showToast("error", "Error fetching workers");
     } finally {
       setLoading(false);
     }
@@ -106,28 +110,28 @@ const Worker = () => {
 
   const handleDelete = async (id: number) => {
     const confirmed = await showConfirm({
-      title: 'Delete Worker',
-      message: 'Are you sure you want to delete this worker? This action cannot be undone.',
-      confirmText: 'Delete',
-      cancelText: 'Cancel',
-      type: 'danger',
+      title: "Delete Worker",
+      message: "Are you sure you want to delete this worker? This action cannot be undone.",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      type: "danger",
     });
     if (!confirmed) return;
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/workers/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
       if (res.ok) {
-        showToast('success', 'Worker deleted successfully');
+        showToast("success", "Worker deleted successfully");
         fetchWorkers();
       } else {
         const err = await res.json().catch(() => ({}));
-        showToast('error', `Failed to delete worker: ${err.message || 'Unknown error'}`);
+        showToast("error", `Failed to delete worker: ${err.message || "Unknown error"}`);
       }
     } catch {
-      showToast('error', 'Error deleting worker');
+      showToast("error", "Error deleting worker");
     }
   };
 
@@ -141,7 +145,7 @@ const Worker = () => {
       if (selectedDepartmentId === "all") {
         return "all departments";
       }
-      const dept = departments.find(d => d.id === selectedDepartmentId);
+      const dept = departments.find((d) => d.id === selectedDepartmentId);
       return dept?.name || "selected department";
     }
     return "your department";
@@ -173,12 +177,13 @@ const Worker = () => {
           <Building2 className="w-5 h-5 text-purple-600" />
           <div>
             <p className="text-sm font-medium text-purple-900">Viewing All Departments</p>
-            <p className="text-xs text-purple-700">Showing workers across {departments.length} departments ({workers.length} total workers)</p>
+            <p className="text-xs text-purple-700">
+              Showing workers across {departments.length} departments ({workers.length} total
+              workers)
+            </p>
           </div>
         </div>
       )}
-
-      
 
       {/* Workers Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -188,7 +193,9 @@ const Worker = () => {
           <div className="p-8 text-center text-gray-500">
             <Users size={48} className="mx-auto mb-4 text-gray-300" />
             <p>No workers assigned to your department yet.</p>
-            <p className="text-sm mt-2">Click &quot;Add Worker&quot; to assign workers to your department.</p>
+            <p className="text-sm mt-2">
+              Click &quot;Add Worker&quot; to assign workers to your department.
+            </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -255,10 +262,7 @@ const Worker = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <div className="flex gap-2">
-                        <button
-                          className="text-blue-600 hover:text-blue-800"
-                          title="Edit worker"
-                        >
+                        <button className="text-blue-600 hover:text-blue-800" title="Edit worker">
                           <Edit size={18} />
                         </button>
                         <button

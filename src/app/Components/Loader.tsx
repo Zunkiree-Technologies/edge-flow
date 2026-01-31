@@ -18,11 +18,7 @@ export default function Loader({
       <div className="bg-red-50 border-l-4 border-red-500 p-4 max-w-4xl mx-auto mt-4 rounded">
         <div className="flex">
           <div className="flex-shrink-0">
-            <svg
-              className="h-5 w-5 text-red-500"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
+            <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
               <path
                 fillRule="evenodd"
                 d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 
@@ -60,8 +56,13 @@ export default function Loader({
   return null;
 }
 
-
 // use these for loder
-{/* <Loader loading={loading} error={error} /> */}
-{/* <Loader loading={true} message="Fetching jobs..." /> */}
-{/* <Loader error="Failed to fetch jobs. Please try again later." /> */}
+{
+  /* <Loader loading={loading} error={error} /> */
+}
+{
+  /* <Loader loading={true} message="Fetching jobs..." /> */
+}
+{
+  /* <Loader error="Failed to fetch jobs. Please try again later." /> */
+}

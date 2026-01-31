@@ -96,10 +96,12 @@ const API = {
   deleteCategory: (id: number) => `${process.env.NEXT_PUBLIC_DELETE_INVENTORY_CATEGORY}/${id}`,
   // Additions
   createAddition: process.env.NEXT_PUBLIC_CREATE_INVENTORY_ADDITION,
-  getAdditionsByInventory: (id: number) => `${process.env.NEXT_PUBLIC_GET_INVENTORY_ADDITION_BY_INVENTORY}/${id}`,
+  getAdditionsByInventory: (id: number) =>
+    `${process.env.NEXT_PUBLIC_GET_INVENTORY_ADDITION_BY_INVENTORY}/${id}`,
   // Subtractions
   createSubtraction: process.env.NEXT_PUBLIC_CREATE_INVENTORY_SUBTRACTION,
-  getSubtractionsByInventory: (id: number) => `${process.env.NEXT_PUBLIC_GET_INVENTORY_SUBTRACTION_BY_INVENTORY}/${id}`,
+  getSubtractionsByInventory: (id: number) =>
+    `${process.env.NEXT_PUBLIC_GET_INVENTORY_SUBTRACTION_BY_INVENTORY}/${id}`,
 };
 
 // ============== FILTER DROPDOWN COMPONENT ==============
@@ -374,9 +376,7 @@ const Inventory = () => {
       }
 
       if (typeof aVal === "string") {
-        return sortDirection === "asc"
-          ? aVal.localeCompare(bVal)
-          : bVal.localeCompare(aVal);
+        return sortDirection === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
       }
       return sortDirection === "asc" ? aVal - bVal : bVal - aVal;
     });
@@ -654,9 +654,7 @@ const Inventory = () => {
     if (!confirmed) return;
 
     try {
-      const deletePromises = Array.from(selectedRows).map((id) =>
-        axios.delete(API.delete(id))
-      );
+      const deletePromises = Array.from(selectedRows).map((id) => axios.delete(API.delete(id)));
       await Promise.all(deletePromises);
       showToast("success", `${selectedRows.size} items deleted successfully!`);
       setSelectedRows(new Set());
@@ -767,7 +765,9 @@ const Inventory = () => {
           <div className="flex items-start justify-between lg:justify-start">
             <div>
               <h2 className="text-xl font-semibold text-gray-900">Inventory</h2>
-              <p className="text-gray-500 text-sm">Manage your inventory items and track stock levels</p>
+              <p className="text-gray-500 text-sm">
+                Manage your inventory items and track stock levels
+              </p>
             </div>
             {/* Mobile/Tablet: Add button next to title */}
             <button
@@ -842,7 +842,11 @@ const Inventory = () => {
           }}
           options={[
             { value: "all", label: "All Categories", description: "Show all items" },
-            { value: "uncategorized", label: "Uncategorized", description: "Items without category" },
+            {
+              value: "uncategorized",
+              label: "Uncategorized",
+              description: "Items without category",
+            },
             ...categories.map((cat) => ({
               value: String(cat.id),
               label: cat.name,
@@ -881,8 +885,16 @@ const Inventory = () => {
             { value: "id-asc", label: "Oldest first", description: "First added items" },
             { value: "name-asc", label: "Name A-Z", description: "Alphabetical order" },
             { value: "name-desc", label: "Name Z-A", description: "Reverse alphabetical" },
-            { value: "quantity-asc", label: "Quantity (Low to High)", description: "Lowest stock first" },
-            { value: "quantity-desc", label: "Quantity (High to Low)", description: "Highest stock first" },
+            {
+              value: "quantity-asc",
+              label: "Quantity (Low to High)",
+              description: "Lowest stock first",
+            },
+            {
+              value: "quantity-desc",
+              label: "Quantity (High to Low)",
+              description: "Highest stock first",
+            },
           ]}
         />
         {hasActiveFilters && (
@@ -907,9 +919,7 @@ const Inventory = () => {
             <Package size={48} className="text-gray-300 mb-4" />
             <p className="text-gray-900 mb-2 font-medium">No items found</p>
             <p className="text-gray-500 text-sm mb-4">
-              {hasActiveFilters
-                ? "Try adjusting your filters or "
-                : "Get started by "}
+              {hasActiveFilters ? "Try adjusting your filters or " : "Get started by "}
               adding your first item.
             </p>
             {hasActiveFilters && (
@@ -925,67 +935,90 @@ const Inventory = () => {
           <>
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-200" style={{ backgroundColor: 'rgb(247, 242, 242)' }}>
+                <tr
+                  className="border-b border-gray-200"
+                  style={{ backgroundColor: "rgb(247, 242, 242)" }}
+                >
                   <th className="px-4 py-2 text-left w-12 whitespace-nowrap border-r border-gray-200">
                     <input
                       type="checkbox"
-                      checked={selectedRows.size === paginatedItems.length && paginatedItems.length > 0}
+                      checked={
+                        selectedRows.size === paginatedItems.length && paginatedItems.length > 0
+                      }
                       onChange={toggleSelectAll}
                       className="w-4 h-4 rounded border-gray-300 text-[#2272B4] focus:ring-[#2272B4]"
                     />
                   </th>
                   <th
                     className="px-4 py-2 text-left text-xs whitespace-nowrap border-r border-gray-200 cursor-pointer hover:bg-gray-100"
-                    style={{ color: '#141414', fontWeight: 500 }}
+                    style={{ color: "#141414", fontWeight: 500 }}
                     onClick={() => handleSort("id")}
                   >
                     <div className="flex items-center gap-1">
                       Id
-                      {sortColumn === "id" && (
-                        sortDirection === "asc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                      )}
+                      {sortColumn === "id" &&
+                        (sortDirection === "asc" ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        ))}
                     </div>
                   </th>
                   <th
                     className="px-4 py-2 text-left text-xs whitespace-nowrap border-r border-gray-200 cursor-pointer hover:bg-gray-100"
-                    style={{ color: '#141414', fontWeight: 500 }}
+                    style={{ color: "#141414", fontWeight: 500 }}
                     onClick={() => handleSort("name")}
                   >
                     <div className="flex items-center gap-1">
                       Item Name
-                      {sortColumn === "name" && (
-                        sortDirection === "asc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                      )}
+                      {sortColumn === "name" &&
+                        (sortDirection === "asc" ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        ))}
                     </div>
                   </th>
                   <th
                     className="px-4 py-2 text-left text-xs whitespace-nowrap border-r border-gray-200 cursor-pointer hover:bg-gray-100"
-                    style={{ color: '#141414', fontWeight: 500 }}
+                    style={{ color: "#141414", fontWeight: 500 }}
                     onClick={() => handleSort("quantity")}
                   >
                     <div className="flex items-center gap-1">
                       Quantity
-                      {sortColumn === "quantity" && (
-                        sortDirection === "asc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                      )}
+                      {sortColumn === "quantity" &&
+                        (sortDirection === "asc" ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        ))}
                     </div>
                   </th>
                   <th
                     className="px-4 py-2 text-left text-xs whitespace-nowrap border-r border-gray-200 cursor-pointer hover:bg-gray-100"
-                    style={{ color: '#141414', fontWeight: 500 }}
+                    style={{ color: "#141414", fontWeight: 500 }}
                     onClick={() => handleSort("category")}
                   >
                     <div className="flex items-center gap-1">
                       Category
-                      {sortColumn === "category" && (
-                        sortDirection === "asc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                      )}
+                      {sortColumn === "category" &&
+                        (sortDirection === "asc" ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        ))}
                     </div>
                   </th>
-                  <th className="px-4 py-2 text-left text-xs whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>
+                  <th
+                    className="px-4 py-2 text-left text-xs whitespace-nowrap border-r border-gray-200"
+                    style={{ color: "#141414", fontWeight: 500 }}
+                  >
                     Vendor
                   </th>
-                  <th className="px-4 py-2 text-right text-xs whitespace-nowrap" style={{ color: '#141414', fontWeight: 500 }}>
+                  <th
+                    className="px-4 py-2 text-right text-xs whitespace-nowrap"
+                    style={{ color: "#141414", fontWeight: 500 }}
+                  >
                     Actions
                   </th>
                 </tr>
@@ -998,8 +1031,8 @@ const Inventory = () => {
                       selectedRows.has(item.id)
                         ? "bg-blue-50"
                         : isLowStock(item)
-                        ? "bg-amber-50"
-                        : "hover:bg-gray-50"
+                          ? "bg-amber-50"
+                          : "hover:bg-gray-50"
                     }`}
                   >
                     <td className="px-4 py-1.5 whitespace-nowrap border-r border-gray-200">
@@ -1032,7 +1065,9 @@ const Inventory = () => {
                     <td className="px-4 py-1.5 text-sm text-gray-600 whitespace-nowrap border-r border-gray-200 font-light">
                       {item.quantity} {formatUnitShort(item.unit)}
                       {item.min_quantity && item.min_quantity > 0 && (
-                        <span className="text-xs text-gray-400 ml-1">(min: {item.min_quantity})</span>
+                        <span className="text-xs text-gray-400 ml-1">
+                          (min: {item.min_quantity})
+                        </span>
                       )}
                     </td>
                     <td className="px-4 py-1.5 text-sm text-gray-600 whitespace-nowrap border-r border-gray-200 font-light">
@@ -1081,7 +1116,8 @@ const Inventory = () => {
             {/* Pagination */}
             <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-between bg-white">
               <div className="text-sm text-gray-600">
-                Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalFiltered)} of {totalFiltered}
+                Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                {Math.min(currentPage * itemsPerPage, totalFiltered)} of {totalFiltered}
               </div>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
@@ -1169,15 +1205,10 @@ const Inventory = () => {
       {isDrawerOpen && (
         <>
           {/* Backdrop - Fixed full screen */}
-          <div
-            className="fixed inset-0 bg-black/20 z-[9998]"
-            onClick={closeDrawer}
-          />
+          <div className="fixed inset-0 bg-black/20 z-[9998]" onClick={closeDrawer} />
 
           {/* Drawer Container - Using flexbox for layout */}
-          <div
-            className="fixed inset-y-0 right-0 w-full max-w-xl bg-white shadow-lg z-[9999] flex flex-col"
-          >
+          <div className="fixed inset-y-0 right-0 w-full max-w-xl bg-white shadow-lg z-[9999] flex flex-col">
             {/* Fixed Header */}
             <div className="flex-shrink-0 p-4 border-b border-gray-200 bg-white">
               <div className="flex items-center justify-between">
@@ -1206,361 +1237,370 @@ const Inventory = () => {
             {/* Scrollable Content Area */}
             <div
               className="flex-1 overflow-y-auto p-4"
-              style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}
+              style={{ WebkitOverflowScrolling: "touch", overscrollBehavior: "contain" }}
             >
-            {drawerMode === "preview" && editingItem ? (
-              /* Preview Mode */
-              <div className="space-y-6">
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-4">
-                    <FileText size={18} className="text-[#2272B4]" />
-                    <h4 className="font-semibold">Item Details</h4>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-xs text-gray-500">ID</p>
-                      <p className="text-sm font-medium">{formatInventoryId(editingItem.id)}</p>
+              {drawerMode === "preview" && editingItem ? (
+                /* Preview Mode */
+                <div className="space-y-6">
+                  <div className="border border-gray-200 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-4">
+                      <FileText size={18} className="text-[#2272B4]" />
+                      <h4 className="font-semibold">Item Details</h4>
                     </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Name</p>
-                      <p className="text-sm font-medium">{editingItem.name}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Current Stock</p>
-                      <p className="text-sm font-medium">{editingItem.quantity} {editingItem.unit}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Min Quantity</p>
-                      <p className="text-sm font-medium">{editingItem.min_quantity || "Not set"}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Category</p>
-                      <p className="text-sm font-medium">{editingItem.category?.name || "Uncategorized"}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Price</p>
-                      <p className="text-sm font-medium">{editingItem.price || "-"}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Vendor</p>
-                      <p className="text-sm font-medium">{editingItem.vendor || "-"}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Phone</p>
-                      <p className="text-sm font-medium">{editingItem.phone || "-"}</p>
-                    </div>
-                  </div>
-                  {editingItem.remarks && (
-                    <div className="mt-4">
-                      <p className="text-xs text-gray-500">Remarks</p>
-                      <p className="text-sm">{editingItem.remarks}</p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Adjustment History */}
-                <div>
-                  <h4 className="font-semibold mb-3">Adjustment History</h4>
-                  {historyLoading ? (
-                    <Loader loading={true} message="Loading history..." />
-                  ) : adjustmentHistory.length === 0 ? (
-                    <p className="text-sm text-gray-500 text-center py-4">No adjustment history</p>
-                  ) : (
-                    <div className="space-y-3 max-h-80 overflow-y-auto">
-                      {adjustmentHistory.map((adj, idx) => (
-                        <div
-                          key={idx}
-                          className={`border-l-4 rounded-lg p-3 ${
-                            adj.type === "addition"
-                              ? "border-l-green-500 bg-green-50"
-                              : "border-l-red-500 bg-red-50"
-                          }`}
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-2">
-                              {adj.type === "addition" ? (
-                                <TrendingUp size={16} className="text-green-600" />
-                              ) : (
-                                <TrendingDown size={16} className="text-red-600" />
-                              )}
-                              <span
-                                className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                                  adj.type === "addition"
-                                    ? "bg-green-500 text-white"
-                                    : "bg-red-500 text-white"
-                                }`}
-                              >
-                                {adj.type === "addition" ? "Added" : "Subtracted"}
-                              </span>
-                              {adj.reason && (
-                                <span className="text-xs text-gray-500">
-                                  ({SUBTRACTION_REASONS.find((r) => r.value === adj.reason)?.label || adj.reason})
-                                </span>
-                              )}
-                            </div>
-                            <span className="text-xs text-gray-500">
-                              {new Date(adj.date).toLocaleDateString("en-US", {
-                                year: "numeric",
-                                month: "short",
-                                day: "numeric",
-                              })}
-                            </span>
-                          </div>
-                          <p className="text-sm font-medium">
-                            {adj.quantity} {editingItem.unit}
-                          </p>
-                          {adj.remarks && (
-                            <p className="text-xs text-gray-600 mt-1">{adj.remarks}</p>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            ) : drawerMode === "adjust" && editingItem ? (
-              /* Adjust Stock Mode */
-              <div className="space-y-4">
-                {adjustmentType === null ? (
-                  /* Selection */
-                  <div className="space-y-6 py-4">
-                    <p className="text-center text-gray-600">Choose adjustment type:</p>
                     <div className="grid grid-cols-2 gap-4">
-                      <button
-                        onClick={() => setAdjustmentType("add")}
-                        className="px-6 py-8 border-2 border-green-500 bg-white text-green-600 rounded-xl hover:bg-green-50 transition-colors flex flex-col items-center gap-2"
-                      >
-                        <TrendingUp size={32} />
-                        <span className="font-medium">Add Stock</span>
-                      </button>
-                      <button
-                        onClick={() => setAdjustmentType("subtract")}
-                        className="px-6 py-8 border-2 border-red-500 bg-white text-red-600 rounded-xl hover:bg-red-50 transition-colors flex flex-col items-center gap-2"
-                      >
-                        <TrendingDown size={32} />
-                        <span className="font-medium">Subtract Stock</span>
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  /* Adjustment Form */
-                  <div className="space-y-4">
-                    <div
-                      className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${
-                        adjustmentType === "add"
-                          ? "bg-green-100 text-green-700 border border-green-300"
-                          : "bg-red-100 text-red-700 border border-red-300"
-                      }`}
-                    >
-                      {adjustmentType === "add" ? "Adding Stock" : "Subtracting Stock"}
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                          Date <span className="text-red-500">*</span>
-                        </label>
-                        <NepaliDatePicker
-                          value={adjustmentData.date}
-                          onChange={(value) =>
-                            setAdjustmentData({ ...adjustmentData, date: value })
-                          }
-                          className="rounded-lg"
-                        />
+                        <p className="text-xs text-gray-500">ID</p>
+                        <p className="text-sm font-medium">{formatInventoryId(editingItem.id)}</p>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                          Quantity <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="number"
-                          value={adjustmentData.quantity}
-                          onChange={(e) =>
-                            setAdjustmentData({ ...adjustmentData, quantity: e.target.value })
-                          }
-                          placeholder="Enter quantity"
-                          min="0"
-                          className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                        />
+                        <p className="text-xs text-gray-500">Name</p>
+                        <p className="text-sm font-medium">{editingItem.name}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Current Stock</p>
+                        <p className="text-sm font-medium">
+                          {editingItem.quantity} {editingItem.unit}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Min Quantity</p>
+                        <p className="text-sm font-medium">
+                          {editingItem.min_quantity || "Not set"}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Category</p>
+                        <p className="text-sm font-medium">
+                          {editingItem.category?.name || "Uncategorized"}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Price</p>
+                        <p className="text-sm font-medium">{editingItem.price || "-"}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Vendor</p>
+                        <p className="text-sm font-medium">{editingItem.vendor || "-"}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Phone</p>
+                        <p className="text-sm font-medium">{editingItem.phone || "-"}</p>
                       </div>
                     </div>
-
-                    {adjustmentType === "subtract" && (
-                      <div>
-                        <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                          Reason <span className="text-red-500">*</span>
-                        </label>
-                        <select
-                          value={adjustmentData.reason}
-                          onChange={(e) =>
-                            setAdjustmentData({ ...adjustmentData, reason: e.target.value })
-                          }
-                          className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                        >
-                          <option value="">Select reason...</option>
-                          {SUBTRACTION_REASONS.map((r) => (
-                            <option key={r.value} value={r.value}>
-                              {r.label}
-                            </option>
-                          ))}
-                        </select>
+                    {editingItem.remarks && (
+                      <div className="mt-4">
+                        <p className="text-xs text-gray-500">Remarks</p>
+                        <p className="text-sm">{editingItem.remarks}</p>
                       </div>
                     )}
+                  </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                        Remarks
-                      </label>
-                      <textarea
-                        value={adjustmentData.remarks}
-                        onChange={(e) =>
-                          setAdjustmentData({ ...adjustmentData, remarks: e.target.value })
-                        }
-                        placeholder="Additional notes..."
-                        rows={3}
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-none"
-                      />
+                  {/* Adjustment History */}
+                  <div>
+                    <h4 className="font-semibold mb-3">Adjustment History</h4>
+                    {historyLoading ? (
+                      <Loader loading={true} message="Loading history..." />
+                    ) : adjustmentHistory.length === 0 ? (
+                      <p className="text-sm text-gray-500 text-center py-4">
+                        No adjustment history
+                      </p>
+                    ) : (
+                      <div className="space-y-3 max-h-80 overflow-y-auto">
+                        {adjustmentHistory.map((adj, idx) => (
+                          <div
+                            key={idx}
+                            className={`border-l-4 rounded-lg p-3 ${
+                              adj.type === "addition"
+                                ? "border-l-green-500 bg-green-50"
+                                : "border-l-red-500 bg-red-50"
+                            }`}
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center gap-2">
+                                {adj.type === "addition" ? (
+                                  <TrendingUp size={16} className="text-green-600" />
+                                ) : (
+                                  <TrendingDown size={16} className="text-red-600" />
+                                )}
+                                <span
+                                  className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                                    adj.type === "addition"
+                                      ? "bg-green-500 text-white"
+                                      : "bg-red-500 text-white"
+                                  }`}
+                                >
+                                  {adj.type === "addition" ? "Added" : "Subtracted"}
+                                </span>
+                                {adj.reason && (
+                                  <span className="text-xs text-gray-500">
+                                    (
+                                    {SUBTRACTION_REASONS.find((r) => r.value === adj.reason)
+                                      ?.label || adj.reason}
+                                    )
+                                  </span>
+                                )}
+                              </div>
+                              <span className="text-xs text-gray-500">
+                                {new Date(adj.date).toLocaleDateString("en-US", {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                })}
+                              </span>
+                            </div>
+                            <p className="text-sm font-medium">
+                              {adj.quantity} {editingItem.unit}
+                            </p>
+                            {adj.remarks && (
+                              <p className="text-xs text-gray-600 mt-1">{adj.remarks}</p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : drawerMode === "adjust" && editingItem ? (
+                /* Adjust Stock Mode */
+                <div className="space-y-4">
+                  {adjustmentType === null ? (
+                    /* Selection */
+                    <div className="space-y-6 py-4">
+                      <p className="text-center text-gray-600">Choose adjustment type:</p>
+                      <div className="grid grid-cols-2 gap-4">
+                        <button
+                          onClick={() => setAdjustmentType("add")}
+                          className="px-6 py-8 border-2 border-green-500 bg-white text-green-600 rounded-xl hover:bg-green-50 transition-colors flex flex-col items-center gap-2"
+                        >
+                          <TrendingUp size={32} />
+                          <span className="font-medium">Add Stock</span>
+                        </button>
+                        <button
+                          onClick={() => setAdjustmentType("subtract")}
+                          className="px-6 py-8 border-2 border-red-500 bg-white text-red-600 rounded-xl hover:bg-red-50 transition-colors flex flex-col items-center gap-2"
+                        >
+                          <TrendingDown size={32} />
+                          <span className="font-medium">Subtract Stock</span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              /* Add/Edit Form */
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                    Item Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Enter item name"
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                  />
-                </div>
+                  ) : (
+                    /* Adjustment Form */
+                    <div className="space-y-4">
+                      <div
+                        className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${
+                          adjustmentType === "add"
+                            ? "bg-green-100 text-green-700 border border-green-300"
+                            : "bg-red-100 text-red-700 border border-red-300"
+                        }`}
+                      >
+                        {adjustmentType === "add" ? "Adding Stock" : "Subtracting Stock"}
+                      </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                      Quantity <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      value={formData.quantity}
-                      onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                      placeholder="0"
-                      min="0"
-                      className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                      Unit <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      value={formData.unit}
-                      onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
-                      className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                    >
-                      {UNIT_OPTIONS.map((u) => (
-                        <option key={u.value} value={u.value}>
-                          {u.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                            Date <span className="text-red-500">*</span>
+                          </label>
+                          <NepaliDatePicker
+                            value={adjustmentData.date}
+                            onChange={(value) =>
+                              setAdjustmentData({ ...adjustmentData, date: value })
+                            }
+                            className="rounded-lg"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                            Quantity <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="number"
+                            value={adjustmentData.quantity}
+                            onChange={(e) =>
+                              setAdjustmentData({ ...adjustmentData, quantity: e.target.value })
+                            }
+                            placeholder="Enter quantity"
+                            min="0"
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                          />
+                        </div>
+                      </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                      Category
-                    </label>
-                    <select
-                      value={formData.category_id}
-                      onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
-                      className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                    >
-                      <option value="">No Category</option>
-                      {categories.map((cat) => (
-                        <option key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                      Min Quantity
-                      <span className="text-xs text-gray-400 ml-1">(Low stock alert)</span>
-                    </label>
-                    <input
-                      type="number"
-                      value={formData.min_quantity}
-                      onChange={(e) => setFormData({ ...formData, min_quantity: e.target.value })}
-                      placeholder="0"
-                      min="0"
-                      className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                    />
-                  </div>
-                </div>
+                      {adjustmentType === "subtract" && (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                            Reason <span className="text-red-500">*</span>
+                          </label>
+                          <select
+                            value={adjustmentData.reason}
+                            onChange={(e) =>
+                              setAdjustmentData({ ...adjustmentData, reason: e.target.value })
+                            }
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                          >
+                            <option value="">Select reason...</option>
+                            {SUBTRACTION_REASONS.map((r) => (
+                              <option key={r.value} value={r.value}>
+                                {r.label}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                    Price
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    placeholder="0"
-                    min="0"
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                  />
+                      <div>
+                        <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                          Remarks
+                        </label>
+                        <textarea
+                          value={adjustmentData.remarks}
+                          onChange={(e) =>
+                            setAdjustmentData({ ...adjustmentData, remarks: e.target.value })
+                          }
+                          placeholder="Additional notes..."
+                          rows={3}
+                          className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-none"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
-
-                <div className="grid grid-cols-2 gap-3">
+              ) : (
+                /* Add/Edit Form */
+                <div className="space-y-3">
                   <div>
                     <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                      Vendor
+                      Item Name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
-                      value={formData.vendor}
-                      onChange={(e) => setFormData({ ...formData, vendor: e.target.value })}
-                      placeholder="Vendor name"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="Enter item name"
                       className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                     />
                   </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                        Quantity <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        value={formData.quantity}
+                        onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                        placeholder="0"
+                        min="0"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                        Unit <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        value={formData.unit}
+                        onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      >
+                        {UNIT_OPTIONS.map((u) => (
+                          <option key={u.value} value={u.value}>
+                            {u.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                        Category
+                      </label>
+                      <select
+                        value={formData.category_id}
+                        onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      >
+                        <option value="">No Category</option>
+                        {categories.map((cat) => (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                        Min Quantity
+                        <span className="text-xs text-gray-400 ml-1">(Low stock alert)</span>
+                      </label>
+                      <input
+                        type="number"
+                        value={formData.min_quantity}
+                        onChange={(e) => setFormData({ ...formData, min_quantity: e.target.value })}
+                        placeholder="0"
+                        min="0"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">Price</label>
+                    <input
+                      type="number"
+                      value={formData.price}
+                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                      placeholder="0"
+                      min="0"
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                        Vendor
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.vendor}
+                        onChange={(e) => setFormData({ ...formData, vendor: e.target.value })}
+                        placeholder="Vendor name"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                        Phone
+                      </label>
+                      <input
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        placeholder="Contact number"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      />
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                      Phone
+                      Remarks
                     </label>
-                    <input
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      placeholder="Contact number"
-                      className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                    <textarea
+                      value={formData.remarks}
+                      onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
+                      placeholder="Additional notes..."
+                      rows={3}
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-none"
                     />
                   </div>
                 </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                    Remarks
-                  </label>
-                  <textarea
-                    value={formData.remarks}
-                    onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
-                    placeholder="Additional notes..."
-                    rows={3}
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-none"
-                  />
-                </div>
-              </div>
-            )}
+              )}
             </div>
 
             {/* Fixed Footer */}
@@ -1579,7 +1619,11 @@ const Inventory = () => {
                     disabled={saveLoading}
                     className="px-6 py-2.5 rounded-lg bg-[#2272B4] text-white hover:bg-[#1a5a8a] disabled:opacity-50 font-medium transition-colors shadow-sm"
                   >
-                    {saveLoading ? "Saving..." : drawerMode === "edit" ? "Update Item" : "Save Item"}
+                    {saveLoading
+                      ? "Saving..."
+                      : drawerMode === "edit"
+                        ? "Update Item"
+                        : "Save Item"}
                   </button>
                 </>
               )}
@@ -1718,10 +1762,7 @@ const Inventory = () => {
       {/* Stock In/Out Item Selection Modal */}
       {showStockModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div
-            className="absolute inset-0 bg-black/20"
-            onClick={() => setShowStockModal(false)}
-          />
+          <div className="absolute inset-0 bg-black/20" onClick={() => setShowStockModal(false)} />
           <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 max-h-[80vh] flex flex-col">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
@@ -1733,11 +1774,7 @@ const Inventory = () => {
                       : "bg-red-100 text-red-600"
                   }`}
                 >
-                  {stockModalType === "in" ? (
-                    <TrendingUp size={20} />
-                  ) : (
-                    <TrendingDown size={20} />
-                  )}
+                  {stockModalType === "in" ? <TrendingUp size={20} /> : <TrendingDown size={20} />}
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">
@@ -1796,9 +1833,7 @@ const Inventory = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-gray-900 truncate">
-                          {item.name}
-                        </span>
+                        <span className="font-medium text-gray-900 truncate">{item.name}</span>
                         <span className="text-xs text-gray-400">
                           I{String(item.id).padStart(3, "0")}
                         </span>
@@ -1829,7 +1864,8 @@ const Inventory = () => {
             {/* Footer */}
             <div className="p-4 border-t border-gray-200 bg-gray-50 rounded-b-xl">
               <p className="text-xs text-gray-500 text-center">
-                {filteredStockItems.length} item{filteredStockItems.length !== 1 ? "s" : ""} available
+                {filteredStockItems.length} item{filteredStockItems.length !== 1 ? "s" : ""}{" "}
+                available
               </p>
             </div>
           </div>

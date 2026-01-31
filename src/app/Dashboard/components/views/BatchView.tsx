@@ -2,7 +2,24 @@
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import axios from "axios";
-import { Plus, X, Edit2, Trash2, Package, Eye, ChevronDown, ChevronUp, SlidersHorizontal, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ArrowUpDown, Search, Check } from "lucide-react";
+import {
+  Plus,
+  X,
+  Edit2,
+  Trash2,
+  Package,
+  Eye,
+  ChevronDown,
+  ChevronUp,
+  SlidersHorizontal,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  ArrowUpDown,
+  Search,
+  Check,
+} from "lucide-react";
 import Loader from "@/app/Components/Loader";
 import { useToast } from "@/app/Components/ToastContext";
 import { formatNepaliDate } from "@/app/utils/dateUtils";
@@ -11,26 +28,26 @@ import { formatUnitShort } from "@/app/utils/formatUtils";
 // Helper function to get background color from color name
 const getColorBg = (colorName: string): string => {
   const colorMap: Record<string, string> = {
-    black: '#1f2937',
-    red: '#ef4444',
-    blue: '#3b82f6',
-    green: '#22c55e',
-    yellow: '#fbbf24',
-    pink: '#f472b6',
-    white: '#f3f4f6',
-    orange: '#f97316',
-    purple: '#a855f7',
-    brown: '#92400e',
-    gray: '#6b7280',
-    grey: '#6b7280',
+    black: "#1f2937",
+    red: "#ef4444",
+    blue: "#3b82f6",
+    green: "#22c55e",
+    yellow: "#fbbf24",
+    pink: "#f472b6",
+    white: "#f3f4f6",
+    orange: "#f97316",
+    purple: "#a855f7",
+    brown: "#92400e",
+    gray: "#6b7280",
+    grey: "#6b7280",
   };
-  return colorMap[colorName?.toLowerCase()] || '#e5e7eb';
+  return colorMap[colorName?.toLowerCase()] || "#e5e7eb";
 };
 
 // Helper function to determine if text should be white or black
 const getColorText = (colorName: string): string => {
-  const darkColors = ['black', 'red', 'blue', 'green', 'purple', 'brown', 'gray', 'grey', 'orange'];
-  return darkColors.includes(colorName?.toLowerCase()) ? '#ffffff' : '#1f2937';
+  const darkColors = ["black", "red", "blue", "green", "purple", "brown", "gray", "grey", "orange"];
+  return darkColors.includes(colorName?.toLowerCase()) ? "#ffffff" : "#1f2937";
 };
 
 // Helper function to get all colors from a batch (supports multi-roll batches)
@@ -38,7 +55,7 @@ const getBatchColors = (batch: Batch): string[] => {
   // If batch has batch_rolls with colors, extract unique colors
   if (batch.batch_rolls && batch.batch_rolls.length > 0) {
     const colors = batch.batch_rolls
-      .map(br => br.roll?.color)
+      .map((br) => br.roll?.color)
       .filter((color): color is string => !!color);
     // Return unique colors
     return [...new Set(colors)];
@@ -78,12 +95,13 @@ const FilterDropdown = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const selectedOption = options.find(opt => opt.value === value);
+  const selectedOption = options.find((opt) => opt.value === value);
   const displayLabel = selectedOption?.label || label;
 
-  const filteredOptions = options.filter(opt =>
-    opt.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (opt.description && opt.description.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredOptions = options.filter(
+    (opt) =>
+      opt.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (opt.description && opt.description.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   useEffect(() => {
@@ -120,7 +138,9 @@ const FilterDropdown = ({
       >
         {icon && <span className="flex-shrink-0">{icon}</span>}
         <span className="max-w-[120px] truncate">{displayLabel}</span>
-        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown
+          className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+        />
       </button>
 
       {isOpen && (
@@ -153,13 +173,17 @@ const FilterDropdown = ({
                     value === option.value ? "bg-blue-50" : ""
                   }`}
                 >
-                  <div className={`mt-0.5 w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                    value === option.value ? "border-[#2272B4] bg-[#2272B4]" : "border-gray-300"
-                  }`}>
+                  <div
+                    className={`mt-0.5 w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                      value === option.value ? "border-[#2272B4] bg-[#2272B4]" : "border-gray-300"
+                    }`}
+                  >
                     {value === option.value && <Check className="w-2 h-2 text-white" />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className={`text-xs font-medium ${value === option.value ? "text-[#2272B4]" : "text-gray-900"}`}>
+                    <div
+                      className={`text-xs font-medium ${value === option.value ? "text-[#2272B4]" : "text-gray-900"}`}
+                    >
                       {option.label}
                     </div>
                     {option.description && (
@@ -190,7 +214,7 @@ type Roll = {
   name: string;
   quantity: number;
   remaining_quantity?: number; // Calculated: quantity - sum of batch quantities
-  roll_unit_count?: number;    // Total unit count (e.g., 15 rolls)
+  roll_unit_count?: number; // Total unit count (e.g., 15 rolls)
   remaining_unit_count?: number; // Calculated: roll_unit_count - sum of batch unit_counts
   unit: string;
   color: string;
@@ -201,10 +225,10 @@ type Batch = {
   id: number;
   roll_id: number | null;
   name: string;
-  order_name?: string;  // Order Name
+  order_name?: string; // Order Name
   quantity: number;
   unit: string;
-  unit_count?: number;  // Number of fabric pieces
+  unit_count?: number; // Number of fabric pieces
   color: string;
   vendor_id: number | null;
   total_pieces?: number; // Expected total pieces for size breakdown
@@ -233,18 +257,18 @@ type BatchRoll = {
 };
 
 type BatchRollEntry = {
-  id: string;           // Temp ID for UI tracking
+  id: string; // Temp ID for UI tracking
   roll_id: number;
   roll_name: string;
   roll_color: string;
   roll_unit: string;
-  roll_remaining: number;       // Available weight/quantity
+  roll_remaining: number; // Available weight/quantity
   roll_remaining_units: number; // Available units
-  weight: number;       // Weight to take
-  units: number;        // Units to take
+  weight: number; // Weight to take
+  units: number; // Units to take
   isValid: boolean;
   errorMessage?: string;
-  unitsErrorMessage?: string;   // Separate error for units
+  unitsErrorMessage?: string; // Separate error for units
 };
 
 // Size breakdown entry type
@@ -359,7 +383,7 @@ const BatchView = () => {
 
   // Toggle row selection
   const toggleRowSelection = (id: number) => {
-    setSelectedRows(prev => {
+    setSelectedRows((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
         newSet.delete(id);
@@ -371,8 +395,8 @@ const BatchView = () => {
   };
 
   // Get unique values for filters
-  const uniqueUnits = Array.from(new Set(batches.map(b => b.unit).filter(Boolean)));
-  const uniqueColors = Array.from(new Set(batches.map(b => b.color).filter(Boolean)));
+  const uniqueUnits = Array.from(new Set(batches.map((b) => b.unit).filter(Boolean)));
+  const uniqueColors = Array.from(new Set(batches.map((b) => b.color).filter(Boolean)));
 
   // Helper function to check if date is within filter range
   const isDateInRange = (dateStr: string | undefined): boolean => {
@@ -415,29 +439,42 @@ const BatchView = () => {
   // Get date filter display label
   const getDateFilterLabel = (): string => {
     switch (selectedDateFilter) {
-      case "all": return "All Dates";
-      case "today": return "Today";
-      case "last7days": return "Last 7 Days";
-      case "last30days": return "Last 30 Days";
-      case "thisMonth": return "This Month";
+      case "all":
+        return "All Dates";
+      case "today":
+        return "Today";
+      case "last7days":
+        return "Last 7 Days";
+      case "last30days":
+        return "Last 30 Days";
+      case "thisMonth":
+        return "This Month";
       case "custom":
         if (customDateFrom && customDateTo) {
-          const from = new Date(customDateFrom).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-          const to = new Date(customDateTo).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          const from = new Date(customDateFrom).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          });
+          const to = new Date(customDateTo).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          });
           return `${from} - ${to}`;
         }
         return "Custom Range";
-      default: return "All Dates";
+      default:
+        return "All Dates";
     }
   };
 
   // Filter, sort, and paginate batches using useMemo
   const { filteredBatches, paginatedBatches, totalPages, totalFiltered } = useMemo(() => {
     // Step 1: Filter
-    let filtered = batches.filter(batch => {
+    let filtered = batches.filter((batch) => {
       if (selectedUnit !== "all" && batch.unit !== selectedUnit) return false;
       if (selectedColor !== "all" && batch.color !== selectedColor) return false;
-      if (selectedVendorFilter !== "all" && batch.vendor_id !== Number(selectedVendorFilter)) return false;
+      if (selectedVendorFilter !== "all" && batch.vendor_id !== Number(selectedVendorFilter))
+        return false;
 
       // Date filter
       if (selectedDateFilter !== "all" && !isDateInRange(batch.created_at)) return false;
@@ -447,14 +484,16 @@ const BatchView = () => {
         const query = tableSearchQuery.toLowerCase();
         const searchFields = [
           batch.name,
-          `B${String(batch.id).padStart(3, '0')}`,
+          `B${String(batch.id).padStart(3, "0")}`,
           batch.color,
           batch.unit,
           batch.roll?.name,
           batch.vendor?.name,
-        ].filter(Boolean).map(f => String(f).toLowerCase());
+        ]
+          .filter(Boolean)
+          .map((f) => String(f).toLowerCase());
 
-        if (!searchFields.some(field => field.includes(query))) {
+        if (!searchFields.some((field) => field.includes(query))) {
           return false;
         }
       }
@@ -486,7 +525,20 @@ const BatchView = () => {
     const paginated = filtered.slice(startIndex, startIndex + itemsPerPage);
 
     return { filteredBatches: filtered, paginatedBatches: paginated, totalPages, totalFiltered };
-  }, [batches, selectedUnit, selectedColor, selectedVendorFilter, selectedDateFilter, customDateFrom, customDateTo, tableSearchQuery, sortColumn, sortDirection, currentPage, itemsPerPage]);
+  }, [
+    batches,
+    selectedUnit,
+    selectedColor,
+    selectedVendorFilter,
+    selectedDateFilter,
+    customDateFrom,
+    customDateTo,
+    tableSearchQuery,
+    sortColumn,
+    sortDirection,
+    currentPage,
+    itemsPerPage,
+  ]);
 
   // Handle sort column click
   const handleSort = (column: string) => {
@@ -501,10 +553,10 @@ const BatchView = () => {
 
   // Toggle all rows (only on current page)
   const toggleAllRows = () => {
-    if (paginatedBatches.length > 0 && paginatedBatches.every(b => selectedRows.has(b.id))) {
+    if (paginatedBatches.length > 0 && paginatedBatches.every((b) => selectedRows.has(b.id))) {
       setSelectedRows(new Set());
     } else {
-      setSelectedRows(new Set(paginatedBatches.map(b => b.id)));
+      setSelectedRows(new Set(paginatedBatches.map((b) => b.id)));
     }
   };
 
@@ -521,7 +573,12 @@ const BatchView = () => {
   };
 
   // Check if any filters are active
-  const hasActiveFilters = selectedUnit !== "all" || selectedColor !== "all" || selectedVendorFilter !== "all" || selectedDateFilter !== "all" || tableSearchQuery.trim() !== "";
+  const hasActiveFilters =
+    selectedUnit !== "all" ||
+    selectedColor !== "all" ||
+    selectedVendorFilter !== "all" ||
+    selectedDateFilter !== "all" ||
+    tableSearchQuery.trim() !== "";
 
   // Reset form data
   const resetFormData = () => {
@@ -582,18 +639,18 @@ const BatchView = () => {
       if (openMenuId !== null) {
         const target = event.target as HTMLElement;
         // Check if click is outside the dropdown menu
-        if (!target.closest('.relative')) {
+        if (!target.closest(".relative")) {
           setOpenMenuId(null);
         }
       }
     };
 
     if (openMenuId !== null) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openMenuId]);
 
@@ -610,11 +667,11 @@ const BatchView = () => {
     };
 
     if (showUnitDropdown || showVendorDropdown) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showUnitDropdown, showVendorDropdown]);
 
@@ -660,29 +717,43 @@ const BatchView = () => {
 
       // Validate quantity against roll's available quantity
       if (formData.roll_id) {
-        const selectedRoll = rolls.find(r => r.id === formData.roll_id);
+        const selectedRoll = rolls.find((r) => r.id === formData.roll_id);
         if (selectedRoll) {
           const available = selectedRoll.remaining_quantity ?? selectedRoll.quantity;
           // For editing, add back the current batch's quantity to available
-          const adjustedAvailable = editingBatch && editingBatch.roll_id === formData.roll_id
-            ? available + editingBatch.quantity
-            : available;
+          const adjustedAvailable =
+            editingBatch && editingBatch.roll_id === formData.roll_id
+              ? available + editingBatch.quantity
+              : available;
 
           if (Number(formData.quantity) > adjustedAvailable) {
-            showToast("error", `Quantity exceeds available roll quantity! Available: ${adjustedAvailable} ${selectedRoll.unit}`);
+            showToast(
+              "error",
+              `Quantity exceeds available roll quantity! Available: ${adjustedAvailable} ${selectedRoll.unit}`
+            );
             return;
           }
 
           // Validate unit_count against roll's available units (only if roll has unit count)
-          if (formData.unit_count && Number(formData.unit_count) > 0 && selectedRoll.roll_unit_count && selectedRoll.roll_unit_count > 0) {
-            const availableUnits = selectedRoll.remaining_unit_count ?? selectedRoll.roll_unit_count;
+          if (
+            formData.unit_count &&
+            Number(formData.unit_count) > 0 &&
+            selectedRoll.roll_unit_count &&
+            selectedRoll.roll_unit_count > 0
+          ) {
+            const availableUnits =
+              selectedRoll.remaining_unit_count ?? selectedRoll.roll_unit_count;
             // For editing, add back the current batch's unit_count to available
-            const adjustedAvailableUnits = editingBatch && editingBatch.roll_id === formData.roll_id
-              ? availableUnits + (editingBatch.unit_count || 0)
-              : availableUnits;
+            const adjustedAvailableUnits =
+              editingBatch && editingBatch.roll_id === formData.roll_id
+                ? availableUnits + (editingBatch.unit_count || 0)
+                : availableUnits;
 
             if (Number(formData.unit_count) > adjustedAvailableUnits) {
-              showToast("error", `Unit count exceeds available! Available: ${adjustedAvailableUnits} pcs from roll`);
+              showToast(
+                "error",
+                `Unit count exceeds available! Available: ${adjustedAvailableUnits} pcs from roll`
+              );
               return;
             }
           }
@@ -730,12 +801,12 @@ const BatchView = () => {
       resetFormData();
       await fetchBatches();
       await fetchRolls(); // Refresh rolls to update remaining_quantity
-
     } catch (err: unknown) {
       // Check if it's an axios error with a response message
       const axiosError = err as { response?: { data?: { error?: string } } };
-      const errorMessage = axiosError?.response?.data?.error ||
-        `Error ${editingBatch ? 'updating' : 'creating'} batch. Please try again.`;
+      const errorMessage =
+        axiosError?.response?.data?.error ||
+        `Error ${editingBatch ? "updating" : "creating"} batch. Please try again.`;
       showToast("error", errorMessage);
     } finally {
       setSaveLoading(false);
@@ -845,14 +916,14 @@ const BatchView = () => {
       // Try to check if batches have sub-batches
       try {
         const response = await axios.post(`${API}/batches/check-dependencies`, {
-          batchIds: selectedBatchIds
+          batchIds: selectedBatchIds,
         });
 
         const { batchesWithSubBatches: withSub, cleanBatches: clean } = response.data;
 
         // Get full batch objects
-        const batchesWithSub = batches.filter(b => withSub.includes(b.id));
-        const batchesClean = batches.filter(b => clean.includes(b.id));
+        const batchesWithSub = batches.filter((b) => withSub.includes(b.id));
+        const batchesClean = batches.filter((b) => clean.includes(b.id));
 
         setBatchesWithSubBatches(batchesWithSub);
         setCleanBatches(batchesClean);
@@ -869,7 +940,7 @@ const BatchView = () => {
         console.warn("Dependency check endpoint not available, proceeding without check:", apiErr);
 
         // Treat all batches as clean (no dependencies)
-        const selectedBatches = batches.filter(b => selectedBatchIds.includes(b.id));
+        const selectedBatches = batches.filter((b) => selectedBatchIds.includes(b.id));
         setCleanBatches(selectedBatches);
         setBatchesWithSubBatches([]);
 
@@ -897,9 +968,7 @@ const BatchView = () => {
       const selectedBatchIds = Array.from(selectedRows);
 
       // Delete all selected batches
-      await Promise.all(
-        selectedBatchIds.map(id => axios.delete(`${API}/batches/${id}`))
-      );
+      await Promise.all(selectedBatchIds.map((id) => axios.delete(`${API}/batches/${id}`)));
 
       // Success - refresh and reset
       await fetchBatches();
@@ -950,15 +1019,17 @@ const BatchView = () => {
     try {
       setIsSearchingRolls(true);
       const response = await axios.get(`${API}/batches/search-rolls`, {
-        params: { name: fabricName }
+        params: { name: fabricName },
       });
 
       // Add remaining_quantity from the response
-      const rollsWithRemaining = response.data.map((roll: Roll & { remaining_quantity: number; remaining_unit_count: number }) => ({
-        ...roll,
-        remaining_quantity: roll.remaining_quantity,
-        remaining_unit_count: roll.remaining_unit_count,
-      }));
+      const rollsWithRemaining = response.data.map(
+        (roll: Roll & { remaining_quantity: number; remaining_unit_count: number }) => ({
+          ...roll,
+          remaining_quantity: roll.remaining_quantity,
+          remaining_unit_count: roll.remaining_unit_count,
+        })
+      );
 
       setMatchingRolls(rollsWithRemaining);
 
@@ -995,14 +1066,14 @@ const BatchView = () => {
   };
 
   // Filter suggestions based on input
-  const filteredFabricSuggestions = fabricNameSuggestions.filter(name =>
+  const filteredFabricSuggestions = fabricNameSuggestions.filter((name) =>
     name.toLowerCase().includes(fabricNameSearch.toLowerCase())
   );
 
   // Add a roll to the batch
   const handleAddRollEntry = (roll: Roll) => {
     // Check if roll is already added
-    if (rollEntries.some(entry => entry.roll_id === roll.id)) {
+    if (rollEntries.some((entry) => entry.roll_id === roll.id)) {
       showToast("warning", `${roll.color} roll is already added`);
       return;
     }
@@ -1032,34 +1103,34 @@ const BatchView = () => {
 
     // Auto-fill vendor from first roll if not set
     if (rollEntries.length === 0 && roll.vendor?.id && !formData.vendor_id) {
-      setFormData(prev => ({ ...prev, vendor_id: roll.vendor?.id || null }));
+      setFormData((prev) => ({ ...prev, vendor_id: roll.vendor?.id || null }));
     }
   };
 
   // Update roll entry weight/units
-  const handleUpdateRollEntry = (entryId: string, field: 'weight' | 'units', value: number) => {
-    setRollEntries(entries =>
-      entries.map(entry => {
+  const handleUpdateRollEntry = (entryId: string, field: "weight" | "units", value: number) => {
+    setRollEntries((entries) =>
+      entries.map((entry) => {
         if (entry.id === entryId) {
           const updatedEntry = { ...entry, [field]: value };
 
           // Validate weight against remaining
-          if (field === 'weight') {
+          if (field === "weight") {
             if (value > entry.roll_remaining) {
               updatedEntry.errorMessage = `Exceeds available (${entry.roll_remaining} ${entry.roll_unit})`;
             } else if (value <= 0) {
-              updatedEntry.errorMessage = 'Weight must be > 0';
+              updatedEntry.errorMessage = "Weight must be > 0";
             } else {
               updatedEntry.errorMessage = undefined;
             }
           }
 
           // Validate units against remaining units
-          if (field === 'units') {
+          if (field === "units") {
             if (entry.roll_remaining_units > 0 && value > entry.roll_remaining_units) {
               updatedEntry.unitsErrorMessage = `Exceeds available (${entry.roll_remaining_units} units)`;
             } else if (value < 0) {
-              updatedEntry.unitsErrorMessage = 'Units cannot be negative';
+              updatedEntry.unitsErrorMessage = "Units cannot be negative";
             } else {
               updatedEntry.unitsErrorMessage = undefined;
             }
@@ -1079,7 +1150,7 @@ const BatchView = () => {
 
   // Remove a roll entry
   const handleRemoveRollEntry = (entryId: string) => {
-    setRollEntries(entries => entries.filter(entry => entry.id !== entryId));
+    setRollEntries((entries) => entries.filter((entry) => entry.id !== entryId));
   };
 
   // Calculate totals from roll entries
@@ -1087,17 +1158,16 @@ const BatchView = () => {
     const totalWeight = rollEntries.reduce((sum, entry) => sum + (entry.weight || 0), 0);
     const totalUnits = rollEntries.reduce((sum, entry) => sum + (entry.units || 0), 0);
     const rollCount = rollEntries.length;
-    const allValid = rollEntries.every(entry => entry.isValid && entry.weight > 0);
+    const allValid = rollEntries.every((entry) => entry.isValid && entry.weight > 0);
 
     return { totalWeight, totalUnits, rollCount, allValid };
   }, [rollEntries]);
 
   // Get available rolls (not already added)
   const availableRolls = useMemo(() => {
-    const addedRollIds = rollEntries.map(e => e.roll_id);
-    return matchingRolls.filter(roll =>
-      !addedRollIds.includes(roll.id) &&
-      (roll.remaining_quantity ?? roll.quantity) > 0
+    const addedRollIds = rollEntries.map((e) => e.roll_id);
+    return matchingRolls.filter(
+      (roll) => !addedRollIds.includes(roll.id) && (roll.remaining_quantity ?? roll.quantity) > 0
     );
   }, [matchingRolls, rollEntries]);
 
@@ -1111,9 +1181,13 @@ const BatchView = () => {
     setSizeEntries([...sizeEntries, newEntry]);
   };
 
-  const handleUpdateSizeEntry = (entryId: string, field: 'size' | 'pieces', value: string | number) => {
-    setSizeEntries(entries =>
-      entries.map(entry => {
+  const handleUpdateSizeEntry = (
+    entryId: string,
+    field: "size" | "pieces",
+    value: string | number
+  ) => {
+    setSizeEntries((entries) =>
+      entries.map((entry) => {
         if (entry.id === entryId) {
           return { ...entry, [field]: value };
         }
@@ -1123,16 +1197,21 @@ const BatchView = () => {
   };
 
   const handleRemoveSizeEntry = (entryId: string) => {
-    setSizeEntries(entries => entries.filter(entry => entry.id !== entryId));
+    setSizeEntries((entries) => entries.filter((entry) => entry.id !== entryId));
   };
 
   // Calculate size breakdown totals and validation
   const sizeBreakdownTotals = useMemo(() => {
-    const totalSizePieces = sizeEntries.reduce((sum, entry) => sum + (Number(entry.pieces) || 0), 0);
+    const totalSizePieces = sizeEntries.reduce(
+      (sum, entry) => sum + (Number(entry.pieces) || 0),
+      0
+    );
     const expectedPieces = Number(totalPieces) || 0;
     const isMatching = totalSizePieces === expectedPieces;
     const hasEntries = sizeEntries.length > 0;
-    const allEntriesValid = sizeEntries.every(entry => entry.size.trim() !== "" && Number(entry.pieces) > 0);
+    const allEntriesValid = sizeEntries.every(
+      (entry) => entry.size.trim() !== "" && Number(entry.pieces) > 0
+    );
 
     return { totalSizePieces, expectedPieces, isMatching, hasEntries, allEntriesValid };
   }, [sizeEntries, totalPieces]);
@@ -1162,21 +1241,22 @@ const BatchView = () => {
         name: formData.name.trim(),
         order_name: formData.order_name?.trim() || undefined,
         unit: formData.unit,
-        color: rollEntries[0]?.roll_color || '',
+        color: rollEntries[0]?.roll_color || "",
         vendor_id: formData.vendor_id || undefined,
-        rolls: rollEntries.map(entry => ({
+        rolls: rollEntries.map((entry) => ({
           roll_id: entry.roll_id,
           weight: entry.weight,
           units: entry.units || undefined,
         })),
         // Size breakdown data
         total_pieces: Number(totalPieces) || undefined,
-        size_breakdown: sizeEntries.length > 0
-          ? sizeEntries.map(entry => ({
-              size: entry.size,
-              pieces: Number(entry.pieces),
-            }))
-          : undefined,
+        size_breakdown:
+          sizeEntries.length > 0
+            ? sizeEntries.map((entry) => ({
+                size: entry.size,
+                pieces: Number(entry.pieces),
+              }))
+            : undefined,
       };
 
       if (editingBatch) {
@@ -1191,11 +1271,11 @@ const BatchView = () => {
       closeDrawer();
       await fetchBatches();
       await fetchRolls();
-
     } catch (err: unknown) {
       const axiosError = err as { response?: { data?: { message?: string } } };
-      const errorMessage = axiosError?.response?.data?.message ||
-        `Error ${editingBatch ? 'updating' : 'creating'} batch. Please try again.`;
+      const errorMessage =
+        axiosError?.response?.data?.message ||
+        `Error ${editingBatch ? "updating" : "creating"} batch. Please try again.`;
       showToast("error", errorMessage);
     } finally {
       setSaveLoading(false);
@@ -1226,14 +1306,15 @@ const BatchView = () => {
       await searchRollsByFabricName(batch.name);
 
       // Convert batch_rolls to roll entries
-      const entries: BatchRollEntry[] = batch.batch_rolls.map(br => ({
+      const entries: BatchRollEntry[] = batch.batch_rolls.map((br) => ({
         id: `existing-${br.id}`,
         roll_id: br.roll_id,
         roll_name: br.roll.name,
         roll_color: br.roll.color,
         roll_unit: br.roll.unit,
         roll_remaining: (br.roll.remaining_quantity ?? br.roll.quantity) + br.weight, // Add back current allocation
-        roll_remaining_units: (br.roll.remaining_unit_count ?? br.roll.roll_unit_count ?? 0) + (br.units || 0), // Add back current units
+        roll_remaining_units:
+          (br.roll.remaining_unit_count ?? br.roll.roll_unit_count ?? 0) + (br.units || 0), // Add back current units
         weight: br.weight,
         units: br.units || 0,
         isValid: true,
@@ -1254,7 +1335,8 @@ const BatchView = () => {
         roll_color: roll.color,
         roll_unit: roll.unit,
         roll_remaining: (roll.remaining_quantity ?? roll.quantity) + batch.quantity,
-        roll_remaining_units: (roll.remaining_unit_count ?? roll.roll_unit_count ?? 0) + (batch.unit_count || 0),
+        roll_remaining_units:
+          (roll.remaining_unit_count ?? roll.roll_unit_count ?? 0) + (batch.unit_count || 0),
         weight: batch.quantity,
         units: batch.unit_count || 0,
         isValid: true,
@@ -1268,11 +1350,13 @@ const BatchView = () => {
       setTotalPieces(batch.total_pieces);
     }
     if (batch.batch_sizes && batch.batch_sizes.length > 0) {
-      const sizes: SizeEntry[] = batch.batch_sizes.map((bs: { id: number; size: string; pieces: number }) => ({
-        id: `existing-${bs.id}`,
-        size: bs.size,
-        pieces: bs.pieces,
-      }));
+      const sizes: SizeEntry[] = batch.batch_sizes.map(
+        (bs: { id: number; size: string; pieces: number }) => ({
+          id: `existing-${bs.id}`,
+          size: bs.size,
+          pieces: bs.pieces,
+        })
+      );
       setSizeEntries(sizes);
     }
   };
@@ -1353,14 +1437,17 @@ const BatchView = () => {
         <FilterDropdown
           label="All Vendors"
           value={selectedVendorFilter}
-          onChange={(val) => { setSelectedVendorFilter(val); setCurrentPage(1); }}
+          onChange={(val) => {
+            setSelectedVendorFilter(val);
+            setCurrentPage(1);
+          }}
           options={[
             { value: "all", label: "All Vendors", description: "Show batches from all vendors" },
-            ...vendors.map(vendor => ({
+            ...vendors.map((vendor) => ({
               value: String(vendor.id),
               label: vendor.name,
-              description: vendor.address || "No address"
-            }))
+              description: vendor.address || "No address",
+            })),
           ]}
         />
 
@@ -1368,14 +1455,17 @@ const BatchView = () => {
         <FilterDropdown
           label="All Colors"
           value={selectedColor}
-          onChange={(val) => { setSelectedColor(val); setCurrentPage(1); }}
+          onChange={(val) => {
+            setSelectedColor(val);
+            setCurrentPage(1);
+          }}
           options={[
             { value: "all", label: "All Colors", description: "Show batches with any color" },
-            ...uniqueColors.map(color => ({
+            ...uniqueColors.map((color) => ({
               value: color,
               label: color,
-              description: `Filter by ${color} color`
-            }))
+              description: `Filter by ${color} color`,
+            })),
           ]}
         />
 
@@ -1383,14 +1473,17 @@ const BatchView = () => {
         <FilterDropdown
           label="All Units"
           value={selectedUnit}
-          onChange={(val) => { setSelectedUnit(val); setCurrentPage(1); }}
+          onChange={(val) => {
+            setSelectedUnit(val);
+            setCurrentPage(1);
+          }}
           options={[
             { value: "all", label: "All Units", description: "Show batches with any unit" },
-            ...uniqueUnits.map(unit => ({
+            ...uniqueUnits.map((unit) => ({
               value: unit,
               label: unit,
-              description: `Filter by ${unit}`
-            }))
+              description: `Filter by ${unit}`,
+            })),
           ]}
         />
 
@@ -1413,9 +1506,17 @@ const BatchView = () => {
             { value: "all", label: "All Dates", description: "Show batches from any date" },
             { value: "today", label: "Today", description: "Batches created today" },
             { value: "last7days", label: "Last 7 Days", description: "Batches from the past week" },
-            { value: "last30days", label: "Last 30 Days", description: "Batches from the past month" },
+            {
+              value: "last30days",
+              label: "Last 30 Days",
+              description: "Batches from the past month",
+            },
             { value: "thisMonth", label: "This Month", description: "Batches created this month" },
-            { value: "custom", label: "Custom Range...", description: "Select specific date range" },
+            {
+              value: "custom",
+              label: "Custom Range...",
+              description: "Select specific date range",
+            },
           ]}
         />
 
@@ -1424,7 +1525,7 @@ const BatchView = () => {
           label="Sort"
           value={`${sortColumn}-${sortDirection}`}
           onChange={(val) => {
-            const [col, dir] = val.split('-');
+            const [col, dir] = val.split("-");
             setSortColumn(col);
             setSortDirection(dir as "asc" | "desc");
             setCurrentPage(1);
@@ -1436,10 +1537,26 @@ const BatchView = () => {
             { value: "id-asc", label: "Oldest first", description: "First created batches" },
             { value: "name-asc", label: "Name A-Z", description: "Alphabetical order" },
             { value: "name-desc", label: "Name Z-A", description: "Reverse alphabetical" },
-            { value: "quantity-desc", label: "Quantity (High to Low)", description: "Largest quantities first" },
-            { value: "quantity-asc", label: "Quantity (Low to High)", description: "Smallest quantities first" },
-            { value: "unit_count-desc", label: "No of Unit (High to Low)", description: "Most pieces first" },
-            { value: "unit_count-asc", label: "No of Unit (Low to High)", description: "Fewest pieces first" },
+            {
+              value: "quantity-desc",
+              label: "Quantity (High to Low)",
+              description: "Largest quantities first",
+            },
+            {
+              value: "quantity-asc",
+              label: "Quantity (Low to High)",
+              description: "Smallest quantities first",
+            },
+            {
+              value: "unit_count-desc",
+              label: "No of Unit (High to Low)",
+              description: "Most pieces first",
+            },
+            {
+              value: "unit_count-asc",
+              label: "No of Unit (Low to High)",
+              description: "Fewest pieces first",
+            },
           ]}
         />
 
@@ -1476,10 +1593,14 @@ const BatchView = () => {
             <Package size={48} className="text-gray-300 mb-4" />
             <p className="text-black mb-2 font-medium">No batches found</p>
             <p className="text-gray-500 mb-2 font-medium">
-              {hasActiveFilters ? "Try adjusting your filters or " : "Get started by "}creating your first batch.
+              {hasActiveFilters ? "Try adjusting your filters or " : "Get started by "}creating your
+              first batch.
             </p>
             {hasActiveFilters && (
-              <button onClick={clearAllFilters} className="mt-3 text-sm text-[#2272B4] hover:underline font-medium">
+              <button
+                onClick={clearAllFilters}
+                className="mt-3 text-sm text-[#2272B4] hover:underline font-medium"
+              >
                 Clear all filters
               </button>
             )}
@@ -1489,57 +1610,195 @@ const BatchView = () => {
             <div className="overflow-x-auto">
               <table className="min-w-max w-full">
                 <thead>
-                  <tr className="border-b border-gray-200" style={{ backgroundColor: 'rgb(247, 242, 242)' }}>
+                  <tr
+                    className="border-b border-gray-200"
+                    style={{ backgroundColor: "rgb(247, 242, 242)" }}
+                  >
                     <th className="px-4 py-2 text-left w-12 whitespace-nowrap border-r border-gray-200">
                       <input
                         type="checkbox"
-                        checked={paginatedBatches.length > 0 && paginatedBatches.every(b => selectedRows.has(b.id))}
+                        checked={
+                          paginatedBatches.length > 0 &&
+                          paginatedBatches.every((b) => selectedRows.has(b.id))
+                        }
                         onChange={toggleAllRows}
                         className="w-4 h-4 rounded border-gray-300 text-[#2272B4] focus:ring-[#2272B4]"
                       />
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }} onClick={() => handleSort("id")}>
-                      <div className="flex items-center gap-1">Id {sortColumn === "id" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                      onClick={() => handleSort("id")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Id{" "}
+                        {sortColumn === "id" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }} onClick={() => handleSort("created_at")}>
-                      <div className="flex items-center gap-1">Created {sortColumn === "created_at" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                      onClick={() => handleSort("created_at")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Created{" "}
+                        {sortColumn === "created_at" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }} onClick={() => handleSort("name")}>
-                      <div className="flex items-center gap-1">Name {sortColumn === "name" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                      onClick={() => handleSort("name")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Name{" "}
+                        {sortColumn === "name" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }} onClick={() => handleSort("order_name")}>
-                      <div className="flex items-center gap-1">Order Name {sortColumn === "order_name" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                      onClick={() => handleSort("order_name")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Order Name{" "}
+                        {sortColumn === "order_name" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }} onClick={() => handleSort("quantity")}>
-                      <div className="flex items-center gap-1">Quantity {sortColumn === "quantity" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                      onClick={() => handleSort("quantity")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Quantity{" "}
+                        {sortColumn === "quantity" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>Unit</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>Color</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }} onClick={() => handleSort("unit_count")}>
-                      <div className="flex items-center gap-1">No of Unit {sortColumn === "unit_count" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                    >
+                      Unit
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>Roll</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }} onClick={() => handleSort("total_pieces")}>
-                      <div className="flex items-center gap-1">Pieces {sortColumn === "total_pieces" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                    >
+                      Color
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>Sizes</th>
-                    <th className="px-4 py-2 text-right text-xs font-medium whitespace-nowrap" style={{ color: '#141414', fontWeight: 500 }}>Actions</th>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                      onClick={() => handleSort("unit_count")}
+                    >
+                      <div className="flex items-center gap-1">
+                        No of Unit{" "}
+                        {sortColumn === "unit_count" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
+                    </th>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                    >
+                      Roll
+                    </th>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                      onClick={() => handleSort("total_pieces")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Pieces{" "}
+                        {sortColumn === "total_pieces" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
+                    </th>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                    >
+                      Sizes
+                    </th>
+                    <th
+                      className="px-4 py-2 text-right text-xs font-medium whitespace-nowrap"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                    >
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {paginatedBatches.map((batch) => (
-                    <tr key={batch.id} className={`transition-colors ${selectedRows.has(batch.id) ? 'bg-blue-50' : 'hover:bg-gray-50'}`}>
+                    <tr
+                      key={batch.id}
+                      className={`transition-colors ${selectedRows.has(batch.id) ? "bg-blue-50" : "hover:bg-gray-50"}`}
+                    >
                       <td className="px-4 py-1.5 whitespace-nowrap border-r border-gray-200">
-                        <input type="checkbox" checked={selectedRows.has(batch.id)} onChange={() => toggleRowSelection(batch.id)} className="w-4 h-4 rounded border-gray-300 text-[#2272B4] focus:ring-[#2272B4]" />
+                        <input
+                          type="checkbox"
+                          checked={selectedRows.has(batch.id)}
+                          onChange={() => toggleRowSelection(batch.id)}
+                          className="w-4 h-4 rounded border-gray-300 text-[#2272B4] focus:ring-[#2272B4]"
+                        />
                       </td>
-                      <td className="px-4 py-1.5 text-sm text-gray-500 font-light whitespace-nowrap border-r border-gray-200">B{String(batch.id).padStart(3, '0')}</td>
+                      <td className="px-4 py-1.5 text-sm text-gray-500 font-light whitespace-nowrap border-r border-gray-200">
+                        B{String(batch.id).padStart(3, "0")}
+                      </td>
                       <td className="px-4 py-1.5 text-sm text-gray-500 font-light whitespace-nowrap border-r border-gray-200">
                         {formatNepaliDate(batch.created_at)}
                       </td>
-                      <td className="px-4 py-1.5 whitespace-nowrap border-r border-gray-200"><span className="text-sm font-medium text-[#2272B4] hover:underline cursor-pointer" onClick={() => handlePreview(batch)}>{batch.name}</span></td>
-                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">{batch.order_name || <span className="text-gray-400">-</span>}</td>
-                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">{batch.quantity}</td>
-                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">{formatUnitShort(batch.unit)}</td>
+                      <td className="px-4 py-1.5 whitespace-nowrap border-r border-gray-200">
+                        <span
+                          className="text-sm font-medium text-[#2272B4] hover:underline cursor-pointer"
+                          onClick={() => handlePreview(batch)}
+                        >
+                          {batch.name}
+                        </span>
+                      </td>
+                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">
+                        {batch.order_name || <span className="text-gray-400">-</span>}
+                      </td>
+                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">
+                        {batch.quantity}
+                      </td>
+                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">
+                        {formatUnitShort(batch.unit)}
+                      </td>
                       <td className="px-4 py-1.5 text-sm whitespace-nowrap border-r border-gray-200">
                         {(() => {
                           const colors = getBatchColors(batch);
@@ -1553,7 +1812,7 @@ const BatchView = () => {
                                 className="px-2 py-0.5 rounded text-xs font-medium"
                                 style={{
                                   backgroundColor: getColorBg(colors[0]),
-                                  color: getColorText(colors[0])
+                                  color: getColorText(colors[0]),
                                 }}
                               >
                                 {colors[0]}
@@ -1564,7 +1823,7 @@ const BatchView = () => {
                           return (
                             <div
                               className="flex items-center gap-1 cursor-pointer group relative"
-                              title={colors.join(', ')}
+                              title={colors.join(", ")}
                             >
                               {colors.slice(0, 4).map((color, idx) => (
                                 <span
@@ -1575,7 +1834,9 @@ const BatchView = () => {
                                 />
                               ))}
                               {colors.length > 4 && (
-                                <span className="text-xs text-gray-500 ml-0.5">+{colors.length - 4}</span>
+                                <span className="text-xs text-gray-500 ml-0.5">
+                                  +{colors.length - 4}
+                                </span>
                               )}
                               <span className="text-xs text-gray-500 ml-1">({colors.length})</span>
                               {/* Tooltip on hover - appears to the right */}
@@ -1599,7 +1860,9 @@ const BatchView = () => {
                           );
                         })()}
                       </td>
-                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">{batch.unit_count || <span className="text-gray-400">-</span>}</td>
+                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">
+                        {batch.unit_count || <span className="text-gray-400">-</span>}
+                      </td>
                       <td className="px-4 py-1.5 text-sm whitespace-nowrap border-r border-gray-200">
                         {(() => {
                           const batchRolls = batch.batch_rolls || [];
@@ -1607,7 +1870,11 @@ const BatchView = () => {
                           if (batchRolls.length > 0) {
                             if (batchRolls.length === 1) {
                               // Single roll from batch_rolls
-                              return <span className="text-gray-600 font-light">{batchRolls[0].roll?.name || '-'}</span>;
+                              return (
+                                <span className="text-gray-600 font-light">
+                                  {batchRolls[0].roll?.name || "-"}
+                                </span>
+                              );
                             }
                             // Multiple rolls - show count with tooltip
                             return (
@@ -1623,19 +1890,34 @@ const BatchView = () => {
                                       <div key={idx} className="flex items-center gap-3 py-0.5">
                                         <span
                                           className="w-2.5 h-2.5 rounded-full"
-                                          style={{ backgroundColor: getColorBg(br.roll?.color || '') }}
+                                          style={{
+                                            backgroundColor: getColorBg(br.roll?.color || ""),
+                                          }}
                                         />
-                                        <span className="text-gray-300 min-w-[60px]">{br.roll?.name || 'Unknown'}</span>
-                                        <span className="font-medium">{br.weight} {br.roll?.unit || 'kg'}</span>
-                                        {br.units && <span className="text-gray-400">│ {br.units} pcs</span>}
+                                        <span className="text-gray-300 min-w-[60px]">
+                                          {br.roll?.name || "Unknown"}
+                                        </span>
+                                        <span className="font-medium">
+                                          {br.weight} {br.roll?.unit || "kg"}
+                                        </span>
+                                        {br.units && (
+                                          <span className="text-gray-400">│ {br.units} pcs</span>
+                                        )}
                                       </div>
                                     ))}
                                     <div className="border-t border-gray-700 mt-1 pt-1 flex items-center gap-3">
                                       <span className="w-2.5 h-2.5"></span>
                                       <span className="text-gray-300 min-w-[60px]">Total</span>
-                                      <span className="font-medium">{batchRolls.reduce((sum, br) => sum + (br.weight || 0), 0)} {batchRolls[0]?.roll?.unit || 'kg'}</span>
-                                      {batchRolls.some(br => br.units) && (
-                                        <span className="text-gray-400">│ {batchRolls.reduce((sum, br) => sum + (br.units || 0), 0)} pcs</span>
+                                      <span className="font-medium">
+                                        {batchRolls.reduce((sum, br) => sum + (br.weight || 0), 0)}{" "}
+                                        {batchRolls[0]?.roll?.unit || "kg"}
+                                      </span>
+                                      {batchRolls.some((br) => br.units) && (
+                                        <span className="text-gray-400">
+                                          │{" "}
+                                          {batchRolls.reduce((sum, br) => sum + (br.units || 0), 0)}{" "}
+                                          pcs
+                                        </span>
                                       )}
                                     </div>
                                   </div>
@@ -1653,7 +1935,9 @@ const BatchView = () => {
                           );
                         })()}
                       </td>
-                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">{batch.total_pieces || <span className="text-gray-400">-</span>}</td>
+                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">
+                        {batch.total_pieces || <span className="text-gray-400">-</span>}
+                      </td>
                       <td className="px-4 py-1.5 text-sm whitespace-nowrap border-r border-gray-200">
                         {(() => {
                           const sizes = batch.batch_sizes || [];
@@ -1664,21 +1948,26 @@ const BatchView = () => {
                           return (
                             <div className="flex items-center gap-1 cursor-pointer group relative">
                               <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
-                                {sizes.length} {sizes.length === 1 ? 'size' : 'sizes'}
+                                {sizes.length} {sizes.length === 1 ? "size" : "sizes"}
                               </span>
                               {/* Tooltip on hover - appears to the right */}
                               <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 hidden group-hover:block z-50">
                                 <div className="bg-gray-900 text-white text-xs rounded-lg py-2 px-3 shadow-lg whitespace-nowrap">
                                   <div className="font-medium mb-1">Size Breakdown:</div>
                                   {sizes.map((s, idx) => (
-                                    <div key={idx} className="flex items-center justify-between gap-4 py-0.5">
+                                    <div
+                                      key={idx}
+                                      className="flex items-center justify-between gap-4 py-0.5"
+                                    >
                                       <span className="text-gray-300">{s.size}</span>
                                       <span className="font-medium">{s.pieces} pcs</span>
                                     </div>
                                   ))}
                                   <div className="border-t border-gray-700 mt-1 pt-1 flex items-center justify-between gap-4">
                                     <span className="text-gray-300">Total</span>
-                                    <span className="font-medium">{sizes.reduce((sum, s) => sum + s.pieces, 0)} pcs</span>
+                                    <span className="font-medium">
+                                      {sizes.reduce((sum, s) => sum + s.pieces, 0)} pcs
+                                    </span>
                                   </div>
                                 </div>
                                 {/* Arrow pointing left */}
@@ -1690,9 +1979,27 @@ const BatchView = () => {
                       </td>
                       <td className="px-4 py-1.5 text-right whitespace-nowrap">
                         <div className="flex items-center justify-end gap-1">
-                          <button onClick={() => handlePreview(batch)} className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors" title="Preview"><Eye size={16} /></button>
-                          <button onClick={() => handleEdit(batch)} className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors" title="Edit"><Edit2 size={16} /></button>
-                          <button onClick={() => handleDelete(batch.id)} className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-red-500 transition-colors" title="Delete"><Trash2 size={16} /></button>
+                          <button
+                            onClick={() => handlePreview(batch)}
+                            className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+                            title="Preview"
+                          >
+                            <Eye size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleEdit(batch)}
+                            className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+                            title="Edit"
+                          >
+                            <Edit2 size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(batch.id)}
+                            className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-red-500 transition-colors"
+                            title="Delete"
+                          >
+                            <Trash2 size={16} />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -1704,12 +2011,20 @@ const BatchView = () => {
             {/* Pagination */}
             <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-between bg-white">
               <span className="text-sm text-gray-700">
-                Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalFiltered)} of {totalFiltered}
+                Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                {Math.min(currentPage * itemsPerPage, totalFiltered)} of {totalFiltered}
               </span>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600">per page</span>
-                  <select value={itemsPerPage} onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }} className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-[#2272B4]">
+                  <select
+                    value={itemsPerPage}
+                    onChange={(e) => {
+                      setItemsPerPage(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                    className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-[#2272B4]"
+                  >
                     <option value={10}>10</option>
                     <option value={25}>25</option>
                     <option value={50}>50</option>
@@ -1717,11 +2032,37 @@ const BatchView = () => {
                   </select>
                 </div>
                 <div className="flex items-center gap-1">
-                  <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronsLeft className="w-4 h-4" /></button>
-                  <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronLeft className="w-4 h-4" /></button>
-                  <span className="px-3 py-1 text-sm text-gray-700">Page {currentPage} of {totalPages || 1}</span>
-                  <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage >= totalPages} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronRight className="w-4 h-4" /></button>
-                  <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage >= totalPages} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronsRight className="w-4 h-4" /></button>
+                  <button
+                    onClick={() => setCurrentPage(1)}
+                    disabled={currentPage === 1}
+                    className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+                  >
+                    <ChevronsLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <span className="px-3 py-1 text-sm text-gray-700">
+                    Page {currentPage} of {totalPages || 1}
+                  </span>
+                  <button
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={currentPage >= totalPages}
+                    className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(totalPages)}
+                    disabled={currentPage >= totalPages}
+                    className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+                  >
+                    <ChevronsRight className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -1737,7 +2078,9 @@ const BatchView = () => {
             onClick={closeDrawer}
           />
 
-          <div className={`ml-auto w-full max-w-xl bg-white shadow-lg p-4 relative h-screen overflow-y-auto transition-transform duration-300 ease-in-out ${isDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+          <div
+            className={`ml-auto w-full max-w-xl bg-white shadow-lg p-4 relative h-screen overflow-y-auto transition-transform duration-300 ease-in-out ${isDrawerOpen ? "translate-x-0" : "translate-x-full"}`}
+          >
             <button
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
               onClick={closeDrawer}
@@ -1783,7 +2126,9 @@ const BatchView = () => {
                   {/* Quantity */}
                   <div className="flex justify-between items-center py-1.5 border-b border-gray-100">
                     <span className="text-sm font-medium text-gray-700">Total Quantity</span>
-                    <span className="text-sm text-gray-500">{formData.quantity} {formData.unit}</span>
+                    <span className="text-sm text-gray-500">
+                      {formData.quantity} {formData.unit}
+                    </span>
                   </div>
 
                   {/* No of Units */}
@@ -1795,13 +2140,17 @@ const BatchView = () => {
                   {/* Vendor */}
                   <div className="flex justify-between items-center py-1.5 border-b border-gray-100">
                     <span className="text-sm font-medium text-gray-700">Vendor</span>
-                    <span className="text-sm text-gray-500">{editingBatch?.vendor?.name || "-"}</span>
+                    <span className="text-sm text-gray-500">
+                      {editingBatch?.vendor?.name || "-"}
+                    </span>
                   </div>
 
                   {/* Total Pieces */}
                   <div className="flex justify-between items-center py-1.5 border-b border-gray-100">
                     <span className="text-sm font-medium text-gray-700">Total Pieces</span>
-                    <span className="text-sm text-gray-500">{editingBatch?.total_pieces || "-"}</span>
+                    <span className="text-sm text-gray-500">
+                      {editingBatch?.total_pieces || "-"}
+                    </span>
                   </div>
 
                   {/* Created Date */}
@@ -1809,10 +2158,10 @@ const BatchView = () => {
                     <span className="text-sm font-medium text-gray-700">Created Date</span>
                     <span className="text-sm text-gray-500">
                       {editingBatch?.created_at
-                        ? new Date(editingBatch.created_at).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric'
+                        ? new Date(editingBatch.created_at).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
                           })
                         : "-"}
                     </span>
@@ -1828,15 +2177,21 @@ const BatchView = () => {
                         <table className="w-full text-xs">
                           <thead className="bg-gray-50">
                             <tr>
-                              <th className="px-2 py-1.5 text-left font-medium text-gray-600">Size</th>
-                              <th className="px-2 py-1.5 text-right font-medium text-gray-600">Pieces</th>
+                              <th className="px-2 py-1.5 text-left font-medium text-gray-600">
+                                Size
+                              </th>
+                              <th className="px-2 py-1.5 text-right font-medium text-gray-600">
+                                Pieces
+                              </th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-100">
                             {editingBatch.batch_sizes.map((size, idx) => (
                               <tr key={idx}>
                                 <td className="px-2 py-1.5 text-gray-700">{size.size}</td>
-                                <td className="px-2 py-1.5 text-right text-gray-600">{size.pieces}</td>
+                                <td className="px-2 py-1.5 text-right text-gray-600">
+                                  {size.pieces}
+                                </td>
                               </tr>
                             ))}
                             {/* Total Row */}
@@ -1857,15 +2212,23 @@ const BatchView = () => {
                     // Multi-roll batch - show compact table
                     <div className="pt-3">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-gray-700">Rolls Used ({previewBatchRolls.length})</span>
+                        <span className="text-sm font-medium text-gray-700">
+                          Rolls Used ({previewBatchRolls.length})
+                        </span>
                       </div>
                       <div className="border border-gray-200 rounded-lg overflow-hidden">
                         <table className="w-full text-xs">
                           <thead className="bg-gray-50">
                             <tr>
-                              <th className="px-2 py-1.5 text-left font-medium text-gray-600">Color</th>
-                              <th className="px-2 py-1.5 text-left font-medium text-gray-600">Weight</th>
-                              <th className="px-2 py-1.5 text-left font-medium text-gray-600">Units</th>
+                              <th className="px-2 py-1.5 text-left font-medium text-gray-600">
+                                Color
+                              </th>
+                              <th className="px-2 py-1.5 text-left font-medium text-gray-600">
+                                Weight
+                              </th>
+                              <th className="px-2 py-1.5 text-left font-medium text-gray-600">
+                                Units
+                              </th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-100">
@@ -1875,23 +2238,29 @@ const BatchView = () => {
                                   <span className="inline-flex items-center gap-1">
                                     <span
                                       className="w-2.5 h-2.5 rounded-full border border-gray-300"
-                                      style={{ backgroundColor: br.roll?.color?.toLowerCase() || '#ccc' }}
+                                      style={{
+                                        backgroundColor: br.roll?.color?.toLowerCase() || "#ccc",
+                                      }}
                                     />
-                                    {br.roll?.color || 'N/A'}
+                                    {br.roll?.color || "N/A"}
                                   </span>
                                 </td>
-                                <td className="px-2 py-1.5">{br.weight} {formData.unit}</td>
-                                <td className="px-2 py-1.5 text-gray-500">{br.units || '-'}</td>
+                                <td className="px-2 py-1.5">
+                                  {br.weight} {formData.unit}
+                                </td>
+                                <td className="px-2 py-1.5 text-gray-500">{br.units || "-"}</td>
                               </tr>
                             ))}
                             {/* Total Row */}
                             <tr className="bg-gray-50 font-medium text-xs">
                               <td className="px-2 py-1.5 text-gray-600">Total</td>
                               <td className="px-2 py-1.5 text-[#2272B4]">
-                                {previewBatchRolls.reduce((sum, br) => sum + br.weight, 0)} {formData.unit}
+                                {previewBatchRolls.reduce((sum, br) => sum + br.weight, 0)}{" "}
+                                {formData.unit}
                               </td>
                               <td className="px-2 py-1.5 text-[#2272B4]">
-                                {previewBatchRolls.reduce((sum, br) => sum + (br.units || 0), 0) || '-'}
+                                {previewBatchRolls.reduce((sum, br) => sum + (br.units || 0), 0) ||
+                                  "-"}
                               </td>
                             </tr>
                           </tbody>
@@ -1923,7 +2292,9 @@ const BatchView = () => {
                   <h3 className="text-lg font-semibold text-gray-900">
                     {editingBatch ? "Edit Batch" : "Add New Batch"}
                   </h3>
-                  <p className="text-sm text-gray-500 mt-1">Create a batch using fabric from one or more rolls</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Create a batch using fabric from one or more rolls
+                  </p>
                 </div>
 
                 <div className="space-y-4">
@@ -1982,13 +2353,16 @@ const BatchView = () => {
                         )}
                       </button>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Search by fabric name to find matching rolls</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Search by fabric name to find matching rolls
+                    </p>
                   </div>
 
                   {/* Order Name */}
                   <div>
                     <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                      Order Name <span className="text-gray-400 text-xs font-normal">(Optional)</span>
+                      Order Name{" "}
+                      <span className="text-gray-400 text-xs font-normal">(Optional)</span>
                     </label>
                     <input
                       type="text"
@@ -2005,13 +2379,17 @@ const BatchView = () => {
                     <label className="block text-sm font-medium text-gray-900 mb-1.5">
                       Unit
                       {rollEntries.length > 0 && (
-                        <span className="text-gray-400 text-xs font-normal ml-2">(Auto-filled from first roll)</span>
+                        <span className="text-gray-400 text-xs font-normal ml-2">
+                          (Auto-filled from first roll)
+                        </span>
                       )}
                     </label>
-                    <div className={`w-full border border-gray-200 rounded-lg px-3 py-2 text-sm ${
-                      rollEntries.length > 0 ? 'bg-gray-100 text-gray-700 cursor-not-allowed' : ''
-                    }`}>
-                      {formData.unit || 'Kilogram'}
+                    <div
+                      className={`w-full border border-gray-200 rounded-lg px-3 py-2 text-sm ${
+                        rollEntries.length > 0 ? "bg-gray-100 text-gray-700 cursor-not-allowed" : ""
+                      }`}
+                    >
+                      {formData.unit || "Kilogram"}
                     </div>
                   </div>
 
@@ -2021,17 +2399,26 @@ const BatchView = () => {
                       <label className="block text-sm font-medium text-gray-900 mb-1.5">
                         Available Rolls
                         <span className="text-gray-400 text-xs font-normal ml-2">
-                          ({availableRolls.length} roll{availableRolls.length !== 1 ? 's' : ''} available)
+                          ({availableRolls.length} roll{availableRolls.length !== 1 ? "s" : ""}{" "}
+                          available)
                         </span>
                       </label>
                       <div className="border border-gray-200 rounded-lg overflow-hidden">
                         <table className="w-full text-sm">
                           <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
-                              <th className="px-3 py-2 text-left font-medium text-gray-600">Color</th>
-                              <th className="px-3 py-2 text-left font-medium text-gray-600">Available</th>
-                              <th className="px-3 py-2 text-left font-medium text-gray-600">Roll Units</th>
-                              <th className="px-3 py-2 text-center font-medium text-gray-600">Action</th>
+                              <th className="px-3 py-2 text-left font-medium text-gray-600">
+                                Color
+                              </th>
+                              <th className="px-3 py-2 text-left font-medium text-gray-600">
+                                Available
+                              </th>
+                              <th className="px-3 py-2 text-left font-medium text-gray-600">
+                                Roll Units
+                              </th>
+                              <th className="px-3 py-2 text-center font-medium text-gray-600">
+                                Action
+                              </th>
                             </tr>
                           </thead>
                           <tbody>
@@ -2043,21 +2430,26 @@ const BatchView = () => {
                               </tr>
                             ) : (
                               availableRolls.map((roll) => (
-                                <tr key={roll.id} className="border-b border-gray-100 hover:bg-gray-50">
+                                <tr
+                                  key={roll.id}
+                                  className="border-b border-gray-100 hover:bg-gray-50"
+                                >
                                   <td className="px-3 py-2">
                                     <span className="inline-flex items-center gap-1.5">
                                       <span
                                         className="w-3 h-3 rounded-full border border-gray-200"
-                                        style={{ backgroundColor: roll.color?.toLowerCase() || '#ccc' }}
+                                        style={{
+                                          backgroundColor: roll.color?.toLowerCase() || "#ccc",
+                                        }}
                                       />
-                                      {roll.color || 'N/A'}
+                                      {roll.color || "N/A"}
                                     </span>
                                   </td>
                                   <td className="px-3 py-2 font-medium">
                                     {roll.remaining_quantity ?? roll.quantity} {roll.unit}
                                   </td>
                                   <td className="px-3 py-2 text-gray-500">
-                                    {roll.remaining_unit_count ?? roll.roll_unit_count ?? '-'}
+                                    {roll.remaining_unit_count ?? roll.roll_unit_count ?? "-"}
                                   </td>
                                   <td className="px-3 py-2 text-center">
                                     <button
@@ -2083,66 +2475,104 @@ const BatchView = () => {
                       <label className="block text-sm font-medium text-gray-900 mb-1.5">
                         Selected Rolls
                         <span className="text-blue-600 text-xs font-normal ml-2">
-                          ({rollEntries.length} roll{rollEntries.length !== 1 ? 's' : ''} selected)
+                          ({rollEntries.length} roll{rollEntries.length !== 1 ? "s" : ""} selected)
                         </span>
                       </label>
                       <div className="border border-gray-200 rounded-lg overflow-hidden">
                         <table className="w-full text-sm">
                           <thead className="bg-blue-50 border-b border-blue-100">
                             <tr>
-                              <th className="px-3 py-2 text-left font-medium text-gray-700">Color</th>
-                              <th className="px-3 py-2 text-left font-medium text-gray-700">Weight <span className="text-red-500">*</span></th>
-                              <th className="px-3 py-2 text-left font-medium text-gray-700">Units</th>
-                              <th className="px-3 py-2 text-center font-medium text-gray-700">Remove</th>
+                              <th className="px-3 py-2 text-left font-medium text-gray-700">
+                                Color
+                              </th>
+                              <th className="px-3 py-2 text-left font-medium text-gray-700">
+                                Weight <span className="text-red-500">*</span>
+                              </th>
+                              <th className="px-3 py-2 text-left font-medium text-gray-700">
+                                Units
+                              </th>
+                              <th className="px-3 py-2 text-center font-medium text-gray-700">
+                                Remove
+                              </th>
                             </tr>
                           </thead>
                           <tbody>
                             {rollEntries.map((entry) => (
-                              <tr key={entry.id} className={`border-b border-gray-100 ${!entry.isValid ? 'bg-red-50' : ''}`}>
+                              <tr
+                                key={entry.id}
+                                className={`border-b border-gray-100 ${!entry.isValid ? "bg-red-50" : ""}`}
+                              >
                                 <td className="px-3 py-2">
                                   <span className="inline-flex items-center gap-1.5">
                                     <span
                                       className="w-3 h-3 rounded-full border border-gray-200"
-                                      style={{ backgroundColor: entry.roll_color?.toLowerCase() || '#ccc' }}
+                                      style={{
+                                        backgroundColor: entry.roll_color?.toLowerCase() || "#ccc",
+                                      }}
                                     />
-                                    {entry.roll_color || 'N/A'}
+                                    {entry.roll_color || "N/A"}
                                   </span>
                                   <div className="text-xs text-gray-400">
                                     Avail: {entry.roll_remaining} {entry.roll_unit}
-                                    {entry.roll_remaining_units > 0 && ` | ${entry.roll_remaining_units} units`}
+                                    {entry.roll_remaining_units > 0 &&
+                                      ` | ${entry.roll_remaining_units} units`}
                                   </div>
                                 </td>
                                 <td className="px-3 py-2">
                                   <input
                                     type="number"
-                                    value={entry.weight || ''}
-                                    onChange={(e) => handleUpdateRollEntry(entry.id, 'weight', parseFloat(e.target.value) || 0)}
+                                    value={entry.weight || ""}
+                                    onChange={(e) =>
+                                      handleUpdateRollEntry(
+                                        entry.id,
+                                        "weight",
+                                        parseFloat(e.target.value) || 0
+                                      )
+                                    }
                                     min="0"
                                     max={entry.roll_remaining}
                                     step="0.01"
                                     className={`w-24 border rounded px-2 py-1 text-sm ${
-                                      entry.errorMessage ? 'border-red-500 bg-red-50' : 'border-gray-200'
+                                      entry.errorMessage
+                                        ? "border-red-500 bg-red-50"
+                                        : "border-gray-200"
                                     }`}
                                     placeholder="0"
                                   />
                                   {entry.errorMessage && (
-                                    <div className="text-xs text-red-500 mt-0.5">{entry.errorMessage}</div>
+                                    <div className="text-xs text-red-500 mt-0.5">
+                                      {entry.errorMessage}
+                                    </div>
                                   )}
                                 </td>
                                 <td className="px-3 py-2">
                                   <input
                                     type="number"
-                                    value={entry.units || ''}
-                                    onChange={(e) => handleUpdateRollEntry(entry.id, 'units', parseInt(e.target.value) || 0)}
+                                    value={entry.units || ""}
+                                    onChange={(e) =>
+                                      handleUpdateRollEntry(
+                                        entry.id,
+                                        "units",
+                                        parseInt(e.target.value) || 0
+                                      )
+                                    }
                                     min="0"
-                                    max={entry.roll_remaining_units > 0 ? entry.roll_remaining_units : undefined}
+                                    max={
+                                      entry.roll_remaining_units > 0
+                                        ? entry.roll_remaining_units
+                                        : undefined
+                                    }
                                     className={`w-20 border rounded px-2 py-1 text-sm ${
-                                      entry.unitsErrorMessage ? 'border-red-500 bg-red-50' : 'border-gray-200'
+                                      entry.unitsErrorMessage
+                                        ? "border-red-500 bg-red-50"
+                                        : "border-gray-200"
                                     }`}
                                     placeholder="0"
                                   />
                                   {entry.unitsErrorMessage && (
-                                    <div className="text-xs text-red-500 mt-0.5">{entry.unitsErrorMessage}</div>
+                                    <div className="text-xs text-red-500 mt-0.5">
+                                      {entry.unitsErrorMessage}
+                                    </div>
                                   )}
                                 </td>
                                 <td className="px-3 py-2 text-center">
@@ -2161,7 +2591,8 @@ const BatchView = () => {
                           <tfoot className="bg-gray-50 border-t border-gray-200">
                             <tr>
                               <td className="px-3 py-2 font-medium text-gray-700">
-                                Total ({rollEntryTotals.rollCount} roll{rollEntryTotals.rollCount !== 1 ? 's' : ''})
+                                Total ({rollEntryTotals.rollCount} roll
+                                {rollEntryTotals.rollCount !== 1 ? "s" : ""})
                               </td>
                               <td className="px-3 py-2 font-semibold text-blue-600">
                                 {rollEntryTotals.totalWeight.toFixed(2)} {formData.unit}
@@ -2215,19 +2646,30 @@ const BatchView = () => {
                           <div className="border border-gray-200 rounded-lg overflow-hidden">
                             <div className="divide-y divide-gray-100">
                               {sizeEntries.map((entry) => (
-                                <div key={entry.id} className="flex items-center gap-3 p-3 bg-white">
+                                <div
+                                  key={entry.id}
+                                  className="flex items-center gap-3 p-3 bg-white"
+                                >
                                   <input
                                     type="text"
                                     placeholder="Enter size..."
                                     value={entry.size}
-                                    onChange={(e) => handleUpdateSizeEntry(entry.id, 'size', e.target.value)}
+                                    onChange={(e) =>
+                                      handleUpdateSizeEntry(entry.id, "size", e.target.value)
+                                    }
                                     className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                   />
                                   <input
                                     type="number"
                                     placeholder="Pieces"
-                                    value={entry.pieces || ''}
-                                    onChange={(e) => handleUpdateSizeEntry(entry.id, 'pieces', parseInt(e.target.value) || 0)}
+                                    value={entry.pieces || ""}
+                                    onChange={(e) =>
+                                      handleUpdateSizeEntry(
+                                        entry.id,
+                                        "pieces",
+                                        parseInt(e.target.value) || 0
+                                      )
+                                    }
                                     min="0"
                                     className="w-24 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                   />
@@ -2242,17 +2684,20 @@ const BatchView = () => {
                               ))}
                             </div>
                             {/* Validation Footer */}
-                            <div className={`px-3 py-2 border-t text-sm font-medium flex items-center justify-between ${
-                              sizeBreakdownTotals.isMatching
-                                ? 'bg-green-50 border-green-100 text-green-700'
-                                : 'bg-amber-50 border-amber-100 text-amber-700'
-                            }`}>
+                            <div
+                              className={`px-3 py-2 border-t text-sm font-medium flex items-center justify-between ${
+                                sizeBreakdownTotals.isMatching
+                                  ? "bg-green-50 border-green-100 text-green-700"
+                                  : "bg-amber-50 border-amber-100 text-amber-700"
+                              }`}
+                            >
                               <span>
-                                Total: {sizeBreakdownTotals.totalSizePieces} / {sizeBreakdownTotals.expectedPieces || 0} pieces
+                                Total: {sizeBreakdownTotals.totalSizePieces} /{" "}
+                                {sizeBreakdownTotals.expectedPieces || 0} pieces
                               </span>
                               {sizeBreakdownTotals.expectedPieces > 0 && (
                                 <span>
-                                  {sizeBreakdownTotals.isMatching ? '✓ Matched' : '⚠ Mismatch'}
+                                  {sizeBreakdownTotals.isMatching ? "✓ Matched" : "⚠ Mismatch"}
                                 </span>
                               )}
                             </div>
@@ -2267,25 +2712,25 @@ const BatchView = () => {
                   )}
                 </div>
 
-            {/* Footer Buttons */}
-            <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-gray-200 sticky bottom-0 bg-white">
-              <button
-                className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium transition-colors"
-                onClick={closeDrawer}
-                disabled={saveLoading}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-6 py-2 rounded bg-[#2272B4] text-white hover:bg-[#0E538B] disabled:opacity-50 font-medium transition-colors shadow-sm"
-                onClick={handleSaveMultiRollBatch}
-                disabled={saveLoading || (rollEntries.length > 0 && !rollEntryTotals.allValid)}
-              >
-                {saveLoading ? "Saving..." : editingBatch ? "Update Batch" : "Save Batch"}
-              </button>
-            </div>
-          </>
-        )}
+                {/* Footer Buttons */}
+                <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-gray-200 sticky bottom-0 bg-white">
+                  <button
+                    className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium transition-colors"
+                    onClick={closeDrawer}
+                    disabled={saveLoading}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="px-6 py-2 rounded bg-[#2272B4] text-white hover:bg-[#0E538B] disabled:opacity-50 font-medium transition-colors shadow-sm"
+                    onClick={handleSaveMultiRollBatch}
+                    disabled={saveLoading || (rollEntries.length > 0 && !rollEntryTotals.allValid)}
+                  >
+                    {saveLoading ? "Saving..." : editingBatch ? "Update Batch" : "Save Batch"}
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -2295,7 +2740,7 @@ const BatchView = () => {
         <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50">
           <div className="bg-blue-600 text-white rounded-full shadow-2xl px-6 py-4 flex items-center gap-6 animate-slide-up">
             <span className="font-semibold text-sm">
-              {selectedRows.size} {selectedRows.size === 1 ? 'item' : 'items'} selected
+              {selectedRows.size} {selectedRows.size === 1 ? "item" : "items"} selected
             </span>
             <div className="flex items-center gap-3">
               <button
@@ -2319,15 +2764,22 @@ const BatchView = () => {
       {/* Warning Modal */}
       {showDeleteWarning && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={cancelBulkDelete}
-          />
+          <div className="absolute inset-0 bg-black/50" onClick={cancelBulkDelete} />
           <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-2xl mx-4">
             <div className="flex items-start gap-4 mb-6">
               <div className="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0">
-                <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                <svg
+                  className="w-6 h-6 text-yellow-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
                 </svg>
               </div>
               <div className="flex-1">
@@ -2335,7 +2787,8 @@ const BatchView = () => {
                   Warning: Some batches have sub-batches
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  Deleting these batches will also delete all associated sub-batches and production data. This action cannot be undone.
+                  Deleting these batches will also delete all associated sub-batches and production
+                  data. This action cannot be undone.
                 </p>
 
                 {/* Batches with Sub-batches */}
@@ -2346,7 +2799,7 @@ const BatchView = () => {
                       Batches with Sub-batches ({batchesWithSubBatches.length})
                     </h4>
                     <div className="bg-red-50 border border-red-200 rounded-lg p-3 max-h-32 overflow-y-auto">
-                      {batchesWithSubBatches.map(batch => (
+                      {batchesWithSubBatches.map((batch) => (
                         <div key={batch.id} className="text-sm text-gray-700 py-1">
                           BA00{batch.id} - {batch.name}
                         </div>
@@ -2363,7 +2816,7 @@ const BatchView = () => {
                       Batches without Sub-batches ({cleanBatches.length})
                     </h4>
                     <div className="bg-green-50 border border-green-200 rounded-lg p-3 max-h-32 overflow-y-auto">
-                      {cleanBatches.map(batch => (
+                      {cleanBatches.map((batch) => (
                         <div key={batch.id} className="text-sm text-gray-700 py-1">
                           BA00{batch.id} - {batch.name}
                         </div>
@@ -2395,27 +2848,23 @@ const BatchView = () => {
       {/* Type-to-Confirm Modal */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={cancelBulkDelete}
-          />
+          <div className="absolute inset-0 bg-black/50" onClick={cancelBulkDelete} />
           <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md mx-4">
             <div className="flex items-start gap-4 mb-6">
               <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
                 <Trash2 className="w-6 h-6 text-red-600" />
               </div>
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  Confirm Deletion
-                </h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Confirm Deletion</h3>
                 <p className="text-gray-600 mb-4">
-                  You are about to permanently delete {selectedRows.size} batch{selectedRows.size === 1 ? '' : 'es'}. This action cannot be undone.
+                  You are about to permanently delete {selectedRows.size} batch
+                  {selectedRows.size === 1 ? "" : "es"}. This action cannot be undone.
                 </p>
 
                 {/* List batches to be deleted */}
                 <div className="mb-4 bg-gray-50 border border-gray-200 rounded-lg p-3 max-h-40 overflow-y-auto">
-                  {Array.from(selectedRows).map(id => {
-                    const batch = batches.find(b => b.id === id);
+                  {Array.from(selectedRows).map((id) => {
+                    const batch = batches.find((b) => b.id === id);
                     return batch ? (
                       <div key={batch.id} className="text-sm text-gray-700 py-1">
                         BA00{batch.id} - {batch.name}
@@ -2426,7 +2875,11 @@ const BatchView = () => {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-900 mb-2">
-                    Type <span className="font-mono bg-gray-100 px-2 py-1 rounded text-red-600">delete</span> to confirm
+                    Type{" "}
+                    <span className="font-mono bg-gray-100 px-2 py-1 rounded text-red-600">
+                      delete
+                    </span>{" "}
+                    to confirm
                   </label>
                   <input
                     type="text"
@@ -2475,15 +2928,11 @@ const BatchView = () => {
               <X size={18} />
             </button>
 
-            <h3 className="text-base font-semibold text-gray-900 mb-4">
-              Custom Date Range
-            </h3>
+            <h3 className="text-base font-semibold text-gray-900 mb-4">Custom Date Range</h3>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  From Date
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">From Date</label>
                 <input
                   type="date"
                   value={customDateFrom}
@@ -2493,9 +2942,7 @@ const BatchView = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  To Date
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">To Date</label>
                 <input
                   type="date"
                   value={customDateTo}

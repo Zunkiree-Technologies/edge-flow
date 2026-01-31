@@ -4,8 +4,19 @@ import React from "react";
 import Header from "./Header";
 import ContentRouter from "../ContentRouter";
 import {
-  LayoutDashboard, Eye, Package, Layers, Building2, Monitor,
-  Archive, Settings, Users, Truck, Users2, Building, UserPlus
+  LayoutDashboard,
+  Eye,
+  Package,
+  Layers,
+  Building2,
+  Monitor,
+  Archive,
+  Settings,
+  Users,
+  Truck,
+  Users2,
+  Building,
+  UserPlus,
 } from "lucide-react";
 import { NavigationItem } from "../../types/navigation";
 

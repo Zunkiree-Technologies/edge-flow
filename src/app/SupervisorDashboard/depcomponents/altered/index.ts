@@ -1,2 +1,2 @@
-export { default as AlteredTaskDetailsModal } from './AlteredTaskDetailsModal';
-export { default as AssignAlteredWorkerModal } from './AssignAlteredWorkerModal';
+export { default as AlteredTaskDetailsModal } from "./AlteredTaskDetailsModal";
+export { default as AssignAlteredWorkerModal } from "./AssignAlteredWorkerModal";

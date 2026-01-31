@@ -28,26 +28,26 @@ import { formatUnitShort } from "@/app/utils/formatUtils";
 // Helper function to get background color from color name
 const getColorBg = (colorName: string): string => {
   const colorMap: Record<string, string> = {
-    black: '#1f2937',
-    red: '#ef4444',
-    blue: '#3b82f6',
-    green: '#22c55e',
-    yellow: '#fbbf24',
-    pink: '#f472b6',
-    white: '#f3f4f6',
-    orange: '#f97316',
-    purple: '#a855f7',
-    brown: '#92400e',
-    gray: '#6b7280',
-    grey: '#6b7280',
+    black: "#1f2937",
+    red: "#ef4444",
+    blue: "#3b82f6",
+    green: "#22c55e",
+    yellow: "#fbbf24",
+    pink: "#f472b6",
+    white: "#f3f4f6",
+    orange: "#f97316",
+    purple: "#a855f7",
+    brown: "#92400e",
+    gray: "#6b7280",
+    grey: "#6b7280",
   };
-  return colorMap[colorName?.toLowerCase()] || '#e5e7eb';
+  return colorMap[colorName?.toLowerCase()] || "#e5e7eb";
 };
 
 // Helper function to determine if text should be white or black
 const getColorText = (colorName: string): string => {
-  const darkColors = ['black', 'red', 'blue', 'green', 'purple', 'brown', 'gray', 'grey', 'orange'];
-  return darkColors.includes(colorName?.toLowerCase()) ? '#ffffff' : '#1f2937';
+  const darkColors = ["black", "red", "blue", "green", "purple", "brown", "gray", "grey", "orange"];
+  return darkColors.includes(colorName?.toLowerCase()) ? "#ffffff" : "#1f2937";
 };
 
 // Filter Dropdown Option Interface
@@ -78,12 +78,13 @@ const FilterDropdown = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const selectedOption = options.find(opt => opt.value === value);
+  const selectedOption = options.find((opt) => opt.value === value);
   const displayLabel = selectedOption?.label || label;
 
-  const filteredOptions = options.filter(opt =>
-    opt.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (opt.description && opt.description.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredOptions = options.filter(
+    (opt) =>
+      opt.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (opt.description && opt.description.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   useEffect(() => {
@@ -120,7 +121,9 @@ const FilterDropdown = ({
       >
         {icon && <span className="flex-shrink-0">{icon}</span>}
         <span className="max-w-[120px] truncate">{displayLabel}</span>
-        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown
+          className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+        />
       </button>
 
       {isOpen && (
@@ -153,13 +156,17 @@ const FilterDropdown = ({
                     value === option.value ? "bg-blue-50" : ""
                   }`}
                 >
-                  <div className={`mt-0.5 w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                    value === option.value ? "border-[#2272B4] bg-[#2272B4]" : "border-gray-300"
-                  }`}>
+                  <div
+                    className={`mt-0.5 w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                      value === option.value ? "border-[#2272B4] bg-[#2272B4]" : "border-gray-300"
+                    }`}
+                  >
                     {value === option.value && <Check className="w-2 h-2 text-white" />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className={`text-xs font-medium ${value === option.value ? "text-[#2272B4]" : "text-gray-900"}`}>
+                    <div
+                      className={`text-xs font-medium ${value === option.value ? "text-[#2272B4]" : "text-gray-900"}`}
+                    >
                       {option.label}
                     </div>
                     {option.description && (
@@ -189,13 +196,13 @@ interface Roll {
   id: number | string;
   name: string;
   quantity: number;
-  remaining_quantity?: number;  // Calculated: quantity - sum of batch quantities
-  roll_unit_count?: number;  // Number of physical roll pieces
-  remaining_unit_count?: number;  // Calculated: roll_unit_count - sum of batch unit_counts
+  remaining_quantity?: number; // Calculated: quantity - sum of batch quantities
+  roll_unit_count?: number; // Number of physical roll pieces
+  remaining_unit_count?: number; // Calculated: roll_unit_count - sum of batch unit_counts
   unit: string;
   color: string;
   vendor: Vendor | null;
-  created_at?: string;  // Date when roll was created
+  created_at?: string; // Date when roll was created
 }
 
 // ✅ .env API variables
@@ -270,7 +277,7 @@ const RollView = () => {
 
   // Toggle row selection
   const toggleRowSelection = (id: number | string) => {
-    setSelectedRows(prev => {
+    setSelectedRows((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
         newSet.delete(id);
@@ -282,8 +289,8 @@ const RollView = () => {
   };
 
   // Get unique values for filters
-  const uniqueUnits = Array.from(new Set(rolls.map(r => r.unit).filter(Boolean)));
-  const uniqueColors = Array.from(new Set(rolls.map(r => r.color).filter(Boolean)));
+  const uniqueUnits = Array.from(new Set(rolls.map((r) => r.unit).filter(Boolean)));
+  const uniqueColors = Array.from(new Set(rolls.map((r) => r.color).filter(Boolean)));
 
   // Helper function to check if date is within filter range
   const isDateInRange = (dateStr: string | undefined): boolean => {
@@ -326,10 +333,11 @@ const RollView = () => {
   // Filter, sort, and paginate rolls using useMemo
   const { paginatedRolls, totalPages, totalFiltered } = useMemo(() => {
     // Step 1: Filter
-    let filtered = rolls.filter(roll => {
+    let filtered = rolls.filter((roll) => {
       if (selectedUnit !== "all" && roll.unit !== selectedUnit) return false;
       if (selectedColor !== "all" && roll.color !== selectedColor) return false;
-      if (selectedVendorFilter !== "all" && roll.vendor?.id.toString() !== selectedVendorFilter) return false;
+      if (selectedVendorFilter !== "all" && roll.vendor?.id.toString() !== selectedVendorFilter)
+        return false;
 
       // Date filter
       if (selectedDateFilter !== "all" && !isDateInRange(roll.created_at)) return false;
@@ -339,13 +347,15 @@ const RollView = () => {
         const query = tableSearchQuery.toLowerCase();
         const searchFields = [
           roll.name,
-          `R${String(roll.id).padStart(3, '0')}`,
+          `R${String(roll.id).padStart(3, "0")}`,
           roll.color,
           roll.unit,
           roll.vendor?.name,
-        ].filter(Boolean).map(f => String(f).toLowerCase());
+        ]
+          .filter(Boolean)
+          .map((f) => String(f).toLowerCase());
 
-        if (!searchFields.some(field => field.includes(query))) {
+        if (!searchFields.some((field) => field.includes(query))) {
           return false;
         }
       }
@@ -374,8 +384,21 @@ const RollView = () => {
     const paginated = filtered.slice(startIndex, startIndex + itemsPerPage);
 
     return { paginatedRolls: paginated, totalPages, totalFiltered };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rolls, selectedUnit, selectedColor, selectedVendorFilter, selectedDateFilter, customDateFrom, customDateTo, tableSearchQuery, sortColumn, sortDirection, currentPage, itemsPerPage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    rolls,
+    selectedUnit,
+    selectedColor,
+    selectedVendorFilter,
+    selectedDateFilter,
+    customDateFrom,
+    customDateTo,
+    tableSearchQuery,
+    sortColumn,
+    sortDirection,
+    currentPage,
+    itemsPerPage,
+  ]);
 
   // Handle sort column click
   const handleSort = (column: string) => {
@@ -390,10 +413,10 @@ const RollView = () => {
 
   // Toggle all rows (only on current page)
   const toggleAllRows = () => {
-    if (paginatedRolls.length > 0 && paginatedRolls.every(r => selectedRows.has(r.id))) {
+    if (paginatedRolls.length > 0 && paginatedRolls.every((r) => selectedRows.has(r.id))) {
       setSelectedRows(new Set());
     } else {
-      setSelectedRows(new Set(paginatedRolls.map(r => r.id)));
+      setSelectedRows(new Set(paginatedRolls.map((r) => r.id)));
     }
   };
 
@@ -410,24 +433,41 @@ const RollView = () => {
   };
 
   // Check if any filters are active
-  const hasActiveFilters = selectedUnit !== "all" || selectedColor !== "all" || selectedVendorFilter !== "all" || selectedDateFilter !== "all" || tableSearchQuery.trim() !== "";
+  const hasActiveFilters =
+    selectedUnit !== "all" ||
+    selectedColor !== "all" ||
+    selectedVendorFilter !== "all" ||
+    selectedDateFilter !== "all" ||
+    tableSearchQuery.trim() !== "";
 
   // Get date filter display label
   const getDateFilterLabel = (): string => {
     switch (selectedDateFilter) {
-      case "all": return "All Dates";
-      case "today": return "Today";
-      case "last7days": return "Last 7 Days";
-      case "last30days": return "Last 30 Days";
-      case "thisMonth": return "This Month";
+      case "all":
+        return "All Dates";
+      case "today":
+        return "Today";
+      case "last7days":
+        return "Last 7 Days";
+      case "last30days":
+        return "Last 30 Days";
+      case "thisMonth":
+        return "This Month";
       case "custom":
         if (customDateFrom && customDateTo) {
-          const from = new Date(customDateFrom).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-          const to = new Date(customDateTo).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          const from = new Date(customDateFrom).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          });
+          const to = new Date(customDateTo).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          });
           return `${from} - ${to}`;
         }
         return "Custom Range";
-      default: return "All Dates";
+      default:
+        return "All Dates";
     }
   };
 
@@ -488,18 +528,18 @@ const RollView = () => {
       if (openMenuId !== null) {
         const target = event.target as HTMLElement;
         // Check if click is outside the dropdown menu
-        if (!target.closest('.relative')) {
+        if (!target.closest(".relative")) {
           setOpenMenuId(null);
         }
       }
     };
 
     if (openMenuId !== null) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openMenuId]);
 
@@ -515,14 +555,12 @@ const RollView = () => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   // Form change
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -567,7 +605,7 @@ const RollView = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "Accept": "application/json"
+            Accept: "application/json",
           },
           body: JSON.stringify(payload),
         });
@@ -579,7 +617,7 @@ const RollView = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Accept": "application/json"
+            Accept: "application/json",
           },
           body: JSON.stringify(payload),
         });
@@ -587,7 +625,9 @@ const RollView = () => {
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Failed to ${editingRoll ? 'update' : 'create'} roll: ${response.status} ${errorText}`);
+        throw new Error(
+          `Failed to ${editingRoll ? "update" : "create"} roll: ${response.status} ${errorText}`
+        );
       }
 
       await response.json();
@@ -596,10 +636,12 @@ const RollView = () => {
       await fetchRolls();
 
       // Show success message
-      showToast("success", `Roll ${editingRoll ? 'updated' : 'created'} successfully!`);
-
+      showToast("success", `Roll ${editingRoll ? "updated" : "created"} successfully!`);
     } catch (err) {
-      showToast("error", `Error ${editingRoll ? 'updating' : 'creating'} roll: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      showToast(
+        "error",
+        `Error ${editingRoll ? "updating" : "creating"} roll: ${err instanceof Error ? err.message : "Unknown error"}`
+      );
     } finally {
       setSaveLoading(false);
       resetFormData();
@@ -686,9 +728,7 @@ const RollView = () => {
     });
   };
 
-  const handleVendorFormChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleVendorFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setVendorFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -718,7 +758,7 @@ const RollView = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json"
+          Accept: "application/json",
         },
         body: JSON.stringify(payload),
       });
@@ -742,7 +782,6 @@ const RollView = () => {
       setShowVendorModal(false);
       resetVendorFormData();
       showToast("success", "Vendor created successfully!");
-
     } catch {
       showToast("error", "Failed to create vendor. Please try again.");
     } finally {
@@ -812,9 +851,17 @@ const RollView = () => {
             { value: "all", label: "All Dates", description: "Show rolls from any date" },
             { value: "today", label: "Today", description: "Rolls created today" },
             { value: "last7days", label: "Last 7 Days", description: "Rolls from the past week" },
-            { value: "last30days", label: "Last 30 Days", description: "Rolls from the past month" },
+            {
+              value: "last30days",
+              label: "Last 30 Days",
+              description: "Rolls from the past month",
+            },
             { value: "thisMonth", label: "This Month", description: "Rolls created this month" },
-            { value: "custom", label: "Custom Range...", description: "Select specific date range" },
+            {
+              value: "custom",
+              label: "Custom Range...",
+              description: "Select specific date range",
+            },
           ]}
         />
 
@@ -822,14 +869,17 @@ const RollView = () => {
         <FilterDropdown
           label="All Vendors"
           value={selectedVendorFilter}
-          onChange={(val) => { setSelectedVendorFilter(val); setCurrentPage(1); }}
+          onChange={(val) => {
+            setSelectedVendorFilter(val);
+            setCurrentPage(1);
+          }}
           options={[
             { value: "all", label: "All Vendors", description: "Show rolls from all vendors" },
-            ...vendors.map(vendor => ({
+            ...vendors.map((vendor) => ({
               value: String(vendor.id),
               label: vendor.name,
-              description: vendor.address || "No address"
-            }))
+              description: vendor.address || "No address",
+            })),
           ]}
         />
 
@@ -837,14 +887,17 @@ const RollView = () => {
         <FilterDropdown
           label="All Colors"
           value={selectedColor}
-          onChange={(val) => { setSelectedColor(val); setCurrentPage(1); }}
+          onChange={(val) => {
+            setSelectedColor(val);
+            setCurrentPage(1);
+          }}
           options={[
             { value: "all", label: "All Colors", description: "Show rolls with any color" },
-            ...uniqueColors.map(color => ({
+            ...uniqueColors.map((color) => ({
               value: color,
               label: color,
-              description: `Filter by ${color} color`
-            }))
+              description: `Filter by ${color} color`,
+            })),
           ]}
         />
 
@@ -852,14 +905,17 @@ const RollView = () => {
         <FilterDropdown
           label="All Units"
           value={selectedUnit}
-          onChange={(val) => { setSelectedUnit(val); setCurrentPage(1); }}
+          onChange={(val) => {
+            setSelectedUnit(val);
+            setCurrentPage(1);
+          }}
           options={[
             { value: "all", label: "All Units", description: "Show rolls with any unit" },
-            ...uniqueUnits.map(unit => ({
+            ...uniqueUnits.map((unit) => ({
               value: unit,
               label: unit,
-              description: `Filter by ${unit}`
-            }))
+              description: `Filter by ${unit}`,
+            })),
           ]}
         />
 
@@ -868,7 +924,7 @@ const RollView = () => {
           label="Sort"
           value={`${sortColumn}-${sortDirection}`}
           onChange={(val) => {
-            const [col, dir] = val.split('-');
+            const [col, dir] = val.split("-");
             setSortColumn(col);
             setSortDirection(dir as "asc" | "desc");
             setCurrentPage(1);
@@ -880,8 +936,16 @@ const RollView = () => {
             { value: "id-asc", label: "Oldest first", description: "First created rolls" },
             { value: "name-asc", label: "Name A-Z", description: "Alphabetical order" },
             { value: "name-desc", label: "Name Z-A", description: "Reverse alphabetical" },
-            { value: "quantity-desc", label: "Quantity (High to Low)", description: "Largest quantities first" },
-            { value: "quantity-asc", label: "Quantity (Low to High)", description: "Smallest quantities first" },
+            {
+              value: "quantity-desc",
+              label: "Quantity (High to Low)",
+              description: "Largest quantities first",
+            },
+            {
+              value: "quantity-asc",
+              label: "Quantity (Low to High)",
+              description: "Smallest quantities first",
+            },
           ]}
         />
 
@@ -918,10 +982,14 @@ const RollView = () => {
             <Package size={48} className="text-gray-300 mb-4" />
             <p className="text-black mb-2 font-medium">No rolls found</p>
             <p className="text-gray-500 mb-2 font-medium">
-              {hasActiveFilters ? "Try adjusting your filters or " : "Get started by "}creating your first roll.
+              {hasActiveFilters ? "Try adjusting your filters or " : "Get started by "}creating your
+              first roll.
             </p>
             {hasActiveFilters && (
-              <button onClick={clearAllFilters} className="mt-3 text-sm text-[#2272B4] hover:underline font-medium">
+              <button
+                onClick={clearAllFilters}
+                className="mt-3 text-sm text-[#2272B4] hover:underline font-medium"
+              >
                 Clear all filters
               </button>
             )}
@@ -931,64 +999,176 @@ const RollView = () => {
             <div className="overflow-x-auto">
               <table className="min-w-max w-full">
                 <thead>
-                  <tr className="border-b border-gray-200" style={{ backgroundColor: 'rgb(247, 242, 242)' }}>
+                  <tr
+                    className="border-b border-gray-200"
+                    style={{ backgroundColor: "rgb(247, 242, 242)" }}
+                  >
                     <th className="px-4 py-2 text-left w-12 whitespace-nowrap border-r border-gray-200">
                       <input
                         type="checkbox"
-                        checked={paginatedRolls.length > 0 && paginatedRolls.every(r => selectedRows.has(r.id))}
+                        checked={
+                          paginatedRolls.length > 0 &&
+                          paginatedRolls.every((r) => selectedRows.has(r.id))
+                        }
                         onChange={toggleAllRows}
                         className="w-4 h-4 rounded border-gray-300 text-[#2272B4] focus:ring-[#2272B4]"
                       />
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }} onClick={() => handleSort("id")}>
-                      <div className="flex items-center gap-1">Id {sortColumn === "id" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                      onClick={() => handleSort("id")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Id{" "}
+                        {sortColumn === "id" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }} onClick={() => handleSort("created_at")}>
-                      <div className="flex items-center gap-1">Created {sortColumn === "created_at" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                      onClick={() => handleSort("created_at")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Created{" "}
+                        {sortColumn === "created_at" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }} onClick={() => handleSort("name")}>
-                      <div className="flex items-center gap-1">Name {sortColumn === "name" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                      onClick={() => handleSort("name")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Name{" "}
+                        {sortColumn === "name" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }} onClick={() => handleSort("quantity")}>
-                      <div className="flex items-center gap-1">Total Qty {sortColumn === "quantity" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium cursor-pointer hover:bg-gray-100 whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                      onClick={() => handleSort("quantity")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Total Qty{" "}
+                        {sortColumn === "quantity" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                    >
                       <div className="flex items-center gap-1">Rem. Qty</div>
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>Unit</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>Roll Units</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>Rem. Units</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>Color</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200" style={{ color: '#141414', fontWeight: 500 }}>Vendor</th>
-                    <th className="px-4 py-2 text-right text-xs font-medium whitespace-nowrap" style={{ color: '#141414', fontWeight: 500 }}>Actions</th>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                    >
+                      Unit
+                    </th>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                    >
+                      Roll Units
+                    </th>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                    >
+                      Rem. Units
+                    </th>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                    >
+                      Color
+                    </th>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium whitespace-nowrap border-r border-gray-200"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                    >
+                      Vendor
+                    </th>
+                    <th
+                      className="px-4 py-2 text-right text-xs font-medium whitespace-nowrap"
+                      style={{ color: "#141414", fontWeight: 500 }}
+                    >
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {paginatedRolls.map((roll) => (
-                    <tr key={roll.id} className={`transition-colors ${selectedRows.has(roll.id) ? 'bg-blue-50' : 'hover:bg-gray-50'}`}>
+                    <tr
+                      key={roll.id}
+                      className={`transition-colors ${selectedRows.has(roll.id) ? "bg-blue-50" : "hover:bg-gray-50"}`}
+                    >
                       <td className="px-4 py-1.5 whitespace-nowrap border-r border-gray-200">
-                        <input type="checkbox" checked={selectedRows.has(roll.id)} onChange={() => toggleRowSelection(roll.id)} className="w-4 h-4 rounded border-gray-300 text-[#2272B4] focus:ring-[#2272B4]" />
+                        <input
+                          type="checkbox"
+                          checked={selectedRows.has(roll.id)}
+                          onChange={() => toggleRowSelection(roll.id)}
+                          className="w-4 h-4 rounded border-gray-300 text-[#2272B4] focus:ring-[#2272B4]"
+                        />
                       </td>
-                      <td className="px-4 py-1.5 text-sm text-gray-500 font-light whitespace-nowrap border-r border-gray-200">R{String(roll.id).padStart(3, '0')}</td>
+                      <td className="px-4 py-1.5 text-sm text-gray-500 font-light whitespace-nowrap border-r border-gray-200">
+                        R{String(roll.id).padStart(3, "0")}
+                      </td>
                       <td className="px-4 py-1.5 text-sm text-gray-500 font-light whitespace-nowrap border-r border-gray-200">
                         {formatNepaliDate(roll.created_at)}
                       </td>
-                      <td className="px-4 py-1.5 whitespace-nowrap border-r border-gray-200"><span className="text-sm font-medium text-[#2272B4] hover:underline cursor-pointer" onClick={() => handlePreview(roll)}>{roll.name}</span></td>
-                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">{roll.quantity}</td>
+                      <td className="px-4 py-1.5 whitespace-nowrap border-r border-gray-200">
+                        <span
+                          className="text-sm font-medium text-[#2272B4] hover:underline cursor-pointer"
+                          onClick={() => handlePreview(roll)}
+                        >
+                          {roll.name}
+                        </span>
+                      </td>
+                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">
+                        {roll.quantity}
+                      </td>
                       <td className="px-4 py-1.5 text-sm whitespace-nowrap border-r border-gray-200">
                         {(() => {
                           const remaining = roll.remaining_quantity ?? roll.quantity;
                           const isLow = remaining < roll.quantity * 0.2; // Less than 20% remaining
                           const isEmpty = remaining <= 0;
                           return (
-                            <span className={`font-light ${isEmpty ? 'text-red-600' : isLow ? 'text-amber-600' : 'text-green-600'}`}>
+                            <span
+                              className={`font-light ${isEmpty ? "text-red-600" : isLow ? "text-amber-600" : "text-green-600"}`}
+                            >
                               {remaining.toFixed(2)}
                             </span>
                           );
                         })()}
                       </td>
-                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">{formatUnitShort(roll.unit)}</td>
-                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">{roll.roll_unit_count || <span className="text-gray-400">-</span>}</td>
+                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">
+                        {formatUnitShort(roll.unit)}
+                      </td>
+                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">
+                        {roll.roll_unit_count || <span className="text-gray-400">-</span>}
+                      </td>
                       <td className="px-4 py-1.5 text-sm whitespace-nowrap border-r border-gray-200">
                         {(() => {
                           // Only show remaining if roll has unit count
@@ -999,7 +1179,9 @@ const RollView = () => {
                           const isLow = remainingUnits < roll.roll_unit_count * 0.2; // Less than 20% remaining
                           const isEmpty = remainingUnits <= 0;
                           return (
-                            <span className={`font-light ${isEmpty ? 'text-red-600' : isLow ? 'text-amber-600' : 'text-green-600'}`}>
+                            <span
+                              className={`font-light ${isEmpty ? "text-red-600" : isLow ? "text-amber-600" : "text-green-600"}`}
+                            >
                               {remainingUnits}
                             </span>
                           );
@@ -1011,7 +1193,7 @@ const RollView = () => {
                             className="px-2 py-0.5 rounded text-xs font-medium"
                             style={{
                               backgroundColor: getColorBg(roll.color),
-                              color: getColorText(roll.color)
+                              color: getColorText(roll.color),
                             }}
                           >
                             {roll.color}
@@ -1020,12 +1202,32 @@ const RollView = () => {
                           <span className="text-gray-400 font-light">-</span>
                         )}
                       </td>
-                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">{roll.vendor ? roll.vendor.name : <span className="text-gray-400">-</span>}</td>
+                      <td className="px-4 py-1.5 text-sm text-gray-600 font-light whitespace-nowrap border-r border-gray-200">
+                        {roll.vendor ? roll.vendor.name : <span className="text-gray-400">-</span>}
+                      </td>
                       <td className="px-4 py-1.5 text-right whitespace-nowrap">
                         <div className="flex items-center justify-end gap-1">
-                          <button onClick={() => handlePreview(roll)} className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors" title="Preview"><Eye size={16} /></button>
-                          <button onClick={() => handleEdit(roll)} className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors" title="Edit"><Edit2 size={16} /></button>
-                          <button onClick={() => handleDelete(roll.id)} className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-red-500 transition-colors" title="Delete"><Trash2 size={16} /></button>
+                          <button
+                            onClick={() => handlePreview(roll)}
+                            className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+                            title="Preview"
+                          >
+                            <Eye size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleEdit(roll)}
+                            className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+                            title="Edit"
+                          >
+                            <Edit2 size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(roll.id)}
+                            className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-red-500 transition-colors"
+                            title="Delete"
+                          >
+                            <Trash2 size={16} />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -1037,12 +1239,20 @@ const RollView = () => {
             {/* Pagination */}
             <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-between bg-white">
               <span className="text-sm text-gray-700">
-                Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalFiltered)} of {totalFiltered}
+                Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                {Math.min(currentPage * itemsPerPage, totalFiltered)} of {totalFiltered}
               </span>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600">per page</span>
-                  <select value={itemsPerPage} onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }} className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-[#2272B4]">
+                  <select
+                    value={itemsPerPage}
+                    onChange={(e) => {
+                      setItemsPerPage(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                    className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-[#2272B4]"
+                  >
                     <option value={10}>10</option>
                     <option value={25}>25</option>
                     <option value={50}>50</option>
@@ -1050,11 +1260,37 @@ const RollView = () => {
                   </select>
                 </div>
                 <div className="flex items-center gap-1">
-                  <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronsLeft className="w-4 h-4" /></button>
-                  <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronLeft className="w-4 h-4" /></button>
-                  <span className="px-3 py-1 text-sm text-gray-700">Page {currentPage} of {totalPages || 1}</span>
-                  <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage >= totalPages} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronRight className="w-4 h-4" /></button>
-                  <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage >= totalPages} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronsRight className="w-4 h-4" /></button>
+                  <button
+                    onClick={() => setCurrentPage(1)}
+                    disabled={currentPage === 1}
+                    className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+                  >
+                    <ChevronsLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <span className="px-3 py-1 text-sm text-gray-700">
+                    Page {currentPage} of {totalPages || 1}
+                  </span>
+                  <button
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={currentPage >= totalPages}
+                    className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(totalPages)}
+                    disabled={currentPage >= totalPages}
+                    className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+                  >
+                    <ChevronsRight className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -1069,7 +1305,9 @@ const RollView = () => {
             className="absolute inset-0 bg-black/20 transition-opacity duration-300"
             onClick={closeDrawer}
           />
-          <div className={`ml-auto w-full max-w-xl bg-white shadow-lg p-4 relative h-screen overflow-y-auto transition-transform duration-300 ease-in-out ${isDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+          <div
+            className={`ml-auto w-full max-w-xl bg-white shadow-lg p-4 relative h-screen overflow-y-auto transition-transform duration-300 ease-in-out ${isDrawerOpen ? "translate-x-0" : "translate-x-full"}`}
+          >
             <button
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
               onClick={closeDrawer}
@@ -1101,7 +1339,9 @@ const RollView = () => {
                   {/* Quantity */}
                   <div className="flex justify-between items-center py-1.5 border-b border-gray-100">
                     <span className="text-sm font-medium text-gray-700">Quantity</span>
-                    <span className="text-sm text-gray-500">{formData.quantity} {formData.unit}</span>
+                    <span className="text-sm text-gray-500">
+                      {formData.quantity} {formData.unit}
+                    </span>
                   </div>
 
                   {/* Roll Units */}
@@ -1120,7 +1360,7 @@ const RollView = () => {
                   <div className="flex justify-between items-center py-1.5 border-b border-gray-100">
                     <span className="text-sm font-medium text-gray-700">Vendor</span>
                     <span className="text-sm text-gray-500">
-                      {vendors.find(v => v.id.toString() === formData.vendorId)?.name || "-"}
+                      {vendors.find((v) => v.id.toString() === formData.vendorId)?.name || "-"}
                     </span>
                   </div>
 
@@ -1129,12 +1369,15 @@ const RollView = () => {
                     <span className="text-sm font-medium text-gray-700">Remaining Quantity</span>
                     <span className="text-sm">
                       {(() => {
-                        const remaining = editingRoll?.remaining_quantity ?? Number(formData.quantity);
+                        const remaining =
+                          editingRoll?.remaining_quantity ?? Number(formData.quantity);
                         const total = Number(formData.quantity);
                         const isLow = remaining < total * 0.2;
                         const isEmpty = remaining <= 0;
                         return (
-                          <span className={`${isEmpty ? 'text-red-600' : isLow ? 'text-amber-600' : 'text-green-600'}`}>
+                          <span
+                            className={`${isEmpty ? "text-red-600" : isLow ? "text-amber-600" : "text-green-600"}`}
+                          >
                             {remaining.toFixed(2)} {formData.unit}
                           </span>
                         );
@@ -1148,12 +1391,15 @@ const RollView = () => {
                       <span className="text-sm font-medium text-gray-700">Remaining Units</span>
                       <span className="text-sm">
                         {(() => {
-                          const remainingUnits = editingRoll?.remaining_unit_count ?? Number(formData.roll_unit_count);
+                          const remainingUnits =
+                            editingRoll?.remaining_unit_count ?? Number(formData.roll_unit_count);
                           const totalUnits = Number(formData.roll_unit_count);
                           const isLow = remainingUnits < totalUnits * 0.2;
                           const isEmpty = remainingUnits <= 0;
                           return (
-                            <span className={`${isEmpty ? 'text-red-600' : isLow ? 'text-amber-600' : 'text-green-600'}`}>
+                            <span
+                              className={`${isEmpty ? "text-red-600" : isLow ? "text-amber-600" : "text-green-600"}`}
+                            >
                               {remainingUnits}
                             </span>
                           );
@@ -1182,285 +1428,333 @@ const RollView = () => {
                 </div>
 
                 <div className="space-y-4">
-              {/* ID field - Show only for existing rolls */}
-              {editingRoll && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1.5">ID</label>
-                  <input
-                    type="text"
-                    name="id"
-                    value={`R${String(formData.id).padStart(3, '0')}`}
-                    readOnly
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-500 cursor-not-allowed"
-                  />
-                </div>
-              )}
-
-              {/* Roll Name */}
-              <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                  Roll Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Enter roll name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  readOnly={isPreview}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  required
-                />
-              </div>
-
-              {/* Quantity + Unit */}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                    Quantity <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    name="quantity"
-                    placeholder="Enter quantity"
-                    value={formData.quantity}
-                    onChange={handleChange}
-                    readOnly={isPreview}
-                    min="0"
-                    step="0.01"
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                    Unit
-                  </label>
-                  {isPreview ? (
-                    <div className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-700">
-                      {formData.unit}
+                  {/* ID field - Show only for existing rolls */}
+                  {editingRoll && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-1.5">ID</label>
+                      <input
+                        type="text"
+                        name="id"
+                        value={`R${String(formData.id).padStart(3, "0")}`}
+                        readOnly
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-500 cursor-not-allowed"
+                      />
                     </div>
-                  ) : (
-                    <div className="relative" ref={unitDropdownRef}>
-                      <button
-                        type="button"
-                        onClick={() => setShowUnitDropdown(!showUnitDropdown)}
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      >
-                        <span>{formData.unit || "Select Unit"}</span>
-                        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showUnitDropdown ? 'rotate-180' : ''}`} />
-                      </button>
-                      {showUnitDropdown && (
-                        <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden">
-                          {[
-                            { value: "Kilogram", label: "Kilogram", description: "Weight measurement (kg)" },
-                            { value: "Meter", label: "Meter", description: "Length measurement (m)" },
-                          ].map((option) => (
-                            <button
-                              key={option.value}
-                              type="button"
-                              onClick={() => {
-                                setFormData(prev => ({ ...prev, unit: option.value }));
-                                setShowUnitDropdown(false);
-                              }}
-                              className={`w-full px-3 py-2.5 text-left hover:bg-gray-50 transition-colors flex items-start gap-3 ${
-                                formData.unit === option.value ? "bg-blue-50" : ""
-                              }`}
-                            >
-                              <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                                formData.unit === option.value ? "border-[#2272B4] bg-[#2272B4]" : "border-gray-300"
-                              }`}>
-                                {formData.unit === option.value && <Check className="w-2.5 h-2.5 text-white" />}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className={`text-sm font-medium ${formData.unit === option.value ? "text-[#2272B4]" : "text-gray-900"}`}>
-                                  {option.label}
-                                </div>
-                                <div className="text-xs text-gray-500">{option.description}</div>
-                              </div>
-                            </button>
-                          ))}
+                  )}
+
+                  {/* Roll Name */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                      Roll Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Enter roll name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      readOnly={isPreview}
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      required
+                    />
+                  </div>
+
+                  {/* Quantity + Unit */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                        Quantity <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        name="quantity"
+                        placeholder="Enter quantity"
+                        value={formData.quantity}
+                        onChange={handleChange}
+                        readOnly={isPreview}
+                        min="0"
+                        step="0.01"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-1.5">Unit</label>
+                      {isPreview ? (
+                        <div className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-700">
+                          {formData.unit}
+                        </div>
+                      ) : (
+                        <div className="relative" ref={unitDropdownRef}>
+                          <button
+                            type="button"
+                            onClick={() => setShowUnitDropdown(!showUnitDropdown)}
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          >
+                            <span>{formData.unit || "Select Unit"}</span>
+                            <ChevronDown
+                              className={`w-4 h-4 text-gray-400 transition-transform ${showUnitDropdown ? "rotate-180" : ""}`}
+                            />
+                          </button>
+                          {showUnitDropdown && (
+                            <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden">
+                              {[
+                                {
+                                  value: "Kilogram",
+                                  label: "Kilogram",
+                                  description: "Weight measurement (kg)",
+                                },
+                                {
+                                  value: "Meter",
+                                  label: "Meter",
+                                  description: "Length measurement (m)",
+                                },
+                              ].map((option) => (
+                                <button
+                                  key={option.value}
+                                  type="button"
+                                  onClick={() => {
+                                    setFormData((prev) => ({ ...prev, unit: option.value }));
+                                    setShowUnitDropdown(false);
+                                  }}
+                                  className={`w-full px-3 py-2.5 text-left hover:bg-gray-50 transition-colors flex items-start gap-3 ${
+                                    formData.unit === option.value ? "bg-blue-50" : ""
+                                  }`}
+                                >
+                                  <div
+                                    className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                                      formData.unit === option.value
+                                        ? "border-[#2272B4] bg-[#2272B4]"
+                                        : "border-gray-300"
+                                    }`}
+                                  >
+                                    {formData.unit === option.value && (
+                                      <Check className="w-2.5 h-2.5 text-white" />
+                                    )}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div
+                                      className={`text-sm font-medium ${formData.unit === option.value ? "text-[#2272B4]" : "text-gray-900"}`}
+                                    >
+                                      {option.label}
+                                    </div>
+                                    <div className="text-xs text-gray-500">
+                                      {option.description}
+                                    </div>
+                                  </div>
+                                </button>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
-                  )}
-                </div>
-              </div>
+                  </div>
 
-              {/* Total no of Roll Unit - NEW FIELD */}
-              <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                  Total no of Roll Unit
-                </label>
-                <input
-                  type="number"
-                  name="roll_unit_count"
-                  placeholder="e.g., 15 rolls"
-                  value={formData.roll_unit_count}
-                  onChange={handleChange}
-                  readOnly={isPreview}
-                  min="0"
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                />
-                <p className="text-xs text-gray-500 mt-1">Number of physical roll pieces (e.g., 15 rolls vs 350 kg weight)</p>
-              </div>
+                  {/* Total no of Roll Unit - NEW FIELD */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                      Total no of Roll Unit
+                    </label>
+                    <input
+                      type="number"
+                      name="roll_unit_count"
+                      placeholder="e.g., 15 rolls"
+                      value={formData.roll_unit_count}
+                      onChange={handleChange}
+                      readOnly={isPreview}
+                      min="0"
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Number of physical roll pieces (e.g., 15 rolls vs 350 kg weight)
+                    </p>
+                  </div>
 
-              {/* Color */}
-              <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                  Color
-                </label>
-                <input
-                  type="text"
-                  name="color"
-                  placeholder="Enter color"
-                  value={formData.color}
-                  onChange={handleChange}
-                  readOnly={isPreview}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                />
-              </div>
+                  {/* Color */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">Color</label>
+                    <input
+                      type="text"
+                      name="color"
+                      placeholder="Enter color"
+                      value={formData.color}
+                      onChange={handleChange}
+                      readOnly={isPreview}
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    />
+                  </div>
 
-              {/* Vendor */}
-              <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                  Vendor
-                </label>
-                <div className="flex gap-2">
-                  {isPreview ? (
-                    <div className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-700">
-                      {vendors.find(v => v.id.toString() === formData.vendorId)?.name || "No vendor selected"}
-                    </div>
-                  ) : (
-                    <div className="flex-1 relative" ref={vendorDropdownRef}>
-                      <button
-                        type="button"
-                        onClick={() => setShowVendorDropdown(!showVendorDropdown)}
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      >
-                        <span className={formData.vendorId ? "text-gray-900" : "text-gray-500"}>
-                          {formData.vendorId
-                            ? vendors.find(v => v.id.toString() === formData.vendorId)?.name
-                            : "Select Vendor"}
-                        </span>
-                        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showVendorDropdown ? 'rotate-180' : ''}`} />
-                      </button>
-                      {showVendorDropdown && (
-                        <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden">
-                          {/* Search Input */}
-                          <div className="p-2 border-b border-gray-100">
-                            <div className="relative">
-                              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                              <input
-                                type="text"
-                                placeholder="Search vendors..."
-                                value={vendorSearchQuery}
-                                onChange={(e) => setVendorSearchQuery(e.target.value)}
-                                className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-[#2272B4] focus:border-transparent"
-                                autoFocus
-                              />
-                            </div>
-                          </div>
-                          {/* Options */}
-                          <div className="max-h-48 overflow-y-auto">
-                            {/* No Vendor Option */}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setFormData(prev => ({ ...prev, vendorId: "" }));
-                                setShowVendorDropdown(false);
-                                setVendorSearchQuery("");
-                              }}
-                              className={`w-full px-3 py-2.5 text-left hover:bg-gray-50 transition-colors flex items-start gap-3 ${
-                                !formData.vendorId ? "bg-blue-50" : ""
-                              }`}
-                            >
-                              <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                                !formData.vendorId ? "border-[#2272B4] bg-[#2272B4]" : "border-gray-300"
-                              }`}>
-                                {!formData.vendorId && <Check className="w-2.5 h-2.5 text-white" />}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className={`text-sm font-medium ${!formData.vendorId ? "text-[#2272B4]" : "text-gray-900"}`}>
-                                  No Vendor
+                  {/* Vendor */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">Vendor</label>
+                    <div className="flex gap-2">
+                      {isPreview ? (
+                        <div className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-700">
+                          {vendors.find((v) => v.id.toString() === formData.vendorId)?.name ||
+                            "No vendor selected"}
+                        </div>
+                      ) : (
+                        <div className="flex-1 relative" ref={vendorDropdownRef}>
+                          <button
+                            type="button"
+                            onClick={() => setShowVendorDropdown(!showVendorDropdown)}
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          >
+                            <span className={formData.vendorId ? "text-gray-900" : "text-gray-500"}>
+                              {formData.vendorId
+                                ? vendors.find((v) => v.id.toString() === formData.vendorId)?.name
+                                : "Select Vendor"}
+                            </span>
+                            <ChevronDown
+                              className={`w-4 h-4 text-gray-400 transition-transform ${showVendorDropdown ? "rotate-180" : ""}`}
+                            />
+                          </button>
+                          {showVendorDropdown && (
+                            <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden">
+                              {/* Search Input */}
+                              <div className="p-2 border-b border-gray-100">
+                                <div className="relative">
+                                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                  <input
+                                    type="text"
+                                    placeholder="Search vendors..."
+                                    value={vendorSearchQuery}
+                                    onChange={(e) => setVendorSearchQuery(e.target.value)}
+                                    className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-[#2272B4] focus:border-transparent"
+                                    autoFocus
+                                  />
                                 </div>
-                                <div className="text-xs text-gray-500">Leave vendor unassigned</div>
                               </div>
-                            </button>
-                            {/* Vendor Options */}
-                            {vendors
-                              .filter(v => v.name.toLowerCase().includes(vendorSearchQuery.toLowerCase()))
-                              .map((vendor) => (
+                              {/* Options */}
+                              <div className="max-h-48 overflow-y-auto">
+                                {/* No Vendor Option */}
                                 <button
-                                  key={vendor.id}
                                   type="button"
                                   onClick={() => {
-                                    setFormData(prev => ({ ...prev, vendorId: vendor.id.toString() }));
+                                    setFormData((prev) => ({ ...prev, vendorId: "" }));
                                     setShowVendorDropdown(false);
                                     setVendorSearchQuery("");
                                   }}
                                   className={`w-full px-3 py-2.5 text-left hover:bg-gray-50 transition-colors flex items-start gap-3 ${
-                                    formData.vendorId === vendor.id.toString() ? "bg-blue-50" : ""
+                                    !formData.vendorId ? "bg-blue-50" : ""
                                   }`}
                                 >
-                                  <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                                    formData.vendorId === vendor.id.toString() ? "border-[#2272B4] bg-[#2272B4]" : "border-gray-300"
-                                  }`}>
-                                    {formData.vendorId === vendor.id.toString() && <Check className="w-2.5 h-2.5 text-white" />}
+                                  <div
+                                    className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                                      !formData.vendorId
+                                        ? "border-[#2272B4] bg-[#2272B4]"
+                                        : "border-gray-300"
+                                    }`}
+                                  >
+                                    {!formData.vendorId && (
+                                      <Check className="w-2.5 h-2.5 text-white" />
+                                    )}
                                   </div>
                                   <div className="flex-1 min-w-0">
-                                    <div className={`text-sm font-medium ${formData.vendorId === vendor.id.toString() ? "text-[#2272B4]" : "text-gray-900"}`}>
-                                      {vendor.name}
+                                    <div
+                                      className={`text-sm font-medium ${!formData.vendorId ? "text-[#2272B4]" : "text-gray-900"}`}
+                                    >
+                                      No Vendor
                                     </div>
-                                    <div className="text-xs text-gray-500">{vendor.address || "No address"}</div>
+                                    <div className="text-xs text-gray-500">
+                                      Leave vendor unassigned
+                                    </div>
                                   </div>
                                 </button>
-                              ))}
-                            {vendors.filter(v => v.name.toLowerCase().includes(vendorSearchQuery.toLowerCase())).length === 0 && (
-                              <div className="px-3 py-4 text-sm text-gray-500 text-center">
-                                No vendors found
+                                {/* Vendor Options */}
+                                {vendors
+                                  .filter((v) =>
+                                    v.name.toLowerCase().includes(vendorSearchQuery.toLowerCase())
+                                  )
+                                  .map((vendor) => (
+                                    <button
+                                      key={vendor.id}
+                                      type="button"
+                                      onClick={() => {
+                                        setFormData((prev) => ({
+                                          ...prev,
+                                          vendorId: vendor.id.toString(),
+                                        }));
+                                        setShowVendorDropdown(false);
+                                        setVendorSearchQuery("");
+                                      }}
+                                      className={`w-full px-3 py-2.5 text-left hover:bg-gray-50 transition-colors flex items-start gap-3 ${
+                                        formData.vendorId === vendor.id.toString()
+                                          ? "bg-blue-50"
+                                          : ""
+                                      }`}
+                                    >
+                                      <div
+                                        className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                                          formData.vendorId === vendor.id.toString()
+                                            ? "border-[#2272B4] bg-[#2272B4]"
+                                            : "border-gray-300"
+                                        }`}
+                                      >
+                                        {formData.vendorId === vendor.id.toString() && (
+                                          <Check className="w-2.5 h-2.5 text-white" />
+                                        )}
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <div
+                                          className={`text-sm font-medium ${formData.vendorId === vendor.id.toString() ? "text-[#2272B4]" : "text-gray-900"}`}
+                                        >
+                                          {vendor.name}
+                                        </div>
+                                        <div className="text-xs text-gray-500">
+                                          {vendor.address || "No address"}
+                                        </div>
+                                      </div>
+                                    </button>
+                                  ))}
+                                {vendors.filter((v) =>
+                                  v.name.toLowerCase().includes(vendorSearchQuery.toLowerCase())
+                                ).length === 0 && (
+                                  <div className="px-3 py-4 text-sm text-gray-500 text-center">
+                                    No vendors found
+                                  </div>
+                                )}
                               </div>
-                            )}
-                          </div>
+                            </div>
+                          )}
                         </div>
                       )}
+                      {!isPreview && (
+                        <button
+                          type="button"
+                          onClick={() => setShowVendorModal(true)}
+                          className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-1"
+                          title="Add New Vendor"
+                        >
+                          <Plus size={16} />
+                          Add New
+                        </button>
+                      )}
                     </div>
-                  )}
-                  {!isPreview && (
-                    <button
-                      type="button"
-                      onClick={() => setShowVendorModal(true)}
-                      className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-1"
-                      title="Add New Vendor"
-                    >
-                      <Plus size={16} />
-                      Add New
-                    </button>
-                  )}
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Footer Buttons */}
-            <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-gray-200 sticky bottom-0 bg-white">
-              <button
-                className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium transition-colors"
-                onClick={closeDrawer}
-                disabled={saveLoading}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-6 py-2 rounded bg-[#2272B4] text-white hover:bg-[#0E538B] disabled:opacity-50 font-medium transition-colors shadow-sm"
-                onClick={handleSave}
-                disabled={saveLoading}
-              >
-                {saveLoading ? "Saving..." : "Save Roll"}
-              </button>
-            </div>
-          </>
-        )}
-        </div>
+                {/* Footer Buttons */}
+                <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-gray-200 sticky bottom-0 bg-white">
+                  <button
+                    className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium transition-colors"
+                    onClick={closeDrawer}
+                    disabled={saveLoading}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="px-6 py-2 rounded bg-[#2272B4] text-white hover:bg-[#0E538B] disabled:opacity-50 font-medium transition-colors shadow-sm"
+                    onClick={handleSave}
+                    disabled={saveLoading}
+                  >
+                    {saveLoading ? "Saving..." : "Save Roll"}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       )}
 
@@ -1507,9 +1801,7 @@ const RollView = () => {
 
               {/* VAT/PAN */}
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-1.5">
-                  VAT/PAN
-                </label>
+                <label className="block text-sm font-semibold text-gray-900 mb-1.5">VAT/PAN</label>
                 <input
                   type="text"
                   name="vat_pan"
@@ -1522,9 +1814,7 @@ const RollView = () => {
 
               {/* Address */}
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-1.5">
-                  Address
-                </label>
+                <label className="block text-sm font-semibold text-gray-900 mb-1.5">Address</label>
                 <input
                   type="text"
                   name="address"
@@ -1537,9 +1827,7 @@ const RollView = () => {
 
               {/* Phone */}
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-1.5">
-                  Phone
-                </label>
+                <label className="block text-sm font-semibold text-gray-900 mb-1.5">Phone</label>
                 <input
                   type="text"
                   name="phone"
@@ -1552,9 +1840,7 @@ const RollView = () => {
 
               {/* Comment */}
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-1.5">
-                  Comment
-                </label>
+                <label className="block text-sm font-semibold text-gray-900 mb-1.5">Comment</label>
                 <textarea
                   name="comment"
                   placeholder="Optional comments"
@@ -1602,15 +1888,11 @@ const RollView = () => {
               <X size={18} />
             </button>
 
-            <h3 className="text-base font-semibold text-gray-900 mb-4">
-              Custom Date Range
-            </h3>
+            <h3 className="text-base font-semibold text-gray-900 mb-4">Custom Date Range</h3>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  From Date
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">From Date</label>
                 <input
                   type="date"
                   value={customDateFrom}
@@ -1620,9 +1902,7 @@ const RollView = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  To Date
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">To Date</label>
                 <input
                   type="date"
                   value={customDateTo}
@@ -1665,6 +1945,5 @@ const RollView = () => {
     </div>
   );
 };
-
 
 export default RollView;

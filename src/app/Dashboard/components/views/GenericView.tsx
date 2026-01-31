@@ -51,12 +51,13 @@ const FilterDropdown = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const selectedOption = options.find(opt => opt.value === value);
+  const selectedOption = options.find((opt) => opt.value === value);
   const displayLabel = selectedOption?.label || label;
 
-  const filteredOptions = options.filter(opt =>
-    opt.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (opt.description && opt.description.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredOptions = options.filter(
+    (opt) =>
+      opt.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (opt.description && opt.description.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   useEffect(() => {
@@ -93,7 +94,9 @@ const FilterDropdown = ({
       >
         {icon && <span className="flex-shrink-0">{icon}</span>}
         <span className="max-w-[150px] truncate">{displayLabel}</span>
-        <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown
+          className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+        />
       </button>
 
       {isOpen && (
@@ -126,13 +129,17 @@ const FilterDropdown = ({
                     value === option.value ? "bg-blue-50" : ""
                   }`}
                 >
-                  <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                    value === option.value ? "border-[#2272B4] bg-[#2272B4]" : "border-gray-300"
-                  }`}>
+                  <div
+                    className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                      value === option.value ? "border-[#2272B4] bg-[#2272B4]" : "border-gray-300"
+                    }`}
+                  >
                     {value === option.value && <Check className="w-2.5 h-2.5 text-white" />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className={`text-sm font-medium ${value === option.value ? "text-[#2272B4]" : "text-gray-900"}`}>
+                    <div
+                      className={`text-sm font-medium ${value === option.value ? "text-[#2272B4]" : "text-gray-900"}`}
+                    >
                       {option.label}
                     </div>
                     {option.description && (
@@ -193,19 +200,21 @@ const VendorView = () => {
   // Filter, sort, and paginate vendors using useMemo
   const { paginatedVendors, totalPages, totalFiltered } = useMemo(() => {
     // Step 1: Filter
-    let filtered = vendors.filter(vendor => {
+    let filtered = vendors.filter((vendor) => {
       // Search filter
       if (tableSearchQuery.trim()) {
         const query = tableSearchQuery.toLowerCase();
         const searchFields = [
           vendor.name,
-          `V${String(vendor.id).padStart(3, '0')}`,
+          `V${String(vendor.id).padStart(3, "0")}`,
           vendor.address,
           vendor.vat_pan,
           vendor.phone,
-        ].filter(Boolean).map(f => String(f).toLowerCase());
+        ]
+          .filter(Boolean)
+          .map((f) => String(f).toLowerCase());
 
-        if (!searchFields.some(field => field.includes(query))) {
+        if (!searchFields.some((field) => field.includes(query))) {
           return false;
         }
       }
@@ -284,9 +293,7 @@ const VendorView = () => {
   }, [fetchVendors]);
 
   // Handle Change
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -403,7 +410,7 @@ const VendorView = () => {
           label="Sort"
           value={`${sortColumn}-${sortDirection}`}
           onChange={(val) => {
-            const [col, dir] = val.split('-');
+            const [col, dir] = val.split("-");
             setSortColumn(col);
             setSortDirection(dir as "asc" | "desc");
             setCurrentPage(1);
@@ -473,28 +480,68 @@ const VendorView = () => {
               <table className="w-full min-w-full">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50">
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onClick={() => handleSort("id")}>
-                      <div className="flex items-center gap-1">ID {sortColumn === "id" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleSort("id")}
+                    >
+                      <div className="flex items-center gap-1">
+                        ID{" "}
+                        {sortColumn === "id" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onClick={() => handleSort("name")}>
-                      <div className="flex items-center gap-1">Name {sortColumn === "name" && (sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}</div>
+                    <th
+                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleSort("name")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Name{" "}
+                        {sortColumn === "name" &&
+                          (sortDirection === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">VAT/PAN</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      VAT/PAN
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Address
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Phone
+                    </th>
+                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {paginatedVendors.map((vendor) => (
                     <tr key={vendor.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-2 text-sm text-gray-500">V{String(vendor.id).padStart(3, '0')}</td>
-                      <td className="px-4 py-2">
-                        <span className="text-sm font-medium text-[#2272B4] hover:underline cursor-pointer">{vendor.name}</span>
+                      <td className="px-4 py-2 text-sm text-gray-500">
+                        V{String(vendor.id).padStart(3, "0")}
                       </td>
-                      <td className="px-4 py-2 text-sm text-gray-600">{vendor.vat_pan || <span className="text-gray-400">—</span>}</td>
-                      <td className="px-4 py-2 text-sm text-gray-600">{vendor.address || <span className="text-gray-400">—</span>}</td>
-                      <td className="px-4 py-2 text-sm text-gray-600">{vendor.phone || <span className="text-gray-400">—</span>}</td>
+                      <td className="px-4 py-2">
+                        <span className="text-sm font-medium text-[#2272B4] hover:underline cursor-pointer">
+                          {vendor.name}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-600">
+                        {vendor.vat_pan || <span className="text-gray-400">—</span>}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-600">
+                        {vendor.address || <span className="text-gray-400">—</span>}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-600">
+                        {vendor.phone || <span className="text-gray-400">—</span>}
+                      </td>
                       <td className="px-4 py-2 text-right">
                         <div className="flex items-center justify-end gap-1">
                           <button
@@ -529,12 +576,20 @@ const VendorView = () => {
             {/* Pagination */}
             <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-between bg-white">
               <span className="text-sm text-gray-700">
-                Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalFiltered)} of {totalFiltered}
+                Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                {Math.min(currentPage * itemsPerPage, totalFiltered)} of {totalFiltered}
               </span>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600">per page</span>
-                  <select value={itemsPerPage} onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }} className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-[#2272B4]">
+                  <select
+                    value={itemsPerPage}
+                    onChange={(e) => {
+                      setItemsPerPage(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                    className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-[#2272B4]"
+                  >
                     <option value={10}>10</option>
                     <option value={25}>25</option>
                     <option value={50}>50</option>
@@ -542,11 +597,37 @@ const VendorView = () => {
                   </select>
                 </div>
                 <div className="flex items-center gap-1">
-                  <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronsLeft className="w-4 h-4" /></button>
-                  <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronLeft className="w-4 h-4" /></button>
-                  <span className="px-3 py-1 text-sm text-gray-700">Page {currentPage} of {totalPages || 1}</span>
-                  <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage >= totalPages} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronRight className="w-4 h-4" /></button>
-                  <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage >= totalPages} className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"><ChevronsRight className="w-4 h-4" /></button>
+                  <button
+                    onClick={() => setCurrentPage(1)}
+                    disabled={currentPage === 1}
+                    className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+                  >
+                    <ChevronsLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <span className="px-3 py-1 text-sm text-gray-700">
+                    Page {currentPage} of {totalPages || 1}
+                  </span>
+                  <button
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={currentPage >= totalPages}
+                    className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(totalPages)}
+                    disabled={currentPage >= totalPages}
+                    className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+                  >
+                    <ChevronsRight className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -567,16 +648,9 @@ const VendorView = () => {
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                   <Building2 size={20} className="text-blue-600" />
-                  {isPreview
-                    ? "Vendor Details"
-                    : editingVendor
-                    ? "Edit Vendor"
-                    : "Add New Vendor"}
+                  {isPreview ? "Vendor Details" : editingVendor ? "Edit Vendor" : "Add New Vendor"}
                 </h3>
-                <button
-                  className="text-gray-500 hover:text-gray-700"
-                  onClick={closeDrawer}
-                >
+                <button className="text-gray-500 hover:text-gray-700" onClick={closeDrawer}>
                   <X size={20} />
                 </button>
               </div>
@@ -604,9 +678,7 @@ const VendorView = () => {
 
                 {/* VAT/PAN */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                    VAT/PAN
-                  </label>
+                  <label className="block text-sm font-medium text-gray-900 mb-1.5">VAT/PAN</label>
                   <input
                     type="text"
                     name="vat_pan"
@@ -620,9 +692,7 @@ const VendorView = () => {
 
                 {/* Address */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                    Address
-                  </label>
+                  <label className="block text-sm font-medium text-gray-900 mb-1.5">Address</label>
                   <input
                     type="text"
                     name="address"
@@ -636,9 +706,7 @@ const VendorView = () => {
 
                 {/* Phone */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                    Phone
-                  </label>
+                  <label className="block text-sm font-medium text-gray-900 mb-1.5">Phone</label>
                   <input
                     type="text"
                     name="phone"
@@ -652,9 +720,7 @@ const VendorView = () => {
 
                 {/* Comment */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                    Comment
-                  </label>
+                  <label className="block text-sm font-medium text-gray-900 mb-1.5">Comment</label>
                   <textarea
                     name="comment"
                     placeholder="Optional comments"
@@ -683,11 +749,7 @@ const VendorView = () => {
                   onClick={handleSaveVendor}
                   disabled={saveLoading}
                 >
-                  {saveLoading
-                    ? "Saving..."
-                    : editingVendor
-                    ? "Update Vendor"
-                    : "Save Vendor"}
+                  {saveLoading ? "Saving..." : editingVendor ? "Update Vendor" : "Save Vendor"}
                 </button>
               )}
             </div>

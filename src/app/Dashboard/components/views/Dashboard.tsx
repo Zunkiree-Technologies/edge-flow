@@ -2,7 +2,18 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Package, FileText, Building2, Users, CheckCircle, AlertTriangle, Clock, Plus, UserPlus, Zap } from "lucide-react";
+import {
+  Package,
+  FileText,
+  Building2,
+  Users,
+  CheckCircle,
+  AlertTriangle,
+  Clock,
+  Plus,
+  UserPlus,
+  Zap,
+} from "lucide-react";
 
 interface StatCardProps {
   title: string;
@@ -18,9 +29,7 @@ const StatCard = ({ title, value, icon }: StatCardProps) => {
           <p className="text-sm font-medium text-gray-500 mb-1">{title}</p>
           <p className="text-2xl font-semibold text-gray-900">{value}</p>
         </div>
-        <div className="text-gray-400">
-          {icon}
-        </div>
+        <div className="text-gray-400">{icon}</div>
       </div>
     </div>
   );
@@ -38,17 +47,19 @@ const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
     workers: 0,
   });
   const [loading, setLoading] = useState(true);
-  const [recentActivities, setRecentActivities] = useState<Array<{
-    id: string;
-    icon: React.ReactNode;
-    iconBg: string;
-    title: string;
-    description: string;
-    user: string;
-    time: string;
-    status: string;
-    statusColor: string;
-  }>>([]);
+  const [recentActivities, setRecentActivities] = useState<
+    Array<{
+      id: string;
+      icon: React.ReactNode;
+      iconBg: string;
+      title: string;
+      description: string;
+      user: string;
+      time: string;
+      status: string;
+      statusColor: string;
+    }>
+  >([]);
 
   const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -57,13 +68,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [batchesRes, rollsRes, departmentsRes, workersRes, subBatchesRes] = await Promise.all([
-          axios.get(`${API}/batches`),
-          axios.get(`${API}/rolls`),
-          axios.get(`${API}/departments`),
-          axios.get(`${API}/workers`),
-          axios.get(`${API}/sub-batches`),
-        ]);
+        const [batchesRes, rollsRes, departmentsRes, workersRes, subBatchesRes] = await Promise.all(
+          [
+            axios.get(`${API}/batches`),
+            axios.get(`${API}/rolls`),
+            axios.get(`${API}/departments`),
+            axios.get(`${API}/workers`),
+            axios.get(`${API}/sub-batches`),
+          ]
+        );
 
         setStatsData({
           batches: batchesRes.data.length,
@@ -87,73 +100,104 @@ const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
         }> = [];
 
         // Add recent batches
-        batchesRes.data.slice(-3).forEach((batch: { id: number; name: string; quantity: number; unit: string; color: string; created_at?: string }) => {
-          activities.push({
-            id: `batch-${batch.id}`,
-            icon: <Package className="w-5 h-5 text-blue-600" />,
-            iconBg: "bg-blue-100",
-            title: "New Batch Created",
-            description: `Batch "${batch.name}" created with ${batch.quantity} ${batch.unit}${batch.color ? ` of ${batch.color} fabric` : ''}.`,
-            user: "Admin User",
-            time: batch.created_at ? getTimeAgo(batch.created_at) : "Recently",
-            status: "completed",
-            statusColor: "text-green-600",
-            timestamp: batch.created_at || new Date().toISOString(),
-          });
-        });
+        batchesRes.data
+          .slice(-3)
+          .forEach(
+            (batch: {
+              id: number;
+              name: string;
+              quantity: number;
+              unit: string;
+              color: string;
+              created_at?: string;
+            }) => {
+              activities.push({
+                id: `batch-${batch.id}`,
+                icon: <Package className="w-5 h-5 text-blue-600" />,
+                iconBg: "bg-blue-100",
+                title: "New Batch Created",
+                description: `Batch "${batch.name}" created with ${batch.quantity} ${batch.unit}${batch.color ? ` of ${batch.color} fabric` : ""}.`,
+                user: "Admin User",
+                time: batch.created_at ? getTimeAgo(batch.created_at) : "Recently",
+                status: "completed",
+                statusColor: "text-green-600",
+                timestamp: batch.created_at || new Date().toISOString(),
+              });
+            }
+          );
 
         // Add recent sub-batches
-        subBatchesRes.data.slice(-2).forEach((sb: { id: number; name: string; estimated_pieces?: number; created_at?: string }) => {
-          activities.push({
-            id: `subbatch-${sb.id}`,
-            icon: <FileText className="w-5 h-5 text-purple-600" />,
-            iconBg: "bg-purple-100",
-            title: "Sub-Batch Created",
-            description: `Sub-Batch "${sb.name}" created${sb.estimated_pieces ? ` with ${sb.estimated_pieces} estimated pieces` : ''}.`,
-            user: "Admin User",
-            time: sb.created_at ? getTimeAgo(sb.created_at) : "Recently",
-            status: "in progress",
-            statusColor: "text-blue-600",
-            timestamp: sb.created_at || new Date().toISOString(),
-          });
-        });
+        subBatchesRes.data
+          .slice(-2)
+          .forEach(
+            (sb: { id: number; name: string; estimated_pieces?: number; created_at?: string }) => {
+              activities.push({
+                id: `subbatch-${sb.id}`,
+                icon: <FileText className="w-5 h-5 text-purple-600" />,
+                iconBg: "bg-purple-100",
+                title: "Sub-Batch Created",
+                description: `Sub-Batch "${sb.name}" created${sb.estimated_pieces ? ` with ${sb.estimated_pieces} estimated pieces` : ""}.`,
+                user: "Admin User",
+                time: sb.created_at ? getTimeAgo(sb.created_at) : "Recently",
+                status: "in progress",
+                statusColor: "text-blue-600",
+                timestamp: sb.created_at || new Date().toISOString(),
+              });
+            }
+          );
 
         // Add recent rolls
-        rollsRes.data.slice(-2).forEach((roll: { id: number; name: string; quantity: number; unit: string; color?: string; created_at?: string }) => {
-          activities.push({
-            id: `roll-${roll.id}`,
-            icon: <FileText className="w-5 h-5 text-green-600" />,
-            iconBg: "bg-green-100",
-            title: "Roll Received",
-            description: `Roll "${roll.name}" (${roll.quantity} ${roll.unit}${roll.color ? `, ${roll.color}` : ''}) added to inventory.`,
-            user: "Vendor Manager",
-            time: roll.created_at ? getTimeAgo(roll.created_at) : "Recently",
-            status: "completed",
-            statusColor: "text-green-600",
-            timestamp: roll.created_at || new Date().toISOString(),
-          });
-        });
+        rollsRes.data
+          .slice(-2)
+          .forEach(
+            (roll: {
+              id: number;
+              name: string;
+              quantity: number;
+              unit: string;
+              color?: string;
+              created_at?: string;
+            }) => {
+              activities.push({
+                id: `roll-${roll.id}`,
+                icon: <FileText className="w-5 h-5 text-green-600" />,
+                iconBg: "bg-green-100",
+                title: "Roll Received",
+                description: `Roll "${roll.name}" (${roll.quantity} ${roll.unit}${roll.color ? `, ${roll.color}` : ""}) added to inventory.`,
+                user: "Vendor Manager",
+                time: roll.created_at ? getTimeAgo(roll.created_at) : "Recently",
+                status: "completed",
+                statusColor: "text-green-600",
+                timestamp: roll.created_at || new Date().toISOString(),
+              });
+            }
+          );
 
         // Add recent workers
-        workersRes.data.slice(-1).forEach((worker: { id: number; name: string; position?: string; created_at?: string }) => {
-          activities.push({
-            id: `worker-${worker.id}`,
-            icon: <Users className="w-5 h-5 text-purple-600" />,
-            iconBg: "bg-purple-100",
-            title: "Worker Added",
-            description: `New worker "${worker.name}" added${worker.position ? ` as ${worker.position}` : ''}.`,
-            user: "HR Manager",
-            time: worker.created_at ? getTimeAgo(worker.created_at) : "Recently",
-            status: "completed",
-            statusColor: "text-green-600",
-            timestamp: worker.created_at || new Date().toISOString(),
-          });
-        });
+        workersRes.data
+          .slice(-1)
+          .forEach(
+            (worker: { id: number; name: string; position?: string; created_at?: string }) => {
+              activities.push({
+                id: `worker-${worker.id}`,
+                icon: <Users className="w-5 h-5 text-purple-600" />,
+                iconBg: "bg-purple-100",
+                title: "Worker Added",
+                description: `New worker "${worker.name}" added${worker.position ? ` as ${worker.position}` : ""}.`,
+                user: "HR Manager",
+                time: worker.created_at ? getTimeAgo(worker.created_at) : "Recently",
+                status: "completed",
+                statusColor: "text-green-600",
+                timestamp: worker.created_at || new Date().toISOString(),
+              });
+            }
+          );
 
         // Sort by timestamp (most recent first) and limit to 5
-        activities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+        activities.sort(
+          (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        );
         setRecentActivities(activities.slice(0, 5));
-
       } catch {
         // Dashboard data fetch failed
       } finally {
@@ -199,7 +243,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
       title: "Workers",
       value: loading ? "..." : statsData.workers,
       icon: <Users className="w-6 h-6" />,
-    }
+    },
   ];
 
   const quickActions = [
@@ -209,7 +253,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
       icon: <Plus className="w-6 h-6" />,
       gradient: "from-emerald-50 to-teal-100",
       iconColor: "text-emerald-600",
-      view: "subbatchview"
+      view: "subbatchview",
     },
     {
       title: "Create Worker",
@@ -217,7 +261,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
       icon: <UserPlus className="w-6 h-6" />,
       gradient: "from-blue-50 to-indigo-100",
       iconColor: "text-blue-600",
-      view: "workers"
+      view: "workers",
     },
     {
       title: "Create Department",
@@ -225,7 +269,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
       icon: <Building2 className="w-6 h-6" />,
       gradient: "from-violet-50 to-purple-100",
       iconColor: "text-violet-600",
-      view: "departments"
+      view: "departments",
     },
     {
       title: "View Production",
@@ -233,8 +277,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
       icon: <FileText className="w-6 h-6" />,
       gradient: "from-amber-50 to-orange-100",
       iconColor: "text-amber-600",
-      view: "productionview"
-    }
+      view: "productionview",
+    },
   ];
 
   return (
@@ -242,18 +286,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-gray-900 mb-1">Dashboard Overview</h1>
-        <p className="text-sm text-gray-500">Welcome back! Here&apos;s what&apos;s happening with your production today.</p>
+        <p className="text-sm text-gray-500">
+          Welcome back! Here&apos;s what&apos;s happening with your production today.
+        </p>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {stats.map((stat, index) => (
-          <StatCard
-            key={index}
-            title={stat.title}
-            value={stat.value}
-            icon={stat.icon}
-          />
+          <StatCard key={index} title={stat.title} value={stat.value} icon={stat.icon} />
         ))}
       </div>
 
@@ -277,9 +318,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
                 <div key={activity.id} className="px-5 py-3 hover:bg-gray-50 transition-colors">
                   <div className="flex gap-3">
                     {/* Icon */}
-                    <div className="text-gray-400 mt-0.5">
-                      {activity.icon}
-                    </div>
+                    <div className="text-gray-400 mt-0.5">{activity.icon}</div>
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
@@ -289,7 +328,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
                           {activity.status}
                         </span>
                       </div>
-                      <p className="text-sm text-gray-500 mb-1 line-clamp-1">{activity.description}</p>
+                      <p className="text-sm text-gray-500 mb-1 line-clamp-1">
+                        {activity.description}
+                      </p>
                       <div className="flex items-center gap-1.5 text-xs text-gray-400">
                         <span>by {activity.user}</span>
                         <span>•</span>
@@ -327,9 +368,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
                   onClick={() => onViewChange && onViewChange(action.view)}
                   className={`bg-gradient-to-br ${action.gradient} rounded-lg p-4 text-left border border-gray-100 hover:border-gray-200 transition-all hover:shadow-sm`}
                 >
-                  <div className={`mb-2 ${action.iconColor}`}>
-                    {action.icon}
-                  </div>
+                  <div className={`mb-2 ${action.iconColor}`}>{action.icon}</div>
                   <h4 className="font-medium text-sm text-gray-900 mb-0.5">{action.title}</h4>
                   <p className="text-xs text-gray-500">{action.description}</p>
                 </button>

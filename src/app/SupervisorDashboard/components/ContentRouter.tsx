@@ -9,7 +9,7 @@ import DepartmentView from "./views/DepartmentView";
 import GenericView from "./views/GenericView";
 import Worker from "./views/Worker";
 import DepartmentForm from "./views/DepartmentForm";
-import CreateSupervisor from "./views/CreateSupervisor"; 
+import CreateSupervisor from "./views/CreateSupervisor";
 
 interface ContentRouterProps {
   activeView: string;

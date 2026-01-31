@@ -52,10 +52,7 @@ const AdminPageContent = () => {
           className="fixed top-5 left-2 p-1.5 bg-white shadow-lg rounded-lg hover:bg-gray-100 transition-all z-50 group"
           title="Expand sidebar"
         >
-          <ChevronRight
-            size={20}
-            className="text-gray-600 group-hover:text-gray-900"
-          />
+          <ChevronRight size={20} className="text-gray-600 group-hover:text-gray-900" />
         </button>
       )}
 
@@ -69,7 +66,9 @@ const AdminPageContent = () => {
 
 const AdminPage = () => {
   return (
-    <Suspense fallback={<div className="flex h-screen items-center justify-center">Loading...</div>}>
+    <Suspense
+      fallback={<div className="flex h-screen items-center justify-center">Loading...</div>}
+    >
       <AdminPageContent />
     </Suspense>
   );

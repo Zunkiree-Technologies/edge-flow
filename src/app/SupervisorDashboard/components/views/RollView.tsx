@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const RollView = () => {
-  return (
-    <div>RollView</div>
-  )
-}
+  return <div>RollView</div>;
+};
 
-export default RollView
+export default RollView;

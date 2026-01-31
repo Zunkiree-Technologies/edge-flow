@@ -49,7 +49,12 @@ const navItems: NavigationItem[] = [
 ];
 
 const LeftSidebar: React.FC<LeftSidebarProps> = ({ activeView, onViewChange, onToggleSidebar }) => (
-  <Navigation activeView={activeView} onViewChange={onViewChange} items={navItems} onToggleSidebar={onToggleSidebar} />
+  <Navigation
+    activeView={activeView}
+    onViewChange={onViewChange}
+    items={navItems}
+    onToggleSidebar={onToggleSidebar}
+  />
 );
 
 export default LeftSidebar;

@@ -93,19 +93,17 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
         <div className="p-6">
           {/* Icon */}
-          <div className={`w-12 h-12 ${iconBg} rounded-full flex items-center justify-center mx-auto mb-4`}>
+          <div
+            className={`w-12 h-12 ${iconBg} rounded-full flex items-center justify-center mx-auto mb-4`}
+          >
             <Icon className={`w-6 h-6 ${iconColor}`} />
           </div>
 
           {/* Title */}
-          <h3 className="text-lg font-semibold text-gray-900 text-center mb-2">
-            {title}
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-900 text-center mb-2">{title}</h3>
 
           {/* Message */}
-          <p className="text-sm text-gray-500 text-center mb-6 leading-relaxed">
-            {message}
-          </p>
+          <p className="text-sm text-gray-500 text-center mb-6 leading-relaxed">{message}</p>
 
           {/* Actions */}
           <div className="flex gap-3">
