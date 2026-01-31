@@ -22,7 +22,8 @@ import {
 } from "lucide-react";
 import Loader from "@/app/Components/Loader";
 import { useToast } from "@/app/Components/ToastContext";
-import { formatNepaliDate } from "@/app/utils/dateUtils";
+import NepaliDatePicker from "@/app/Components/NepaliDatePicker";
+import { formatNepaliDate, getTodayNepali, nepaliToGregorian } from "@/app/utils/dateUtils";
 import { formatUnitShort } from "@/app/utils/formatUtils";
 
 // Helper function to get background color from color name
@@ -253,6 +254,7 @@ const RollView = () => {
     unit: "Kilogram",
     color: "",
     vendorId: "",
+    created_at: "",
   });
 
   const [openMenuId, setOpenMenuId] = useState<number | string | null>(null);
@@ -369,6 +371,21 @@ const RollView = () => {
       let aVal: any = a[sortColumn as keyof Roll];
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let bVal: any = b[sortColumn as keyof Roll];
+
+      // Handle date column specially
+      if (sortColumn === "created_at") {
+        const aDate = aVal ? new Date(aVal).getTime() : 0;
+        const bDate = bVal ? new Date(bVal).getTime() : 0;
+        const dateCompare = sortDirection === "asc" ? aDate - bDate : bDate - aDate;
+        // Secondary sort by ID when dates are equal
+        if (dateCompare === 0) {
+          return sortDirection === "asc"
+            ? Number(a.id) - Number(b.id)
+            : Number(b.id) - Number(a.id);
+        }
+        return dateCompare;
+      }
+
       if (aVal == null) aVal = "";
       if (bVal == null) bVal = "";
       if (typeof aVal === "string" && typeof bVal === "string") {
@@ -481,6 +498,7 @@ const RollView = () => {
       unit: "Kilogram",
       color: "",
       vendorId: "",
+      created_at: getTodayNepali(), // Default to today's Nepali date for new rolls
     });
   };
 
@@ -595,6 +613,14 @@ const RollView = () => {
         payload.roll_unit_count = Number(formData.roll_unit_count);
       }
 
+      // Add created_at if provided (convert Nepali to Gregorian ISO)
+      if (formData.created_at) {
+        const gregorianDate = nepaliToGregorian(formData.created_at);
+        if (gregorianDate) {
+          payload.created_at = gregorianDate;
+        }
+      }
+
       let response;
 
       if (editingRoll) {
@@ -662,6 +688,7 @@ const RollView = () => {
       unit: roll.unit,
       color: roll.color,
       vendorId: roll.vendor?.id.toString() || "",
+      created_at: roll.created_at ? roll.created_at.split("T")[0] : "",
     });
     setIsPreview(false);
     setIsDrawerOpen(true);
@@ -678,6 +705,7 @@ const RollView = () => {
       unit: roll.unit,
       color: roll.color,
       vendorId: roll.vendor?.id.toString() || "",
+      created_at: roll.created_at ? roll.created_at.split("T")[0] : "",
     });
     setIsPreview(true);
     setIsDrawerOpen(true);
@@ -932,18 +960,28 @@ const RollView = () => {
           searchable={false}
           icon={<ArrowUpDown className="w-4 h-4" />}
           options={[
-            { value: "id-desc", label: "Newest first", description: "Most recently created" },
-            { value: "id-asc", label: "Oldest first", description: "First created rolls" },
+            { value: "id-desc", label: "Recently Added", description: "Last entered into system" },
+            { value: "id-asc", label: "First Added", description: "First entered into system" },
+            {
+              value: "created_at-desc",
+              label: "Date: Newest",
+              description: "Latest business date",
+            },
+            {
+              value: "created_at-asc",
+              label: "Date: Oldest",
+              description: "Earliest business date",
+            },
             { value: "name-asc", label: "Name A-Z", description: "Alphabetical order" },
             { value: "name-desc", label: "Name Z-A", description: "Reverse alphabetical" },
             {
               value: "quantity-desc",
-              label: "Quantity (High to Low)",
+              label: "Qty: High-Low",
               description: "Largest quantities first",
             },
             {
               value: "quantity-asc",
-              label: "Quantity (Low to High)",
+              label: "Qty: Low-High",
               description: "Smallest quantities first",
             },
           ]}
@@ -1732,6 +1770,30 @@ const RollView = () => {
                         </button>
                       )}
                     </div>
+                  </div>
+
+                  {/* Created Date */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                      Created Date
+                    </label>
+                    {isPreview ? (
+                      <div className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-700">
+                        {formData.created_at ? formatNepaliDate(formData.created_at) : "-"}
+                      </div>
+                    ) : (
+                      <NepaliDatePicker
+                        value={formData.created_at || ""}
+                        onChange={(value) =>
+                          setFormData({
+                            ...formData,
+                            created_at: value || "",
+                          })
+                        }
+                        placeholder="Select Created Date"
+                        disabled={isPreview}
+                      />
+                    )}
                   </div>
                 </div>
 

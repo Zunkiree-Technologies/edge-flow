@@ -1,20 +1,12 @@
 // src/services/subBatchService.ts
 import prisma, { Prisma, workflow_steps } from "../config/db";
-import {
-  SubBatchPayload,
-  SubBatchPayloadWithArrays,
-} from "../types/subBatchTypes";
-
-
+import { SubBatchPayload, SubBatchPayloadWithArrays } from "../types/subBatchTypes";
 
 export enum DepartmentStage {
   NEW_ARRIVAL = "NEW_ARRIVAL",
   IN_PROGRESS = "IN_PROGRESS",
   COMPLETED = "COMPLETED",
 }
-
-
-
 
 export const createSubBatch = async (data: SubBatchPayload) => {
   // Validation
@@ -35,6 +27,7 @@ export const createSubBatch = async (data: SubBatchPayload) => {
       roll_id: data.rollId,
       batch_id: data.batchId,
       department_id: data.departmentId,
+      ...(data.created_at && { created_at: new Date(data.created_at) }),
       // Optional: attachments nested
       ...(data.attachments?.length
         ? {
@@ -82,24 +75,18 @@ export const getSubBatchById = async (id: number) => {
   return subBatch;
 };
 
-export const updateSubBatch = async (
-  id: number,
-  data: Partial<SubBatchPayloadWithArrays>
-) => {
+export const updateSubBatch = async (id: number, data: Partial<SubBatchPayloadWithArrays>) => {
   const updateData: any = {};
 
   if (data.name !== undefined) updateData.name = data.name;
-  if (data.estimatedPieces !== undefined)
-    updateData.estimated_pieces = data.estimatedPieces;
-  if (data.expectedItems !== undefined)
-    updateData.expected_items = data.expectedItems;
-  if (data.startDate !== undefined)
-    updateData.start_date = new Date(data.startDate);
+  if (data.estimatedPieces !== undefined) updateData.estimated_pieces = data.estimatedPieces;
+  if (data.expectedItems !== undefined) updateData.expected_items = data.expectedItems;
+  if (data.startDate !== undefined) updateData.start_date = new Date(data.startDate);
   if (data.dueDate !== undefined) updateData.due_date = new Date(data.dueDate);
   if (data.rollId !== undefined) updateData.roll_id = data.rollId;
   if (data.batchId !== undefined) updateData.batch_id = data.batchId;
-  if (data.departmentId !== undefined)
-    updateData.department_id = data.departmentId;
+  if (data.departmentId !== undefined) updateData.department_id = data.departmentId;
+  if (data.created_at !== undefined) updateData.created_at = new Date(data.created_at);
 
   // Update main sub_batch row
   const subBatch = await prisma.sub_batches.update({
@@ -148,25 +135,13 @@ export const updateSubBatch = async (
   return { message: "Sub-batch updated successfully", subBatch };
 };
 
-
-
-
-
-
-
-
 // Send Sub-Batch to Production (template or manual)
-
 
 interface RejectedOrAlteredPiece {
   quantity: number;
   targetDepartmentId: number;
   reason: string;
 }
-
-
-
-
 
 interface RejectedOrAlteredPiece {
   quantity: number;
@@ -175,7 +150,6 @@ interface RejectedOrAlteredPiece {
 }
 
 // Send Sub-Batch to Production (manual departments only)
-
 
 export async function sendToProduction(
   subBatchId: number,
@@ -226,20 +200,14 @@ export async function sendToProduction(
   // ✅ Update sub-batch status to IN_PRODUCTION (first department entry created)
   await prisma.sub_batches.update({
     where: { id: subBatchId },
-    data: { status: 'IN_PRODUCTION' }
+    data: { status: "IN_PRODUCTION" },
   });
 
   return workflow;
 }
 
-
-
-
 // Move stage within Kanban
-export async function moveSubBatchStage(
-  departmentSubBatchId: number,
-  toStage: DepartmentStage
-) {
+export async function moveSubBatchStage(departmentSubBatchId: number, toStage: DepartmentStage) {
   // 1️⃣ Get current record
   const dsb = await prisma.department_sub_batches.findUnique({
     where: { id: departmentSubBatchId },
@@ -268,7 +236,6 @@ export async function moveSubBatchStage(
   return updatedDSB;
 }
 
-
 export async function advanceSubBatchToNextDepartment(
   departmentSubBatchId: number,
   toDepartmentId: number,
@@ -282,15 +249,11 @@ export async function advanceSubBatchToNextDepartment(
   });
 
   if (!currentDept) {
-    throw new Error(
-      `Department sub-batch entry with id ${departmentSubBatchId} not found`
-    );
+    throw new Error(`Department sub-batch entry with id ${departmentSubBatchId} not found`);
   }
 
   if (!currentDept.is_current) {
-    throw new Error(
-      `Department sub-batch entry ${departmentSubBatchId} is not active`
-    );
+    throw new Error(`Department sub-batch entry ${departmentSubBatchId} is not active`);
   }
 
   // Validate quantity being sent
@@ -361,7 +324,7 @@ export async function markSubBatchAsCompleted(subBatchId: number) {
   }
 
   // 2️⃣ Check if already completed
-  if (subBatch.status === 'COMPLETED') {
+  if (subBatch.status === "COMPLETED") {
     throw new Error(`Sub-batch ${subBatchId} is already marked as completed`);
   }
 
@@ -369,7 +332,7 @@ export async function markSubBatchAsCompleted(subBatchId: number) {
   const updatedSubBatch = await prisma.sub_batches.update({
     where: { id: subBatchId },
     data: {
-      status: 'COMPLETED',
+      status: "COMPLETED",
       completed_at: new Date(),
     },
   });
@@ -380,7 +343,9 @@ export async function markSubBatchAsCompleted(subBatchId: number) {
 /**
  * Get sub-batches by status
  */
-export async function getSubBatchesByStatus(status: 'DRAFT' | 'IN_PRODUCTION' | 'COMPLETED' | 'CANCELLED') {
+export async function getSubBatchesByStatus(
+  status: "DRAFT" | "IN_PRODUCTION" | "COMPLETED" | "CANCELLED"
+) {
   return await prisma.sub_batches.findMany({
     where: { status },
     include: {
@@ -398,7 +363,7 @@ export async function getSubBatchesByStatus(status: 'DRAFT' | 'IN_PRODUCTION' | 
       },
     },
     orderBy: {
-      start_date: 'desc',
+      start_date: "desc",
     },
   });
 }
@@ -408,7 +373,7 @@ export async function getSubBatchesByStatus(status: 'DRAFT' | 'IN_PRODUCTION' | 
  */
 export async function getCompletedSubBatches(startDate?: Date, endDate?: Date) {
   const whereClause: any = {
-    status: 'COMPLETED',
+    status: "COMPLETED",
     completed_at: {
       not: null,
     },
@@ -428,7 +393,7 @@ export async function getCompletedSubBatches(startDate?: Date, endDate?: Date) {
       department: true,
     },
     orderBy: {
-      completed_at: 'desc',
+      completed_at: "desc",
     },
   });
 }
@@ -445,10 +410,10 @@ export async function getCompletedSubBatches(startDate?: Date, endDate?: Date) {
  * @returns Object with arrays categorized by deletion eligibility
  */
 export const checkSubBatchDependencies = async (subBatchIds: number[]) => {
-  const inProductionSubBatches: number[] = [];    // IN_PRODUCTION - BLOCKED (red)
-  const completedSubBatches: number[] = [];       // COMPLETED - BLOCKED (yellow)
-  const cancelledSubBatches: number[] = [];       // CANCELLED - BLOCKED (gray)
-  const draftSubBatches: number[] = [];           // DRAFT - Deleteable (green)
+  const inProductionSubBatches: number[] = []; // IN_PRODUCTION - BLOCKED (red)
+  const completedSubBatches: number[] = []; // COMPLETED - BLOCKED (yellow)
+  const cancelledSubBatches: number[] = []; // CANCELLED - BLOCKED (gray)
+  const draftSubBatches: number[] = []; // DRAFT - Deleteable (green)
 
   for (const subBatchId of subBatchIds) {
     // Get sub-batch status
@@ -462,26 +427,26 @@ export const checkSubBatchDependencies = async (subBatchIds: number[]) => {
     }
 
     // Categorize by status
-    if (subBatch.status === 'IN_PRODUCTION') {
+    if (subBatch.status === "IN_PRODUCTION") {
       // ❌ BLOCKED - Active work, supervisors managing
       inProductionSubBatches.push(subBatchId);
-    } else if (subBatch.status === 'COMPLETED') {
+    } else if (subBatch.status === "COMPLETED") {
       // ❌ BLOCKED - Contains wage data (payroll records)
       completedSubBatches.push(subBatchId);
-    } else if (subBatch.status === 'CANCELLED') {
+    } else if (subBatch.status === "CANCELLED") {
       // ❌ BLOCKED - Contains historical data
       cancelledSubBatches.push(subBatchId);
-    } else if (subBatch.status === 'DRAFT') {
+    } else if (subBatch.status === "DRAFT") {
       // ✅ DELETEABLE - Clean, can hard delete
       draftSubBatches.push(subBatchId);
     }
   }
 
   return {
-    inProductionSubBatches,   // Red - Active work
-    completedSubBatches,      // Yellow - Wage data
-    cancelledSubBatches,      // Gray - Historical
-    draftSubBatches,          // Green - Safe to delete
+    inProductionSubBatches, // Red - Active work
+    completedSubBatches, // Yellow - Wage data
+    cancelledSubBatches, // Gray - Historical
+    draftSubBatches, // Green - Safe to delete
   };
 };
 
@@ -517,34 +482,34 @@ export const deleteSubBatch = async (id: number) => {
 
   // ❌ BLOCK: Cannot delete IN_PRODUCTION sub-batches
   // Reason: Supervisors are actively working on these (see SUPERVISOR_USER_STORIES.md)
-  if (subBatch.status === 'IN_PRODUCTION') {
+  if (subBatch.status === "IN_PRODUCTION") {
     throw new Error(
       "Cannot delete sub-batches that are currently in production. " +
-      "Please complete or cancel the production workflow first."
+        "Please complete or cancel the production workflow first."
     );
   }
 
   // ❌ BLOCK: Cannot delete COMPLETED sub-batches
   // Reason: Contains worker logs (wage data is legal/financial record - see US-013)
-  if (subBatch.status === 'COMPLETED') {
+  if (subBatch.status === "COMPLETED") {
     throw new Error(
       "Cannot delete completed sub-batches. " +
-      "They contain worker logs and wage calculation data which must be preserved for payroll."
+        "They contain worker logs and wage calculation data which must be preserved for payroll."
     );
   }
 
   // ❌ BLOCK: Cannot delete CANCELLED sub-batches
   // Reason: Contains historical data that may be needed for auditing
-  if (subBatch.status === 'CANCELLED') {
+  if (subBatch.status === "CANCELLED") {
     throw new Error(
       "Cannot delete cancelled sub-batches. " +
-      "Historical data must be preserved. Only DRAFT sub-batches can be deleted."
+        "Historical data must be preserved. Only DRAFT sub-batches can be deleted."
     );
   }
 
   // ✅ HARD DELETE: DRAFT sub-batches only
   // Reason: Nothing happened yet, safe to completely remove
-  if (subBatch.status === 'DRAFT') {
+  if (subBatch.status === "DRAFT") {
     // Delete all related records in correct order
     // Order matters: delete child records first
 
@@ -609,7 +574,7 @@ export const deleteSubBatch = async (id: number) => {
       message: "Sub-batch deleted successfully and quantity restored to parent batch",
       subBatch: deletedSubBatch,
       type: "HARD_DELETE",
-      quantityRestored: subBatch.estimated_pieces
+      quantityRestored: subBatch.estimated_pieces,
     };
   }
 

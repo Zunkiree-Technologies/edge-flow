@@ -19,6 +19,7 @@ export interface SubBatchPayload {
   startDate: string; // ISO string
   dueDate: string; // ISO string
   departmentId?: number;
+  created_at?: string; // Optional: custom created date (ISO string)
 
   sizeDetails?: SizeDetailInput[]; // optional
   attachments?: AttachmentInput[]; // optional
