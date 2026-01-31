@@ -139,3 +139,78 @@ export const getTodayNepali = (): string => {
   const day = String(nepaliDate.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
+
+/**
+ * Compare two dates and return the difference in days
+ * @param date1 - First date (Nepali string, ISO string, or Date)
+ * @param date2 - Second date (Nepali string, ISO string, or Date)
+ * @returns Number of days difference (positive if date1 > date2)
+ */
+export const getDateDifferenceInDays = (
+  date1: string | Date | null | undefined,
+  date2: string | Date | null | undefined
+): number | null => {
+  if (!date1 || !date2) return null;
+
+  try {
+    // Convert to JS Date objects
+    const getJsDate = (date: string | Date): Date => {
+      if (date instanceof Date) return date;
+
+      // Check if Nepali date
+      if (isNepaliDateString(date)) {
+        const [year, month, day] = date.split("-").map(Number);
+        const nepaliDate = new NepaliDate(year, month - 1, day);
+        return nepaliDate.toJsDate();
+      }
+
+      return new Date(date);
+    };
+
+    const jsDate1 = getJsDate(date1);
+    const jsDate2 = getJsDate(date2);
+
+    if (isNaN(jsDate1.getTime()) || isNaN(jsDate2.getTime())) {
+      return null;
+    }
+
+    const diffTime = jsDate1.getTime() - jsDate2.getTime();
+    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffDays;
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Check if a date is overdue (past today's date)
+ * @param dueDate - Due date to check
+ * @returns true if overdue, false otherwise
+ */
+export const isOverdue = (dueDate: string | Date | null | undefined): boolean => {
+  if (!dueDate) return false;
+
+  const diff = getDateDifferenceInDays(new Date(), dueDate);
+  return diff !== null && diff > 0;
+};
+
+/**
+ * Get a human-readable relative date string
+ * @param date - Date to format
+ * @returns String like "Today", "Yesterday", "3 days ago", "In 2 days"
+ */
+export const getRelativeDateString = (date: string | Date | null | undefined): string => {
+  if (!date) return "-";
+
+  const diff = getDateDifferenceInDays(new Date(), date);
+  if (diff === null) return "-";
+
+  if (diff === 0) return "Today";
+  if (diff === 1) return "Yesterday";
+  if (diff === -1) return "Tomorrow";
+  if (diff > 1) return `${diff} days ago`;
+  if (diff < -1) return `In ${Math.abs(diff)} days`;
+
+  return "-";
+};
